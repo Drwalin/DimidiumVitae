@@ -21,7 +21,7 @@ std::shared_ptr<Object> Engine::AddObject( std::string name, std::shared_ptr<btC
 		std::shared_ptr<btRigidBody> rigidBody( new btRigidBody( mass, motionState, (btCollisionShape*)shape.get(), inertia ) );
 		world->AddBody( name, rigidBody );
 		rigidBody->setDamping( 0.2, 0.1 );
-		rigidBody->setFriction( 0.2 );
+		rigidBody->setFriction( 0.4 );
 		
 		std::shared_ptr<Object> obj( new T( this, name, rigidBody, shape, mass ) );
 		object[name] = obj;
