@@ -13,7 +13,7 @@ CXXFLAGS = -w -m64 -std=c++17
 GAMECOREMODULES = game/dlls/Player.dll
 GAMECOREMODULESOBJECTS = game/bin/Player.o
 GAMECOREOBJECTS = game/bin/Converter.o game/bin/Event.o game/bin/MeshLoader.o game/bin/Character.o
-ENGINECOREOBJECTS = engine/bin/BasicWindow.o engine/bin/Camera.o engine/bin/CollisionShapeManager.o engine/bin/CustomCollisionData.o engine/bin/Engine.o engine/bin/EngineRayTraceData.o engine/bin/EventReceiverIrrlicht.o engine/bin/EventResponser.o engine/bin/Model.o engine/bin/Object.o engine/bin/StringToEnter.o engine/bin/TextPrinter.o engine/bin/TimeCounter.o engine/bin/Window.o engine/bin/World.o engine/bin/CollisionObjectManager.o engine/bin/DllImporter.o engine/bin/ClassFactoryBase.o engine/bin/ModulesFactory.o
+ENGINECOREOBJECTS = engine/bin/BasicWindow.o engine/bin/Camera.o engine/bin/CollisionShapeManager.o engine/bin/CustomCollisionData.o engine/bin/Engine.o engine/bin/EngineRayTraceData.o engine/bin/EventReceiverIrrlicht.o engine/bin/EventResponser.o engine/bin/Model.o engine/bin/Entity.o engine/bin/StringToEnter.o engine/bin/TextPrinter.o engine/bin/TimeCounter.o engine/bin/Window.o engine/bin/World.o engine/bin/CollisionObjectManager.o engine/bin/DllImporter.o engine/bin/ClassFactoryBase.o engine/bin/ModulesFactory.o
 
 
 

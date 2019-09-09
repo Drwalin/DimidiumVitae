@@ -15,9 +15,9 @@ protected:
 	
 public:
 	
-	virtual void EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnObjectTickOverlapp( Object * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnObjectEndOverlapp( Object * other ) override;
+	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
+	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
+	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
 	//virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
@@ -33,7 +33,7 @@ public:
 	
 	virtual int GetTypeSize() const override;
 	virtual void Free() override;
-	virtual std::shared_ptr<Object> New() const override;
+	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
 	Player();

@@ -2,8 +2,8 @@
 //	This file is part of The Drwalin Engine project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef ENTITY_H
+#define ENTITY_H
 
 #include <irrlicht\irrlicht.h>
 
@@ -24,7 +24,7 @@
 
 class Engine;
 
-class Object
+class Entity
 {
 protected:
 	
@@ -45,15 +45,15 @@ protected:
 	
 	float mass;
 	
-	std::set< Object* > overlappingInPreviousFrame;
-	std::set< Object* > overlappingInCurrentFrame;
+	std::set< Entity* > overlappingInPreviousFrame;
+	std::set< Entity* > overlappingInCurrentFrame;
 	
 	void UpdateTransformSceneNode();
 	
 public:
 	
 	virtual void NextOverlappingFrame();
-	void OverlapWithObject( Object * other, btPersistentManifold * persisstentManifold );
+	void OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold );
 	
 	void SetTransform( const btTransform & transform );
 	void SetPosition( const btVector3 & loc );
@@ -80,9 +80,9 @@ public:
 	template < typename T = btRigidBody >
 	std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( body ); }
 	
-	virtual void EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold );
-	virtual void EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold );
-	virtual void EventOnObjectEndOverlapp( Object * other );
+	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
+	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
+	virtual void EventOnEntityEndOverlapp( Entity * other );
 	
 	virtual void Tick( const float deltaTime );
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal );
@@ -103,12 +103,12 @@ public:
 	void DestroySceneNode();
 	
 	virtual int GetTypeSize() const = 0;								// return size of type in bytes
-	virtual void Free() = 0;											// calls type destructor and frees an object
-	virtual std::shared_ptr<Object> New() const = 0;					// allocate memory and calls type constructor
+	virtual void Free() = 0;											// calls type destructor and frees an Entity
+	virtual std::shared_ptr<Entity> New() const = 0;					// allocate memory and calls type constructor
 	virtual std::string GetClassName() const = 0;						// returns type name
 	
-	Object();
-	virtual ~Object();
+	Entity();
+	virtual ~Entity();
 };
 
 #endif

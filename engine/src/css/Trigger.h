@@ -15,13 +15,13 @@
 #include <set>
 #include <memory>
 
-#include "Object.h"
+#include "Entity.h"
 
 #include "..\lib\Debug.h"
 
 class Engine;
 
-class Trigger : public Object
+class Trigger : public Entity
 {
 protected:
 	
@@ -36,9 +36,9 @@ public:
 	virtual bool IsDynamic() const final;
 	
 	
-	virtual void EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnObjectTickOverlapp( Object * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnObjectEndOverlapp( Object * other ) override;
+	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
+	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
+	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
 	

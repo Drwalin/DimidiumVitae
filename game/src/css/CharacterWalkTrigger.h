@@ -13,21 +13,21 @@ class CharacterWalkTrigger : public Trigger
 {
 protected:
 	
-	std::shared_ptr<Object> parent;
+	std::shared_ptr<Entity> parent;
 	bool isAnyInside;
 	
-	void EventOverlapp( Object * other, btPersistentManifold * persisstentManifold );
+	void EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
 	
 public:
 	
 	virtual void NextOverlappingFrame() override;
 	
 	bool IsAnyInside() const;
-	void SetParent( std::shared_ptr<Object> parent );
+	void SetParent( std::shared_ptr<Entity> parent );
 	
-	virtual void EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnObjectEndOverlapp( Object * other ) override;
+	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
+	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
+	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
 	

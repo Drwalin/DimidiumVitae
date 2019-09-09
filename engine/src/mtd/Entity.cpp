@@ -2,10 +2,10 @@
 //	This file is part of The Drwalin Engine project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef OBJECT_CPP
-#define OBJECT_CPP
+#ifndef ENTITY_CPP
+#define ENTITY_CPP
 
-#include "..\css\Object.h"
+#include "..\css\Entity.h"
 #include "..\css\Engine.h"
 
 #include "CollisionObjectManager.h"
@@ -14,7 +14,7 @@
 
 #include <cassert>
 
-void Object::UpdateTransformSceneNode()
+void Entity::UpdateTransformSceneNode()
 {
 	DEBUG( "Debug does objects updates sceneNode transform" );
 	if( sceneNode )
@@ -27,7 +27,7 @@ void Object::UpdateTransformSceneNode()
 	}
 }
 
-void Object::SetTransform( const btTransform & transform )
+void Entity::SetTransform( const btTransform & transform )
 {
 	this->currentTransform = transform;
 	if( this->body )
@@ -45,33 +45,33 @@ void Object::SetTransform( const btTransform & transform )
 	}
 }
 
-void Object::SetPosition( const btVector3 & loc )
+void Entity::SetPosition( const btVector3 & loc )
 {
 	this->SetTransform( btTransform( this->currentTransform.getRotation(), loc ) );
 }
 
-void Object::SetRotation( const btQuaternion & quat )
+void Entity::SetRotation( const btQuaternion & quat )
 {
 	this->SetTransform( btTransform( quat, this->currentTransform.getOrigin() ) );
 }
 
-void Object::Move( const btVector3 & move )
+void Entity::Move( const btVector3 & move )
 {
 	this->SetPosition( this->currentTransform.getOrigin() + move );
 }
 
-void Object::Rotate( const btQuaternion & quat )
+void Entity::Rotate( const btQuaternion & quat )
 {
 	this->SetRotation( this->currentTransform.getRotation() * quat );
 }
 
-void Object::NextOverlappingFrame()
+void Entity::NextOverlappingFrame()
 {
 	for( auto it = this->overlappingInPreviousFrame.begin(); it != this->overlappingInPreviousFrame.end(); ++it )
 	{
 		if( this->overlappingInCurrentFrame.find( *it ) == this->overlappingInCurrentFrame.end() )
 		{
-			this->EventOnObjectEndOverlapp( *it );
+			this->EventOnEntityEndOverlapp( *it );
 		}
 	}
 	
@@ -79,7 +79,7 @@ void Object::NextOverlappingFrame()
 	this->overlappingInCurrentFrame.clear();
 }
 
-void Object::OverlapWithObject( Object * other, btPersistentManifold * persisstentManifold )
+void Entity::OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	if( other != this )
 	{
@@ -89,11 +89,11 @@ void Object::OverlapWithObject( Object * other, btPersistentManifold * persisste
 			{
 				if( this->overlappingInPreviousFrame.find( other ) != this->overlappingInPreviousFrame.end() )
 				{
-					this->EventOnObjectTickOverlapp( other, persisstentManifold );
+					this->EventOnEntityTickOverlapp( other, persisstentManifold );
 				}
 				else
 				{
-					this->EventOnObjectBeginOverlapp( other, persisstentManifold );
+					this->EventOnEntityBeginOverlapp( other, persisstentManifold );
 				}
 				this->overlappingInCurrentFrame.insert( other );
 			}
@@ -113,14 +113,14 @@ void Object::OverlapWithObject( Object * other, btPersistentManifold * persisste
 	}
 }
 
-void Object::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold ){}
-void Object::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold ){}
-void Object::EventOnObjectEndOverlapp( Object * other ){}
+void Entity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
+void Entity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
+void Entity::EventOnEntityEndOverlapp( Entity * other ){}
 
 
 
 
-void Object::Tick( const float deltaTime )
+void Entity::Tick( const float deltaTime )
 {
 	if( this->body )
 	{
@@ -134,9 +134,9 @@ void Object::Tick( const float deltaTime )
 	this->UpdateTransformSceneNode();
 }
 
-void Object::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
+void Entity::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
 
-void Object::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
+void Entity::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
 {
 	if( this->body )
 	{
@@ -154,7 +154,7 @@ void Object::ApplyImpactDamage( const float damage, const float impetus, btVecto
 	}
 }
 
-void Object::SetMass( float mass )
+void Entity::SetMass( float mass )
 {
 	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
 	if( rigidBody )
@@ -178,12 +178,12 @@ void Object::SetMass( float mass )
 	}
 }
 
-Engine * Object::GetEngine()
+Engine * Entity::GetEngine()
 {
 	return engine;
 }
 
-void Object::SetScale( btVector3 scale )
+void Entity::SetScale( btVector3 scale )
 {
 	this->scale = scale;
 	if( this->body )
@@ -199,37 +199,37 @@ void Object::SetScale( btVector3 scale )
 	}
 }
 
-btVector3 Object::GetScale()
+btVector3 Entity::GetScale()
 {
 	return scale;
 }
 
-btTransform Object::GetTransform()
+btTransform Entity::GetTransform()
 {
 	return this->currentTransform;
 }
 
-btVector3 Object::GetLocation() const
+btVector3 Entity::GetLocation() const
 {
 	return this->currentTransform.getOrigin();
 }
 
-void Object::SetRayTraceChannel( int src )
+void Entity::SetRayTraceChannel( int src )
 {
 	rayTraceChannel = src;
 }
 
-int Object::GetRayTraceChannel()
+int Entity::GetRayTraceChannel()
 {
 	return rayTraceChannel;
 }
 
-const std::string & Object::GetName() const
+const std::string & Entity::GetName() const
 {
 	return name;
 }
 
-void Object::SetModel( std::shared_ptr<Model> model, bool light )
+void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 {
 	if( this->engine )
 	{
@@ -262,7 +262,7 @@ void Object::SetModel( std::shared_ptr<Model> model, bool light )
 	}
 }
 
-void Object::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape )
+void Entity::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape )
 {
 	this->DestroyBody();
 	this->body = body;
@@ -271,7 +271,7 @@ void Object::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<b
 	this->body->setUserPointer( this );
 }
 
-void Object::DestroyBody()
+void Entity::DestroyBody()
 {
 	if( this->body )
 	{
@@ -300,7 +300,7 @@ void Object::DestroyBody()
 	}
 }
 
-void Object::DestroySceneNode()
+void Entity::DestroySceneNode()
 {
 	if( this->sceneNode )
 	{
@@ -318,7 +318,7 @@ void Object::DestroySceneNode()
 	}
 }
 
-void Object::Destroy()
+void Entity::Destroy()
 {
 	this->DestroySceneNode();
 	
@@ -329,26 +329,26 @@ void Object::Destroy()
 	this->mass = 0.0f;
 }
 
-void Object::Despawn()
+void Entity::Despawn()
 {
 	this->Destroy();
 }
 
-void Object::Load( std::istream & stream )
+void Entity::Load( std::istream & stream )
 {
 }
 
-void Object::Save( std::ostream & stream ) const
+void Entity::Save( std::ostream & stream ) const
 {
 }
 
-void Object::Init( Engine * engine )
+void Entity::Init( Engine * engine )
 {
 	this->Destroy();
 	this->engine = engine;
 }
 
-void Object::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void Entity::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
 	this->Destroy();
 	this->mass = -1.0f;
@@ -360,7 +360,7 @@ void Object::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, b
 	this->SetBody( CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f ), shape );
 }
 
-Object::Object()
+Entity::Entity()
 {
 	this->mass = 1.0f;
 	this->engine = NULL;
@@ -370,7 +370,7 @@ Object::Object()
 	this->sceneNode = NULL;
 }
 
-Object::~Object()
+Entity::~Entity()
 {
 	this->Destroy();
 }

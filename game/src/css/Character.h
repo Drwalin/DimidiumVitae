@@ -5,12 +5,12 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include <Object.h>
+#include <Entity.h>
 #include <Trigger.h>
 #include <Camera.h>
 #include <cmath>
 
-class Character : public Object
+class Character : public Entity
 {
 protected:
 	
@@ -44,9 +44,9 @@ public:
 	void SetCamera( std::shared_ptr<Camera> camera );
 	
 	
-	virtual void EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnObjectEndOverlapp( Object * other ) override;
+	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
+	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
+	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	void EventJump();
 	void EventCrouch();
@@ -88,7 +88,7 @@ public:
 	
 	virtual int GetTypeSize() const override;
 	virtual void Free() override;
-	virtual std::shared_ptr<Object> New() const override;
+	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
 	Character();

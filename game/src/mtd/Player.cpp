@@ -16,19 +16,19 @@
 
 #include <ctime>
 
-void Player::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * perisstentManifold )
+void Player::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
 {
-	Character::EventOnObjectBeginOverlapp( other, perisstentManifold );
+	Character::EventOnEntityBeginOverlapp( other, perisstentManifold );
 }
 
-void Player::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * perisstentManifold )
+void Player::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
 {
-	Character::EventOnObjectTickOverlapp( other, perisstentManifold );
+	Character::EventOnEntityTickOverlapp( other, perisstentManifold );
 }
 
-void Player::EventOnObjectEndOverlapp( Object * other )
+void Player::EventOnEntityEndOverlapp( Entity * other )
 {
-	Character::EventOnObjectEndOverlapp( other );
+	Character::EventOnEntityEndOverlapp( other );
 }
 
 
@@ -68,10 +68,10 @@ void Player::Destroy()
 	Character::Destroy();
 }
 
-extern "C" std::shared_ptr<Object> GetClassInstantiator(){ static std::shared_ptr<Object> instantiator( new Player(), [](Object * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new Player(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int Player::GetTypeSize() const{ return sizeof(Player); }
 void Player::Free(){ delete this; }
-std::shared_ptr<Object> Player::New() const{ return std::dynamic_pointer_cast<Object>( std::shared_ptr<Player>( new Player(), [](Object * ptr){delete ptr;} ) ); }
+std::shared_ptr<Entity> Player::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<Player>( new Player(), [](Entity * ptr){delete ptr;} ) ); }
 std::string Player::GetClassName() const{ return "Player"; }
 
 Player::Player() : Character()

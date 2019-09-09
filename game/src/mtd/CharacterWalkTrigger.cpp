@@ -12,7 +12,7 @@ bool CharacterWalkTrigger::IsAnyInside() const
 	return isAnyInside;
 }
 
-void CharacterWalkTrigger::SetParent( std::shared_ptr<Object> parent )
+void CharacterWalkTrigger::SetParent( std::shared_ptr<Entity> parent )
 {
 	this->parent = parent;
 }
@@ -23,7 +23,7 @@ void CharacterWalkTrigger::NextOverlappingFrame()
 	isAnyInside = false;
 }
 
-void CharacterWalkTrigger::EventOverlapp( Object * other, btPersistentManifold * persisstentManifold )
+void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	if( other != parent.get() )
 	{
@@ -34,21 +34,21 @@ void CharacterWalkTrigger::EventOverlapp( Object * other, btPersistentManifold *
 	}
 }
 
-void CharacterWalkTrigger::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold )
+void CharacterWalkTrigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
-	Trigger::EventOnObjectBeginOverlapp( other, persisstentManifold );
+	Trigger::EventOnEntityBeginOverlapp( other, persisstentManifold );
 	this->EventOverlapp( other, persisstentManifold );
 }
 
-void CharacterWalkTrigger::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold )
+void CharacterWalkTrigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
-	Trigger::EventOnObjectTickOverlapp( other, persisstentManifold );
+	Trigger::EventOnEntityTickOverlapp( other, persisstentManifold );
 	this->EventOverlapp( other, persisstentManifold );
 }
 
-void CharacterWalkTrigger::EventOnObjectEndOverlapp( Object * other )
+void CharacterWalkTrigger::EventOnEntityEndOverlapp( Entity * other )
 {
-	Trigger::EventOnObjectEndOverlapp( other );
+	Trigger::EventOnEntityEndOverlapp( other );
 }
 
 void CharacterWalkTrigger::Tick( const float deltaTime )

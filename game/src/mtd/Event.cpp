@@ -19,10 +19,10 @@
 
 void Event::MouseMoveEvent( int x, int y, int w, int dx, int dy, int dw )
 {
-	std::shared_ptr<Object> player = engine->GetObject( std::string("Player") );
+	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
 	if( player )
 	{
-		Character * character = dynamic_cast < Character* > ( (Object*)(player.get()) );
+		Character * character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
 		if( character )
 		{
 			character->EventRotateCameraBy( btVector3( float(dy)/160.0, float(dx)/160.0, 0.0 ) );
@@ -36,15 +36,15 @@ irr::scene::ISceneNode * lightSceneNode = 0;
 
 void Event::KeyPressedEvent( int keyCode )
 {
-	std::shared_ptr<Object> player = engine->GetObject( std::string("Player") );
-	std::shared_ptr<Object> temp;
+	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
+	std::shared_ptr<Entity> temp;
 	btVector3 begin, end, point, normal;
 	Character * character = NULL;
 	Player * playerPtr = NULL;
 	if( player )
 	{
-		character = dynamic_cast < Character* > ( ((Object*)(player.get())) );
-		playerPtr = dynamic_cast < Player* > ( ((Object*)(player.get())) );
+		character = dynamic_cast < Character* > ( ((Entity*)(player.get())) );
+		playerPtr = dynamic_cast < Player* > ( ((Entity*)(player.get())) );
 	}
 	
 	switch( keyCode )
@@ -69,7 +69,7 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_KEY_T:
-		fprintf( stderr, "\n Number of objects: %i ", engine->GetNumberOfObjects() );
+		fprintf( stderr, "\n Number of objects: %i ", engine->GetNumberOfEntities() );
 		break;
 	case irr::KEY_KEY_O:
 		Debug::SwitchDebugState();
@@ -96,7 +96,7 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_LBUTTON:
-		temp = engine->AddObject( engine->GetNewObjectOfType("Character"), engine->GetAvailableObjectName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("Character"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
 		if( temp )
 		{
 			temp->SetModel( engine->GetModel( "Crate01" ), false );
@@ -108,24 +108,10 @@ void Event::KeyPressedEvent( int keyCode )
 		{
 			MESSAGE("Couldn't spawn new object");
 		}
-		/*
-		temp = engine->AddObject( engine->GetAvailableObjectName("Box"), engine->GetCollisionShapeManager()->GetShape( "crate01shape__1331_" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), true, 200.0, engine->GetModel( "Crate01" )->GetInertia() );
-		if( temp )
-		{
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 8.0 );
-			temp->SetModel( engine->GetModel( "Crate01" ) );
-			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
-		}
-		else
-		{
-			MESSAGE("Couldn't spawn new object");
-		}
-		*/
 		break;
 		
 	case irr::KEY_RBUTTON:
-		//MESSAGE( engine->GetCollisionShapeManager()->GetShape( "sphere" ) );
-		temp = engine->AddObject( engine->GetNewObjectOfType("Character"), engine->GetAvailableObjectName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("Character"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
 			if( engine->GetModel( "Sphere" ) )
@@ -140,30 +126,16 @@ void Event::KeyPressedEvent( int keyCode )
 		{
 			MESSAGE("Couldn't spawn new object");
 		}
-		/*
-		temp = engine->AddObject<Object>( engine->GetAvailableObjectName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0 ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), true, 20.0 );
-		if( temp )
-		{
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
-			//temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + window->camera->GetForwardVector() * 16.0 );
-			temp->SetModel( engine->GetModel( "Sphere" ) );
-			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
-		}
-		else
-		{
-			MESSAGE("Couldn't spawn new object");
-		}
-		*/
 		break;
 	}
 }
 
 void Event::KeyReleasedEvent( int keyCode )
 {
-	std::shared_ptr<Object> player = engine->GetObject( std::string("Player") );
+	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
 	Character * character = NULL;
 	if( player )
-		character = dynamic_cast < Character* > ( (Object*)(player.get()) );
+		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
 	
 	switch( keyCode )
 	{
@@ -185,12 +157,12 @@ void Event::KeyReleasedEvent( int keyCode )
 
 void Event::KeyHoldedEvent( int keyCode )
 {
-	std::shared_ptr<Object> player = engine->GetObject( std::string("Player") );
-	std::shared_ptr<Object> temp;
+	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
+	std::shared_ptr<Entity> temp;
 	btVector3 begin, end, point, normal;
 	Character * character = NULL;
 	if( player )
-		character = dynamic_cast < Character* > ( (Object*)(player.get()) );
+		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
 	
 	btVector3 vector;
 	
@@ -199,7 +171,7 @@ void Event::KeyHoldedEvent( int keyCode )
 	case irr::KEY_MBUTTON:
 		if( character )
 		{
-			temp = engine->GetObject( std::string("Box") );
+			temp = engine->GetEntity( std::string("Box") );
 			if( temp )
 			{
 				character->EventRotateCameraToLookAtPoint( temp->GetLocation(), true );
@@ -243,7 +215,7 @@ void Event::KeyHoldedEvent( int keyCode )
 			{
 				if( temp->GetBody() )
 					temp->GetBody()->activate();
-				engine->QueueObjectToDestroy( temp->GetName() );
+				engine->QueueEntityToDestroy( temp->GetName() );
 			}
 		}
 		break;
@@ -288,12 +260,12 @@ void Event::StringToEnterEvent( std::string str )
 {
 	fprintf( stderr, "\n Input string: \"%s\"", str.c_str() );
 	
-	std::shared_ptr<Object> player = engine->GetObject( std::string("Player") );
-	std::shared_ptr<Object> temp;
+	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
+	std::shared_ptr<Entity> temp;
 	btVector3 begin, end, point, normal;
 	Character * character = NULL;
 	if( player )
-		character = dynamic_cast < Character* > ( (Object*)(player.get()) );
+		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
 	
 	if( str == "Rel" )
 	{

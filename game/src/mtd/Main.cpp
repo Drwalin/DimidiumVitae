@@ -47,15 +47,15 @@ int main()
 		
 		
 		std::shared_ptr<btCollisionShape> mapShape = mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE );
-		std::shared_ptr<Object> map = engine->AddObject( engine->GetNewObjectOfType("Character"), "TestMap", mapShape, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10,0) ), 0.0f );
+		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("Character"), "TestMap", mapShape, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10,0) ), 0.0f );
 		map->GetBody<btRigidBody>()->setGravity( btVector3(0,0,0) );
 		map->SetModel( mapModel, false );
 		map->GetBody<btRigidBody>()->setFriction( 0.75 );
 		map->GetBody<btRigidBody>()->setAngularFactor( 0.0 );
 		map->GetBody<btRigidBody>()->setLinearFactor( btVector3( 0.0, 0.0, 0.0 ) );
 		
-		std::shared_ptr<Object> player = engine->AddObject( engine->GetNewObjectOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
-		engine->AttachCameraToObject( "Player", btVector3( 0, 0.8, 0 ) );
+		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
+		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.8, 0 ) );
 		player->GetBody<btRigidBody>()->setFriction( 0.75 );
 		((Character*)(player.get()))->SetCamera( engine->GetCamera() );
 		player->GetBody<btRigidBody>()->setAngularFactor( btVector3( 0, 0, 0 ) );

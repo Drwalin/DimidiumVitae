@@ -24,12 +24,12 @@ void Character::QueueMove( float val )
 
 void Character::SetScale( btVector3 scale )
 {
-	Object::SetScale( scale );
+	Entity::SetScale( scale );
 }
 
 void Character::NextOverlappingFrame()
 {
-	Object::NextOverlappingFrame();
+	Entity::NextOverlappingFrame();
 }
 
 float Character::GetBottomY()
@@ -126,7 +126,7 @@ btVector3 Character::GetFlatLeftVector() const
 
 void Character::Tick( const float deltaTime )
 {
-	Object::Tick( deltaTime );
+	Entity::Tick( deltaTime );
 }
 
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
@@ -135,7 +135,7 @@ void Character::ApplyDamage( const float damage, btVector3 point, btVector3 norm
 
 void Character::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
 {
-	Object::ApplyImpactDamage( damage, impetus, direction, point, normal );
+	Entity::ApplyImpactDamage( damage, impetus, direction, point, normal );
 	Character::ApplyDamage( damage, point, normal );
 }
 
@@ -146,37 +146,37 @@ void Character::ApplyImpactDamage( const float damage, const float impetus, btVe
 
 void Character::Load( std::istream & stream )
 {
-	Object::Load( stream );
+	Entity::Load( stream );
 }
 
 void Character::Save( std::ostream & stream ) const
 {
-	Object::Save( stream );
+	Entity::Save( stream );
 }
 
 void Character::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	Object::Spawn( name, shape, transform );
+	Entity::Spawn( name, shape, transform );
 }
 
 void Character::Despawn()
 {
-	Object::Despawn();
+	Entity::Despawn();
 }
 
 void Character::Destroy()
 {
-	Object::Destroy();
+	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Object> GetClassInstantiator(){ static std::shared_ptr<Object> instantiator( new Character(), [](Object * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new Character(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int Character::GetTypeSize() const{ return sizeof(Character); }
 void Character::Free(){ delete this; }
-std::shared_ptr<Object> Character::New() const{ return std::dynamic_pointer_cast<Object>( std::shared_ptr<Character>( new Character(), [](Object * ptr){delete ptr;} ) ); }
+std::shared_ptr<Entity> Character::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<Character>( new Character(), [](Entity * ptr){delete ptr;} ) ); }
 std::string Character::GetClassName() const{ return "Character"; }
 
 Character::Character() :
-	Object(), cameraRotation(0,0,0), cameraLocation(0,0,0),
+	Entity(), cameraRotation(0,0,0), cameraLocation(0,0,0),
 	defaultVelocity(3.7), height(1.75),
 	queueStep(0.0)
 {

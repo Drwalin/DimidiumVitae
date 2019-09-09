@@ -14,19 +14,19 @@
 
 #include <ctime>
 
-void Character::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold )
+void Character::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
-	Object::EventOnObjectBeginOverlapp( other, persisstentManifold );
+	Entity::EventOnEntityBeginOverlapp( other, persisstentManifold );
 }
 
-void Character::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold )
+void Character::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
-	Object::EventOnObjectTickOverlapp( other, persisstentManifold );
+	Entity::EventOnEntityTickOverlapp( other, persisstentManifold );
 }
 
-void Character::EventOnObjectEndOverlapp( Object * other )
+void Character::EventOnEntityEndOverlapp( Entity * other )
 {
-	Object::EventOnObjectEndOverlapp( other );
+	Entity::EventOnEntityEndOverlapp( other );
 }
 
 void Character::EventJump()

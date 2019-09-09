@@ -30,15 +30,15 @@ bool Trigger::IsDynamic() const
 	return false;
 }
 
-void Trigger::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * perisstentManifold )
+void Trigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
 {
 }
 
-void Trigger::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * perisstentManifold )
+void Trigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
 {
 }
 
-void Trigger::EventOnObjectEndOverlapp( Object * other )
+void Trigger::EventOnEntityEndOverlapp( Entity * other )
 {
 }
 
@@ -55,7 +55,7 @@ void Trigger::Tick( const float deltaTime )
 }
 
 Trigger::Trigger( Engine * engine, std::string name, std::shared_ptr<btRigidBody> body, std::shared_ptr<btCollisionShape> collisionShape, float mass_ ) :
-	Object( engine, name, body, collisionShape, mass_ )
+	Entity( engine, name, body, collisionShape, mass_ )
 {
 }
 

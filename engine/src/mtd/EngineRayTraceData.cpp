@@ -20,10 +20,10 @@ Engine::RayTraceData::RayTraceData( btCollisionWorld::AllHitsRayResultCallback &
 		const btCollisionObject * temp = hitData.m_collisionObjects.at( id );
 		if( temp )
 		{
-			Object * objectT = (Object*)(temp->getUserPointer());
+			Entity * objectT = (Entity*)(temp->getUserPointer());
 			if( objectT )
 			{
-				object = objectT->GetEngine()->GetObject( std::string(objectT->GetName()) );
+				entity = objectT->GetEngine()->GetEntity( std::string(objectT->GetName()) );
 				begin = hitData.m_rayFromWorld;
 				end = hitData.m_rayToWorld;
 				point = hitData.m_hitPointWorld.at( id );
@@ -32,7 +32,7 @@ Engine::RayTraceData::RayTraceData( btCollisionWorld::AllHitsRayResultCallback &
 			}
 			else
 			{
-				object = NULL;
+				entity = NULL;
 			}
 		}
 	}
@@ -47,7 +47,7 @@ Engine::RayTraceData::RayTraceData() :
 {
 }
 
-std::shared_ptr<Object> Engine::RayTrace( btVector3 begin, btVector3 end, int channel, btVector3 & point, btVector3 & normal, const std::vector < std::shared_ptr<Object> > & ignoreObjects )
+std::shared_ptr<Entity> Engine::RayTrace( btVector3 begin, btVector3 end, int channel, btVector3 & point, btVector3 & normal, const std::vector < std::shared_ptr<Entity> > & ignoreEntities )
 {
 	point = normal = btVector3(0,0,0);
 	
@@ -55,30 +55,30 @@ std::shared_ptr<Object> Engine::RayTrace( btVector3 begin, btVector3 end, int ch
 	world->GetDynamicsWorld()->rayTest( begin, end, rayTraceResult );
 	if( rayTraceResult.hasHit() )
 	{
-		std::set < std::shared_ptr<Object> > ignoreObjectsSet( ignoreObjects.begin(), ignoreObjects.end() );		// does it sort it?
-		std::set < RayTraceData > objects;
+		std::set < std::shared_ptr<Entity> > ignoreEntitiesSet( ignoreEntities.begin(), ignoreEntities.end() );		// does it sort it?
+		std::set < RayTraceData > entities;
 		
 		for( int i = 0; i < rayTraceResult.m_collisionObjects.size(); ++i )
 		{
 			RayTraceData hitData( rayTraceResult, i );
-			if( hitData.object && ( hitData.object->GetRayTraceChannel() & channel ) )
+			if( hitData.entity && ( hitData.entity->GetRayTraceChannel() & channel ) )
 			{
-				if( ignoreObjectsSet.find( hitData.object ) == ignoreObjectsSet.end() )
+				if( ignoreEntitiesSet.find( hitData.entity ) == ignoreEntitiesSet.end() )
 				{
-					objects.insert( hitData );
+					entities.insert( hitData );
 				}
 			}
 		}
 		
-		if( objects.size() > 0 )
+		if( entities.size() > 0 )
 		{
-			point = objects.begin()->point;
-			normal = objects.begin()->normal;
+			point = entities.begin()->point;
+			normal = entities.begin()->normal;
 			
-			return objects.begin()->object;
+			return entities.begin()->entity;
 		}
 	}
-	std::shared_ptr<Object> ret;
+	std::shared_ptr<Entity> ret;
 	return ret;
 }
 

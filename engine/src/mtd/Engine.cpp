@@ -12,16 +12,16 @@
 
 #include <cassert>
 
-int Engine::GetNumberOfObjects() const
+int Engine::GetNumberOfEntities() const
 {
-	return this->object.size();
+	return this->entities.size();
 }
 
-std::shared_ptr<Object> Engine::GetNewObjectOfType( const std::string & name )
+std::shared_ptr<Entity> Engine::GetNewEntityOfType( const std::string & name )
 {
-	std::shared_ptr<Object> object = this->classFactory.GetClassInstantiator( name.c_str() )->New();
-	object->Init( this );
-	return object;
+	std::shared_ptr<Entity> entity = this->classFactory.GetClassInstantiator( name.c_str() )->New();
+	entity->Init( this );
+	return entity;
 }
 
 bool Engine::RegisterType( const std::string & name, const std::string & modulePath )
@@ -29,26 +29,26 @@ bool Engine::RegisterType( const std::string & name, const std::string & moduleP
 	return (bool)this->classFactory.AddClass( modulePath.c_str(), name.c_str() );
 }
 
-std::shared_ptr<Object> Engine::AddObject( std::shared_ptr<Object> emptyObject, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia )
+std::shared_ptr<Entity> Engine::AddEntity( std::shared_ptr<Entity> emptyEntity, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia )
 {
-	if( emptyObject )
+	if( emptyEntity )
 	{
-		auto it = this->object.find( name );
-		if( it == this->object.end() )
+		auto it = this->entities.find( name );
+		if( it == this->entities.end() )
 		{
-			emptyObject->Init( this );
-			emptyObject->Spawn( name, shape, transform );
-			emptyObject->SetMass( mass );
-			this->object[name] = emptyObject;
-			return emptyObject;
+			emptyEntity->Init( this );
+			emptyEntity->Spawn( name, shape, transform );
+			emptyEntity->SetMass( mass );
+			this->entities[name] = emptyEntity;
+			return emptyEntity;
 		}
 	}
 	return NULL;
 }
 
-inline void Engine::UpdateObjectOverlaps()
+inline void Engine::UpdateEntitiesOverlapp()
 {
-	for( auto it = this->object.begin(); it != this->object.end(); ++it )
+	for( auto it = this->entities.begin(); it != this->entities.end(); ++it )
 	{
 		if( it->second )
 		{
@@ -67,13 +67,13 @@ inline void Engine::UpdateObjectOverlaps()
 			{
 				if( contactManifold->getNumContacts() > 0 )
 				{
-					Object * a = ((Object*)(contactManifold->getBody0()->getUserPointer()));
-					Object * b = ((Object*)(contactManifold->getBody1()->getUserPointer()));
+					Entity * a = ((Entity*)(contactManifold->getBody0()->getUserPointer()));
+					Entity * b = ((Entity*)(contactManifold->getBody1()->getUserPointer()));
 					
 					if( a && b )
 					{
-						a->OverlapWithObject( b, contactManifold );
-						b->OverlapWithObject( a, contactManifold );
+						a->OverlapWithEntity( b, contactManifold );
+						b->OverlapWithEntity( a, contactManifold );
 					}
 					else
 						MESSAGE( "btCollisionShape->getUserPointer() = NULL" );
@@ -89,32 +89,32 @@ inline void Engine::UpdateObjectOverlaps()
 		MESSAGE( std::string( "world->GetDynamicsWorld()->getDispatcher() = 0 " ) );
 }
 
-inline void Engine::UpdateObjects( const float deltaTime )
+inline void Engine::UpdateEntities( const float deltaTime )
 {
-	while( !this->objectsQueuedToDestroy.empty() )
+	while( !this->entitiesQueuedToDestroy.empty() )
 	{
-		this->DeleteObject( this->objectsQueuedToDestroy.front() );
-		this->objectsQueuedToDestroy.pop();
+		this->DeleteEntity( this->entitiesQueuedToDestroy.front() );
+		this->entitiesQueuedToDestroy.pop();
 	}
 	
-	this->UpdateObjectOverlaps();
+	this->UpdateEntitiesOverlapp();
 	
-	for( auto it = this->object.begin(); it != this->object.end(); ++it )
+	for( auto it = this->entities.begin(); it != this->entities.end(); ++it )
 		it->second->Tick( deltaTime );
 	
 	if( this->cameraParent )
 		this->GetCamera()->SetCameraTransform( this->cameraParent->GetTransform() );
 }
 
-void Engine::QueueObjectToDestroy( std::shared_ptr<Object> ptr )
+void Engine::QueueEntityToDestroy( std::shared_ptr<Entity> ptr )
 {
 	if( ptr )
-		this->objectsQueuedToDestroy.push( ptr->GetName() );
+		this->entitiesQueuedToDestroy.push( ptr->GetName() );
 }
 
-void Engine::QueueObjectToDestroy( const std::string & name )
+void Engine::QueueEntityToDestroy( const std::string & name )
 {
-	this->objectsQueuedToDestroy.push( name );
+	this->entitiesQueuedToDestroy.push( name );
 }
 
 float Engine::GetDeltaTime()
@@ -175,7 +175,7 @@ void Engine::Tick( const float deltaTime )
 {
 	this->physicsSimulationTime.SubscribeStart();
 	
-	this->UpdateObjects( deltaTime );
+	this->UpdateEntities( deltaTime );
 	
 	if( !this->pausePhysics )
 	{
@@ -190,20 +190,20 @@ std::shared_ptr<Camera> Engine::GetCamera() const
 	return this->window->camera;
 }
 
-std::shared_ptr<Object> Engine::GetCameraParent() const
+std::shared_ptr<Entity> Engine::GetCameraParent() const
 {
 	return this->cameraParent;
 }
 
-std::string Engine::GetAvailableObjectName( const std::string & name )
+std::string Engine::GetAvailableEntityName( const std::string & name )
 {
-	if( this->object.find( name ) == this->object.end() )
+	if( this->entities.find( name ) == this->entities.end() )
 	{
 		return name;
 	}
 	for( int i = 0;; ++i )
 	{
-		if( this->object.find( name+std::to_string(i) ) == this->object.end() )
+		if( this->entities.find( name+std::to_string(i) ) == this->entities.end() )
 		{
 			return name+std::to_string(i);
 		}
@@ -211,10 +211,10 @@ std::string Engine::GetAvailableObjectName( const std::string & name )
 	return name;
 }
 
-void Engine::AttachCameraToObject( const std::string & name, btVector3 location )
+void Engine::AttachCameraToEntity( const std::string & name, btVector3 location )
 {
-	auto it = this->object.find( name );
-	if( it != this->object.end() )
+	auto it = this->entities.find( name );
+	if( it != this->entities.end() )
 	{
 		this->cameraParent = it->second;
 	}
@@ -227,10 +227,10 @@ void Engine::AttachCameraToObject( const std::string & name, btVector3 location 
 
 bool Engine::SetCustomModelName( const std::string & name, std::shared_ptr<Model> mdl )
 {
-	auto it = this->model.find( name );
-	if( it == this->model.end() )
+	auto it = this->models.find( name );
+	if( it == this->models.end() )
 	{
-		this->model[name] = mdl;
+		this->models[name] = mdl;
 		return true;
 	}
 	return false;
@@ -238,8 +238,8 @@ bool Engine::SetCustomModelName( const std::string & name, std::shared_ptr<Model
 
 std::shared_ptr<Model> Engine::LoadModel( const std::string & name )
 {
-	auto it = this->model.find( name );
-	if( it != this->model.end() )
+	auto it = this->models.find( name );
+	if( it != this->models.end() )
 	{
 		if( it->second )
 		{
@@ -247,7 +247,7 @@ std::shared_ptr<Model> Engine::LoadModel( const std::string & name )
 		}
 		else
 		{
-			this->model.erase( it );
+			this->models.erase( it );
 		}
 	}
 	else
@@ -260,7 +260,7 @@ std::shared_ptr<Model> Engine::LoadModel( const std::string & name )
 		}
 		else
 		{
-			this->model[name] = mdl;
+			this->models[name] = mdl;
 			return mdl;
 		}
 	}
@@ -272,28 +272,28 @@ std::shared_ptr<Model> Engine::GetModel( const std::string & name )
 	return this->LoadModel( name );
 }
 
-std::shared_ptr<Object> Engine::GetObject( const std::string & name )
+std::shared_ptr<Entity> Engine::GetEntity( const std::string & name )
 {
-	auto it = this->object.find( name );
-	if( it != this->object.end() )
+	auto it = this->entities.find( name );
+	if( it != this->entities.end() )
 	{
 		if( it->second )
 			return it->second;
 		else
-			this->object.erase( it );
+			this->entities.erase( it );
 	}
-	std::shared_ptr<Object> ret;
+	std::shared_ptr<Entity> ret;
 	return ret;
 }
 
-void Engine::DeleteObject( const std::string & name )
+void Engine::DeleteEntity( const std::string & name )
 {
-	auto it = this->object.find( name );
-	if( it != this->object.end() )
+	auto it = this->entities.find( name );
+	if( it != this->entities.end() )
 	{
 		if( it->second )
 		{
-			DEBUG( std::string("Destroying object: ") + name )
+			DEBUG( std::string("Destroying entity: ") + name )
 			
 			if( it->second == this->cameraParent )
 				this->cameraParent = NULL;
@@ -302,11 +302,11 @@ void Engine::DeleteObject( const std::string & name )
 			it->second.reset();
 		}
 		
-		this->object.erase( it );
+		this->entities.erase( it );
 	}
 	else
 	{
-		MESSAGE( std::string("Trying to destroy un-existing object: ") + name )
+		MESSAGE( std::string("Trying to destroy un-existing entity: ") + name )
 	}
 }
 
@@ -348,7 +348,7 @@ void Engine::Destroy()
 {
 	this->cameraParent = NULL;
 	
-	for( auto it = this->object.begin(); it != this->object.end(); ++it )
+	for( auto it = this->entities.begin(); it != this->entities.end(); ++it )
 	{
 		if( it->second )
 		{
@@ -361,9 +361,9 @@ void Engine::Destroy()
 			MESSAGE("It shouldn't appear: ERR=3116661");
 		}
 	}
-	this->object.clear();
+	this->entities.clear();
 	
-	for( auto it = this->model.begin(); it != this->model.end(); ++it )
+	for( auto it = this->models.begin(); it != this->models.end(); ++it )
 	{
 		if( it->second )
 		{
@@ -376,7 +376,7 @@ void Engine::Destroy()
 			MESSAGE("It shouldn't appear: ERR=3116662");
 		}
 	}
-	this->model.clear();
+	this->models.clear();
 	
 	if( this->window )
 	{

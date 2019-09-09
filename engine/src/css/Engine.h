@@ -19,7 +19,7 @@
 #include <memory>
 
 #include "Model.h"
-#include "Object.h"
+#include "Entity.h"
 #include "World.h"
 #include "Window.h"
 #include "EventResponser.h"
@@ -31,29 +31,29 @@ class Engine
 {
 private:
 	
-	ClassFactory<Object> classFactory;
+	ClassFactory<Entity> classFactory;
 	
 	World * world;
 	Window * window;
 	EventResponser * event;
 	CollisionShapeManager * collisionShapeManager;
 	
-	std::map < std::string, std::shared_ptr<Model> > model;
-	std::map < std::string, std::shared_ptr<Object> > object;
+	std::map < std::string, std::shared_ptr<Model> > models;
+	std::map < std::string, std::shared_ptr<Entity> > entities;
 	
-	std::queue < std::string > objectsQueuedToDestroy;
+	std::queue < std::string > entitiesQueuedToDestroy;
 	
 	TimeCounter guiDrawTime;
 	TimeCounter sceneDrawTime;
 	TimeCounter physicsSimulationTime;
 	
-	std::shared_ptr<Object> cameraParent;
+	std::shared_ptr<Entity> cameraParent;
 	
 	bool pausePhysics;
 	
 	
-	inline void UpdateObjectOverlaps();
-	inline void UpdateObjects( const float deltaTime );
+	inline void UpdateEntitiesOverlapp();
+	inline void UpdateEntities( const float deltaTime );
 	
 	friend class EventResponser;
 	
@@ -67,7 +67,7 @@ public:
 		float distance;
 		btVector3 begin, end;
 		btVector3 point, normal;
-		std::shared_ptr<Object> object;
+		std::shared_ptr<Entity> entity;
 		bool operator < ( const RayTraceData & other ) const;
 		RayTraceData( btCollisionWorld::AllHitsRayResultCallback & hitData, unsigned id );
 		RayTraceData();
@@ -82,15 +82,15 @@ public:
 	};
 	
 	
-	int GetNumberOfObjects() const;
-	std::shared_ptr<Object> GetNewObjectOfType( const std::string & name );
+	int GetNumberOfEntities() const;
+	std::shared_ptr<Entity> GetNewEntityOfType( const std::string & name );
 	bool RegisterType( const std::string & name, const std::string & modulePath );
 	
 	
-	void QueueObjectToDestroy( std::shared_ptr<Object> ptr );
-	void QueueObjectToDestroy( const std::string & name );
+	void QueueEntityToDestroy( std::shared_ptr<Entity> ptr );
+	void QueueEntityToDestroy( const std::string & name );
 	
-	std::shared_ptr<Object> RayTrace( btVector3 begin, btVector3 end, int channel, btVector3 & point, btVector3 & normal, const std::vector < std::shared_ptr<Object> > & ignoreObjects );
+	std::shared_ptr<Entity> RayTrace( btVector3 begin, btVector3 end, int channel, btVector3 & point, btVector3 & normal, const std::vector < std::shared_ptr<Entity> > & ignoreEntities );
 	
 	float GetDeltaTime();
 	
@@ -101,22 +101,22 @@ public:
 	void ResumeSimulation();
 	
 	std::shared_ptr<Camera> GetCamera() const;
-	std::shared_ptr<Object> GetCameraParent() const;
+	std::shared_ptr<Entity> GetCameraParent() const;
 	
 	CollisionShapeManager * GetCollisionShapeManager();
 	
-	std::shared_ptr<Object> AddObject( std::shared_ptr<Object> emptyObject, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );
+	std::shared_ptr<Entity> AddEntity( std::shared_ptr<Entity> emptyEntity, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );
 	
-	void AttachCameraToObject( const std::string & name, btVector3 location );
+	void AttachCameraToEntity( const std::string & name, btVector3 location );
 	bool SetCustomModelName( const std::string & name, std::shared_ptr<Model> mdl );
 	
 	std::shared_ptr<Model> LoadModel( const std::string & name );
 	std::shared_ptr<Model> GetModel( const std::string & name );
-	std::shared_ptr<Object> GetObject( const std::string & name );
+	std::shared_ptr<Entity> GetEntity( const std::string & name );
 	
-	std::string GetAvailableObjectName( const std::string & name );
+	std::string GetAvailableEntityName( const std::string & name );
 	
-	void DeleteObject( const std::string & name );
+	void DeleteEntity( const std::string & name );
 	
 	int CalculateNumberOfSimulationsPerFrame( const float deltaTime );
 	void Tick( const float deltaTime );

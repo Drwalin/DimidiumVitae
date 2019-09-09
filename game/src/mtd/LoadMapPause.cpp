@@ -180,7 +180,7 @@ int LoadMapPause( Engine * engine, std::string mapFile )
 					
 					
 				}
-				else if( text == "Item" || text == "Static" || text == "Object" )////////////////////
+				else if( text == "Item" || text == "Static" || text == "Entity" )////////////////////
 				{
 					btQuaternion rotation( btVector3( 1, 1, 1 ), 0 );
 					std::string collisionShapeType("");
