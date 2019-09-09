@@ -5,7 +5,7 @@
 #ifndef ENGINE_RAY_TRACE_DATA_CPP
 #define ENGINE_RAY_TRACE_DATA_CPP
 
-#include <Engine.h>
+#include "..\css\Engine.h"
 
 bool Engine::RayTraceData::operator < ( const RayTraceData & other ) const
 {
@@ -23,15 +23,12 @@ Engine::RayTraceData::RayTraceData( btCollisionWorld::AllHitsRayResultCallback &
 			Object * objectT = (Object*)(temp->getUserPointer());
 			if( objectT )
 			{
-				if( !objectT->IsTrigger() )
-				{
-					object = objectT->GetEngine()->GetObject( std::string(objectT->GetName()) );
-					begin = hitData.m_rayFromWorld;
-					end = hitData.m_rayToWorld;
-					point = hitData.m_hitPointWorld.at( id );
-					normal = hitData.m_hitNormalWorld.at( id );
-					distance = begin.distance2( point );
-				}
+				object = objectT->GetEngine()->GetObject( std::string(objectT->GetName()) );
+				begin = hitData.m_rayFromWorld;
+				end = hitData.m_rayToWorld;
+				point = hitData.m_hitPointWorld.at( id );
+				normal = hitData.m_hitNormalWorld.at( id );
+				distance = begin.distance2( point );
 			}
 			else
 			{

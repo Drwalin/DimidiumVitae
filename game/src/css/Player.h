@@ -23,9 +23,21 @@ public:
 	//virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
 	//virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
 	
-	Player( Engine * engine, std::string name, std::shared_ptr<btRigidBody> body, std::shared_ptr<btCollisionShape> collisionShape, float mass_ );
+	
+	virtual void Load( std::istream & stream ) override;
+	virtual void Save( std::ostream & stream ) const override;
+	virtual void Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Despawn() override;
+	
+	virtual void Destroy() override;
+	
+	virtual int GetTypeSize() const override;
+	virtual void Free() override;
+	virtual std::shared_ptr<Object> New() const override;
+	virtual std::string GetClassName() const override;
+	
 	Player();
-	~Player();
+	virtual ~Player() override;
 };
 
 #endif

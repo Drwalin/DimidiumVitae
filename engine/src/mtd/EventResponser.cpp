@@ -5,7 +5,7 @@
 #ifndef EVENT_RESPONSER_CPP
 #define EVENT_RESPONSER_CPP
 
-#include <EventResponser.h>
+#include "..\css\EventResponser.h"
 
 void EventResponser::SetEngine( class Engine * engine )
 {

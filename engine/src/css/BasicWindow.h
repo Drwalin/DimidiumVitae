@@ -11,13 +11,11 @@
 #include <thread>
 #include <memory>
 
-#include <EventResponser.h>
-#include <Camera.h>
-#include <TextPrinter.h>
+#include "EventResponser.h"
+#include "Camera.h"
+#include "TextPrinter.h"
 
-#include <TimeCounter.h>
-
-#include <Camera.h>
+#include "TimeCounter.h"
 
 void ParallelThreadFunctionToDraw( class BasicWindow * window );
 

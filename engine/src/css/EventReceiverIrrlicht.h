@@ -12,8 +12,8 @@
 #include <vector>
 #include <set>
 
-#include <EventResponser.h>
-#include <BasicWindow.h>
+#include "EventResponser.h"
+#include "BasicWindow.h"
 
 class EventReceiverIrrlicht : public irr::IEventReceiver
 {

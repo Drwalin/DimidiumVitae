@@ -5,10 +5,10 @@
 #ifndef TRIGGER_CPP
 #define TRIGGER_CPP
 
-#include <Trigger.h>
-#include <Engine.h>
+#include "..\css\Trigger.h"
+#include "..\css\Engine.h"
 
-#include <Math.hpp>
+#include "..\lib\Math.hpp"
 
 #include <cassert>
 

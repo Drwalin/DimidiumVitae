@@ -5,8 +5,8 @@
 #ifndef MODEL_CPP
 #define MODEL_CPP
 
-#include <Model.h>
-#include <Engine.h>
+#include "..\css\Model.h"
+#include "..\css\Engine.h"
 
 void Model::SetMaterialsToNode( irr::scene::ISceneNode * node )
 {

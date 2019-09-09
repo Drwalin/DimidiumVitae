@@ -5,207 +5,173 @@
 #ifndef WORLD_CPP
 #define WORLD_CPP
 
-#include <World.h>
-#include <Debug.h>
+#include "..\css\World.h"
+
+#include "..\lib\Debug.h"
 
 void World::ActivateAll()
 {
-	++activateAll;
-	if( activateAll <= 0 )
-		activateAll = 1;
-	else if( activateAll > 2 )
-		activateAll = 2;
+	++this->activateAll;
+	if( this->activateAll <= 0 )
+		this->activateAll = 1;
+	else if( this->activateAll > 2 )
+		this->activateAll = 2;
 }
 
 btDiscreteDynamicsWorld * World::GetDynamicsWorld()
 {
-	return dynamicsWorld;
+	return this->dynamicsWorld;
 }
 
 inline void World::UpdateObjectsActivation()
 {
-	if( activateAll > 0 )
+	if( this->activateAll > 0 )
 	{
-		auto it = object.find( currentActivator );
-		if( it == object.end() )
-			it = object.begin();
+		auto it = this->object.find( this->currentActivator );
+		if( it == this->object.end() )
+			it = this->object.begin();
 		
 		for( int i = 0; i < 113; ++i, ++it )
 		{
-			if( it == object.end() )
+			if( it == this->object.end() )
 				break;
 			it->second->activate( true );
 		}
 		
-		if( it != object.end() )
+		if( it != this->object.end() )
 		{
-			currentActivator = it->first;
+			this->currentActivator = it->first;
 		}
 		else
 		{
-			--activateAll;
-			currentActivator = "";
+			--this->activateAll;
+			this->currentActivator = "";
 		}
 	}
 }
 
 void World::Tick( btScalar deltaTime, int count )
 {
-	UpdateObjectsActivation();
+	this->UpdateObjectsActivation();
 	
 	if( count > 0 )
-		dynamicsWorld->stepSimulation( deltaTime, count );
+		this->dynamicsWorld->stepSimulation( deltaTime, count );
 	else
-		dynamicsWorld->stepSimulation( deltaTime );
+		this->dynamicsWorld->stepSimulation( deltaTime );
 }
 
-void World::UpdateColliderForObject( std::shared_ptr<btRigidBody> body )
+void World::UpdateColliderForObject( std::shared_ptr<btCollisionObject> body )
 {
-	dynamicsWorld->getCollisionWorld()->updateSingleAabb( (btCollisionObject*)body.get() );
-}
-
-void World::UpdateColliderForTrigger( std::shared_ptr<btPairCachingGhostObject> body )
-{
-	dynamicsWorld->getCollisionWorld()->updateSingleAabb( (btCollisionObject*)body.get() );
+	this->dynamicsWorld->getCollisionWorld()->updateSingleAabb( body.get() );
 }
 
 btVector3 World::GetGravity()
 {
-	return dynamicsWorld->getGravity();
+	return this->dynamicsWorld->getGravity();
 }
 
 void World::Init()
 {
-	Destroy();
-	broadphase = new btDbvtBroadphase();
-	collisionConfiguration = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher( collisionConfiguration );
-	solver = new btSequentialImpulseConstraintSolver();
-	dynamicsWorld = new btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
-	dynamicsWorld->setGravity( btVector3(0, -14.81, 0) );
+	this->Destroy();
+	this->broadphase = new btDbvtBroadphase();
+	this->collisionConfiguration = new btDefaultCollisionConfiguration();
+	this->dispatcher = new btCollisionDispatcher( this->collisionConfiguration );
+	this->solver = new btSequentialImpulseConstraintSolver();
+	this->dynamicsWorld = new btDiscreteDynamicsWorld( this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration );
+	this->dynamicsWorld->setGravity( btVector3(0, -20, 0) );
 }
 
-bool World::AddBody( std::string name, std::shared_ptr<btRigidBody> body )
+
+
+bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body )
 {
 	if( body )
 	{
-		if( object.find(name) != object.end() )
+		if( this->object.find(name) == this->object.end() )
 		{
-			return false;
-			//DeleteObject( name );			////////////////////////////////////////////////////////////////////////
-		}
-		else
-		{
-			dynamicsWorld->addRigidBody( (btRigidBody*)body.get() );
-			object[name] = body;
+			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( body );
+			if( rigid )
+				this->dynamicsWorld->addRigidBody( rigid.get() );
+			else
+				this->dynamicsWorld->addCollisionObject( body.get() );
+			this->object[name] = body;
+			body->activate();
 			return true;
 		}
 	}
 	return false;
 }
 
-bool World::AddTrigger( std::string name, std::shared_ptr<btPairCachingGhostObject> body )
+bool World::RemoveBody( const std::string & name )
 {
-	if( body )
+	auto it = this->object.find( name );
+	if( it != this->object.end() )
 	{
-		if( trigger.find(name) != trigger.end() )
+		if( it->second )
 		{
-			return false;
-			//DeleteTrigger( name );			////////////////////////////////////////////////////////////////////////
+			// this->ActivateAll();
+			it->second->activate();
+			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( it->second );
+			if( rigid )
+				this->dynamicsWorld->removeRigidBody( rigid.get() );
+			else
+				this->dynamicsWorld->removeCollisionObject( it->second.get() );
 		}
-		else
-		{
-			dynamicsWorld->addCollisionObject( (btCollisionObject*)body.get() );
-			trigger[name] = body;
-			return true;
-		}
+		this->object.erase( it );
 	}
 	return false;
-}
-
-void World::RemoveBody( std::string name )
-{
-	auto it = object.find(name);
-	if( it != object.end() )
-	{
-		if( it->second )
-		{
-			ActivateAll();
-			it->second->activate( true );
-			dynamicsWorld->removeRigidBody( (btRigidBody*)(it->second.get()) );
-		}
-		object.erase( it );
-	}
-}
-
-void World::RemoveTrigger( std::string name )
-{
-	auto it = trigger.find(name);
-	if( it != trigger.end() )
-	{
-		if( it->second )
-		{
-			dynamicsWorld->removeCollisionObject( (btCollisionObject*)(it->second.get()) );
-		}
-		trigger.erase( it );
-	}
 }
 
 void World::RemoveBodys()
 {
-	for( auto it = object.begin(); it != object.end(); ++it )
+	for( auto it = this->object.begin(); it != this->object.end(); ++it )
 	{
 		if( it->second )
 		{
-			dynamicsWorld->removeRigidBody( (btRigidBody*)(it->second.get()) );
+			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( it->second );
+			if( rigid )
+				this->dynamicsWorld->removeRigidBody( rigid.get() );
+			else
+				this->dynamicsWorld->removeCollisionObject( it->second.get() );
 		}
 	}
-	object.clear();
-	
-	for( auto it = trigger.begin(); it != trigger.end(); ++it )
-	{
-		if( it->second )
-		{
-			dynamicsWorld->removeCollisionObject( (btCollisionObject*)(it->second.get()) );
-		}
-	}
-	trigger.clear();
+	this->object.clear();
 }
 
 void World::Destroy()
 {
-	RemoveBodys();
+	this->RemoveBodys();
 	
-	if( dynamicsWorld )
-		delete dynamicsWorld;
-	dynamicsWorld = NULL;
-	if( solver )
-		delete solver;
-	solver = NULL;
-	if( collisionConfiguration )
-		delete collisionConfiguration;
-	collisionConfiguration = NULL;
-	if( dispatcher )
-		delete dispatcher;
-	dispatcher = NULL;
-	if( broadphase )
-		delete broadphase;
-	broadphase = NULL;
+	if( this->dynamicsWorld )
+		delete this->dynamicsWorld;
+	this->dynamicsWorld = NULL;
+	if( this->solver )
+		delete this->solver;
+	this->solver = NULL;
+	if( this->collisionConfiguration )
+		delete this->collisionConfiguration;
+	this->collisionConfiguration = NULL;
+	if( this->dispatcher )
+		delete this->dispatcher;
+	this->dispatcher = NULL;
+	if( this->broadphase )
+		delete this->broadphase;
+	this->broadphase = NULL;
 }
 
-World::World() :
-	activateAll(0)
+World::World()
 {
-	broadphase = NULL;
-	collisionConfiguration = NULL;
-	dispatcher = NULL;
-	solver = NULL;
-	dynamicsWorld = NULL;
+	this->activateAll = 0;
+	this->broadphase = NULL;
+	this->collisionConfiguration = NULL;
+	this->dispatcher = NULL;
+	this->solver = NULL;
+	this->dynamicsWorld = NULL;
 }
 
 World::~World()
 {
-	Destroy();
+	this->Destroy();
 }
 
 #endif

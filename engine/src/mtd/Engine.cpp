@@ -5,21 +5,50 @@
 #ifndef ENGINE_CPP
 #define ENGINE_CPP
 
-#include <Engine.h>
+#include "..\css\Engine.h"
 
-#include <Debug.h>
-#include <Math.hpp>
+#include "..\lib\Debug.h"
+#include "..\lib\Math.hpp"
 
 #include <cassert>
 
 int Engine::GetNumberOfObjects() const
 {
-	return object.size();
+	return this->object.size();
+}
+
+std::shared_ptr<Object> Engine::GetNewObjectOfType( const std::string & name )
+{
+	std::shared_ptr<Object> object = this->classFactory.GetClassInstantiator( name.c_str() )->New();
+	object->Init( this );
+	return object;
+}
+
+bool Engine::RegisterType( const std::string & name, const std::string & modulePath )
+{
+	return (bool)this->classFactory.AddClass( modulePath.c_str(), name.c_str() );
+}
+
+std::shared_ptr<Object> Engine::AddObject( std::shared_ptr<Object> emptyObject, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia )
+{
+	if( emptyObject )
+	{
+		auto it = this->object.find( name );
+		if( it == this->object.end() )
+		{
+			emptyObject->Init( this );
+			emptyObject->Spawn( name, shape, transform );
+			emptyObject->SetMass( mass );
+			this->object[name] = emptyObject;
+			return emptyObject;
+		}
+	}
+	return NULL;
 }
 
 inline void Engine::UpdateObjectOverlaps()
 {
-	for( auto it = object.begin(); it != object.end(); ++it )
+	for( auto it = this->object.begin(); it != this->object.end(); ++it )
 	{
 		if( it->second )
 		{
@@ -27,7 +56,7 @@ inline void Engine::UpdateObjectOverlaps()
 		}
 	}
 	
-	btDispatcher * dispacher = world->GetDynamicsWorld()->getDispatcher();
+	btDispatcher * dispacher = this->world->GetDynamicsWorld()->getDispatcher();
 	if( dispacher )
 	{
 		int numberOfManifolds = dispacher->getNumManifolds();
@@ -43,128 +72,81 @@ inline void Engine::UpdateObjectOverlaps()
 					
 					if( a && b )
 					{
-						if( a->IsTrigger() && b->IsTrigger() )
-						{
-							DEBUG( "Colliding Trigger with Trigger" );
-						}
-						else if( a->IsTrigger() )
-						{
-							a->OverlapWithObject( b, contactManifold );
-						}
-						else if( b->IsTrigger() )
-						{
-							b->OverlapWithObject( a, contactManifold );
-						}
-						else
-						{
-							if( a->IsDynamic() )
-								a->OverlapWithObject( b, contactManifold );
-							
-							if( b->IsDynamic() )
-								b->OverlapWithObject( a, contactManifold );
-						}
+						a->OverlapWithObject( b, contactManifold );
+						b->OverlapWithObject( a, contactManifold );
 					}
 					else
-					{
 						MESSAGE( "btCollisionShape->getUserPointer() = NULL" );
-					}
 				}
 				else
-				{
 					DEBUG( "No contact manifold points" );
-				}
 			}
 			else
-			{
 				MESSAGE( std::string( "dispacher->getManifoldByIndexInternal(") + std::to_string(i) + ") = 0 " );
-			}
 		}
 	}
 	else
-	{
 		MESSAGE( std::string( "world->GetDynamicsWorld()->getDispatcher() = 0 " ) );
-	}
 }
 
 inline void Engine::UpdateObjects( const float deltaTime )
 {
-	while( !objectsQueuedToDestroy.empty() )
+	while( !this->objectsQueuedToDestroy.empty() )
 	{
-		DeleteObject( objectsQueuedToDestroy.front() );
-		objectsQueuedToDestroy.pop();
+		this->DeleteObject( this->objectsQueuedToDestroy.front() );
+		this->objectsQueuedToDestroy.pop();
 	}
 	
-	UpdateObjectOverlaps();
+	this->UpdateObjectOverlaps();
 	
-	for( auto it = object.begin(); it != object.end(); ++it )
-	{
-		if( it->second )
-		{
-			if( it->second->IsTrigger() )
-			{
-				it->second->Tick( deltaTime );
-			}
-		}
-	}
+	for( auto it = this->object.begin(); it != this->object.end(); ++it )
+		it->second->Tick( deltaTime );
 	
-	for( auto it = object.begin(); it != object.end(); ++it )
-	{
-		if( it->second )
-		{
-			if( !it->second->IsTrigger() )
-			{
-				it->second->Tick( deltaTime );
-			}
-		}
-	}
-	
-	if( cameraParent )
-		GetCamera()->SetCameraTransform( cameraParent->GetTransform() );
+	if( this->cameraParent )
+		this->GetCamera()->SetCameraTransform( this->cameraParent->GetTransform() );
 }
 
 void Engine::QueueObjectToDestroy( std::shared_ptr<Object> ptr )
 {
 	if( ptr )
-		objectsQueuedToDestroy.push( ptr->GetName() );
+		this->objectsQueuedToDestroy.push( ptr->GetName() );
 }
 
 void Engine::QueueObjectToDestroy( const std::string & name )
 {
-	objectsQueuedToDestroy.push( name );
+	this->objectsQueuedToDestroy.push( name );
 }
 
 float Engine::GetDeltaTime()
 {
 	if( window )
-	{
 		return window->GetDeltaTime();
-	}
 	return 1.0f/60.0f;
 }
 
 CollisionShapeManager * Engine::GetCollisionShapeManager()
 {
-	return collisionShapeManager;
+	return this->collisionShapeManager;
 }
 
 World * Engine::GetWorld()
 {
-	return world;
+	return this->world;
 }
 
 Window * Engine::GetWindow()
 {
-	return window;
+	return this->window;
 }
 
 void Engine::PauseSimulation()
 {
-	pausePhysics = true;
+	this->pausePhysics = true;
 }
 
 void Engine::ResumeSimulation()
 {
-	pausePhysics = false;
+	this->pausePhysics = false;
 }
 
 int Engine::CalculateNumberOfSimulationsPerFrame( const float deltaTime )
@@ -186,42 +168,42 @@ int Engine::CalculateNumberOfSimulationsPerFrame( const float deltaTime )
 
 void Engine::ParallelToDrawTick( const float deltaTime )
 {
-	Tick( deltaTime );
+	this->Tick( deltaTime );
 }
 
 void Engine::Tick( const float deltaTime )
 {
-	physicsSimulationTime.SubscribeStart();
+	this->physicsSimulationTime.SubscribeStart();
 	
-	UpdateObjects( deltaTime );
+	this->UpdateObjects( deltaTime );
 	
-	if( !pausePhysics )
+	if( !this->pausePhysics )
 	{
-		world->Tick( deltaTime, CalculateNumberOfSimulationsPerFrame( deltaTime ) );		/////////////////////////////////////////////////////////////////////////
+		this->world->Tick( deltaTime, this->CalculateNumberOfSimulationsPerFrame( deltaTime ) );		/////////////////////////////////////////////////////////////////////////
 	}
 	
-	physicsSimulationTime.SubscribeEnd();
+	this->physicsSimulationTime.SubscribeEnd();
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const
 {
-	return window->camera;
+	return this->window->camera;
 }
 
 std::shared_ptr<Object> Engine::GetCameraParent() const
 {
-	return cameraParent;
+	return this->cameraParent;
 }
 
-std::string Engine::GetAvailableObjectName( std::string name )
+std::string Engine::GetAvailableObjectName( const std::string & name )
 {
-	if( object.find( name ) == object.end() )
+	if( this->object.find( name ) == this->object.end() )
 	{
 		return name;
 	}
 	for( int i = 0;; ++i )
 	{
-		if( object.find( name+std::to_string(i) ) == object.end() )
+		if( this->object.find( name+std::to_string(i) ) == this->object.end() )
 		{
 			return name+std::to_string(i);
 		}
@@ -229,35 +211,35 @@ std::string Engine::GetAvailableObjectName( std::string name )
 	return name;
 }
 
-void Engine::AttachCameraToObject( std::string name, btVector3 location )
+void Engine::AttachCameraToObject( const std::string & name, btVector3 location )
 {
-	auto it = object.find( name );
-	if( it != object.end() )
+	auto it = this->object.find( name );
+	if( it != this->object.end() )
 	{
-		cameraParent = it->second;
+		this->cameraParent = it->second;
 	}
 	else
 	{
-		cameraParent = NULL;
+		this->cameraParent = NULL;
 	}
-	GetCamera()->SetPos( location );
+	this->GetCamera()->SetPos( location );
 }
 
-bool Engine::SetCustomModelName( std::string name, std::shared_ptr<Model> mdl )
+bool Engine::SetCustomModelName( const std::string & name, std::shared_ptr<Model> mdl )
 {
-	auto it = model.find( name );
-	if( it == model.end() )
+	auto it = this->model.find( name );
+	if( it == this->model.end() )
 	{
-		model[name] = mdl;
+		this->model[name] = mdl;
 		return true;
 	}
 	return false;
 }
 
-std::shared_ptr<Model> Engine::LoadModel( std::string name )
+std::shared_ptr<Model> Engine::LoadModel( const std::string & name )
 {
-	auto it = model.find( name );
-	if( it != model.end() )
+	auto it = this->model.find( name );
+	if( it != this->model.end() )
 	{
 		if( it->second )
 		{
@@ -265,7 +247,7 @@ std::shared_ptr<Model> Engine::LoadModel( std::string name )
 		}
 		else
 		{
-			model.erase( it );
+			this->model.erase( it );
 		}
 	}
 	else
@@ -278,55 +260,49 @@ std::shared_ptr<Model> Engine::LoadModel( std::string name )
 		}
 		else
 		{
-			model[name] = mdl;
+			this->model[name] = mdl;
 			return mdl;
 		}
 	}
 	return std::shared_ptr<Model>();
 }
 
-std::shared_ptr<Model> Engine::GetModel( std::string name )
+std::shared_ptr<Model> Engine::GetModel( const std::string & name )
 {
-	return LoadModel( name );
+	return this->LoadModel( name );
 }
 
-std::shared_ptr<Object> Engine::GetObject( std::string name )
+std::shared_ptr<Object> Engine::GetObject( const std::string & name )
 {
-	auto it = object.find( name );
-	if( it != object.end() )
+	auto it = this->object.find( name );
+	if( it != this->object.end() )
 	{
 		if( it->second )
-		{
 			return it->second;
-		}
 		else
-		{
-			object.erase( it );
-		}
+			this->object.erase( it );
 	}
 	std::shared_ptr<Object> ret;
 	return ret;
 }
 
-void Engine::DeleteObject( std::string name )
+void Engine::DeleteObject( const std::string & name )
 {
-	auto it = object.find( name );
-	if( it != object.end() )
+	auto it = this->object.find( name );
+	if( it != this->object.end() )
 	{
 		if( it->second )
 		{
 			DEBUG( std::string("Destroying object: ") + name )
 			
-			if( it->second == cameraParent )
-			{
-				cameraParent = NULL;
-			}
+			if( it->second == this->cameraParent )
+				this->cameraParent = NULL;
 			
-			world->RemoveBody( name );
+			this->world->RemoveBody( name );
 			it->second.reset();
 		}
 		
-		object.erase( it );
+		this->object.erase( it );
 	}
 	else
 	{
@@ -334,205 +310,50 @@ void Engine::DeleteObject( std::string name )
 	}
 }
 
-
-/*
-void Engine::Draw2D()
-{
-	guiDrawTime.SubscribeStart();
-	
-	window->output->SetWorkSpace( 5, 10, 80, 80 );
-	window->output->Goto( 5, 12 );
-	window->output->SetColor( al_map_rgb( 0, 255, 255 ) );
-	window->output->Print( "DeltaTime: " );
-	window->output->Print( window->GetDeltaTime() * 1000.0f );
-	window->output->Print( "ms" );
-	
-	
-	//window->output->SetWorkSpace( 5, 10, 80, 80 );
-	//window->output->Goto( 5, 10 );
-	//window->output->SetColor( al_map_rgb( 0, 255, 255 ) );
-	window->output->Print( "\nFPS: " );
-	window->output->Print( window->GetSmoothFps() );
-	
-	window->output->Print( "\nObjects: " );
-	window->output->Print( int(object.size()) );
-	
-	window->output->Print( "\nPlayer velocity: " );
-	window->output->Print( GetObject("Player")->GetBody()->getLinearVelocity().length() );
-	
-	window->output->Print( "\nPlayer velocity 2D: " );
-	window->output->Print( btVector3( GetObject("Player")->GetBody()->getLinearVelocity().x(), 0, GetObject("Player")->GetBody()->getLinearVelocity().z() ).length() );
-	
-	//if( false )
-	{
-		window->output->Print( "\n\nPointing at object: " );
-		std::shared_ptr<Object> player = this->GetObject("Player");
-		btVector3 begin, end, point, normal;
-		
-		begin = this->GetCamera()->GetLocation();
-		end = begin + ( this->GetCamera()->GetForwardVector() * 100.0 );
-		
-		std::shared_ptr<Object> temp = this->RayTrace( begin, end, Engine::RayTraceChannel::COLLIDING, point, normal, { player } );
-		
-		if( temp )
-		{
-			window->output->Print( temp->GetName() );
-		}
-		else
-		{
-			window->output->Print( "(NULL)" );
-		}
-	}
-	
-	//if( false )
-	{
-		window->output->Print( "\ncollisionShape: " );
-		window->output->Print( int(collisionShapeManager->collisionShape.size()) );
-		window->output->Print( "\ncollisionShapeRev: " );
-		window->output->Print( int(collisionShapeManager->collisionShapeRev.size()) );
-		window->output->Print( "\nnumberOfReferencesToShape: " );
-		window->output->Print( int(collisionShapeManager->numberOfReferencesToShape.size()) );
-		
-		window->output->Print( "\n\nmodelPointerCustomCollisionData: " );
-		window->output->Print( int(collisionShapeManager->modelPointerCustomCollisionData.size()) );
-		window->output->Print( "\nmodelCustomCollisionData: " );
-		window->output->Print( int(collisionShapeManager->modelCustomCollisionData.size()) );
-		window->output->Print( "\ncustomCollisionShapeData: " );
-		window->output->Print( int(collisionShapeManager->customCollisionShapeData.size()) );
-		window->output->Print( "\ncustomCollisionShape: " );
-		window->output->Print( int(collisionShapeManager->customCollisionShape.size()) );
-		window->output->Print( "\ncustomCollisionShapeName: " );
-		window->output->Print( int(collisionShapeManager->customCollisionShapeName.size()) );
-	}
-	
-	//if( false )
-	{
-		window->output->SetWorkSpace( 5, 2, 80, 80 );
-		
-		float wholeDrawTime = window->GetWholeDrawTime().GetSmoothTime();
-		float skippedTime = window->GetSkippedTime().GetSmoothTime();
-		float eventTime = window->GetEventGenerationTime().GetSmoothTime();
-		float flipDisplayTime = window->GetFlipDisplayTime().GetSmoothTime();
-		float sumTime = window->GetDeltaTime();
-		float otherTime = sumTime - ( flipDisplayTime + guiDrawTime.GetSmoothTime() + sceneDrawTime.GetSmoothTime() + physicsSimulationTime.GetSmoothTime() + skippedTime + eventTime );
-		float step = sumTime / 40;
-		float t;
-		
-		
-		
-		
-		window->output->Goto( 5, 2 );
-		
-		window->output->SetColor( al_map_rgb( 0, 255, 255 ) );
-		window->output->Print( "flipDisplayTime...: " );
-		window->output->Print( flipDisplayTime * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 2 );
-		for( t = 0.0f; t < flipDisplayTime; t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 255, 0, 0 ) );
-		window->output->Print( "\nguiDrawTime: " );
-		window->output->Print( guiDrawTime.GetSmoothTime() * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 3 );
-		for( t = 0.0f; t < guiDrawTime.GetSmoothTime(); t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 0, 255, 0 ) );
-		window->output->Print( "\nsceneDrawTime: " );
-		window->output->Print( sceneDrawTime.GetSmoothTime() * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 4 );
-		for( t = 0.0f; t < sceneDrawTime.GetSmoothTime(); t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 0, 0, 255 ) );
-		window->output->Print( "\nphysicsSimulationTime: " );
-		window->output->Print( physicsSimulationTime.GetSmoothTime() * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 5 );
-		for( t = 0.0f; t < physicsSimulationTime.GetSmoothTime(); t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 255, 255, 255 ) );
-		window->output->Print( "\nskippedTime: " );
-		window->output->Print( skippedTime * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 6 );
-		for( t = 0.0f; t < skippedTime; t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 255, 0, 255 ) );
-		window->output->Print( "\neventGenerationTime: " );
-		window->output->Print( eventTime * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 7 );
-		for( t = 0.0f; t < eventTime; t += step )
-			window->output->Print( "#" );
-		
-		window->output->SetColor( al_map_rgb( 128, 128, 128 ) );
-		window->output->Print( "\notherTime: " );
-		window->output->Print( otherTime * 1000.0f );
-		window->output->Print( "ms" );
-		window->output->Goto( 42, 8 );
-		for( t = 0.0f; t < otherTime; t += step )
-			window->output->Print( "#" );
-	}
-	
-//	DrawCrosshair();
-	
-	window->output->Flush();
-	
-	guiDrawTime.SubscribeEnd();
-}
-
-*/
-
 void Engine::BeginLoop()
 {
-	pausePhysics = false;
-	window->BeginLoop();
+	this->pausePhysics = false;
+	this->window->BeginLoop();
 }
 
 void Engine::Init( EventResponser * eventResponser, const char * windowName, const char * iconFile, int width, int height, bool fullscreen )
 {
-	Destroy();
-	event = eventResponser;
-	world = new World;
-	window = new Window;
-	world->Init();
-	window->Init( this, windowName, iconFile, width, height, event, fullscreen );
-	event->Init();
-	event->SetEngine( this );
+	this->Destroy();
+	this->event = eventResponser;
+	this->world = new World;
+	this->window = new Window;
+	this->world->Init();
+	this->window->Init( this, windowName, iconFile, width, height, event, fullscreen );
+	this->event->Init();
+	this->event->SetEngine( this );
 	
-	window->HideMouse();
-	window->LockMouse();
+	this->window->HideMouse();
+	this->window->LockMouse();
 	
-	collisionShapeManager = new CollisionShapeManager( this );
+	this->collisionShapeManager = new CollisionShapeManager( this );
 	
-	window->output->Init();
+	this->window->output->Init();
 	
-	if( GetCamera() == NULL )
+	if( this->GetCamera() == NULL )
 	{
 		DEBUG( "Creating camera" );
-		window->camera = std::shared_ptr<Camera>( new Camera( this, false, width, height, window->sceneManager->addCameraSceneNode() ) );
-		window->camera->GetCameraNode()->setFOV( 60.0f * Math::PI / 180.0f );
+		this->window->camera = std::shared_ptr<Camera>( new Camera( this, false, width, height, this->window->sceneManager->addCameraSceneNode() ) );
+		this->window->camera->GetCameraNode()->setFOV( 60.0f * Math::PI / 180.0f );
 	}
 	
-	//window->UseParallelThreadToDraw();
+	//this->window->UseParallelThreadToDraw();
 }
 
 void Engine::Destroy()
 {
-	cameraParent = NULL;
+	this->cameraParent = NULL;
 	
-	for( auto it = object.begin(); it != object.end(); ++it )
+	for( auto it = this->object.begin(); it != this->object.end(); ++it )
 	{
 		if( it->second )
 		{
 			assert( it->second );
-			world->RemoveBody( it->first );
+			this->world->RemoveBody( it->first );
 			it->second.reset();
 		}
 		else
@@ -540,9 +361,9 @@ void Engine::Destroy()
 			MESSAGE("It shouldn't appear: ERR=3116661");
 		}
 	}
-	object.clear();
+	this->object.clear();
 	
-	for( auto it = model.begin(); it != model.end(); ++it )
+	for( auto it = this->model.begin(); it != this->model.end(); ++it )
 	{
 		if( it->second )
 		{
@@ -555,55 +376,57 @@ void Engine::Destroy()
 			MESSAGE("It shouldn't appear: ERR=3116662");
 		}
 	}
-	model.clear();
+	this->model.clear();
 	
-	if( window )
+	if( this->window )
 	{
-		assert( window != NULL );
-		window->Destroy();
-		delete window;
-		window = NULL;
+		assert( this->window != NULL );
+		this->window->Destroy();
+		delete this->window;
+		this->window = NULL;
 	}
 	
-	if( world )
+	if( this->world )
 	{
-		assert( world != NULL );
-		world->Destroy();
-		delete world;
-		world = NULL;
+		assert( this->world != NULL );
+		this->world->Destroy();
+		delete this->world;
+		this->world = NULL;
 	}
 	
-	if( event )
+	if( this->event )
 	{
-		assert( event != NULL );
-		delete event;
-		event = NULL;
+		assert( this->event != NULL );
+		delete this->event;
+		this->event = NULL;
 	}
 	
-	if( collisionShapeManager )
+	if( this->collisionShapeManager )
 	{
-		assert( collisionShapeManager != NULL );
-		collisionShapeManager->Destroy();
-		delete collisionShapeManager;
-		collisionShapeManager = NULL;
+		assert( this->collisionShapeManager != NULL );
+		this->collisionShapeManager->Destroy();
+		delete this->collisionShapeManager;
+		this->collisionShapeManager = NULL;
 	}
 	
-	pausePhysics = false;
+	this->pausePhysics = false;
 }
 
 Engine::Engine()
 {
-	event = NULL;
-	world = NULL;
-	window = NULL;
-	pausePhysics = true;
-	collisionShapeManager = NULL;
+	this->event = NULL;
+	this->world = NULL;
+	this->window = NULL;
+	this->pausePhysics = true;
+	this->collisionShapeManager = NULL;
 }
 
 Engine::~Engine()
 {
-	Destroy();
+	this->Destroy();
 }
+
+#include "..\lib\dll\ClassFactory.cpp"
 
 #endif
 

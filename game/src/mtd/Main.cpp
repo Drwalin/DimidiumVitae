@@ -13,6 +13,8 @@
 #include "..\css\Player.h"
 #include "..\css\Event.h"
 
+#include "..\css\Character.h"
+
 #include <cassert>
 
 #include <conio.h>
@@ -31,59 +33,35 @@ int main()
 	
 	LoadMeshes( "media/loadMeshes.list", engine );
 	
-	
-{
-	std::shared_ptr<Model> sphere = engine->GetModel( "Sphere" );
-	std::shared_ptr<Model> crate01 = engine->GetModel( "Crate01" );
-	std::shared_ptr<Model> mapModel = engine->GetModel( /*"Plane" );*/"TestMap" );
-	assert( mapModel );
+	engine->RegisterType( "Character", "game-core.dll" );
+	engine->RegisterType( "Player", "dlls/Player.dll" );
 	
 	
-	
-	std::shared_ptr<btCollisionShape> mapShape = mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE );//engine->GetCollisionShapeManager()->CreateCustomShape( "Map triangle collision mesh", mapModel, CollisionShapeManager::SHAPE_TYPE_TRIANGLE );
-	assert( mapShape );
-	
-	
-	
-	std::shared_ptr<Object> map = engine->AddObject<Object>( "TestMap", mapShape, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10,0) ), false );
-	map->SetModel( mapModel, false );
-	map->GetBody()->setFriction( 0.65 );
-//	map->SetScale( btVector3(5,-5,5) );
-//	map->SetScale( btVector3(0.023,0.023,0.023) );
-//	map->SetPosition( btVector3( -20, -20, -20 ) );
-//	map->SetRotation( btQuaternion( btVector3(0,1,0), 0 ) );
-	
-	if( false )
 	{
-		auto o = engine->AddObject<Object>( engine->GetAvailableObjectName("Box"), engine->GetCollisionShapeManager()->GetBox( btVector3(1.5,1.5,1.5) )/*engine->GetCollisionShapeManager()->GetCustomShape( "crate01shape" )*/, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10.3,0) ), false );
-		o->SetModel( crate01 );
-		o->SetScale( btVector3( 30, 3, 30 ) );
+		std::shared_ptr<Model> sphere = engine->GetModel( "Sphere" );
+		std::shared_ptr<Model> crate01 = engine->GetModel( "Crate01" );
+		std::shared_ptr<Model> mapModel = engine->GetModel( "TestMap" );
+		
+		engine->GetCollisionShapeManager()->AddCustomShape( "crate", crate01->GetCollisionShape( Model::SHAPE::CONVEX ) );
+		engine->GetCollisionShapeManager()->AddCustomShape( "sphere", engine->GetCollisionShapeManager()->GetBall(0.5f) );
+		
+		
+		std::shared_ptr<btCollisionShape> mapShape = mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE );
+		std::shared_ptr<Object> map = engine->AddObject( engine->GetNewObjectOfType("Character"), "TestMap", mapShape, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10,0) ), 0.0f );
+		map->GetBody<btRigidBody>()->setGravity( btVector3(0,0,0) );
+		map->SetModel( mapModel, false );
+		map->GetBody<btRigidBody>()->setFriction( 0.75 );
+		map->GetBody<btRigidBody>()->setAngularFactor( 0.0 );
+		map->GetBody<btRigidBody>()->setLinearFactor( btVector3( 0.0, 0.0, 0.0 ) );
+		
+		std::shared_ptr<Object> player = engine->AddObject( engine->GetNewObjectOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
+		engine->AttachCameraToObject( "Player", btVector3( 0, 0.8, 0 ) );
+		player->GetBody<btRigidBody>()->setFriction( 0.75 );
+		((Character*)(player.get()))->SetCamera( engine->GetCamera() );
+		player->GetBody<btRigidBody>()->setAngularFactor( btVector3( 0, 0, 0 ) );
+		player->GetBody<btRigidBody>()->setActivationState( DISABLE_DEACTIVATION );
+		
 	}
-	
-	
-//	engine->AddObject<Object>( engine->GetAvailableObjectName("Brick"), engine->GetCollisionShapeManager()->AddCustomShape( engine->GetCollisionShapeManager()->GetFirstAvailableName("Brick"), engine->GetModel("Brick")->GetCollisionShape( Model::SHAPE::CONVEX ) ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,30,0) ), true, 10 )->SetModel( engine->GetModel("Brick") );
-//	engine->AddObject<Object>( engine->GetAvailableObjectName("ConcreetBrick"), engine->GetCollisionShapeManager()->AddCustomShape( engine->GetCollisionShapeManager()->GetFirstAvailableName("ConcreetBrick"), engine->GetModel("ConcreetBrick")->GetCollisionShape( Model::SHAPE::CONVEX ) ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,15,0) ), true, 20 )->SetModel( engine->GetModel("ConcreetBrick") );
-//	engine->AddObject<Object>( engine->GetAvailableObjectName("m4a1"), engine->GetCollisionShapeManager()->AddCustomShape( engine->GetCollisionShapeManager()->GetFirstAvailableName("m4a1"), engine->GetModel("m4a1")->GetCollisionShape( Model::SHAPE::CONVEX ) ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,40,0) ), true, 10, engine->GetModel("m4a1")->GetInertia() /* btVector3( 1, 1, 1 ) * 0.023f*/ )->SetModel( engine->GetModel("m4a1") );
-//	engine->GetObject( "m4a1" )->SetScale( btVector3( 1, 1, 1 ) * 0.023f );
-	
-	
-	engine->GetCollisionShapeManager()->AddCustomShape( "crate01shape__1331_", crate01->GetCollisionShape( Model::SHAPE::CONVEX ) );
-	
-	for( int i = 0; i < 0; ++i )
-	{
-		auto o = engine->AddObject<Object>( engine->GetAvailableObjectName("Box"), engine->GetCollisionShapeManager()->GetShape( "crate01shape__1331_" ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10.3,0) + btVector3(0,(i%12)*0.3,((i/12))+(float(i%2)/2.0)) ), true, 50.0 );
-		o->SetModel( crate01 );
-		o->SetScale( btVector3( 0.6, 0.3, 1 ) );
-		o->GetBody()->setFriction( 0.9 );
-	}
-	
-	
-	
-	std::shared_ptr<Object> player = engine->AddCharacter<Player>( "Player", 0.6, 1.75, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
-	engine->AttachCameraToObject( "Player", btVector3( 0, 0.8, 0 ) );
-	((Character*)(player.get()))->SetCamera( engine->GetCamera() );
-	
-}
 	
 	
 	DEBUG( std::string("Loading cpu time: ") + std::to_string(float(clock())/float(CLOCKS_PER_SEC)) );

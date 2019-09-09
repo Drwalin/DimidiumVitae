@@ -5,10 +5,10 @@
 #ifndef CAMERA_CPP
 #define CAMERA_CPP
 
-#include <Camera.h>
-#include <Engine.h>
+#include "..\css\Camera.h"
+#include "..\css\Engine.h"
 
-#include <Math.hpp>
+#include "..\lib\Math.hpp"
 
 void Camera::UseTarget()
 {

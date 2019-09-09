@@ -5,9 +5,9 @@
 #ifndef TIME_COUNTER_CPP
 #define TIME_COUNTER_CPP
 
-#include <TimeCounter.h>
+#include "..\css\TimeCounter.h"
 
-#include <Debug.h>
+#include "..\lib\Debug.h"
 
 void TimeCounter::SetTimeSpan( float time )
 {

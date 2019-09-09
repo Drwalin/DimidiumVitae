@@ -83,24 +83,36 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_LSHIFT:
-		if( character )
-			character->EventBeginRun();
 		break;
 	case irr::KEY_LCONTROL:
-		if( character )
-			character->EventCrouch();
 		break;
 	case irr::KEY_MENU:
 		DEBUG("Alt-Menu")
+		break;
+		
+	case irr::KEY_SPACE:
 		if( character )
-			character->EventBeginStravage();
+			character->EventJump();
 		break;
 		
 	case irr::KEY_LBUTTON:
-		temp = engine->AddObject<Object>( engine->GetAvailableObjectName("Box"), engine->GetCollisionShapeManager()->GetShape( "crate01shape__1331_" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), true, 200.0, engine->GetModel( "Crate01" )->GetInertia() );
+		temp = engine->AddObject( engine->GetNewObjectOfType("Character"), engine->GetAvailableObjectName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
 		if( temp )
 		{
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector()/*window->camera->GetForwardVector()*/ * 8.0 );
+			temp->SetModel( engine->GetModel( "Crate01" ), false );
+			temp->GetBody<btRigidBody>()->setFriction( 0.75 );
+			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+		}
+		else
+		{
+			MESSAGE("Couldn't spawn new object");
+		}
+		/*
+		temp = engine->AddObject( engine->GetAvailableObjectName("Box"), engine->GetCollisionShapeManager()->GetShape( "crate01shape__1331_" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), true, 200.0, engine->GetModel( "Crate01" )->GetInertia() );
+		if( temp )
+		{
+			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 8.0 );
 			temp->SetModel( engine->GetModel( "Crate01" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 		}
@@ -108,12 +120,31 @@ void Event::KeyPressedEvent( int keyCode )
 		{
 			MESSAGE("Couldn't spawn new object");
 		}
+		*/
 		break;
+		
 	case irr::KEY_RBUTTON:
+		//MESSAGE( engine->GetCollisionShapeManager()->GetShape( "sphere" ) );
+		temp = engine->AddObject( engine->GetNewObjectOfType("Character"), engine->GetAvailableObjectName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
+		if( temp )
+		{
+			if( engine->GetModel( "Sphere" ) )
+			{
+				temp->SetModel( engine->GetModel( "Sphere" ), false );
+				temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+				temp->GetBody<btRigidBody>()->setFriction( 0.75 );
+				temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+			}
+		}
+		else
+		{
+			MESSAGE("Couldn't spawn new object");
+		}
+		/*
 		temp = engine->AddObject<Object>( engine->GetAvailableObjectName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0 ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), true, 20.0 );
 		if( temp )
 		{
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector()/*window->camera->GetForwardVector()*/ * 16.0 );
+			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
 			//temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + window->camera->GetForwardVector() * 16.0 );
 			temp->SetModel( engine->GetModel( "Sphere" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
@@ -122,6 +153,7 @@ void Event::KeyPressedEvent( int keyCode )
 		{
 			MESSAGE("Couldn't spawn new object");
 		}
+		*/
 		break;
 	}
 }
@@ -141,17 +173,10 @@ void Event::KeyReleasedEvent( int keyCode )
 		
 		
 	case irr::KEY_LSHIFT:
-		if( character )
-			character->EventStopRun();
 		break;
 	case irr::KEY_LCONTROL:
-		if( character )
-			character->EventStandUp();
 		break;
 	case irr::KEY_MENU:
-		DEBUG("Alt-Menu")
-		if( character )
-			character->EventStopStravage();
 		break;
 	}
 	
@@ -180,11 +205,6 @@ void Event::KeyHoldedEvent( int keyCode )
 				character->EventRotateCameraToLookAtPoint( temp->GetLocation(), true );
 			}
 		}
-		break;
-		
-	case irr::KEY_SPACE:
-		if( character )
-			character->EventJump();
 		break;
 		
 	case irr::KEY_ESCAPE:

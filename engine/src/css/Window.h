@@ -5,11 +5,12 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <Camera.h>
-#include <TextPrinter.h>
-#include <BasicWindow.h>
-#include <Debug.h>
-#include <EventResponser.h>
+#include "Camera.h"
+#include "TextPrinter.h"
+#include "BasicWindow.h"
+#include "EventResponser.h"
+
+#include "..\lib\Debug.h"
 
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btTransform.h>

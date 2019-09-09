@@ -5,8 +5,8 @@
 #ifndef WINDOW_CPP
 #define WINDOW_CPP
 
-#include <Window.h>
-#include <Engine.h>
+#include "..\css\Window.h"
+#include "..\css\Engine.h"
 
 std::shared_ptr<Camera> Window::GetCameraPointer()
 {

@@ -9,6 +9,7 @@
 #include <LinearMath/btTransform.h>
 #include <LinearMath/btQuaternion.h>
 #include <btBulletDynamicsCommon.h>
+#include <btBulletCollisionCommon.h>
 
 #include <set>
 #include <map>
@@ -17,18 +18,20 @@
 #include <queue>
 #include <memory>
 
-#include <EventResponser.h>
-#include <World.h>
-#include <Window.h>
-#include <Model.h>
-#include <Object.h>
-#include <Trigger.h>
+#include "Model.h"
+#include "Object.h"
+#include "World.h"
+#include "Window.h"
+#include "EventResponser.h"
+#include "CollisionShapeManager.h"
 
-#include <CollisionShapeManager.h>
+#include "..\lib\dll\ClassFactory.h"
 
 class Engine
 {
 private:
+	
+	ClassFactory<Object> classFactory;
 	
 	World * world;
 	Window * window;
@@ -56,11 +59,6 @@ private:
 	
 public:
 	
-	int GetNumberOfObjects() const;
-	int GetNumberOfTriggers() const;
-	
-public:
-	
 	static const int SHADER_TRANSFORMATION_MATRIX_LOCATION = 0;
 	
 	class RayTraceData
@@ -83,11 +81,11 @@ public:
 		NOT_TRANSPARENT = 2
 	};
 	
-	void DrawCrosshair();
 	
-public:
+	int GetNumberOfObjects() const;
+	std::shared_ptr<Object> GetNewObjectOfType( const std::string & name );
+	bool RegisterType( const std::string & name, const std::string & modulePath );
 	
-	void GetDynamicObjectsWithinTheCollisionShape( std::shared_ptr<btCollisionShape> shape, btTransform transform, std::vector < std::shared_ptr<Object> > retObjects ) const;
 	
 	void QueueObjectToDestroy( std::shared_ptr<Object> ptr );
 	void QueueObjectToDestroy( const std::string & name );
@@ -107,23 +105,18 @@ public:
 	
 	CollisionShapeManager * GetCollisionShapeManager();
 	
-	template < class T >
-	std::shared_ptr<Object> AddObject( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform, bool dynamic = false, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );
-	template < class T >
-	std::shared_ptr<Object> AddCharacter( std::string name, btScalar width, btScalar height, btTransform transform, btScalar mass );
-	template < class T >
-	std::shared_ptr<Object> AddTrigger( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform );
+	std::shared_ptr<Object> AddObject( std::shared_ptr<Object> emptyObject, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );
 	
-	void AttachCameraToObject( std::string name, btVector3 location );
-	bool SetCustomModelName( std::string name, std::shared_ptr<Model> mdl );
+	void AttachCameraToObject( const std::string & name, btVector3 location );
+	bool SetCustomModelName( const std::string & name, std::shared_ptr<Model> mdl );
 	
-	std::shared_ptr<Model> LoadModel( std::string name );
-	std::shared_ptr<Model> GetModel( std::string name );
-	std::shared_ptr<Object> GetObject( std::string name );
+	std::shared_ptr<Model> LoadModel( const std::string & name );
+	std::shared_ptr<Model> GetModel( const std::string & name );
+	std::shared_ptr<Object> GetObject( const std::string & name );
 	
-	std::string GetAvailableObjectName( std::string name );
+	std::string GetAvailableObjectName( const std::string & name );
 	
-	void DeleteObject( std::string name );
+	void DeleteObject( const std::string & name );
 	
 	int CalculateNumberOfSimulationsPerFrame( const float deltaTime );
 	void Tick( const float deltaTime );
@@ -138,8 +131,6 @@ public:
 	Engine();
 	~Engine();
 };
-
-#include "Engine.hpp"
 
 #endif
 

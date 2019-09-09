@@ -5,17 +5,14 @@
 #ifndef OBJECT_CPP
 #define OBJECT_CPP
 
-#include <Object.h>
-#include <Engine.h>
+#include "..\css\Object.h"
+#include "..\css\Engine.h"
 
-#include <Math.hpp>
+#include "CollisionObjectManager.h"
+
+#include "..\lib\Math.hpp"
 
 #include <cassert>
-
-bool Object::IsTrigger() const
-{
-	return false;
-}
 
 void Object::UpdateTransformSceneNode()
 {
@@ -30,60 +27,56 @@ void Object::UpdateTransformSceneNode()
 	}
 }
 
+void Object::SetTransform( const btTransform & transform )
+{
+	this->currentTransform = transform;
+	if( this->body )
+	{
+		this->body->activate( true );
+		
+		std::shared_ptr<btRigidBody> rd = this->GetBody<btRigidBody>();
+		if( rd )
+			rd->getMotionState()->setWorldTransform( this->currentTransform );
+		else
+			this->body->setWorldTransform( this->currentTransform );
+		
+		this->engine->GetWorld()->UpdateColliderForObject( this->body );
+		this->body->activate( true );
+	}
+}
+
 void Object::SetPosition( const btVector3 & loc )
 {
-	currentTransform = btTransform( currentTransform.getRotation(), loc );
-	previousTransform = currentTransform;
-	
-	if( body )
-	{
-		body->activate( true );
-		//body->setCenterOfMassTransform( currentTransform );
-		body->getMotionState()->setWorldTransform( currentTransform );
-		//body->setWorldTransform( currentTransform );
-		engine->GetWorld()->UpdateColliderForObject( body );
-		body->activate( true );
-	}
+	this->SetTransform( btTransform( this->currentTransform.getRotation(), loc ) );
 }
 
 void Object::SetRotation( const btQuaternion & quat )
 {
-	currentTransform = btTransform( quat, currentTransform.getOrigin() );
-	previousTransform = currentTransform;
-	
-	if( body )
-	{
-		body->activate( true );
-		//body->setCenterOfMassTransform( currentTransform );
-		body->getMotionState()->setWorldTransform( currentTransform );
-		//body->setWorldTransform( currentTransform );
-		engine->GetWorld()->UpdateColliderForObject( body );
-		body->activate( true );
-	}
+	this->SetTransform( btTransform( quat, this->currentTransform.getOrigin() ) );
 }
 
 void Object::Move( const btVector3 & move )
 {
-	SetPosition( currentTransform.getOrigin() + move );
+	this->SetPosition( this->currentTransform.getOrigin() + move );
 }
 
 void Object::Rotate( const btQuaternion & quat )
 {
-	SetRotation( currentTransform.getRotation() * quat );
+	this->SetRotation( this->currentTransform.getRotation() * quat );
 }
 
 void Object::NextOverlappingFrame()
 {
-	for( auto it = overlappingInPreviousFrame.begin(); it != overlappingInPreviousFrame.end(); ++it )
+	for( auto it = this->overlappingInPreviousFrame.begin(); it != this->overlappingInPreviousFrame.end(); ++it )
 	{
-		if( overlappingInCurrentFrame.find( *it ) == overlappingInCurrentFrame.end() )
+		if( this->overlappingInCurrentFrame.find( *it ) == this->overlappingInCurrentFrame.end() )
 		{
-			EventOnObjectEndOverlapp( *it );
+			this->EventOnObjectEndOverlapp( *it );
 		}
 	}
 	
-	overlappingInPreviousFrame = overlappingInCurrentFrame;
-	overlappingInCurrentFrame.clear();
+	this->overlappingInPreviousFrame = this->overlappingInCurrentFrame;
+	this->overlappingInCurrentFrame.clear();
 }
 
 void Object::OverlapWithObject( Object * other, btPersistentManifold * persisstentManifold )
@@ -94,15 +87,15 @@ void Object::OverlapWithObject( Object * other, btPersistentManifold * persisste
 		{
 			if( other )
 			{
-				if( overlappingInPreviousFrame.find( other ) != overlappingInPreviousFrame.end() )
+				if( this->overlappingInPreviousFrame.find( other ) != this->overlappingInPreviousFrame.end() )
 				{
-					EventOnObjectTickOverlapp( other, persisstentManifold );
+					this->EventOnObjectTickOverlapp( other, persisstentManifold );
 				}
 				else
 				{
-					EventOnObjectBeginOverlapp( other, persisstentManifold );
+					this->EventOnObjectBeginOverlapp( other, persisstentManifold );
 				}
-				overlappingInCurrentFrame.insert( other );
+				this->overlappingInCurrentFrame.insert( other );
 			}
 			else
 			{
@@ -116,96 +109,73 @@ void Object::OverlapWithObject( Object * other, btPersistentManifold * persisste
 	}
 	else
 	{
-		MESSAGE( std::string("Trying to collide with my self: ") + GetName() );
+		MESSAGE( std::string("Trying to collide with my self: ") + this->GetName() );
 	}
 }
 
-void Object::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold )
-{
-}
+void Object::EventOnObjectBeginOverlapp( Object * other, btPersistentManifold * persisstentManifold ){}
+void Object::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold ){}
+void Object::EventOnObjectEndOverlapp( Object * other ){}
 
-void Object::EventOnObjectTickOverlapp( Object * other, btPersistentManifold * persisstentManifold )
-{
-}
-
-void Object::EventOnObjectEndOverlapp( Object * other )
-{
-}
-
-std::shared_ptr<Object> Object::GetThis()
-{
-	if( !thisPtr )
-	{
-		if( engine )
-		{
-			thisPtr = engine->GetObject( std::string(name) );
-		}
-		else
-		{
-			DEBUG("Error creating std::shared_ptr Object::thisPtr ");
-		}
-	}
-	return thisPtr;
-}
 
 
 
 void Object::Tick( const float deltaTime )
 {
-	if( body )
+	if( this->body )
 	{
-		previousTransform = currentTransform;
-		body->getMotionState()->getWorldTransform( currentTransform );
+		std::shared_ptr<btRigidBody> rd = this->GetBody<btRigidBody>();
+		if( rd )
+			rd->getMotionState()->getWorldTransform( this->currentTransform );
+		else
+			this->currentTransform = this->body->getWorldTransform();
 	}
 	
-	UpdateTransformSceneNode();
+	this->UpdateTransformSceneNode();
 }
 
-void Object::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
-{
-}
+void Object::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
 
 void Object::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
 {
-	if( body )
+	if( this->body )
 	{
 		if( normal.dot( direction ) > 0 )
 			normal *= -1;
 		
-		body->activate( true );
-		body->applyImpulse( direction.normalized() * impetus,  point - currentTransform.getOrigin() );
-		body->activate( true );
+		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		
+		if( rigidBody )
+		{
+			rigidBody->activate( true );
+			rigidBody->applyImpulse( direction.normalized() * impetus,  point - this->currentTransform.getOrigin() );
+			rigidBody->activate( true );
+		}
 	}
 }
 
 void Object::SetMass( float mass )
 {
-	if( IsDynamic() )
+	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	if( rigidBody )
 	{
 		this->mass = mass;
-		if( body )
+		btCollisionShape * shape = rigidBody->getCollisionShape();
+		if( shape )
 		{
-			btCollisionShape * shape = body->getCollisionShape();
-			if( shape )
+			btVector3 inertia = rigidBody->getInvInertiaDiagLocal();
+			shape->calculateLocalInertia( mass, inertia );
+			rigidBody->setMassProps( mass, inertia );
+			if( mass > 0.0f )
 			{
-				btVector3 inertia = body->getInvInertiaDiagLocal();
-				shape->calculateLocalInertia( mass, inertia );
-				body->setMassProps( mass, inertia );
+				rigidBody->setGravity( btVector3(0.0f,-9.81f,0.0f) );
+			}
+			else
+			{
+				
 			}
 		}
 	}
-}
-
-bool Object::IsDynamic() const
-{
-	if( body )
-	{
-		if( mass > 0.0f )
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 Engine * Object::GetEngine()
@@ -216,16 +186,16 @@ Engine * Object::GetEngine()
 void Object::SetScale( btVector3 scale )
 {
 	this->scale = scale;
-	if( body )
+	if( this->body )
 	{
-		body->activate( true );
-		body->getCollisionShape()->setLocalScaling( scale );
-		engine->GetWorld()->UpdateColliderForObject( body );
-		body->activate( true );
+		this->body->activate( true );
+		this->body->getCollisionShape()->setLocalScaling( this->scale );
+		this->engine->GetWorld()->UpdateColliderForObject( this->body );
+		this->body->activate( true );
 	}
-	if( sceneNode )
+	if( this->sceneNode )
 	{
-		sceneNode->setScale( Math::GetIrrVec( scale ) );
+		this->sceneNode->setScale( Math::GetIrrVec( this->scale ) );
 	}
 }
 
@@ -236,26 +206,12 @@ btVector3 Object::GetScale()
 
 btTransform Object::GetTransform()
 {
-	btTransform transform;
-	if( body )
-		body->getMotionState()->getWorldTransform( transform );
-	return transform;
-}
-
-std::shared_ptr<btRigidBody> Object::GetBody()
-{
-	return body;
+	return this->currentTransform;
 }
 
 btVector3 Object::GetLocation() const
 {
-	if( body )
-	{
-		btTransform transform;
-		body->getMotionState()->getWorldTransform( transform );
-		return transform.getOrigin();
-	}
-	return btVector3();
+	return this->currentTransform.getOrigin();
 }
 
 void Object::SetRayTraceChannel( int src )
@@ -268,21 +224,21 @@ int Object::GetRayTraceChannel()
 	return rayTraceChannel;
 }
 
-std::string Object::GetName() const
+const std::string & Object::GetName() const
 {
 	return name;
 }
 
 void Object::SetModel( std::shared_ptr<Model> model, bool light )
 {
-	if( engine )
+	if( this->engine )
 	{
-		if( engine->GetWindow() )
+		if( this->engine->GetWindow() )
 		{
-			if( sceneNode )
+			if( this->sceneNode )
 			{
-				engine->GetWindow()->sceneManager->addToDeletionQueue( sceneNode );
-				sceneNode = NULL;
+				this->engine->GetWindow()->sceneManager->addToDeletionQueue( this->sceneNode );
+				this->sceneNode = NULL;
 			}
 			
 			this->model = NULL;
@@ -292,83 +248,131 @@ void Object::SetModel( std::shared_ptr<Model> model, bool light )
 				if( model->GetMesh() )
 				{
 					this->model = model;
-					sceneNode = engine->GetWindow()->sceneManager->addAnimatedMeshSceneNode( model->GetMesh() );
-					model->SetMaterialsToNode( sceneNode );
+					this->sceneNode = this->engine->GetWindow()->sceneManager->addAnimatedMeshSceneNode( model->GetMesh() );
+					this->model->SetMaterialsToNode( this->sceneNode );
 					
-					sceneNode->setMaterialFlag( irr::video::EMF_NORMALIZE_NORMALS, true );
-					sceneNode->setScale( Math::GetIrrVec( scale ) );
+					this->sceneNode->setMaterialFlag( irr::video::EMF_NORMALIZE_NORMALS, true );
+					this->sceneNode->setScale( Math::GetIrrVec( scale ) );
 					
 					if( light )
-						sceneNode->addShadowVolumeSceneNode();
+						this->sceneNode->addShadowVolumeSceneNode();
 				}
 			}
 		}
 	}
 }
 
-Object::Object( Engine * engine, std::string name, std::shared_ptr<btRigidBody> body, std::shared_ptr<btCollisionShape> collisionShape, float mass_ ) :
-	mass(mass_)
+void Object::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape )
 {
-	this->collisionShape = collisionShape;
-	this->engine = engine;
-	this->name = name;
+	this->DestroyBody();
 	this->body = body;
-	scale = btVector3(1,1,1);
-	rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
-	sceneNode = NULL;
+	this->collisionShape = shape;
+	this->engine->GetWorld()->AddBody( this->GetName(), this->body );
+	this->body->setUserPointer( this );
 }
 
-Object::Object() :
-	mass(1.0)
+void Object::DestroyBody()
 {
-	engine = NULL;
-	name = "";
-	scale = btVector3(1,1,1);
-	rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
-	sceneNode = NULL;
+	if( this->body )
+	{
+		std::shared_ptr<btRigidBody> rigid = this->GetBody<btRigidBody>();
+		if( rigid )
+		{
+			auto motionState = rigid->getMotionState();
+			if( motionState )
+			{
+				rigid->setMotionState( NULL );
+				delete motionState;
+			}
+		}
+		
+		this->body->setCollisionShape( NULL );
+		
+		assert( this->body );
+		this->body.reset();
+		
+		this->body = NULL;
+	}
+	
+	if( this->collisionShape )
+	{
+		this->engine->GetCollisionShapeManager()->RemoveShape( this->collisionShape );
+	}
+}
+
+void Object::DestroySceneNode()
+{
+	if( this->sceneNode )
+	{
+		if( this->engine )
+		{
+			if( this->engine->GetWindow() )
+			{
+				if( this->engine->GetWindow()->sceneManager )
+				{
+					this->engine->GetWindow()->sceneManager->addToDeletionQueue( this->sceneNode );
+				}
+			}
+		}
+		this->sceneNode = NULL;
+	}
+}
+
+void Object::Destroy()
+{
+	this->DestroySceneNode();
+	
+	this->DestroyBody();
+	
+	this->name = "";
+	this->scale = btVector3(0,0,0);
+	this->mass = 0.0f;
+}
+
+void Object::Despawn()
+{
+	this->Destroy();
+}
+
+void Object::Load( std::istream & stream )
+{
+}
+
+void Object::Save( std::ostream & stream ) const
+{
+}
+
+void Object::Init( Engine * engine )
+{
+	this->Destroy();
+	this->engine = engine;
+}
+
+void Object::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+{
+	this->Destroy();
+	this->mass = -1.0f;
+	this->collisionShape = collisionShape;
+	this->name = name;
+	this->scale = btVector3(1,1,1);
+	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
+	this->currentTransform = transform;
+	this->SetBody( CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f ), shape );
+}
+
+Object::Object()
+{
+	this->mass = 1.0f;
+	this->engine = NULL;
+	this->name = "";
+	this->scale = btVector3(1,1,1);
+	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
+	this->sceneNode = NULL;
 }
 
 Object::~Object()
 {
-	DEBUG(0)
-	if( sceneNode )
-	{
-		if( engine )
-		{
-			if( engine->GetWindow() )
-			{
-				if( engine->GetWindow()->sceneManager )
-				{
-					engine->GetWindow()->sceneManager->addToDeletionQueue( sceneNode );
-				}
-			}
-		}
-		sceneNode = NULL;
-	}
-	
-	if( collisionShape )
-	{
-		engine->GetCollisionShapeManager()->RemoveShape( collisionShape );
-	}
-	
-	if( body )
-	{
-		if( body->getMotionState() )
-		{
-			assert( body->getMotionState() != NULL );
-			delete body->getMotionState();
-			body->setMotionState( NULL );
-		}
-		
-		body->setCollisionShape( NULL );
-		
-		assert( body );
-		body.reset();
-	}
-	
-	name = "";
-	scale = btVector3(0,0,0);
-	mass = 0.0f;
+	this->Destroy();
 }
 
 #endif

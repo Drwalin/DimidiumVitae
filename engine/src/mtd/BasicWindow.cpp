@@ -5,10 +5,11 @@
 #ifndef BASIC_WINDOW_CPP
 #define BASIC_WINDOW_CPP
 
-#include <BasicWindow.h>
-#include <Debug.h>
-#include <StringToEnter.h>
-#include <EventReceiverIrrlicht.h>
+#include "..\css\BasicWindow.h"
+#include "..\css\StringToEnter.h"
+#include "..\css\EventReceiverIrrlicht.h"
+
+#include "..\lib\Debug.h"
 
 void ParallelThreadFunctionToDraw( BasicWindow * window )
 {

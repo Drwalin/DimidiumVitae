@@ -15,9 +15,9 @@
 #include <set>
 #include <memory>
 
-#include <Object.h>
+#include "Object.h"
 
-#include <Debug.h>
+#include "..\lib\Debug.h"
 
 class Engine;
 

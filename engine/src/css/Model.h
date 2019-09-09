@@ -19,11 +19,12 @@
 #include <cstring>
 #include <cstdio>
 
-#include <Debug.h>
-#include <AR.hpp>
 #include <memory>
 
-#include <CustomCollisionData.h>
+#include "..\lib\Debug.h"
+#include "..\lib\AR.hpp"
+
+#include "CustomCollisionData.h"
 
 class Engine;
 

@@ -5,8 +5,8 @@
 #ifndef STRING_TO_ENTER_CPP
 #define STRING_TO_ENTER_CPP
 
-#include <StringToEnter.h>
-#include <BasicWindow.h>
+#include "..\css\StringToEnter.h"
+#include "..\css\BasicWindow.h"
 
 void StringToEnter::SetBasicWindow( BasicWindow * basicWindow )
 {

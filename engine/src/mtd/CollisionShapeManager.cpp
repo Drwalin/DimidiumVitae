@@ -5,10 +5,9 @@
 #ifndef COLLISION_SHAPE_MANAGER_CPP
 #define COLLISION_SHAPE_MANAGER_CPP
 
-#include <CollisionShapeManager.h>
-#include <Model.h>
-#include <Object.h>
-#include <Engine.h>
+#include "..\css\CollisionShapeManager.h"
+#include "..\css\Model.h"
+#include "..\css\Engine.h"
 
 bool CollisionShapeManager::IsNameAvailable( std::string name )
 {

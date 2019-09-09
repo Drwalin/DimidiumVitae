@@ -5,9 +5,10 @@
 #ifndef TEXT_PRINTER_CPP
 #define TEXT_PRINTER_CPP
 
-#include <TextPrinter.h>
-#include <BasicWindow.h>
-#include <Debug.h>
+#include "..\css\TextPrinter.h"
+#include "..\css\BasicWindow.h"
+
+#include "..\lib\Debug.h"
 
 Color::Color()
 {

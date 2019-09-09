@@ -5,9 +5,9 @@
 #ifndef CUSTOM_COLLISION_SHAPE_DATA_CPP
 #define CUSTOM_COLLISION_SHAPE_DATA_CPP
 
-#include <CustomCollisionData.h>
+#include "..\css\CustomCollisionData.h"
 
-#include <Debug.h>
+#include "..\lib\Debug.h"
 
 std::shared_ptr<btCollisionShape> CustomCollisionShapeData::GetTriangleShape()
 {

@@ -9,10 +9,10 @@
 #include <LinearMath/btTransform.h>
 #include <LinearMath/btQuaternion.h>
 
-#include <Debug.h>
-#include <memory>
+#include <irrlicht\irrlicht.h>
 
-#include <Object.h>
+#include "..\lib\Debug.h"
+#include <memory>
 
 class Camera
 {

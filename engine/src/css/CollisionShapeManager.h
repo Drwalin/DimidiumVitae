@@ -12,12 +12,11 @@
 #include <string>
 #include <map>
 
-#include <CustomCollisionData.h>
+#include "CustomCollisionData.h"
 
 #include <memory>
 
 class Model;
-class Object;
 class Engine;
 
 class CollisionShapeManager

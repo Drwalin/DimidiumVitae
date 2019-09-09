@@ -14,6 +14,9 @@
 
 #include <cmath>
 
+#include <string>
+#include <iostream>
+
 namespace Math
 {
 	const float PI = 3.14159265359f;
@@ -48,6 +51,53 @@ namespace Math
 	    return Math::GetIrrVec( trans.getOrigin() );
 	}
 	
+	
+	
+	inline std::istream & operator >> ( std::istream & stream, btVector3 & point )
+	{
+		float x, y, z;
+		stream >> x >> y >> z;
+		point.setValue( x, y, z );
+	}
+	
+	inline std::istream & operator >> ( std::istream & stream, btQuaternion & rotation )
+	{
+		float x, y, z, w;
+		stream >> x >> y >> z >> w;
+		rotation.setX( x );
+		rotation.setY( y );
+		rotation.setZ( z );
+		rotation.setW( w );
+	}
+	
+	inline std::istream & operator >> ( std::istream & stream, btTransform & trans )
+	{
+		btVector3 origin;
+		btQuaternion rotation;
+		stream >> origin >> rotation;
+	}
+	
+	
+	
+	inline std::ostream & operator << ( std::ostream & stream, const btVector3 & point )
+	{
+		stream << (float)point.x() << " ";
+		stream << (float)point.y() << " ";
+		stream << (float)point.z();
+	}
+	
+	inline std::ostream & operator << ( std::ostream & stream, const btQuaternion & rotation )
+	{
+		stream << rotation.x() << " ";
+		stream << rotation.y() << " ";
+		stream << rotation.z() << " ";
+		stream << rotation.w();
+	}
+	
+	inline std::ostream & operator << ( std::ostream & stream, const btTransform & trans )
+	{
+		stream << trans.getOrigin() << " " << trans.getRotation();
+	}
 };
 
 #endif
