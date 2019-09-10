@@ -2,12 +2,26 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef TRIGGER_H
+#define TRIGGER_H
 
-#include "Character.h"
+#include <LinearMath/btVector3.h>
+#include <LinearMath/btTransform.h>
+#include <LinearMath/btQuaternion.h>
+#include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
-class Player : public Character
+#include <string>
+#include <set>
+#include <memory>
+
+#include <Entity.h>
+
+#include <Debug.h>
+
+class Engine;
+
+class Trigger : public Entity
 {
 protected:
 	
@@ -20,7 +34,8 @@ public:
 	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
-	
+	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
+	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;
@@ -34,8 +49,8 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	Player();
-	virtual ~Player() override;
+	Trigger();
+	virtual ~Trigger() override;
 };
 
 #endif

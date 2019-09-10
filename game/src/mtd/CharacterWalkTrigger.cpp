@@ -56,11 +56,37 @@ void CharacterWalkTrigger::Tick( const float deltaTime )
 	Trigger::Tick( deltaTime );
 }
 
-CharacterWalkTrigger::CharacterWalkTrigger( Engine * engine, std::string name, std::shared_ptr<btRigidBody> body, std::shared_ptr<btCollisionShape> collisionShape, float mass_ ) :
-	Trigger( engine, name, body, collisionShape, mass_ )
+
+void CharacterWalkTrigger::Load( std::istream & stream )
 {
-	isAnyInside = false;
+	Trigger::Load( stream );
 }
+
+void CharacterWalkTrigger::Save( std::ostream & stream ) const
+{
+	Trigger::Save( stream );
+}
+
+void CharacterWalkTrigger::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+{
+	Trigger::Spawn( name, shape, transform );
+}
+
+void CharacterWalkTrigger::Despawn()
+{
+	Trigger::Despawn();
+}
+
+void CharacterWalkTrigger::Destroy()
+{
+	Trigger::Destroy();
+}
+
+extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+int CharacterWalkTrigger::GetTypeSize() const{ return sizeof(CharacterWalkTrigger); }
+void CharacterWalkTrigger::Free(){ delete this; }
+std::shared_ptr<Entity> CharacterWalkTrigger::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<CharacterWalkTrigger>( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ) ); }
+std::string CharacterWalkTrigger::GetClassName() const{ return "CharacterWalkTrigger"; }
 
 CharacterWalkTrigger::CharacterWalkTrigger()
 {

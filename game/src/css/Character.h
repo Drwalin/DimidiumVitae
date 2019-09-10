@@ -5,9 +5,11 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include "Trigger.h"
+
 #include <Entity.h>
-#include <Trigger.h>
 #include <Camera.h>
+
 #include <cmath>
 
 class Character : public Entity
@@ -32,8 +34,6 @@ protected:
 	void QueueMove( float val );
 	
 public:
-	
-	virtual void SetScale( btVector3 scale ) override;
 	
 	virtual void NextOverlappingFrame() override;
 	

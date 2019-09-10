@@ -124,7 +124,7 @@ void * Dll::Open( const char * dllFileName )
 	this->Close();
 	this->handle = DllLoad( dllFileName );
 	if( this->handle == NULL )
-		printf( "\n Dll::Open error: %s", DllGetErrorString() );
+		printf( "\n Dll::Open error <%s>: %s", dllFileName, DllGetErrorString() );
 	return this->handle;
 }
 

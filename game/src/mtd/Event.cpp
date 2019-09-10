@@ -30,8 +30,6 @@ void Event::MouseMoveEvent( int x, int y, int w, int dx, int dy, int dw )
 	}
 }
 
-
-
 irr::scene::ISceneNode * lightSceneNode = 0;
 
 void Event::KeyPressedEvent( int keyCode )
@@ -96,13 +94,14 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_LBUTTON:
-		temp = engine->AddEntity( engine->GetNewEntityOfType("Character"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
 		if( temp )
 		{
 			temp->SetModel( engine->GetModel( "Crate01" ), false );
 			temp->GetBody<btRigidBody>()->setFriction( 0.75 );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setDamping( 0.0, 0.0 );
 		}
 		else
 		{
@@ -111,16 +110,14 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = engine->AddEntity( engine->GetNewEntityOfType("Character"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
-			if( engine->GetModel( "Sphere" ) )
-			{
-				temp->SetModel( engine->GetModel( "Sphere" ), false );
-				temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
-				temp->GetBody<btRigidBody>()->setFriction( 0.75 );
-				temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
-			}
+			temp->SetModel( engine->GetModel( "Sphere" ), false );
+			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+			temp->GetBody<btRigidBody>()->setFriction( 0.75 );
+			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setDamping( 0.0, 0.0 );
 		}
 		else
 		{
@@ -286,6 +283,11 @@ Event::Event()
 Event::~Event()
 {
 	window = NULL;
+}
+
+extern "C" EventResponser * EventConstructor()
+{
+	return new Event();
 }
 
 #endif

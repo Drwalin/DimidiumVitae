@@ -8,8 +8,6 @@
 #include "..\css\Entity.h"
 #include "..\css\Engine.h"
 
-#include "CollisionObjectManager.h"
-
 #include "..\lib\Math.hpp"
 
 #include <cassert>
@@ -119,16 +117,13 @@ void Entity::EventOnEntityEndOverlapp( Entity * other ){}
 
 
 
-
 void Entity::Tick( const float deltaTime )
 {
 	if( this->body )
 	{
-		std::shared_ptr<btRigidBody> rd = this->GetBody<btRigidBody>();
-		if( rd )
-			rd->getMotionState()->getWorldTransform( this->currentTransform );
-		else
-			this->currentTransform = this->body->getWorldTransform();
+		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		if( rigidBody ) rigidBody->getMotionState()->getWorldTransform( this->currentTransform );
+		else this->currentTransform = this->body->getWorldTransform();
 	}
 	
 	this->UpdateTransformSceneNode();
@@ -275,13 +270,13 @@ void Entity::DestroyBody()
 {
 	if( this->body )
 	{
-		std::shared_ptr<btRigidBody> rigid = this->GetBody<btRigidBody>();
-		if( rigid )
+		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		if( rigidBody )
 		{
-			auto motionState = rigid->getMotionState();
+			auto motionState = rigidBody->getMotionState();
 			if( motionState )
 			{
-				rigid->setMotionState( NULL );
+				rigidBody->setMotionState( NULL );
 				delete motionState;
 			}
 		}
@@ -350,14 +345,12 @@ void Entity::Init( Engine * engine )
 
 void Entity::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	this->Destroy();
-	this->mass = -1.0f;
+	this->mass = 0.0f;
 	this->collisionShape = collisionShape;
 	this->name = name;
 	this->scale = btVector3(1,1,1);
 	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
 	this->currentTransform = transform;
-	this->SetBody( CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f ), shape );
 }
 
 Entity::Entity()

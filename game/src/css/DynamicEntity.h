@@ -2,35 +2,26 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef CHARACTER_WALK_TRIGGER_H
-#define CHARACTER_WALK_TRIGGER_H
+#ifndef DYNAMIC_ENTITY_H
+#define DYNAMIC_ENTITY_H
 
-#include "Trigger.h"
-#include "Character.h"
+#include <Entity.h>
 
-#include <cmath>
-
-class CharacterWalkTrigger : public Trigger
+class DynamicEntity : public Entity
 {
 protected:
 	
-	std::shared_ptr<Entity> parent;
-	bool isAnyInside;
 	
-	void EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
 	
 public:
-	
-	virtual void NextOverlappingFrame() override;
-	
-	bool IsAnyInside() const;
-	void SetParent( std::shared_ptr<Entity> parent );
 	
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
+	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
+	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;
@@ -44,8 +35,8 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	CharacterWalkTrigger();
-	virtual ~CharacterWalkTrigger() override;
+	DynamicEntity();
+	virtual ~DynamicEntity() override;
 };
 
 #endif

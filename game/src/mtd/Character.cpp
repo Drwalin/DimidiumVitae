@@ -8,6 +8,7 @@
 #include "..\css\Character.h"
 
 #include <Engine.h>
+#include <CollisionObjectManager.h>
 
 #include <Debug.h>
 #include <Math.hpp>
@@ -20,11 +21,6 @@ void Character::QueueMove( float val )
 {
 	if( queueStep < val )
 		queueStep = val;
-}
-
-void Character::SetScale( btVector3 scale )
-{
-	Entity::SetScale( scale );
 }
 
 void Character::NextOverlappingFrame()
@@ -131,12 +127,13 @@ void Character::Tick( const float deltaTime )
 
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
 {
+	Entity::ApplyDamage( damage, point, normal );
 }
 
 void Character::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
 {
 	Entity::ApplyImpactDamage( damage, impetus, direction, point, normal );
-	Character::ApplyDamage( damage, point, normal );
+	this->ApplyDamage( damage, point, normal );
 }
 
 
@@ -157,6 +154,17 @@ void Character::Save( std::ostream & stream ) const
 void Character::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
 	Entity::Spawn( name, shape, transform );
+	
+	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 20.0f );
+	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>( collisionObject );
+	
+	rigidBody->setFriction( 0.75 );
+	rigidBody->setAngularFactor( btVector3( 0, 0, 0 ) );
+	rigidBody->setActivationState( DISABLE_DEACTIVATION );
+	
+	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
+	
+	this->SetBody( collisionObject, shape );
 }
 
 void Character::Despawn()
