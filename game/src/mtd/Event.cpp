@@ -36,7 +36,7 @@ void Event::KeyPressedEvent( int keyCode )
 {
 	std::shared_ptr<Entity> player = engine->GetEntity( std::string("Player") );
 	std::shared_ptr<Entity> temp;
-	btVector3 begin, end, point, normal;
+	btVector3 begin, end, point, normal, euler;
 	Character * character = NULL;
 	Player * playerPtr = NULL;
 	if( player )
@@ -94,7 +94,8 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_LBUTTON:
-		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
+		euler = window->camera->GetRot();
+		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(-euler.y(),-euler.x(),euler.z()), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
 		if( temp )
 		{
 			temp->SetModel( engine->GetModel( "Crate01" ), false );
