@@ -12,6 +12,9 @@
 
 #include <cmath>
 
+#include <BulletDynamics\Character\btKinematicCharacterController.h>
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+
 class Character : public Entity
 {
 protected:
@@ -22,6 +25,8 @@ protected:
 	std::shared_ptr<Camera> camera;
 	
 	float defaultVelocity, height;
+	
+	btKinematicCharacterController * controller;
 	
 	
 	float GetMovementVelocity() const;

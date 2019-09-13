@@ -95,14 +95,14 @@ void Event::KeyPressedEvent( int keyCode )
 		
 	case irr::KEY_LBUTTON:
 		euler = window->camera->GetRot();
-		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetShape( "crate" ), btTransform( btQuaternion(-euler.y(),-euler.x(),euler.z()), window->camera->GetLocation() + character->GetForwardVector() ), 200.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Crate"), engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( btQuaternion(-euler.y(),-euler.x(),euler.z()), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
 			temp->SetModel( engine->GetModel( "Crate01" ), false );
-			temp->GetBody<btRigidBody>()->setFriction( 0.75 );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+			temp->GetBody()->setFriction( 0.75 );
 			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
-			temp->GetBody()->setDamping( 0.0, 0.0 );
+			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
 		{
@@ -111,14 +111,14 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetBall( 1.0f ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
+		temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), window->camera->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
 			temp->SetModel( engine->GetModel( "Sphere" ), false );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
-			temp->GetBody<btRigidBody>()->setFriction( 0.75 );
+			temp->GetBody()->setFriction( 0.75 );
 			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
-			temp->GetBody()->setDamping( 0.0, 0.0 );
+			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
 		{

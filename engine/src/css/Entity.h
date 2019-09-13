@@ -52,6 +52,8 @@ protected:
 	
 public:
 	
+	irr::scene::IAnimatedMeshSceneNode * GetSceneNode();
+	
 	virtual void NextOverlappingFrame();
 	void OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold );
 	
@@ -61,6 +63,7 @@ public:
 	void Move( const btVector3 & move );
 	void Rotate( const btQuaternion & quat );
 	
+	std::shared_ptr<btCollisionShape> GetCollisionShape();
 	
 	void SetMass( float mass );
 	

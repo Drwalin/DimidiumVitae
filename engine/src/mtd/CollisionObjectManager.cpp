@@ -4,6 +4,8 @@
 
 #include "..\css\CollisionObjectManager.h"
 
+#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+
 std::shared_ptr<btCollisionObject> CollisionObjectManager::CreateRigidBody( std::shared_ptr<btCollisionShape> shape, btTransform transform, float mass, btVector3 inertia )
 {
 	if( shape == NULL )
@@ -13,9 +15,12 @@ std::shared_ptr<btCollisionObject> CollisionObjectManager::CreateRigidBody( std:
 		shape->calculateLocalInertia( mass, inertia );
 	
 	btDefaultMotionState * motionState = new btDefaultMotionState( transform );
-	std::shared_ptr<btCollisionObject> body = std::dynamic_pointer_cast<btCollisionObject>( std::shared_ptr<btRigidBody>( new btRigidBody( mass <= 0.0f ? 0.0f : mass, motionState, (btCollisionShape*)shape.get(), inertia ) ) );
-	
-	return body;
+	return std::dynamic_pointer_cast<btCollisionObject>( std::shared_ptr<btRigidBody>( new btRigidBody( mass <= 0.0f ? 0.0f : mass, motionState, (btCollisionShape*)shape.get(), inertia ) ) );
+}
+
+std::shared_ptr<btCollisionObject> CollisionObjectManager::CreatePairCachingGhostObject()
+{
+	return std::dynamic_pointer_cast<btCollisionObject>( std::shared_ptr<btPairCachingGhostObject>( new btPairCachingGhostObject() ) );
 }
 
 #endif

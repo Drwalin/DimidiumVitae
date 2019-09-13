@@ -330,7 +330,7 @@ void Engine::Init( EventResponser * eventResponser, const char * windowName, con
 	this->window->HideMouse();
 	this->window->LockMouse();
 	
-	this->collisionShapeManager = new CollisionShapeManager( this );
+	this->collisionShapeManager = new CollisionShapeManager();
 	
 	this->window->output->Init();
 	

@@ -7,7 +7,9 @@
 #include <Engine.h>
 
 #include <Debug.h>
+
 #include <memory>
+#include <iostream>
 
 #include "..\css\Header.h"
 #include "..\css\Player.h"
@@ -22,47 +24,61 @@
 
 #include <dll\DllImporter.h>
 
+#include <Math.hpp>
+
+Dll eventModule( "dlls/Event.dll" );
+
 extern "C" int Init( int argc, char ** argv )
 {
-	DEBUG(1)
-	
-	ConvertMeshes( "media/meshes.list" );
-	
 	srand( time( NULL ) );
 	
-	
-	Dll eventModule( "dlls/Event.dll" );
-	EventResponser*(*EventConstructor)();
-	EventConstructor = eventModule.Get<decltype(EventConstructor)>( "EventConstructor" );
-	
+	EventResponser * eventResponser = eventModule.Get<EventResponser*(*)(void)>( "EventConstructor" )();
 	
 	Engine * engine = new Engine;
-	engine->Init( EventConstructor(), "Engine 0.0.2", NULL, 800, 600, false );
+	engine->Init( eventResponser, "Engine 0.0.2", NULL, 800, 600, false );
 	
-	LoadMeshes( "media/loadMeshes.list", engine );
-	
+	LoadShapes( "media/shapes.list", engine );
+	LoadMeshes( "media/meshes.list", engine );
 	LoadModules( engine, "modules.list" );
-	
 	
 	{
 		std::shared_ptr<Model> sphere = engine->GetModel( "Sphere" );
-		std::shared_ptr<Model> crate01 = engine->GetModel( "Crate01" );
+		std::shared_ptr<Model> crate = engine->GetModel( "Crate01" );
 		std::shared_ptr<Model> mapModel = engine->GetModel( "TestMap" );
 		
-		engine->GetCollisionShapeManager()->AddCustomShape( "crate", crate01->GetCollisionShape( Model::SHAPE::CONVEX ) );
-		engine->GetCollisionShapeManager()->AddCustomShape( "sphere", engine->GetCollisionShapeManager()->GetBall(0.5f) );
+		auto mapShape = engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap");
 		
-		
-		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-10,0) ), 0.0f );
-		map->SetModel( mapModel, false );
-		
+		// create player
 		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
 		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.8, 0 ) );
 		player->GetBody<btRigidBody>()->setFriction( 0.75 );
 		((Character*)(player.get()))->SetCamera( engine->GetCamera() );
 		player->GetBody<btRigidBody>()->setAngularFactor( btVector3( 0, 0, 0 ) );
 		player->GetBody<btRigidBody>()->setActivationState( DISABLE_DEACTIVATION );
+		//player->GetBody<btRigidBody>()->setGravity( btVector3( 0, -1.1, 0 ) );
+		player->GetBody()->setDamping( 0.1, 0.1 );
 		
+		// create test balls
+		{
+			for( float x = -40; x < 41; x += 10 )
+			{
+				for( float y = -40; y < 41; y += 10 )
+				{
+					auto temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(x,30,y) ), 300.0f );
+					if( temp )
+					{
+						temp->SetModel( sphere, false );
+						temp->SetScale( btVector3( 2, 2, 2 ) );
+						temp->GetBody()->setFriction( 0.75 );
+						temp->GetBody()->setDamping( 0.1, 0.1 );
+					}
+				}
+			}
+		}
+		
+		// create map
+		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap")/*mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE )*/, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
+		map->SetModel( mapModel, false );
 	}
 	
 	

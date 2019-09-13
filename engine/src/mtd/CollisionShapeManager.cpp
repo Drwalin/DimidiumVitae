@@ -6,183 +6,124 @@
 #define COLLISION_SHAPE_MANAGER_CPP
 
 #include "..\css\CollisionShapeManager.h"
-#include "..\css\Model.h"
-#include "..\css\Engine.h"
+#include "..\css\CollisionShapeConstructor.h"
 
-bool CollisionShapeManager::IsNameAvailable( std::string name )
+bool CollisionShapeManager::IsNameAvailable( const std::string & name )
 {
 	if( name == "" )
 		return false;
-	return bool( shapesStrPtr.find( name ) == shapesStrPtr.end() );
+	return bool( this->shapeConstructors.find( name ) == this->shapeConstructors.end() );
 }
 
-std::string CollisionShapeManager::GetFirstAvailableName( std::string name )
+std::string CollisionShapeManager::GetFirstAvailableName( const std::string & name )
 {
-	if( IsNameAvailable( name ) )
+	if( this->IsNameAvailable( name ) )
 		return name;
 	for( int i = 0;; ++i )
 	{
-		if( IsNameAvailable( name + std::to_string(i) ) )
+		if( this->IsNameAvailable( name + std::to_string(i) ) )
 			return name + std::to_string(i);
 	}
 	return name;
 }
 
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetShape( std::vector < btScalar > constructionData, bool independent )
+void CollisionShapeManager::DestroyShapeConstructionInfo( const std::string & name )
 {
-	auto it = shapesVecPtr.find( constructionData );
-	if( !independent && it != shapesVecPtr.end() )
+	auto it = this->shapeConstructors.find( name );
+	if( it != this->shapeConstructors.end() )
 	{
-		return it->second;
+		delete it->second;
+		it->second = NULL;
+		this->shapeConstructors.erase( it );
 	}
-	else
-	{
-		std::shared_ptr<btCollisionShape> shape;
-		switch( constructionData.size() )
-		{
-		case 1:
-			shape = std::shared_ptr<btCollisionShape>( new btSphereShape( constructionData[0] ) );
-			break;
-		case 2:
-			shape = std::shared_ptr<btCollisionShape>( new btCapsuleShape( constructionData[0], constructionData[1]/2.0 ) );
-			break;
-		case 3:
-			shape = std::shared_ptr<btCollisionShape>( new btBoxShape( btVector3( constructionData[0], constructionData[1], constructionData[2] ) ) );
-			break;
-		case 4:
-			shape = std::shared_ptr<btCollisionShape>( new btCylinderShape( btVector3( constructionData[0], constructionData[1]/2.0, constructionData[2] ) ) );
-			break;
-		}
-		
-		if( !independent && shape )
-		{
-			shapesVecPtr[ constructionData ] = shape;
-			shapesPtrVec[ shape ] = constructionData;
-		}
-		return shape;
-	}
-	std::shared_ptr<btCollisionShape> ret;
-	return ret;
 }
 
-std::shared_ptr<btCollisionShape> CollisionShapeManager::AddShape( std::vector < btScalar > constructionData, std::string name )
+void CollisionShapeManager::DestroyShape( std::shared_ptr<btCollisionShape> & shape )
 {
-	std::shared_ptr<btCollisionShape> shape;
-	if( name == "" )
+	btCompoundShape * compoundShape = dynamic_cast<btCompoundShape*>( shape.get() );
+	if( compoundShape )
 	{
-		shape = GetShape( constructionData, false );
+		int shapes = compoundShape->getNumChildShapes();
+		if( shapes > 0 )
+		{
+			for( int i=shapes-1; i>=0; --i )
+			{
+				auto shape = compoundShape->getChildShape( i );
+				compoundShape->removeChildShapeByIndex( i );
+				delete shape;
+			}
+		}
 	}
-	else if( IsNameAvailable( name ) )
+}
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::GetBox( btVector3 size )
+{
+	return std::shared_ptr<btCollisionShape>( new btBoxShape( size ) );
+}
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::GetSphere( btScalar radius )
+{
+	return std::shared_ptr<btCollisionShape>( new btSphereShape( radius ) );
+}
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCapsule( btScalar radius, btScalar height )
+{
+	return std::shared_ptr<btCollisionShape>( new btCapsuleShape( radius, height ) );
+}
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCylinder( btScalar radius, btScalar height )
+{
+	return std::shared_ptr<btCollisionShape>( new btCylinderShape( btVector3( radius, height, radius ) ) );
+}
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCustomShape( const std::string & name )
+{
+	auto it = this->shapeConstructors.find( name );
+	if( it != this->shapeConstructors.end() )
 	{
-		shape = GetShape( constructionData, true );
+		return it->second->Get();
+	}
+	return NULL;
+}
+
+bool CollisionShapeManager::RegisterCustomShape( const std::string & name, const std::string & collisionShapeFileName )
+{
+	auto it = this->shapeConstructors.find( name );
+	if( it == this->shapeConstructors.end() )
+	{
+		CollisionShapeConstructor * shape = new CollisionShapeConstructor();
 		if( shape )
 		{
-			shapesStrPtr[ name ] = shape;
-			shapesPtrStr[ shape ] = name;
-		}
-	}
-	return shape;
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetBox( btVector3 size, std::string name )
-{
-	std::vector < btScalar > constructionData = { size.x(), size.y(), size.z() };
-	return AddShape( constructionData, name );
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetBall( btScalar radius, std::string name )
-{
-	std::vector < btScalar > constructionData = { radius };
-	return AddShape( constructionData, name );
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCapsule( btScalar radius, btScalar height, std::string name )
-{
-	std::vector < btScalar > constructionData = { radius, height };
-	return AddShape( constructionData, name );
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCylinder( btScalar radius, btScalar height, std::string name )
-{
-	std::vector < btScalar > constructionData = { radius, height, radius, height };
-	return AddShape( constructionData, name );
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::GetShape( std::string name )
-{
-	auto it = shapesStrPtr.find( name );
-	if( it != shapesStrPtr.end() )
-	{
-		return it->second;
-	}
-	return std::shared_ptr<btCollisionShape>();
-}
-
-std::shared_ptr<btCollisionShape> CollisionShapeManager::AddCustomShape( std::string name, std::shared_ptr<btCollisionShape> shape )
-{
-	if( shapesPtrVec.find( shape ) == shapesPtrVec.end() && shapesPtrStr.find( shape ) == shapesPtrStr.end() )
-	{
-		if( IsNameAvailable( name ) )
-		{
-			shapesStrPtr[ name ] = shape;
-			shapesPtrStr[ shape ] = name;
-			return shape;
-		}
-	}
-	return std::shared_ptr<btCollisionShape>();
-}
-
-void CollisionShapeManager::RemoveShape( std::shared_ptr<btCollisionShape> shape )
-{
-	{
-		auto it = shapesPtrVec.find( shape );
-		if( it != shapesPtrVec.end() )
-		{
-			DEBUG( std::string("Pointer use count: ") + std::to_string( shape.use_count() ) );
-			/*
-			if( shape.use_count() <= 1 )
+			if( shape->Load( name, collisionShapeFileName ) )
 			{
-				shapesVecPtr.erase( it->second );
-				shapesPtrVec.erase( it );
+				this->shapeConstructors[name] = shape;
+				return true;
 			}
-			*/
-			return;
+			delete shape;
 		}
 	}
-	
-	{
-		auto it = shapesPtrStr.find( shape );
-		if( it != shapesPtrStr.end() )
-		{
-			DEBUG( std::string("Pointer use count: ") + std::to_string( shape.use_count() ) );
-			/*
-			if( shape.use_count() <= 1 )
-			{
-				shapesStrPtr.erase( it->second );
-				shapesPtrStr.erase( it );
-			}
-			*/
-			return;
-		}
-	}
+	else if( it->second->GetCollisionShapeFileName() == collisionShapeFileName )
+		return true;
+	return false;
+}
+
+bool CollisionShapeManager::ConvertObjToCustomShape( const std::string & objFileName, const std::string & collisionShapeFileName )
+{
+	return CollisionShapeConstructor::Convert( objFileName, collisionShapeFileName );
 }
 
 void CollisionShapeManager::Destroy()
 {
-	shapesStrPtr.clear();
-	shapesPtrStr.clear();
-	shapesPtrVec.clear();
-	shapesVecPtr.clear();
+	for( auto it=this->shapeConstructors.begin(); it!=this->shapeConstructors.end(); ++it )
+		delete it->second;
+	this->shapeConstructors.clear();
 }
 
-CollisionShapeManager::CollisionShapeManager( Engine * engine )
-{
-	this->engine = engine;
-}
+CollisionShapeManager::CollisionShapeManager(){}
 
 CollisionShapeManager::~CollisionShapeManager()
 {
-	Destroy();
+	this->Destroy();
 }
 
 #endif

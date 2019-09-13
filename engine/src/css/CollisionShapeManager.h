@@ -16,46 +16,32 @@
 
 #include <memory>
 
-class Model;
-class Engine;
-
 class CollisionShapeManager
 {
 private:
 	
-	Engine * engine;
-	
-	std::map < std::vector<btScalar>, std::shared_ptr<btCollisionShape> > shapesVecPtr;
-	std::map < std::shared_ptr<btCollisionShape>, std::vector<btScalar> > shapesPtrVec;
-	
-	std::map < std::string, std::shared_ptr<btCollisionShape> > shapesStrPtr;
-	std::map < std::shared_ptr<btCollisionShape>, std::string > shapesPtrStr;
-	
-	
-	std::shared_ptr<btCollisionShape> GetShape( std::vector < btScalar > constructionData, bool independent );
-	std::shared_ptr<btCollisionShape> AddShape( std::vector < btScalar > constructionData, std::string name );
-	
-	friend class Engine;
+	std::map < std::string, class CollisionShapeConstructor* > shapeConstructors;
 	
 public:
 	
-	std::string GetFirstAvailableName( std::string name );
-	bool IsNameAvailable( std::string name );
+	bool IsNameAvailable( const std::string & name );
+	std::string GetFirstAvailableName( const std::string & name );
 	
-	// if name == "" ->collisionShape else ->customCollisionShape
-	std::shared_ptr<btCollisionShape> GetBox( btVector3 size, std::string name = "" );
-	std::shared_ptr<btCollisionShape> GetBall( btScalar radius, std::string name = "" );
-	std::shared_ptr<btCollisionShape> GetCapsule( btScalar radius, btScalar height, std::string name = "" );
-	std::shared_ptr<btCollisionShape> GetCylinder( btScalar radius, btScalar height, std::string name = "" );
+	void DestroyShapeConstructionInfo( const std::string & name );
+	void DestroyShape( std::shared_ptr<btCollisionShape> & shape );
 	
-	std::shared_ptr<btCollisionShape> GetShape( std::string name );
-	std::shared_ptr<btCollisionShape> AddCustomShape( std::string name, std::shared_ptr<btCollisionShape> shape );
+	std::shared_ptr<btCollisionShape> GetBox( btVector3 size );
+	std::shared_ptr<btCollisionShape> GetSphere( btScalar radius );
+	std::shared_ptr<btCollisionShape> GetCapsule( btScalar radius, btScalar height );
+	std::shared_ptr<btCollisionShape> GetCylinder( btScalar radius, btScalar height );
 	
-	void RemoveShape( std::shared_ptr<btCollisionShape> shape );
+	std::shared_ptr<btCollisionShape> GetCustomShape( const std::string & name );
+	bool RegisterCustomShape( const std::string & name, const std::string & collisionShapeFileName );
+	bool ConvertObjToCustomShape( const std::string & objFileName, const std::string & collisionShapeFileName );
 	
 	void Destroy();
 	
-	CollisionShapeManager( Engine * engine );
+	CollisionShapeManager();
 	~CollisionShapeManager();
 };
 

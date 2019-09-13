@@ -59,7 +59,9 @@ namespace Math
 inline std::istream & operator >> ( std::istream & stream, btVector3 & point )
 {
 	float x, y, z;
-	stream >> x >> y >> z;
+	stream >> x;
+	stream >> y;
+	stream >> z;
 	point.setValue( x, y, z );
 	return stream;
 }
@@ -67,11 +69,11 @@ inline std::istream & operator >> ( std::istream & stream, btVector3 & point )
 inline std::istream & operator >> ( std::istream & stream, btQuaternion & rotation )
 {
 	float x, y, z, w;
-	stream >> x >> y >> z >> w;
-	rotation.setX( x );
-	rotation.setY( y );
-	rotation.setZ( z );
-	rotation.setW( w );
+	stream >> x;
+	stream >> y;
+	stream >> z;
+	stream >> w;
+	rotation = btQuaternion( x, y, z, w );
 	return stream;
 }
 
@@ -79,32 +81,35 @@ inline std::istream & operator >> ( std::istream & stream, btTransform & trans )
 {
 	btVector3 origin;
 	btQuaternion rotation;
-	stream >> origin >> rotation;
+	stream >> origin;
+	stream >> rotation;
+	trans = btTransform( rotation, origin );
 	return stream;
 }
 
 
 
-inline std::ostream & operator << ( std::ostream & stream, btVector3 point )
+inline std::ostream & operator << ( std::ostream & stream, const btVector3 point )
 {
-	stream << point.x() << " ";
-	stream << point.y() << " ";
-	stream << point.z();
+	stream << (point.x()) << " ";
+	stream << (point.y()) << " ";
+	stream << (point.z());
 	return stream;
 }
 
-inline std::ostream & operator << ( std::ostream & stream, btQuaternion rotation )
+inline std::ostream & operator << ( std::ostream & stream, const btQuaternion rotation )
 {
-	stream << rotation.x() << " ";
-	stream << rotation.y() << " ";
-	stream << rotation.z() << " ";
-	stream << rotation.w();
+	stream << (rotation.x()) << " ";
+	stream << (rotation.y()) << " ";
+	stream << (rotation.z()) << " ";
+	stream << (rotation.w());
 	return stream;
 }
 
-inline std::ostream & operator << ( std::ostream & stream, btTransform trans )
+inline std::ostream & operator << ( std::ostream & stream, const btTransform trans )
 {
-	stream << trans.getOrigin() << " " << trans.getRotation();
+	stream << (trans.getOrigin()) << " ";
+	stream << (trans.getRotation());
 	return stream;
 }
 

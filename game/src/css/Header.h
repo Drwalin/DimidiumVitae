@@ -12,17 +12,13 @@
 
 #include <string>
 
-bool Convert( std::string objFile, std::string meshFile, bool scale = false, btVector3 size = btVector3(1,1,1) );
-void ConvertMeshes( std::string convertMeshesListFile );
-
 void LoadMeshes( std::string loadMeshesListFile, Engine * engine );
-
 
 // between every word need to be a white sign ( ' ', '\n', '\t' )
 int LoadMapPause( Engine * engine, std::string mapFile );		// return 0 -> no errors
 
-
 void LoadModules( Engine * engine, const std::string & modulesList );
+void LoadShapes( std::string loadShapesListFile, Engine * engine );
 
 #endif
 

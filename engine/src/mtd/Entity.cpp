@@ -12,6 +12,16 @@
 
 #include <cassert>
 
+irr::scene::IAnimatedMeshSceneNode * Entity::GetSceneNode()
+{
+	return this->sceneNode;
+}
+
+std::shared_ptr<btCollisionShape> Entity::GetCollisionShape()
+{
+	return this->collisionShape;
+}
+
 void Entity::UpdateTransformSceneNode()
 {
 	DEBUG( "Debug does objects updates sceneNode transform" );
@@ -32,9 +42,9 @@ void Entity::SetTransform( const btTransform & transform )
 	{
 		this->body->activate( true );
 		
-		std::shared_ptr<btRigidBody> rd = this->GetBody<btRigidBody>();
-		if( rd )
-			rd->getMotionState()->setWorldTransform( this->currentTransform );
+		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		if( rigidBody )
+			rigidBody->getMotionState()->setWorldTransform( this->currentTransform );
 		else
 			this->body->setWorldTransform( this->currentTransform );
 		
@@ -291,7 +301,8 @@ void Entity::DestroyBody()
 	
 	if( this->collisionShape )
 	{
-		this->engine->GetCollisionShapeManager()->RemoveShape( this->collisionShape );
+		this->engine->GetCollisionShapeManager()->DestroyShape( this->collisionShape );
+		this->collisionShape.reset();
 	}
 }
 
