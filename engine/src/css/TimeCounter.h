@@ -7,7 +7,12 @@
 
 #include <ctime>
 
+#include <chrono>
+#include <ratio>
 #include <vector>
+
+typedef std::chrono::high_resolution_clock::time_point TimePoint;
+typedef std::chrono::duration<float> TimeDuration;
 
 class TimeCounter
 {
@@ -15,17 +20,21 @@ private:
 	
 	struct TimePair
 	{
-		float begin;
-		float end;
+		TimePoint begin;
+		TimePoint end;
 	};
 	
 	std::vector < TimePair > array;
 	
-	float timeSpan;
+	TimeDuration timeSpan;
 	
 public:
 	
-	void SetTimeSpan( float time );
+	static TimePoint GetCurrentTime();
+	static TimeDuration GetDuration( TimePoint begin, TimePoint end );
+	static float GetDurationSeconds( TimePoint begin, TimePoint end );
+	
+	//void SetTimeSpan( TimeDuration time );
 	
 	float GetSmoothTime() const;
 	

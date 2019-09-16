@@ -199,7 +199,7 @@ void Event::KeyHoldedEvent( int keyCode )
 		if( keyCode == irr::KEY_DELETE )
 		{
 			begin = engine->GetCamera()->GetLocation();
-			end = begin + ( character->GetForwardVector() * 100.0 );
+			end = begin + ( character->GetForwardVector() * 10000.0 );
 		}
 		else
 		{

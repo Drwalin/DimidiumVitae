@@ -9,9 +9,70 @@
 
 #if defined __cplusplus
 #include <cstdio>
+#include <cstdint>
+#include <cstdlib>
 #else
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #endif
+
+
+
+struct DllHandleCounterElement
+{
+	intptr_t handle;
+	int counter;
+};
+
+DllHandleCounterElement * dllHandleCounterMap = (DllHandleCounterElement*)malloc( sizeof(DllHandleCounterElement) * 16 );
+int dllHandleCounterElements = 0;
+int dllHandleCounterAllocatedElements = 16;
+
+DllHandleCounterElement * DllHandleCounterGetElement( void * handle )
+{
+	intptr_t value = (intptr_t)handle;
+	int i;
+	for( i=0; i<dllHandleCounterElements; ++i )
+	{
+		if( dllHandleCounterMap[i].handle == value )
+			return &(dllHandleCounterMap[i]);
+	}
+	
+	if( dllHandleCounterElements == dllHandleCounterAllocatedElements )
+	{
+		dllHandleCounterAllocatedElements *= 2;
+		dllHandleCounterMap = (DllHandleCounterElement*)realloc( dllHandleCounterMap, sizeof(DllHandleCounterElement) * dllHandleCounterAllocatedElements );
+	}
+	
+	++dllHandleCounterElements;
+	DllHandleCounterElement * ret = &(dllHandleCounterMap[dllHandleCounterElements-1]);
+	ret->handle = value;
+	ret->counter = 0;
+	return ret;
+}
+
+void DllHandleCounterIncrement( void * handle )
+{
+	DllHandleCounterGetElement( handle )->counter += 1;
+}
+
+void DllHandleCounterDecrement( void * handle )
+{
+	DllHandleCounterGetElement( handle )->counter -= 1;
+}
+
+int DllHandleCounterGet( void * handle )
+{
+	DllHandleCounterElement * ptr = DllHandleCounterGetElement( handle );
+	if( ptr )
+	{
+		return ptr->counter;
+	}
+	return 0;
+}
+
+
 
 #if defined __WIN32__ || defined _WIN64
 
@@ -21,7 +82,9 @@ void * DllLoad( const char * file )
 {
 	if( file )
 	{
-		return LoadLibrary( file );
+		void * handle = LoadLibrary( file );
+		DllHandleCounterIncrement( handle );
+		return handle;
 	}
 	return nullptr;
 }
@@ -30,7 +93,12 @@ void DllRelease( void * handle )
 {
 	if( handle )
 	{
-		FreeLibrary( (HINSTANCE)handle );
+		DllHandleCounterDecrement( handle );
+		if( DllHandleCounterGetElement( handle )->counter <= 0 )
+		{
+			FreeLibrary( (HINSTANCE)handle );
+			DllHandleCounterGetElement( handle )->counter = 0;
+		}
 	}
 }
 
@@ -60,6 +128,7 @@ char * DllGetErrorString()
 									msgSize,
 									NULL );
 	*/
+	
 	FormatMessageA(	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 					NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
 					msg, msgSize, NULL );
@@ -75,7 +144,9 @@ void * DllLoad( const char * file )
 {
 	if( file )
 	{
-		return dlopen( file, RTLD_NOW );	// RTLD_LAZY );
+		void * handle = dlopen( file, RTLD_NOW );	// RTLD_LAZY );
+		DllHandleCounterIncrement( handle );
+		return handle;
 	}
 	return nullptr;
 }
@@ -84,6 +155,7 @@ void DllRelease( void * handle )
 {
 	if( handle )
 	{
+		DllHandleCounterDecrement( handle );
 		dlclose( handle );
 	}
 }
@@ -130,8 +202,8 @@ void * Dll::Open( const char * dllFileName )
 
 void Dll::Close()
 {
-	if( this->handle )
-		DllRelease( this->handle );
+//	if( this->handle )
+//		DllRelease( this->handle );
 	this->handle = NULL;
 }
 

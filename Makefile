@@ -7,7 +7,7 @@ RM = del
 CXX = g++
 
 RM_FLAGS = /f
-CXXFLAGS = -w -m64 -s -Ofast -std=c++17
+CXXFLAGS = -pg -w -m64 -std=c++17 -ggdb -g3 -ggdb3 -pg -g -fno-omit-frame-pointer
 
 MAINOBJECTS = game\\bin\\MeshLoader.o game\\bin\\LoadModules.o game\\bin\\Init.o game\\bin\\ShapeLoader.o
 

@@ -38,7 +38,10 @@ std::shared_ptr<Dll> ModulesFactory::AddModule( const char * modulePath, const c
 }
 
 ModulesFactory::ModulesFactory(){}
-ModulesFactory::~ModulesFactory(){}
+ModulesFactory::~ModulesFactory()
+{
+	this->dlls.clear();
+}
 
 #endif
 

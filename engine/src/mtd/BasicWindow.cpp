@@ -177,15 +177,6 @@ void BasicWindow::OneLoopFullTick()
 		deltaTime = 0.3;
 	
 	AlTick();
-	
-	/*
-	if( al_get_time() - beginTime < 1.0/60.0 )
-	{
-		skippedTime.SubscribeStart();
-		al_rest( skippedTime );
-		skippedTime.SubscribeEnd();
-	}
-	*/
 }
 
 void BasicWindow::BeginLoop()
@@ -225,7 +216,7 @@ void BasicWindow::Draw()
 		}
 	}
 	
-	wholeDrawTime.SubscribeStart();
+	wholeDrawTime.SubscribeEnd();
 }
 
 

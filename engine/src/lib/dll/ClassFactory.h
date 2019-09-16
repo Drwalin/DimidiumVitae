@@ -27,6 +27,5 @@ public:
 	~ClassFactory();
 };
 
-
 #endif
 

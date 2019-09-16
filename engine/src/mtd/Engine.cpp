@@ -82,11 +82,11 @@ inline void Engine::UpdateEntitiesOverlapp()
 					DEBUG( "No contact manifold points" );
 			}
 			else
-				MESSAGE( std::string( "dispacher->getManifoldByIndexInternal(") + std::to_string(i) + ") = 0 " );
+				MESSAGE( std::string( "dispacher->getManifoldByIndexInternal(") + std::to_string(i) + ") = NULL " );
 		}
 	}
 	else
-		MESSAGE( std::string( "world->GetDynamicsWorld()->getDispatcher() = 0 " ) );
+		MESSAGE( std::string( "world->GetDynamicsWorld()->getDispatcher() = NULL " ) );
 }
 
 inline void Engine::UpdateEntities( const float deltaTime )
@@ -368,7 +368,6 @@ void Engine::Destroy()
 		if( it->second )
 		{
 			assert( it->second );
-			it->second->Destroy();
 			it->second.reset();
 		}
 		else

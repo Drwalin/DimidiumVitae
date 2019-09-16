@@ -32,13 +32,7 @@ class Model
 {
 private:
 	
-	struct Face
-	{
-		unsigned a, b, c;
-		btVector3 normal;
-	};
-	
-	irr::scene::IAnimatedMesh * mesh;
+	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
 	std::map < int, irr::video::SMaterial > materials;
 	
 	Engine * engine;
@@ -46,18 +40,7 @@ private:
 	std::string name;
 	std::string fileName;
 	
-	btVector3 minAABB, maxAABB;
-	
-	std::shared_ptr<CustomCollisionShapeData> collisionShapeData;
-	
 public:
-	
-	class SHAPE
-	{
-	public:
-		static const int TRIANGLE = 1;
-		static const int CONVEX = 2;
-	};
 	
 	void SetName( std::string name );
 	
@@ -65,18 +48,17 @@ public:
 	
 	btVector3 GetInertia() const;
 	
-	irr::scene::IAnimatedMesh * GetMesh();
+	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
 	
 	bool LoadCustomCollisionShapeFromObj();
 	
 	bool LoadFromFile( Engine * engine, std::string objFileName );
 	
-	std::shared_ptr<btCollisionShape> GetCollisionShape( const int shape );
 	void NullCustomCollisionShape();
 	
 	void Destroy();
 	
-	Model( const Model * other );
+	Model( Model * other );
 	Model();
 	~Model();
 };

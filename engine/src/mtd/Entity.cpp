@@ -253,7 +253,7 @@ void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 				if( model->GetMesh() )
 				{
 					this->model = model;
-					this->sceneNode = this->engine->GetWindow()->sceneManager->addAnimatedMeshSceneNode( model->GetMesh() );
+					this->sceneNode = this->engine->GetWindow()->sceneManager->addAnimatedMeshSceneNode( model->GetMesh().get() );
 					this->model->SetMaterialsToNode( this->sceneNode );
 					
 					this->sceneNode->setMaterialFlag( irr::video::EMF_NORMALIZE_NORMALS, true );
@@ -327,9 +327,7 @@ void Entity::DestroySceneNode()
 void Entity::Destroy()
 {
 	this->DestroySceneNode();
-	
 	this->DestroyBody();
-	
 	this->name = "";
 	this->scale = btVector3(0,0,0);
 	this->mass = 0.0f;

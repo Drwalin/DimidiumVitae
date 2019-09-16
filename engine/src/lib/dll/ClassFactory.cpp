@@ -72,8 +72,10 @@ template < typename T >
 ClassFactory<T>::ClassFactory(){}
 
 template < typename T >
-ClassFactory<T>::~ClassFactory(){}
-
+ClassFactory<T>::~ClassFactory()
+{
+	this->uniqueObjects.clear();
+}
 
 #endif
 

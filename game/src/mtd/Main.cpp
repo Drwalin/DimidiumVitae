@@ -12,11 +12,13 @@ int main( int argc, char ** argv )
 	DEBUG(1)
 	Dll eventModule( "game-core.dll" );
 	int (*Init)( int argc, char ** argv );
-	Init = eventModule.Get<decltype(Init)>( "Init" );
+	Init = eventModule.Get<int(*)(int,char**)>( "Init" );
 	if( Init )
 	{
 		DEBUG(2)
-		return Init( argc, argv );
+		int ret = Init( argc, argv );
+		DEBUG(3)
+		return ret;
 	}
 	DEBUG( "Should not appear" );
 	return -1;
