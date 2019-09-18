@@ -24,12 +24,10 @@ TimeDuration TimeCounter::GetDuration( TimePoint begin, TimePoint end )
 	return std::chrono::duration_cast<TimeDuration>( end - begin );
 }
 
-/*
 void TimeCounter::SetTimeSpan( TimeDuration time )
 {
 	this->timeSpan = time;
 }
-*/
 
 float TimeCounter::GetSmoothTime() const
 {

@@ -83,7 +83,7 @@ void World::Init()
 
 
 
-bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body )
+bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask )
 {
 	if( body )
 	{
@@ -91,9 +91,9 @@ bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject
 		{
 			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( body );
 			if( rigid )
-				this->dynamicsWorld->addRigidBody( rigid.get() );
+				this->dynamicsWorld->addRigidBody( rigid.get(), collisionFilterGroup, collisionFilterMask );
 			else
-				this->dynamicsWorld->addCollisionObject( body.get() );
+				this->dynamicsWorld->addCollisionObject( body.get(), collisionFilterGroup, collisionFilterMask );
 			this->object[name] = body;
 			body->activate();
 			return true;

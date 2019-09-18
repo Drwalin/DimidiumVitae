@@ -26,10 +26,10 @@
 
 #include <Math.hpp>
 
-Dll eventModule( "dlls/Event.dll" );
-
 extern "C" int Init( int argc, char ** argv )
 {
+	Dll eventModule( "dlls/Event.dll" );
+	
 	srand( time( NULL ) );
 	
 	EventResponser * eventResponser = eventModule.Get<EventResponser*(*)(void)>( "EventConstructor" )();
@@ -49,14 +49,9 @@ extern "C" int Init( int argc, char ** argv )
 		auto mapShape = engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap");
 		
 		// create player
-		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(35,10,-25) ), 15.0 );
+		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 15.0 );
 		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.8, 0 ) );
-		player->GetBody<btRigidBody>()->setFriction( 0.75 );
 		((Character*)(player.get()))->SetCamera( engine->GetCamera() );
-		player->GetBody<btRigidBody>()->setAngularFactor( btVector3( 0, 0, 0 ) );
-		player->GetBody<btRigidBody>()->setActivationState( DISABLE_DEACTIVATION );
-		//player->GetBody<btRigidBody>()->setGravity( btVector3( 0, -1.1, 0 ) );
-		player->GetBody()->setDamping( 0.1, 0.1 );
 		
 		// create test balls
 		{

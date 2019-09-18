@@ -34,7 +34,7 @@ public:
 	static TimeDuration GetDuration( TimePoint begin, TimePoint end );
 	static float GetDurationSeconds( TimePoint begin, TimePoint end );
 	
-	//void SetTimeSpan( TimeDuration time );
+	void SetTimeSpan( TimeDuration time );
 	
 	float GetSmoothTime() const;
 	

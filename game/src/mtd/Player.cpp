@@ -16,30 +16,10 @@
 
 #include <ctime>
 
-void Player::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
-{
-	Character::EventOnEntityBeginOverlapp( other, perisstentManifold );
-}
-
-void Player::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold )
-{
-	Character::EventOnEntityTickOverlapp( other, perisstentManifold );
-}
-
-void Player::EventOnEntityEndOverlapp( Entity * other )
-{
-	Character::EventOnEntityEndOverlapp( other );
-}
-
-
 void Player::Tick( const float deltaTime )
 {
 	Character::Tick( deltaTime );
 }
-
-
-
-
 
 
 
@@ -53,9 +33,9 @@ void Player::Save( std::ostream & stream ) const
 	Character::Save( stream );
 }
 
-void Player::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void Player::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	Character::Spawn( name, shape, transform );
+	Character::Spawn( self, name, shape, transform );
 }
 
 void Player::Despawn()

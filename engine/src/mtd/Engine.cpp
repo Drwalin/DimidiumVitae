@@ -37,7 +37,7 @@ std::shared_ptr<Entity> Engine::AddEntity( std::shared_ptr<Entity> emptyEntity, 
 		if( it == this->entities.end() )
 		{
 			emptyEntity->Init( this );
-			emptyEntity->Spawn( name, shape, transform );
+			emptyEntity->Spawn( emptyEntity, name, shape, transform );
 			emptyEntity->SetMass( mass );
 			this->entities[name] = emptyEntity;
 			return emptyEntity;

@@ -7,29 +7,71 @@
 
 #include "..\css\CharacterWalkTrigger.h"
 
-bool CharacterWalkTrigger::IsAnyInside() const
+bool CharacterWalkTrigger::IsTopCollision() const
 {
-	return isAnyInside;
+	return this->topCollision;
 }
 
-void CharacterWalkTrigger::SetParent( std::shared_ptr<Entity> parent )
+bool CharacterWalkTrigger::IsSideCollision() const
+{
+	return this->sideCollision;
+}
+
+bool CharacterWalkTrigger::IsBottomCollision() const
+{
+	return this->bottomCollision;
+}
+
+void CharacterWalkTrigger::Init( std::shared_ptr<Entity> parent, float stepHeight )
 {
 	this->parent = parent;
+	this->stepHeight = stepHeight;
 }
 
 void CharacterWalkTrigger::NextOverlappingFrame()
 {
 	Trigger::NextOverlappingFrame();
-	isAnyInside = false;
+	this->topCollision = false;
+	this->sideCollision = false;
+	this->bottomCollision = false;
+	
+	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	if( rigidBody )
+	{
+		btVector3 min, max;
+		rigidBody->getAabb( min, max );
+		this->bottom = min.y();
+		this->top = max.y();
+	}
+	else
+	{
+		this->bottom = this->top = this->GetTransform().getOrigin().y();
+		MESSAGE( std::string("CharacterWalkTrigger::body is not btRigidBody (") + this->name + ")" );
+	}
 }
 
 void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	if( other != parent.get() )
 	{
-		if( persisstentManifold->getNumContacts() > 0 )
+		for( int i=0; i<persisstentManifold->getNumContacts(); ++i )
 		{
-			isAnyInside = true;
+			btManifoldPoint manifoldPoint = persisstentManifold->getContactPoint( i );
+			btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) * 0.5f;
+			btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
+			if( normal.y() < 0.0f )
+				normal.setY( -normal.y() );
+			bool isNormalVertical = normal.dot( btVector3(0,1,0) ) > 0.8f;
+			
+			if( isNormalVertical )
+			{
+				if( this->bottom + this->stepHeight >= contactPoint.y() )
+					this->bottomCollision = true;
+				if( this->top - this->stepHeight <= contactPoint.y() )
+					this->topCollision = true;
+			}
+			else
+				this->sideCollision = true;
 		}
 	}
 }
@@ -54,6 +96,7 @@ void CharacterWalkTrigger::EventOnEntityEndOverlapp( Entity * other )
 void CharacterWalkTrigger::Tick( const float deltaTime )
 {
 	Trigger::Tick( deltaTime );
+	this->SetTransform( this->parent->GetTransform() );
 }
 
 
@@ -67,9 +110,9 @@ void CharacterWalkTrigger::Save( std::ostream & stream ) const
 	Trigger::Save( stream );
 }
 
-void CharacterWalkTrigger::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void CharacterWalkTrigger::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	Trigger::Spawn( name, shape, transform );
+	Trigger::Spawn( self, name, shape, transform );
 }
 
 void CharacterWalkTrigger::Despawn()
@@ -90,12 +133,10 @@ std::string CharacterWalkTrigger::GetClassName() const{ return "CharacterWalkTri
 
 CharacterWalkTrigger::CharacterWalkTrigger()
 {
-	isAnyInside = false;
 }
 
 CharacterWalkTrigger::~CharacterWalkTrigger()
 {
-	isAnyInside = false;
 }
 
 #endif

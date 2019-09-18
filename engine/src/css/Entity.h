@@ -92,13 +92,13 @@ public:
 	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal );
 	
 	void SetModel( std::shared_ptr<Model> model, bool light = true );
-	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape );
+	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
 	
 	void Init( Engine * engine );
 	
 	virtual void Load( std::istream & stream );
 	virtual void Save( std::ostream & stream ) const;
-	virtual void Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform );
+	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform );
 	virtual void Despawn();
 	
 	virtual void Destroy();

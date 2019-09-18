@@ -6,7 +6,6 @@
 #define CHARACTER_WALK_TRIGGER_H
 
 #include "Trigger.h"
-#include "Character.h"
 
 #include <cmath>
 
@@ -15,16 +14,23 @@ class CharacterWalkTrigger : public Trigger
 protected:
 	
 	std::shared_ptr<Entity> parent;
-	bool isAnyInside;
+	bool topCollision;
+	bool sideCollision;
+	bool bottomCollision;
+	float stepHeight;
+	float bottom, top;
 	
 	void EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
 	
 public:
 	
+	bool IsTopCollision() const;
+	bool IsSideCollision() const;
+	bool IsBottomCollision() const;
+	
 	virtual void NextOverlappingFrame() override;
 	
-	bool IsAnyInside() const;
-	void SetParent( std::shared_ptr<Entity> parent );
+	void Init( std::shared_ptr<Entity> parent, float stepHeight );
 	
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
@@ -34,7 +40,7 @@ public:
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;

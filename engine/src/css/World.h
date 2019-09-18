@@ -47,7 +47,7 @@ public:
 	
 	void Tick( btScalar deltaTime, int count = 0 );
 	
-	bool AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body );
+	bool AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
 	bool RemoveBody( const std::string & name );
 	void RemoveBodys();
 	

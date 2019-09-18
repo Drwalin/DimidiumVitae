@@ -11,6 +11,7 @@
 #include "..\css\Event.h"
 #include "..\css\Character.h"
 #include "..\css\Player.h"
+#include "..\css\MotionController.h"
 
 #include <irrlicht/irrlicht.h>
 
@@ -44,6 +45,7 @@ void Event::KeyPressedEvent( int keyCode )
 		character = dynamic_cast < Character* > ( ((Entity*)(player.get())) );
 		playerPtr = dynamic_cast < Player* > ( ((Entity*)(player.get())) );
 	}
+	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
 	switch( keyCode )
 	{
@@ -80,17 +82,14 @@ void Event::KeyPressedEvent( int keyCode )
 			engine->GetWindow()->LockMouse();
 		break;
 		
+		
 	case irr::KEY_LSHIFT:
+		playerMotionController->StartRunning();
 		break;
 	case irr::KEY_LCONTROL:
 		break;
-	case irr::KEY_MENU:
-		DEBUG("Alt-Menu")
-		break;
-		
-	case irr::KEY_SPACE:
-		if( character )
-			character->EventJump();
+	case irr::KEY_LMENU:
+		playerMotionController->StartSneaking();
 		break;
 		
 	case irr::KEY_LBUTTON:
@@ -101,7 +100,7 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->SetModel( engine->GetModel( "Crate01" ), false );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
@@ -117,7 +116,7 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->SetModel( engine->GetModel( "Sphere" ), false );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( player->GetBody()->getLinearVelocity() + character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
@@ -134,6 +133,7 @@ void Event::KeyReleasedEvent( int keyCode )
 	Character * character = NULL;
 	if( player )
 		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
+	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
 	switch( keyCode )
 	{
@@ -143,10 +143,12 @@ void Event::KeyReleasedEvent( int keyCode )
 		
 		
 	case irr::KEY_LSHIFT:
+		playerMotionController->StopRunning();
 		break;
 	case irr::KEY_LCONTROL:
 		break;
-	case irr::KEY_MENU:
+	case irr::KEY_LMENU:
+		playerMotionController->StopSneaking();
 		break;
 	}
 	
@@ -161,6 +163,8 @@ void Event::KeyHoldedEvent( int keyCode )
 	Character * character = NULL;
 	if( player )
 		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
+	
+	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
 	btVector3 vector;
 	
@@ -181,17 +185,6 @@ void Event::KeyHoldedEvent( int keyCode )
 		window->QueueQuit();
 		break;
 		
-		/*
-	case irr::KEY_LBUTTON:
-		begin = engine->GetCamera()->GetLocation();
-		end = begin + ( engine->GetCamera()->GetForwardVector() * 100.0 );
-		temp = engine->RayTrace( begin, end, Engine::RayTraceChannel::COLLIDING, point, normal, { player } );
-		if( temp )
-		{
-			temp->ApplyImpactDamage( 0, 100.0 * engine->GetDeltaTime(), engine->GetCamera()->GetForwardVector(), point, normal );
-		}
-		break;
-		*/
 		
 		
 	case irr::KEY_BACK:
@@ -235,21 +228,26 @@ void Event::KeyHoldedEvent( int keyCode )
 			character->EventRotateCameraBy( btVector3( 0.0, -window->GetDeltaTime(), 0.0 ) * 2.0 );
 		break;
 		
+	case irr::KEY_SPACE:
+		if( character && playerMotionController )
+			playerMotionController->Jump();
+		break;
+		
 	case irr::KEY_KEY_W:
-		if( character )
-			character->EventMoveInDirection( character->GetFlatForwardVector(), true );
+		if( character && playerMotionController )
+			playerMotionController->MoveInDirection( character->GetFlatForwardVector() );
 		break;
 	case irr::KEY_KEY_A:
-		if( character )
-			character->EventMoveInDirection( character->GetFlatLeftVector(), true );
+		if( character && playerMotionController )
+			playerMotionController->MoveInDirection( character->GetFlatLeftVector() );
 		break;
 	case irr::KEY_KEY_S:
-		if( character )
-			character->EventMoveInDirection( -character->GetFlatForwardVector(), true );
+		if( character && playerMotionController )
+			playerMotionController->MoveInDirection( -character->GetFlatForwardVector() );
 		break;
 	case irr::KEY_KEY_D:
-		if( character )
-			character->EventMoveInDirection( -character->GetFlatLeftVector(), true );
+		if( character && playerMotionController )
+			playerMotionController->MoveInDirection( -character->GetFlatLeftVector() );
 		break;
 	}
 }

@@ -6,6 +6,7 @@
 #define CHARACTER_H
 
 #include "Trigger.h"
+#include "MotionController.h"
 
 #include <Entity.h>
 #include <Camera.h>
@@ -26,38 +27,23 @@ protected:
 	
 	float defaultVelocity, height;
 	
-	btKinematicCharacterController * controller;
+	std::shared_ptr<MotionController> motionController;
 	
 	
-	float GetMovementVelocity() const;
-	btVector3 GetJumpVelocity() const;
 	
 	void CorrectCameraRotation();
 	
 	
-	float queueStep;
-	void QueueMove( float val );
 	
 public:
 	
-	virtual void NextOverlappingFrame() override;
+	std::shared_ptr<MotionController> GetMotionController();
 	
-	float GetBottomY();
+	virtual void NextOverlappingFrame() override;
 	
 	static btTransform MakeTransformFromEuler( const btVector3 & euler );
 	
 	void SetCamera( std::shared_ptr<Camera> camera );
-	
-	
-	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
-	
-	void EventJump();
-	void EventCrouch();
-	void EventStandUp();
-	
-	void EventMoveInDirection( const btVector3 & direction, bool flat );
 	
 	void EventRotateCameraBy( const btVector3 & rotation );
 	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,14 +65,9 @@ public:
 	
 	
 	
-	
-	
-	
-	
-	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;

@@ -267,12 +267,12 @@ void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 	}
 }
 
-void Entity::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape )
+void Entity::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup, int collisionFilterMask )
 {
 	this->DestroyBody();
 	this->body = body;
 	this->collisionShape = shape;
-	this->engine->GetWorld()->AddBody( this->GetName(), this->body );
+	this->engine->GetWorld()->AddBody( this->GetName(), this->body, collisionFilterGroup, collisionFilterMask );
 	this->body->setUserPointer( this );
 }
 
@@ -352,7 +352,7 @@ void Entity::Init( Engine * engine )
 	this->engine = engine;
 }
 
-void Entity::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void Entity::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
 	this->mass = 0.0f;
 	this->collisionShape = collisionShape;

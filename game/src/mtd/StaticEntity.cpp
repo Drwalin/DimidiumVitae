@@ -46,9 +46,9 @@ void StaticEntity::Save( std::ostream & stream ) const
 	Entity::Save( stream );
 }
 
-void StaticEntity::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void StaticEntity::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	Entity::Spawn( name, shape, transform );
+	Entity::Spawn( self, name, shape, transform );
 	
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f );
 	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>( collisionObject );

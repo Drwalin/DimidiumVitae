@@ -8,7 +8,11 @@
 
 int main( int argc, char ** argv )
 {
+	Dll triggerModule( "dlls/Trigger.dll" );
+	Dll characterWalkTriggerModule( "dlls/CharacterWalkTrigger.dll" );
+	Dll motinControllerModule( "dlls/MotionController.dll" );
 	Dll characterModule( "dlls/Character.dll" );
+	
 	DEBUG(1)
 	Dll eventModule( "game-core.dll" );
 	int (*Init)( int argc, char ** argv );

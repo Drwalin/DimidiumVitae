@@ -14,71 +14,19 @@
 
 #include <ctime>
 
-void Character::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Entity::EventOnEntityBeginOverlapp( other, persisstentManifold );
-}
-
-void Character::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Entity::EventOnEntityTickOverlapp( other, persisstentManifold );
-}
-
-void Character::EventOnEntityEndOverlapp( Entity * other )
-{
-	Entity::EventOnEntityEndOverlapp( other );
-}
-
-void Character::EventJump()
-{
-	static float lastJumpedMoment = 0.0f;
-	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-	if( rigidBody )
-	{
-		if( (float(clock())/1000.0f) - lastJumpedMoment > 0.2f )
-		{
-			lastJumpedMoment = (float(clock())/1000.0f);
-			rigidBody->applyCentralImpulse( this->GetJumpVelocity() );
-		}
-	}
-}
-
-void Character::EventMoveInDirection( const btVector3 & direction, bool flat )
-{
-	btVector3 dir = direction;
-	
-	if( flat )
-		dir.m_floats[1] = 0.0f;
-	
-	dir.normalize();
-	
-	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-	
-	if( rigidBody )
-	{
-		float velocity = GetMovementVelocity();
-		if( rigidBody->getLinearVelocity().dot( dir ) < velocity )
-		{
-			rigidBody->applyCentralForce( dir * 60.0f * mass );
-		}
-	}
-}
-
 void Character::EventRotateCameraBy( const btVector3 & rotation )
 {
-	cameraRotation += rotation;
-	
-	CorrectCameraRotation();
-	
-	if( camera )
+	this->cameraRotation += rotation;
+	if( this->camera )
 	{
-		camera->SetRotation( cameraRotation );
+		this->CorrectCameraRotation();
+		this->camera->SetRotation( this->cameraRotation );
 	}
 }
 
 void Character::EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth )
 {
-	CorrectCameraRotation();
+	this->CorrectCameraRotation();
 	
 	btVector3 dstCameraRotation(0,0,0);
 	{
@@ -99,18 +47,18 @@ void Character::EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bo
 	
 	if( smooth )
 	{
-		cameraRotation += dstCameraRotation * engine->GetDeltaTime() * 3.11f * Math::PI;
+		this->cameraRotation += dstCameraRotation * this->engine->GetDeltaTime() * 3.11f * Math::PI;
 	}
 	else
 	{
-		cameraRotation += dstCameraRotation;
+		this->cameraRotation += dstCameraRotation;
 	}
 	
-	CorrectCameraRotation();
+	this->CorrectCameraRotation();
 	
-	if( camera )
+	if( this->camera )
 	{
-		camera->SetRotation( cameraRotation );
+		this->camera->SetRotation( cameraRotation );
 	}
 }
 

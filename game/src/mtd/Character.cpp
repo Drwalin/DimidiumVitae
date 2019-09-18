@@ -17,28 +17,14 @@
 
 #include "CharacterEvent.cpp"
 
-void Character::QueueMove( float val )
+std::shared_ptr<MotionController> Character::GetMotionController()
 {
-	if( queueStep < val )
-		queueStep = val;
+	return this->motionController;
 }
 
 void Character::NextOverlappingFrame()
 {
 	Entity::NextOverlappingFrame();
-}
-
-float Character::GetBottomY()
-{
-	std::shared_ptr<const btRigidBody> rigidBody = this->GetBody<const btRigidBody>();
-	if( rigidBody )
-	{
-		btVector3 min, max, origin;
-		rigidBody->getAabb( min, max );
-		return min.y();
-		//return (min.y()*0.85) + (GetLocation().y()*0.15);
-	}
-	return currentTransform.getOrigin().y();
 }
 
 btTransform Character::MakeTransformFromEuler( const btVector3 & euler )
@@ -48,18 +34,6 @@ btTransform Character::MakeTransformFromEuler( const btVector3 & euler )
 	quat *= btQuaternion( btVector3( 0, 0, 1 ), euler.z() );
 	return btTransform( quat );
 }
-
-float Character::GetMovementVelocity() const
-{
-	return this->defaultVelocity;
-}
-
-btVector3 Character::GetJumpVelocity() const
-{
-	return btVector3(0,64,0);
-}
-
-
 
 void Character::CorrectCameraRotation()
 {
@@ -119,10 +93,10 @@ btVector3 Character::GetFlatLeftVector() const
 	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), 0.0 ) ) * btVector3(-1.0,0.0,0.0);
 }
 
-
 void Character::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
+	this->motionController->Tick( deltaTime );
 }
 
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
@@ -151,30 +125,39 @@ void Character::Save( std::ostream & stream ) const
 	Entity::Save( stream );
 }
 
-void Character::Spawn( std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void Character::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	Entity::Spawn( name, shape, transform );
+	Entity::Spawn( self, name, shape, transform );
 	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 20.0f );
+	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 15.0f, btVector3(0,0,0) );
 	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>( collisionObject );
 	
-	rigidBody->setFriction( 0.75 );
+	rigidBody->setFriction( 0.2 );
 	rigidBody->setAngularFactor( btVector3( 0, 0, 0 ) );
 	rigidBody->setActivationState( DISABLE_DEACTIVATION );
+	rigidBody->setDamping( 0.1, 0.1 );
 	
 	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
-	
 	this->SetBody( collisionObject, shape );
+	
+	this->motionController = std::shared_ptr<MotionController>( new MotionController() );
+	this->motionController->Init( self, 0.3f );
 }
 
 void Character::Despawn()
 {
 	Entity::Despawn();
+	if( this->motionController )
+		this->motionController->Destroy();
+	this->motionController = NULL;
 }
 
 void Character::Destroy()
 {
 	Entity::Destroy();
+	if( this->motionController )
+		this->motionController->Destroy();
+	this->motionController = NULL;
 }
 
 extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new Character(), [](Entity * ptr){delete ptr;} ); return instantiator; }
@@ -185,8 +168,7 @@ std::string Character::GetClassName() const{ return "Character"; }
 
 Character::Character() :
 	Entity(), cameraRotation(0,0,0), cameraLocation(0,0,0),
-	defaultVelocity(3.7), height(1.75),
-	queueStep(0.0)
+	defaultVelocity(3.7), height(1.75)
 {
 	
 	this->SetCameraLocation( btVector3( 0.0, height * 0.9, 0.0 ) );
