@@ -8,6 +8,11 @@
 #include "..\css\Window.h"
 #include "..\css\Engine.h"
 
+void Window::DrawGUI()
+{
+	this->gui.Flush();
+}
+
 std::shared_ptr<Camera> Window::GetCameraPointer()
 {
 	return camera;
@@ -46,15 +51,9 @@ float Window::GetSmoothFps()
 
 void Window::Init( Engine * engine, const char * windowName, const char * iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen )
 {
-	DEBUG(1)
 	Destroy();
-	DEBUG(2)
 	BasicWindow::Init( windowName, iconFile, width, height, eventResponser, fullscreen );
-	DEBUG(3)
-	output->SetBasicWindow( this );
-	DEBUG(4)
-	output->ClearWorkspaceBorders();
-	DEBUG(5)
+	gui.Init( this );
 	this->engine = engine;
 }
 
@@ -66,14 +65,7 @@ void Window::Destroy()
 
 Window::Window()
 {
-	DEBUG(0)
 	engine = NULL;
-	DEBUG(1)
-	//camera = std::shared_ptr<Camera>( new Camera );
-	DEBUG(2)
-	output = new TextPrinter;
-	DEBUG(3)
-	output->SetBasicWindow( this );
 }
 
 Window::~Window()
@@ -81,8 +73,6 @@ Window::~Window()
 	Destroy();
 	camera.reset();
 	camera = NULL;
-	delete output;
-	output = NULL;
 	
 }
 

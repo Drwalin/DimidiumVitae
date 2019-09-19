@@ -22,15 +22,6 @@ void StaticEntity::EventOnEntityEndOverlapp( Entity * other ){}
 void StaticEntity::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
-	/*
-	if( clock()-c > 10000)
-	{
-		btTransform t;
-		this->GetBody<btRigidBody>()->getMotionState()->getWorldTransform( t );
-		std::cout << "\n Transform: " << t << "   scale: " << this->GetScale();
-		c = clock();
-	}
-	*/
 }
 
 void StaticEntity::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}

@@ -7,7 +7,7 @@ RM = del
 CXX = g++
 
 RM_FLAGS = /f
-CXXFLAGS = -m64 -std=c++17 -Ofast -s
+CXXFLAGS = -m64 -std=c++17 -ggdb -g3 -ggdb3
 
 MAINOBJECTS = game\\bin\\MeshLoader.o game\\bin\\LoadModules.o game\\bin\\Init.o game\\bin\\ShapeLoader.o
 
@@ -15,7 +15,7 @@ GAMECOREMODULESOBJECTS = game\\bin\\Player.o game\\bin\\Event.o game\\bin\\Trigg
 GAMECOREMODULES = game\\dlls\\Player.dll game\\dlls\\Event.dll game\\dlls\\Trigger.dll game\\dlls\\StaticEntity.dll game\\dlls\\CharacterWalkTrigger.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Character.dll game\\dlls\\MotionController.dll
 RELEASEGAMECOREMODULES = $(subst game,release,$(GAMECOREMODULES))
 
-ENGINECOREOBJECTS = engine\\bin\\BasicWindow.o engine\\bin\\Camera.o engine\\bin\\CollisionShapeManager.o engine\\bin\\CustomCollisionData.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\Model.o engine\\bin\\Entity.o engine\\bin\\StringToEnter.o engine\\bin\\TextPrinter.o engine\\bin\\TimeCounter.o engine\\bin\\Window.o engine\\bin\\World.o engine\\bin\\CollisionObjectManager.o engine\\bin\\DllImporter.o engine\\bin\\ClassFactoryBase.o engine\\bin\\ModulesFactory.o engine\\bin\\CollisionShapeConstructor.o
+ENGINECOREOBJECTS = engine\\bin\\BasicWindow.o engine\\bin\\Camera.o engine\\bin\\CollisionShapeManager.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\Model.o engine\\bin\\Entity.o engine\\bin\\StringToEnter.o engine\\bin\\GUI.o engine\\bin\\TimeCounter.o engine\\bin\\Window.o engine\\bin\\World.o engine\\bin\\CollisionObjectManager.o engine\\bin\\DllImporter.o engine\\bin\\ClassFactoryBase.o engine\\bin\\ModulesFactory.o engine\\bin\\CollisionShapeConstructor.o
 
 DEPENDENCIES = Irrlicht.dll libBulletCollision.dll libBulletDynamics.dll libgcc_s_seh-1.dll libLinearMath.dll libstdc++-6.dll libwinpthread-1.dll libyse64.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll
 RELEASEDEPENDENCIES = $(addprefix release\\,$(DEPENDENCIES))

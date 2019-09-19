@@ -72,22 +72,18 @@ extern "C" int Init( int argc, char ** argv )
 		}
 		
 		// create map
-		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap")/*mapModel->GetCollisionShape( Model::SHAPE::TRIANGLE )*/, btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
+		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
 		map->SetModel( mapModel, false );
 	}
 	
 	
-	DEBUG( std::string("Loading cpu time: ") + std::to_string(float(clock())/float(CLOCKS_PER_SEC)) );
-	DEBUG( std::string("Loading time: ") + std::to_string(float(clock())/1000.0f) );
+	MESSAGE( std::string("Loading cpu time: ") + std::to_string(float(clock())/float(CLOCKS_PER_SEC)) );
+	MESSAGE( std::string("Loading time: ") + std::to_string(float(clock())/1000.0f) );
 	
 	engine->BeginLoop();
 	
-	DEBUG("End")
-	
 	engine->Destroy();
-	DEBUG("1")
 	delete engine;
-	DEBUG("2")
 	engine = NULL;
 	
 	return 0;

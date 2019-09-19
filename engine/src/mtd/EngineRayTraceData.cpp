@@ -31,15 +31,11 @@ Engine::RayTraceData::RayTraceData( btCollisionWorld::AllHitsRayResultCallback &
 				distance = begin.distance2( point );
 			}
 			else
-			{
 				entity = NULL;
-			}
 		}
 	}
 	else
-	{
-		DEBUG( "It should not appear" );
-	}
+		DEBUG( "It shouldn't appear" );
 }
 
 Engine::RayTraceData::RayTraceData() :
@@ -55,7 +51,7 @@ std::shared_ptr<Entity> Engine::RayTrace( btVector3 begin, btVector3 end, int ch
 	world->GetDynamicsWorld()->rayTest( begin, end, rayTraceResult );
 	if( rayTraceResult.hasHit() )
 	{
-		std::set < std::shared_ptr<Entity> > ignoreEntitiesSet( ignoreEntities.begin(), ignoreEntities.end() );		// does it sort it?
+		std::set < std::shared_ptr<Entity> > ignoreEntitiesSet( ignoreEntities.begin(), ignoreEntities.end() );
 		std::set < RayTraceData > entities;
 		
 		for( int i = 0; i < rayTraceResult.m_collisionObjects.size(); ++i )

@@ -36,9 +36,7 @@ void LoadModules( Engine * engine, const std::string & modulesList )
 				continue;
 			
 			if( !engine->RegisterType( moduleName, moduleFile ) )
-			{
-				DEBUG( std::string("Couldn't load module: \"") + moduleName + "\" -> \"" + moduleFile + "\"" );
-			}
+				MESSAGE( std::string("Couldn't load module: \"") + moduleName + "\" -> \"" + moduleFile + "\"" );
 		}
 	}
 }

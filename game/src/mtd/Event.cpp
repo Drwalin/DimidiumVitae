@@ -56,13 +56,11 @@ void Event::KeyPressedEvent( int keyCode )
 	case irr::KEY_KEY_F:
 		if( !lightSceneNode )
 		{
-			MESSAGE(1)
 			lightSceneNode = engine->GetWindow()->sceneManager->addLightSceneNode( 0, Math::GetIrrVec( window->camera->GetLocation() ), irr::video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 60.0f );
 			lightSceneNode->setPosition( Math::GetIrrVec( window->camera->GetLocation() ) );
 		}
 		else
 		{
-			MESSAGE(2)
 			lightSceneNode->remove();
 			lightSceneNode = 0;
 		}
@@ -104,9 +102,7 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
-		{
 			MESSAGE("Couldn't spawn new object");
-		}
 		break;
 		
 	case irr::KEY_RBUTTON:
@@ -120,9 +116,7 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
-		{
 			MESSAGE("Couldn't spawn new object");
-		}
 		break;
 	}
 }

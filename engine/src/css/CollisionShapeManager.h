@@ -12,8 +12,6 @@
 #include <string>
 #include <map>
 
-#include "CustomCollisionData.h"
-
 #include <memory>
 
 class CollisionShapeManager

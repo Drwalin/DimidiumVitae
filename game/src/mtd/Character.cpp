@@ -83,7 +83,7 @@ btVector3 Character::GetFlatForwardVector() const
 	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), 0.0 ) ) * btVector3(0.0,0.0,-1.0);
 }
 
-btVector3 Character::GetLeftVector() const/////////////////////////////
+btVector3 Character::GetLeftVector() const
 {
 	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), cameraRotation.z() ) ) * btVector3(-1.0,0.0,0.0);
 }
@@ -97,6 +97,9 @@ void Character::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
 	this->motionController->Tick( deltaTime );
+	this->engine->GetWindow()->gui << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << this->GetTransform().getOrigin();
+	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	this->engine->GetWindow()->gui << "\nCharacter velocity: " << (btVector3(rigidBody->getLinearVelocity().x(),0,rigidBody->getLinearVelocity().z()).length());
 }
 
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )

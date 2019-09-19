@@ -46,7 +46,7 @@ public:
 	void SetCamera( std::shared_ptr<Camera> camera );
 	
 	void EventRotateCameraBy( const btVector3 & rotation );
-	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
 	
 	
 	void SetCameraLocation( const btVector3 & location );

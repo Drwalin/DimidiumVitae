@@ -45,17 +45,17 @@ void LoadShapes( std::string loadShapesListFile, Engine * engine )
 			{
 				if( engine->GetCollisionShapeManager()->ConvertObjToCustomShape( objFile, shapeFile ) )
 				{
-					MESSAGE( std::string("Converted: ") + customName + " = " + objFile + " -> " + shapeFile );
+					MESSAGE( std::string("Shape converted: ") + customName + " = " + objFile + " -> " + shapeFile );
 				}
 				else
 				{
-					MESSAGE( std::string("Couldn't convert: ") + customName + " = " + objFile + " -> " + shapeFile );
+					MESSAGE( std::string("Couldn't convert shape: ") + customName + " = " + objFile + " -> " + shapeFile );
 				}
 			}
 			
 			if( !engine->GetCollisionShapeManager()->RegisterCustomShape( customName, shapeFile ) )
 			{
-				MESSAGE( std::string("Couldn't register: ") + customName + " = " + objFile + " -> " + shapeFile );
+				MESSAGE( std::string("Couldn't register shape: ") + customName + " = " + objFile + " -> " + shapeFile );
 			}
 		}
 	}

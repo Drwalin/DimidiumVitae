@@ -204,7 +204,7 @@ std::shared_ptr<PrimitiveShape> CollisionShapeConstructor::LoadPrimitive( std::i
 	int vertices, indices, i;
 	
 	stream >> typeName;
-	stream >> word;	// {
+	stream >> word;	// word="{"
 	
 	if( CMP(typeName,("box")) )
 		type = PrimitiveShape::Type::BOX;

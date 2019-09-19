@@ -32,8 +32,8 @@ bool Model::LoadFromFile( Engine * engine, std::string fileName )
 	irr::scene::IAnimatedMesh * newMesh = engine->GetWindow()->sceneManager->getMesh( fileName.c_str() );
 	if( newMesh == NULL )
 		return false;
-	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>( newMesh, [](irr::scene::IAnimatedMesh*ptr){MESSAGE("Should use drop here")/*ptr->drop();*/} );
-	printf( "\n Model loaded: %s", fileName.c_str() );
+	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>( newMesh, [](irr::scene::IAnimatedMesh*ptr){MESSAGE("Should use: \"ptr->drop();\" here")} );
+	MESSAGE( std::string("Model loaded: ") + fileName );
 	
 	this->fileName = fileName;
 	this->engine = engine;
@@ -70,7 +70,6 @@ Model::Model()
 
 Model::~Model()
 {
-	printf( "\n Model destroyed: %s", fileName.c_str() );
 	this->Destroy();
 }
 

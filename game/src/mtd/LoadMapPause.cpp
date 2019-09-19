@@ -18,10 +18,7 @@ std::string ConvertToValue( std::string str )
 	if( str.size() )
 	{
 		if( str[str.size()-1] == ';' )
-		{
-			DEBUG( "\n str[str.size()-1] == ';' " );
 			str.resize( str.size() - 1 );
-		}
 		
 		if( str.size() )
 		{
@@ -34,9 +31,7 @@ std::string ConvertToValue( std::string str )
 					for( ; i < str.size(); ++i )
 					{
 						if( str[i] == '"' )
-						{
 							last = i-1;
-						}
 					}
 					break;
 				}
@@ -81,10 +76,7 @@ int LoadOneObjectData( std::ifstream & file, std::map < std::string, std::string
 				data[key] = ConvertToValue( text );
 			}
 			else
-			{
-				DEBUG( "Unable to find '=' " );
 				return 4;
-			}
 		}
 	}
 	while( !file.eof() );

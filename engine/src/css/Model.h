@@ -24,8 +24,6 @@
 #include "..\lib\Debug.h"
 #include "..\lib\AR.hpp"
 
-#include "CustomCollisionData.h"
-
 class Engine;
 
 class Model
@@ -46,15 +44,9 @@ public:
 	
 	void SetMaterialsToNode( irr::scene::ISceneNode * node );
 	
-	btVector3 GetInertia() const;
-	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
 	
-	bool LoadCustomCollisionShapeFromObj();
-	
 	bool LoadFromFile( Engine * engine, std::string objFileName );
-	
-	void NullCustomCollisionShape();
 	
 	void Destroy();
 	

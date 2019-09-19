@@ -24,7 +24,6 @@ std::shared_ptr<btCollisionShape> Entity::GetCollisionShape()
 
 void Entity::UpdateTransformSceneNode()
 {
-	DEBUG( "Debug does objects updates sceneNode transform" );
 	if( sceneNode )
 	{
 		sceneNode->setPosition( Math::GetIrrVec( currentTransform ) * irr::core::vector3d<float>(-1,1,1) );
@@ -96,28 +95,12 @@ void Entity::OverlapWithEntity( Entity * other, btPersistentManifold * persisste
 			if( other )
 			{
 				if( this->overlappingInPreviousFrame.find( other ) != this->overlappingInPreviousFrame.end() )
-				{
 					this->EventOnEntityTickOverlapp( other, persisstentManifold );
-				}
 				else
-				{
 					this->EventOnEntityBeginOverlapp( other, persisstentManifold );
-				}
 				this->overlappingInCurrentFrame.insert( other );
 			}
-			else
-			{
-				MESSAGE( "other = NULL" );
-			}
 		}
-		else
-		{
-			MESSAGE( "perisstentManifold = NULL" );
-		}
-	}
-	else
-	{
-		MESSAGE( std::string("Trying to collide with my self: ") + this->GetName() );
 	}
 }
 

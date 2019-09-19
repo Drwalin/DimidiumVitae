@@ -19,6 +19,8 @@
 #include <istream>
 #include <ostream>
 
+#include "..\css\GUI.h"
+
 namespace Math
 {
 	const float PI = 3.14159265359f;
@@ -111,6 +113,32 @@ inline std::ostream & operator << ( std::ostream & stream, const btTransform tra
 	stream << (trans.getOrigin()) << " ";
 	stream << (trans.getRotation());
 	return stream;
+}
+
+
+
+inline GUI & operator << ( GUI & gui, const btVector3 point )
+{
+	gui << (point.x()) << " ";
+	gui << (point.y()) << " ";
+	gui << (point.z());
+	return gui;
+}
+
+inline GUI & operator << ( GUI & gui, const btQuaternion rotation )
+{
+	gui << (rotation.x()) << " ";
+	gui << (rotation.y()) << " ";
+	gui << (rotation.z()) << " ";
+	gui << (rotation.w());
+	return gui;
+}
+
+inline GUI & operator << ( GUI & gui, const btTransform trans )
+{
+	gui << (trans.getOrigin()) << " ";
+	gui << (trans.getRotation());
+	return gui;
 }
 
 #endif

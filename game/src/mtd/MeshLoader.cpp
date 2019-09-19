@@ -38,14 +38,10 @@ void LoadMeshes( std::string loadMeshesListFile, Engine * engine )
 			if( ptr )
 			{
 				if( engine->SetCustomModelName( customName, ptr ) == false )
-				{
-					DEBUG( std::string("Couldn't set custom mesh: \"") + customName + "\"" );
-				}
+					MESSAGE( std::string("Couldn't set custom mesh: \"") + customName + "\"" );
 			}
 			else
-			{
-				DEBUG( std::string("Couldn't load mesh: \"") + meshFile + "\"" );
-			}
+				MESSAGE( std::string("Couldn't load mesh: \"") + meshFile + "\"" );
 		}
 	}
 }

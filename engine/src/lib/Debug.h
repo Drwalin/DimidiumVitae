@@ -48,15 +48,6 @@ inline std::string MethodName( const std::string& prettyFunction )
 		ret.resize( index );
 	
 	return ret;
-	
-	
-	/*
-    size_t colons = prettyFunction.find("[");
-    size_t begin = prettyFunction.substr(0,colons).rfind(" ") + 1;
-    size_t end = prettyFunction.rfind("(") - begin;
-
-    return prettyFunction.substr(begin,end);
-    */
 }
 #define __METHOD_NAME__ (MethodName<int>(__PRETTY_FUNCTION__))
 

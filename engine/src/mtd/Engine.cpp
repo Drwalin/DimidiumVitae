@@ -176,11 +176,8 @@ void Engine::Tick( const float deltaTime )
 	this->physicsSimulationTime.SubscribeStart();
 	
 	this->UpdateEntities( deltaTime );
-	
 	if( !this->pausePhysics )
-	{
-		this->world->Tick( deltaTime, this->CalculateNumberOfSimulationsPerFrame( deltaTime ) );		/////////////////////////////////////////////////////////////////////////
-	}
+		this->world->Tick( deltaTime, this->CalculateNumberOfSimulationsPerFrame( deltaTime ) );
 	
 	this->physicsSimulationTime.SubscribeEnd();
 }
@@ -293,8 +290,6 @@ void Engine::DeleteEntity( const std::string & name )
 	{
 		if( it->second )
 		{
-			DEBUG( std::string("Destroying entity: ") + name )
-			
 			if( it->second == this->cameraParent )
 				this->cameraParent = NULL;
 			
@@ -303,10 +298,6 @@ void Engine::DeleteEntity( const std::string & name )
 		}
 		
 		this->entities.erase( it );
-	}
-	else
-	{
-		MESSAGE( std::string("Trying to destroy un-existing entity: ") + name )
 	}
 }
 
@@ -332,11 +323,8 @@ void Engine::Init( EventResponser * eventResponser, const char * windowName, con
 	
 	this->collisionShapeManager = new CollisionShapeManager();
 	
-	this->window->output->Init();
-	
 	if( this->GetCamera() == NULL )
 	{
-		DEBUG( "Creating camera" );
 		this->window->camera = std::shared_ptr<Camera>( new Camera( this, false, width, height, this->window->sceneManager->addCameraSceneNode() ) );
 		this->window->camera->GetCameraNode()->setFOV( 60.0f * Math::PI / 180.0f );
 	}
@@ -357,9 +345,7 @@ void Engine::Destroy()
 			it->second.reset();
 		}
 		else
-		{
-			MESSAGE("It shouldn't appear: ERR=3116661");
-		}
+			DEBUG("It shouldn't appear");
 	}
 	this->entities.clear();
 	
@@ -371,9 +357,7 @@ void Engine::Destroy()
 			it->second.reset();
 		}
 		else
-		{
-			MESSAGE("It shouldn't appear: ERR=3116662");
-		}
+			DEBUG("It shouldn't appear");
 	}
 	this->models.clear();
 	

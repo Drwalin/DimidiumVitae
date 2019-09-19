@@ -6,7 +6,7 @@
 #define WINDOW_H
 
 #include "Camera.h"
-#include "TextPrinter.h"
+#include "GUI.h"
 #include "BasicWindow.h"
 #include "EventResponser.h"
 
@@ -31,7 +31,9 @@ public:
 	virtual std::shared_ptr<Camera> GetCameraPointer() override;
 	
 	std::shared_ptr<Camera> camera;
-	TextPrinter * output;
+	GUI gui;
+	
+	virtual void DrawGUI() override;
 	
 	void Init( Engine * engine, const char * windowName, const char * iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen = false );
 	

@@ -13,7 +13,6 @@
 
 #include "EventResponser.h"
 #include "Camera.h"
-#include "TextPrinter.h"
 
 #include "TimeCounter.h"
 
@@ -90,6 +89,7 @@ public:
 	void BeginLoop();
 	void QueueQuit();
 	
+	virtual void DrawGUI()=0;
 	void Draw();
 	
 	void GenerateEvents();

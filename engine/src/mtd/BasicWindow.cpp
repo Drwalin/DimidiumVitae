@@ -139,10 +139,8 @@ bool BasicWindow::Init( const char * windowName, const char * iconFile, int widt
 
 void BasicWindow::Destroy()
 {
-	DEBUG(1)
 	ShutDownParallelThreadToDraw();
 	
-	DEBUG(2)
 	if( device )
 	{
 		device->closeDevice();
@@ -150,18 +148,10 @@ void BasicWindow::Destroy()
 		device = NULL;
 	}
 	
-	DEBUG(3)
 	quitWhenPossible = false;
-	
-	DEBUG(4)
 	deltaTime = 0.0;
-	
-	DEBUG(5)
 	lockMouse = false;
-	
-	DEBUG(6)
 	eventResponser = NULL;
-	DEBUG(7)
 }
 
 void BasicWindow::OneLoopFullTick()
@@ -197,7 +187,6 @@ void BasicWindow::Draw()
 	
 	if( IsParallelToDrawTickInUse() )
 	{
-		DEBUG(0)
 		parallelThreadToDrawContinue.store( true );
 	}
 	
@@ -205,15 +194,12 @@ void BasicWindow::Draw()
 	GetCameraPointer()->UseTarget();
 	sceneManager->drawAll();
 	gui->drawAll();
+	this->DrawGUI();
 	videoDriver->endScene();
 	
 	if( IsParallelToDrawTickInUse() )
 	{
-		DEBUG(1)
-		while( parallelThreadToDrawContinue.load() )
-		{
-		//	al_rest( 0.001 );
-		}
+		while( parallelThreadToDrawContinue.load() ){}
 	}
 	
 	wholeDrawTime.SubscribeEnd();
@@ -225,22 +211,18 @@ void BasicWindow::AlTick()
 	if( lockMouse )
 	{
 		eventIrrlichtReceiver->SetCursor( GetWidth() / 2, GetHeight() / 2 );
-		device->getCursorControl()->setPosition( 0.5f, 0.5f );//float(GetWidth())/2.0f, float(GetHeight())/2.0f );
+		device->getCursorControl()->setPosition( 0.5f, 0.5f );
 	}
 	
 	GenerateEvents();
-	
 	Tick( deltaTime );
-	
 	Draw();
 }
 
 void BasicWindow::GenerateEvents()
 {
 	eventsTime.SubscribeStart();
-	
 	eventIrrlichtReceiver->GenerateEvents();
-	
 	eventsTime.SubscribeEnd();
 }
 

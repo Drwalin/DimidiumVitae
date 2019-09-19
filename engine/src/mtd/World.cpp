@@ -109,7 +109,6 @@ bool World::RemoveBody( const std::string & name )
 	{
 		if( it->second )
 		{
-			// this->ActivateAll();
 			it->second->activate();
 			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( it->second );
 			if( rigid )
