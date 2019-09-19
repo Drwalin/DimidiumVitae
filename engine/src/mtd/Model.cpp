@@ -29,11 +29,10 @@ bool Model::LoadFromFile( Engine * engine, std::string fileName )
 	if( engine == NULL )
 		return false;
 	
-	irr::scene::IAnimatedMesh * newMesh = engine->GetWindow()->sceneManager->getMesh( fileName.c_str() );
+	irr::scene::IAnimatedMesh * newMesh = engine->GetWindow()->GetSceneManager()->getMesh( fileName.c_str() );
 	if( newMesh == NULL )
 		return false;
 	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>( newMesh, [](irr::scene::IAnimatedMesh*ptr){MESSAGE("Should use: \"ptr->drop();\" here")} );
-	MESSAGE( std::string("Model loaded: ") + fileName );
 	
 	this->fileName = fileName;
 	this->engine = engine;

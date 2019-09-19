@@ -291,7 +291,7 @@ void Engine::DeleteEntity( const std::string & name )
 			if( it->second == this->cameraParent )
 				this->cameraParent = NULL;
 			
-			this->world->RemoveBody( name );
+			it->second->Destroy();
 			it->second.reset();
 		}
 		
@@ -338,7 +338,7 @@ void Engine::Destroy()
 		if( it->second )
 		{
 			assert( it->second );
-			this->world->RemoveBody( it->first );
+			it->second->Destroy();
 			it->second.reset();
 		}
 		else

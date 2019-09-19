@@ -35,17 +35,17 @@ inline void World::UpdateObjectsActivation()
 		{
 			if( it == this->object.end() )
 				break;
-			it->second->activate( true );
+			(*it)->activate( true );
 		}
 		
 		if( it != this->object.end() )
 		{
-			this->currentActivator = it->first;
+			this->currentActivator = *it;
 		}
 		else
 		{
 			--this->activateAll;
-			this->currentActivator = "";
+			this->currentActivator = NULL;
 		}
 	}
 }
@@ -81,39 +81,36 @@ void World::Init()
 	this->dynamicsWorld->setGravity( btVector3(0, -20, 0) );
 }
 
-bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask )
+bool World::AddBody( std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask )
 {
 	if( body )
 	{
-		if( this->object.find(name) == this->object.end() )
+		if( this->object.find(body) == this->object.end() )
 		{
 			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( body );
 			if( rigid )
 				this->dynamicsWorld->addRigidBody( rigid.get(), collisionFilterGroup, collisionFilterMask );
 			else
 				this->dynamicsWorld->addCollisionObject( body.get(), collisionFilterGroup, collisionFilterMask );
-			this->object[name] = body;
+			this->object.insert( body );
 			body->activate();
-			return true;
 		}
+		return true;
 	}
 	return false;
 }
 
-bool World::RemoveBody( const std::string & name )
+bool World::RemoveBody( std::shared_ptr<btCollisionObject> body )
 {
-	auto it = this->object.find( name );
+	auto it = this->object.find( body );
 	if( it != this->object.end() )
 	{
-		if( it->second )
-		{
-			it->second->activate();
-			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( it->second );
-			if( rigid )
-				this->dynamicsWorld->removeRigidBody( rigid.get() );
-			else
-				this->dynamicsWorld->removeCollisionObject( it->second.get() );
-		}
+		(*it)->activate();
+		std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( *it );
+		if( rigid )
+			this->dynamicsWorld->removeRigidBody( rigid.get() );
+		else
+			this->dynamicsWorld->removeCollisionObject( it->get() );
 		this->object.erase( it );
 	}
 	return false;
@@ -123,14 +120,11 @@ void World::RemoveBodys()
 {
 	for( auto it = this->object.begin(); it != this->object.end(); ++it )
 	{
-		if( it->second )
-		{
-			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( it->second );
-			if( rigid )
-				this->dynamicsWorld->removeRigidBody( rigid.get() );
-			else
-				this->dynamicsWorld->removeCollisionObject( it->second.get() );
-		}
+		std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>( *it );
+		if( rigid )
+			this->dynamicsWorld->removeRigidBody( rigid.get() );
+		else
+			this->dynamicsWorld->removeCollisionObject( it->get() );
 	}
 	this->object.clear();
 }

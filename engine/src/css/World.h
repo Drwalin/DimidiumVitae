@@ -13,9 +13,7 @@
 
 #include <cstdio>
 
-#include <map>
-#include <string>
-
+#include <set>
 #include <memory>
 
 class World
@@ -28,9 +26,9 @@ private:
 	btSequentialImpulseConstraintSolver * solver;
 	btDiscreteDynamicsWorld * dynamicsWorld;
 	
-	std::map < std::string, std::shared_ptr<btCollisionObject> > object;
+	std::set < std::shared_ptr<btCollisionObject> > object;
 	
-	std::string currentActivator;
+	std::shared_ptr<btCollisionObject> currentActivator;
 	int activateAll;
 	
 	inline void UpdateObjectsActivation();
@@ -47,8 +45,8 @@ public:
 	
 	void Tick( btScalar deltaTime, int count = 0 );
 	
-	bool AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
-	bool RemoveBody( const std::string & name );
+	bool AddBody( std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
+	bool RemoveBody( std::shared_ptr<btCollisionObject> body );
 	void RemoveBodys();
 	
 	void Init();

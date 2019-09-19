@@ -94,7 +94,7 @@ void Event::KeyPressedEvent( int keyCode )
 		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), this->engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( btQuaternion(-euler.y(),-euler.x(),euler.z()), this->window->GetCamera()->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
-			temp->SetModel( this->engine->GetModel( "Crate01" ), false );
+			temp->SetModel( this->engine->GetModel( "Crate01" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
 			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );
@@ -108,7 +108,7 @@ void Event::KeyPressedEvent( int keyCode )
 		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), this->engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), this->window->GetCamera()->GetLocation() + character->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
-			temp->SetModel( this->engine->GetModel( "Sphere" ), false );
+			temp->SetModel( this->engine->GetModel( "Sphere" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
 			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );

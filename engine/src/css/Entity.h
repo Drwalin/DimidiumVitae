@@ -13,14 +13,14 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-#include <string>
-#include <set>
 #include <iostream>
+#include <string>
+#include <memory>
+#include <set>
 
 #include "..\lib\Debug.h"
-#include <memory>
 
-#include "Model.h"
+#include "SceneNode.h"
 
 class Engine;
 
@@ -34,8 +34,7 @@ protected:
 	
 	btTransform currentTransform;
 	
-	std::shared_ptr<Model> model;
-	irr::scene::IAnimatedMeshSceneNode * sceneNode;
+	std::shared_ptr<SceneNode> sceneNode;
 	std::shared_ptr<btCollisionShape> collisionShape;
 	std::shared_ptr<btCollisionObject> body;
 	
@@ -48,11 +47,9 @@ protected:
 	std::set< Entity* > overlappingInPreviousFrame;
 	std::set< Entity* > overlappingInCurrentFrame;
 	
-	void UpdateTransformSceneNode();
-	
 public:
 	
-	irr::scene::IAnimatedMeshSceneNode * GetSceneNode();
+	std::shared_ptr<SceneNode> GetSceneNode();
 	
 	virtual void NextOverlappingFrame();
 	void OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold );
@@ -91,7 +88,7 @@ public:
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal );
 	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal );
 	
-	void SetModel( std::shared_ptr<Model> model, bool light = true );
+	void SetModel( std::shared_ptr<Model> model );
 	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
 	
 	void Init( Engine * engine );
@@ -103,7 +100,6 @@ public:
 	
 	virtual void Destroy();
 	void DestroyBody();
-	void DestroySceneNode();
 	
 	virtual int GetTypeSize() const = 0;								// return size of type in bytes
 	virtual void Free() = 0;											// calls type destructor and frees an Entity

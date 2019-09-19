@@ -330,6 +330,7 @@ GUI & GUI::operator << ( const Rectanglef newWorkspace )
 
 GUI & GUI::DrawTexture( Texture * texture, Rectanglei source, Rectanglei destiny, Color color )
 {
+	this->toDraw.insert( this->toDraw.end(), GUI::DrawEvent( texture, source, destiny, color ) );
 	return (*this);
 }
 

@@ -12,7 +12,7 @@
 
 #include <cassert>
 
-irr::scene::IAnimatedMeshSceneNode * Entity::GetSceneNode()
+std::shared_ptr<SceneNode> Entity::GetSceneNode()
 {
 	return this->sceneNode;
 }
@@ -20,18 +20,6 @@ irr::scene::IAnimatedMeshSceneNode * Entity::GetSceneNode()
 std::shared_ptr<btCollisionShape> Entity::GetCollisionShape()
 {
 	return this->collisionShape;
-}
-
-void Entity::UpdateTransformSceneNode()
-{
-	if( sceneNode )
-	{
-		sceneNode->setPosition( Math::GetIrrVec( currentTransform ) * irr::core::vector3d<float>(-1,1,1) );
-		
-		irr::core::vector3d<float> eulerRadians; 
-		Math::GetIrrQuaternion( btQuaternion( currentTransform.getRotation().getAxis() * btVector3(1,-1,-1), currentTransform.getRotation().getAngle() ) ).toEuler( eulerRadians );
-		sceneNode->setRotation( eulerRadians * irr::core::RADTODEG );
-	}
 }
 
 void Entity::SetTransform( const btTransform & transform )
@@ -117,7 +105,8 @@ void Entity::Tick( const float deltaTime )
 		else this->currentTransform = this->body->getWorldTransform();
 	}
 	
-	this->UpdateTransformSceneNode();
+	if( this->sceneNode )
+		this->sceneNode->SetTransform( this->currentTransform );
 }
 
 void Entity::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
@@ -180,9 +169,7 @@ void Entity::SetScale( btVector3 scale )
 		this->body->activate( true );
 	}
 	if( this->sceneNode )
-	{
-		this->sceneNode->setScale( Math::GetIrrVec( this->scale ) );
-	}
+		this->sceneNode->SetScale( this->scale );
 }
 
 btVector3 Entity::GetScale()
@@ -215,7 +202,7 @@ const std::string & Entity::GetName() const
 	return name;
 }
 
-void Entity::SetModel( std::shared_ptr<Model> model, bool light )
+void Entity::SetModel( std::shared_ptr<Model> model )
 {
 	if( this->engine )
 	{
@@ -223,27 +210,12 @@ void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 		{
 			if( this->sceneNode )
 			{
-				this->engine->GetWindow()->GetSceneManager()->addToDeletionQueue( this->sceneNode );
+				this->sceneNode->Destroy();
 				this->sceneNode = NULL;
 			}
 			
-			this->model = NULL;
-			
-			if( model )
-			{
-				if( model->GetMesh() )
-				{
-					this->model = model;
-					this->sceneNode = this->engine->GetWindow()->GetSceneManager()->addAnimatedMeshSceneNode( model->GetMesh().get() );
-					this->model->SetMaterialsToNode( this->sceneNode );
-					
-					this->sceneNode->setMaterialFlag( irr::video::EMF_NORMALIZE_NORMALS, true );
-					this->sceneNode->setScale( Math::GetIrrVec( scale ) );
-					
-					if( light )
-						this->sceneNode->addShadowVolumeSceneNode();
-				}
-			}
+			this->sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
+			this->sceneNode->Init( this->engine, model );
 		}
 	}
 }
@@ -253,7 +225,7 @@ void Entity::SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<b
 	this->DestroyBody();
 	this->body = body;
 	this->collisionShape = shape;
-	this->engine->GetWorld()->AddBody( this->GetName(), this->body, collisionFilterGroup, collisionFilterMask );
+	this->engine->GetWorld()->AddBody( this->body, collisionFilterGroup, collisionFilterMask );
 	this->body->setUserPointer( this );
 }
 
@@ -261,6 +233,8 @@ void Entity::DestroyBody()
 {
 	if( this->body )
 	{
+		this->engine->GetWorld()->RemoveBody( this->GetBody<btCollisionObject>() );
+		
 		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
 		if( rigidBody )
 		{
@@ -287,27 +261,11 @@ void Entity::DestroyBody()
 	}
 }
 
-void Entity::DestroySceneNode()
-{
-	if( this->sceneNode )
-	{
-		if( this->engine )
-		{
-			if( this->engine->GetWindow() )
-			{
-				if( this->engine->GetWindow()->GetSceneManager() )
-				{
-					this->engine->GetWindow()->GetSceneManager()->addToDeletionQueue( this->sceneNode );
-				}
-			}
-		}
-		this->sceneNode = NULL;
-	}
-}
-
 void Entity::Destroy()
 {
-	this->DestroySceneNode();
+	if( this->sceneNode )
+		this->sceneNode->Destroy();
+	this->sceneNode = NULL;
 	this->DestroyBody();
 	this->name = "";
 	this->scale = btVector3(0,0,0);

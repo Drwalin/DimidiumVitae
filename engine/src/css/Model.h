@@ -33,7 +33,7 @@ private:
 	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
 	std::map < int, irr::video::SMaterial > materials;
 	
-	Engine * engine;
+	class Engine * engine;
 	
 	std::string name;
 	std::string fileName;

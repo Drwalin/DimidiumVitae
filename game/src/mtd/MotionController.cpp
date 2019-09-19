@@ -28,8 +28,14 @@ void MotionController::Init( std::shared_ptr<Entity> characterEntity, float step
 				this->jumpCooldownLimit = 0.2f;
 				this->jumpCooldown = this->jumpCooldownLimit;
 			}
+			else
+				MESSAGE("NULL btRigidBody");
 		}
+		else
+			MESSAGE("NULL btCollisionShape");
 	}
+	else
+		MESSAGE("NULL Entity passed as argument");
 }
 
 void MotionController::UpdateSpeed( const float deltaTime )

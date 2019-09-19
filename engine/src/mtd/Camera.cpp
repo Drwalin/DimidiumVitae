@@ -14,11 +14,11 @@ void Camera::UseTarget()
 {
 	if( target )
 	{
-		engine->GetWindow()->videoDriver->setRenderTarget( target, true, true, 0 );
+		engine->GetWindow()->GetVideoDriver()->setRenderTarget( target, true, true, 0 );
 	}
 	else
 	{
-		engine->GetWindow()->videoDriver->setRenderTarget( 0, true, true, 0 );
+		engine->GetWindow()->GetVideoDriver()->setRenderTarget( 0, true, true, 0 );
 	}
 }
 
@@ -180,7 +180,7 @@ Camera::Camera( Engine * engine, bool textured, unsigned w, unsigned h, irr::sce
 	
 	sceneNode = cameraNode;
 	if( textured )
-		target = engine->GetWindow()->videoDriver->addRenderTargetTexture( irr::core::dimension2d<unsigned>( w, h ), "RTT1" );
+		target = engine->GetWindow()->GetVideoDriver()->addRenderTargetTexture( irr::core::dimension2d<unsigned>( w, h ), "RTT1" );
 	else
 		target = NULL;
 	

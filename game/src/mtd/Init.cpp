@@ -62,7 +62,7 @@ extern "C" int Init( int argc, char ** argv )
 					auto temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(x,30,y) ), 300.0f );
 					if( temp )
 					{
-						temp->SetModel( sphere, false );
+						temp->SetModel( sphere );
 						temp->SetScale( btVector3( 2, 2, 2 ) );
 						temp->GetBody()->setFriction( 0.75 );
 						temp->GetBody()->setDamping( 0.1, 0.1 );
@@ -73,7 +73,7 @@ extern "C" int Init( int argc, char ** argv )
 		
 		// create map
 		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
-		map->SetModel( mapModel, false );
+		map->SetModel( mapModel );
 	}
 	
 	
