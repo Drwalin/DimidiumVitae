@@ -108,8 +108,6 @@ void Entity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * 
 void Entity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
 void Entity::EventOnEntityEndOverlapp( Entity * other ){}
 
-
-
 void Entity::Tick( const float deltaTime )
 {
 	if( this->body )
@@ -225,7 +223,7 @@ void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 		{
 			if( this->sceneNode )
 			{
-				this->engine->GetWindow()->sceneManager->addToDeletionQueue( this->sceneNode );
+				this->engine->GetWindow()->GetSceneManager()->addToDeletionQueue( this->sceneNode );
 				this->sceneNode = NULL;
 			}
 			
@@ -236,7 +234,7 @@ void Entity::SetModel( std::shared_ptr<Model> model, bool light )
 				if( model->GetMesh() )
 				{
 					this->model = model;
-					this->sceneNode = this->engine->GetWindow()->sceneManager->addAnimatedMeshSceneNode( model->GetMesh().get() );
+					this->sceneNode = this->engine->GetWindow()->GetSceneManager()->addAnimatedMeshSceneNode( model->GetMesh().get() );
 					this->model->SetMaterialsToNode( this->sceneNode );
 					
 					this->sceneNode->setMaterialFlag( irr::video::EMF_NORMALIZE_NORMALS, true );
@@ -297,9 +295,9 @@ void Entity::DestroySceneNode()
 		{
 			if( this->engine->GetWindow() )
 			{
-				if( this->engine->GetWindow()->sceneManager )
+				if( this->engine->GetWindow()->GetSceneManager() )
 				{
-					this->engine->GetWindow()->sceneManager->addToDeletionQueue( this->sceneNode );
+					this->engine->GetWindow()->GetSceneManager()->addToDeletionQueue( this->sceneNode );
 				}
 			}
 		}

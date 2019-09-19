@@ -13,7 +13,7 @@
 #include <set>
 
 #include "EventResponser.h"
-#include "BasicWindow.h"
+#include "Window.h"
 
 class EventReceiverIrrlicht : public irr::IEventReceiver
 {
@@ -23,7 +23,7 @@ private:
 	std::mutex queueMutex;
 	
 	EventResponser * eventResponser;
-	BasicWindow * basicWindow;
+	Window * window;
 	
 	int mouseX, mouseY, mouseW;
 	
@@ -41,7 +41,7 @@ public:
 	
 	void GenerateEvents();
 	
-	EventReceiverIrrlicht( EventResponser * event, BasicWindow * window );
+	EventReceiverIrrlicht( EventResponser * event, Window * window );
 	~EventReceiverIrrlicht();
 };
 

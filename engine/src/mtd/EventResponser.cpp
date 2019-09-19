@@ -7,34 +7,29 @@
 
 #include "..\css\EventResponser.h"
 
+class Window * EventResponser::GetWindow()
+{
+	return this->window;
+}
+
 void EventResponser::SetEngine( class Engine * engine )
 {
 	this->engine = engine;
 }
 
-void EventResponser::Init()
+void EventResponser::SetWindow( Window * window )
 {
-	window = (Window*)( GetBasicWindow() );
-}
-
-BasicWindow * EventResponser::GetBasicWindow()
-{
-	return basicWindow;
-}
-
-void EventResponser::SetBasicWindow( BasicWindow * basicWindow )
-{
-	this->basicWindow = basicWindow;
+	this->window = window;
 }
 
 EventResponser::EventResponser()
 {
-	basicWindow = NULL;
+	this->window = NULL;
 }
 
 EventResponser::~EventResponser()
 {
-	basicWindow = NULL;
+	this->window = NULL;
 }
 
 #endif

@@ -51,9 +51,7 @@ inline void Engine::UpdateEntitiesOverlapp()
 	for( auto it = this->entities.begin(); it != this->entities.end(); ++it )
 	{
 		if( it->second )
-		{
 			it->second->NextOverlappingFrame();
-		}
 	}
 	
 	btDispatcher * dispacher = this->world->GetDynamicsWorld()->getDispatcher();
@@ -119,8 +117,8 @@ void Engine::QueueEntityToDestroy( const std::string & name )
 
 float Engine::GetDeltaTime()
 {
-	if( window )
-		return window->GetDeltaTime();
+	if( this->window )
+		return this->window->GetDeltaTime();
 	return 1.0f/60.0f;
 }
 
@@ -184,7 +182,7 @@ void Engine::Tick( const float deltaTime )
 
 std::shared_ptr<Camera> Engine::GetCamera() const
 {
-	return this->window->camera;
+	return this->window->GetCamera();
 }
 
 std::shared_ptr<Entity> Engine::GetCameraParent() const
@@ -311,12 +309,11 @@ void Engine::Init( EventResponser * eventResponser, const char * windowName, con
 {
 	this->Destroy();
 	this->event = eventResponser;
-	this->world = new World;
-	this->window = new Window;
-	this->world->Init();
-	this->window->Init( this, windowName, iconFile, width, height, event, fullscreen );
-	this->event->Init();
 	this->event->SetEngine( this );
+	this->world = new World;
+	this->world->Init();
+	this->window = new Window;
+	this->window->Init( this, windowName, iconFile, width, height, this->event, fullscreen );
 	
 	this->window->HideMouse();
 	this->window->LockMouse();
@@ -325,8 +322,8 @@ void Engine::Init( EventResponser * eventResponser, const char * windowName, con
 	
 	if( this->GetCamera() == NULL )
 	{
-		this->window->camera = std::shared_ptr<Camera>( new Camera( this, false, width, height, this->window->sceneManager->addCameraSceneNode() ) );
-		this->window->camera->GetCameraNode()->setFOV( 60.0f * Math::PI / 180.0f );
+		this->window->SetCamera( std::shared_ptr<Camera>( new Camera( this, false, width, height, this->window->GetSceneManager()->addCameraSceneNode() ) ) );
+		this->window->GetCamera()->GetCameraNode()->setFOV( 70.0f * Math::PI / 180.0f );
 	}
 	
 	//this->window->UseParallelThreadToDraw();

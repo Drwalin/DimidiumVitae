@@ -10,22 +10,17 @@
 
 class EventResponser
 {
-private:
-	
-	class BasicWindow * basicWindow;
-	
 protected:
 	
 	class Window * window;
 	class Engine * engine;
-	class BasicWindow * GetBasicWindow();
 	
 public:
 	
-	void SetEngine( class Engine * engine );
-	void Init();
+	class Window * GetWindow();
+	void SetWindow( class Window * window );
 	
-	void SetBasicWindow( class BasicWindow * basicWindow );
+	void SetEngine( class Engine * engine );
 	
 	virtual void MouseMoveEvent( int x, int y, int w, int dx, int dy, int dw ) = 0;
 	virtual void KeyPressedEvent( int keyCode ) = 0;

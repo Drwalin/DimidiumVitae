@@ -81,14 +81,13 @@ public:
 		NOT_TRANSPARENT = 2
 	};
 	
-	
 	int GetNumberOfEntities() const;
 	std::shared_ptr<Entity> GetNewEntityOfType( const std::string & name );
 	bool RegisterType( const std::string & name, const std::string & modulePath );
 	
-	
 	void QueueEntityToDestroy( std::shared_ptr<Entity> ptr );
 	void QueueEntityToDestroy( const std::string & name );
+	void DeleteEntity( const std::string & name );
 	
 	std::shared_ptr<Entity> RayTrace( btVector3 begin, btVector3 end, int channel, btVector3 & point, btVector3 & normal, const std::vector < std::shared_ptr<Entity> > & ignoreEntities );
 	
@@ -105,6 +104,7 @@ public:
 	
 	CollisionShapeManager * GetCollisionShapeManager();
 	
+	std::string GetAvailableEntityName( const std::string & name );
 	std::shared_ptr<Entity> AddEntity( std::shared_ptr<Entity> emptyEntity, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );
 	
 	void AttachCameraToEntity( const std::string & name, btVector3 location );
@@ -114,16 +114,11 @@ public:
 	std::shared_ptr<Model> GetModel( const std::string & name );
 	std::shared_ptr<Entity> GetEntity( const std::string & name );
 	
-	std::string GetAvailableEntityName( const std::string & name );
-	
-	void DeleteEntity( const std::string & name );
-	
 	int CalculateNumberOfSimulationsPerFrame( const float deltaTime );
 	void Tick( const float deltaTime );
 	void ParallelToDrawTick( const float deltaTime );
 	
 	void Init( EventResponser * eventResponser, const char * windowName, const char * iconFile, int width, int height, bool fullscreen = false );
-	
 	void BeginLoop();
 	
 	void Destroy();

@@ -99,7 +99,6 @@ void CharacterWalkTrigger::Tick( const float deltaTime )
 	this->SetTransform( this->parent->GetTransform() );
 }
 
-
 void CharacterWalkTrigger::Load( std::istream & stream )
 {
 	Trigger::Load( stream );

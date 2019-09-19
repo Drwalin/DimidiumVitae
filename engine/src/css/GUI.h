@@ -29,7 +29,7 @@ private:
 	Color currentColor;
 	Vectori cursorPosition;
 	Rectanglei workSpace;
-	class BasicWindow * basicWindow;
+	class Window * window;
 	
 	class DrawEvent
 	{
@@ -70,8 +70,6 @@ private:
 	
 	std::vector<DrawEvent> toDraw;
 	
-	irr::gui::IGUIFont * font;
-	
 	void PrintNewLine();
 	void PrintTab();
 	void PrintOneBufferLineImplicitly( char * str, int width, int height );
@@ -83,7 +81,7 @@ public:
 	Font * GetDefaultFont();
 	
 	void Flush();
-	void Init( BasicWindow * basicWindow );
+	void Init( Window * window );
 	
 	Vectori GetWindowSize() const;
 	Vectori GetWorkspaceSize() const;
@@ -109,7 +107,6 @@ public:
 	GUI & operator << ( const Rectanglef newWorkspace );
 	
 	GUI & DrawTexture( Texture * texture, Rectanglei source, Rectanglei destiny, Color color );
-	
 	
 	GUI();
 	~GUI();

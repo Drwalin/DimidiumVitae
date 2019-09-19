@@ -11,7 +11,7 @@ class StaticEntity : public Entity
 {
 protected:
 	
-	int c;
+	
 	
 public:
 	

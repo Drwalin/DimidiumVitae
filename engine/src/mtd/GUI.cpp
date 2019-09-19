@@ -6,7 +6,7 @@
 #define GUI_CPP
 
 #include "..\css\GUI.h"
-#include "..\css\BasicWindow.h"
+#include "..\css\Window.h"
 
 #include "..\lib\Debug.h"
 
@@ -78,17 +78,17 @@ Font * GUI::GetDefaultFont()
 
 void GUI::Flush()
 {
-	irr::video::IVideoDriver * videoDriver = this->basicWindow->videoDriver;
+	irr::video::IVideoDriver * videoDriver = this->window->GetVideoDriver();
 	for( auto it=this->toDraw.begin(); it!=this->toDraw.end(); ++it )
 		it->Draw( videoDriver );
 	this->toDraw.clear();
 }
 
-void GUI::Init( BasicWindow * basicWindow )
+void GUI::Init( Window * window )
 {
-	this->basicWindow = basicWindow;
+	this->window = window;
 	
-	this->defaultFont = this->basicWindow->device->getGUIEnvironment()->getFont("media\\Fonts\\courier.bmp");
+	this->defaultFont = this->window->GetDevice()->getGUIEnvironment()->getFont("media\\Fonts\\courier.bmp");
 	this->currentFont = this->defaultFont;
 	
 	this->workSpace = Rectanglei( 0, 0, this->GetWindowSize().X, this->GetWindowSize().Y );
@@ -100,8 +100,8 @@ void GUI::Init( BasicWindow * basicWindow )
 Vectori GUI::GetWindowSize() const
 {
 	Vectori ret;
-	ret.X = this->basicWindow->videoDriver->getScreenSize().Width;
-	ret.Y = this->basicWindow->videoDriver->getScreenSize().Height;
+	ret.X = this->window->GetVideoDriver()->getScreenSize().Width;
+	ret.Y = this->window->GetVideoDriver()->getScreenSize().Height;
 	return ret;
 }
 
@@ -337,14 +337,14 @@ GUI::GUI()
 {
 	this->defaultFont = NULL;
 	this->currentFont = NULL;
-	this->basicWindow = NULL;
+	this->window = NULL;
 }
 
 GUI::~GUI()
 {
 	this->defaultFont = NULL;
 	this->currentFont = NULL;
-	this->basicWindow = NULL;
+	this->window = NULL;
 }
 
 #endif

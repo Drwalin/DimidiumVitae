@@ -75,7 +75,6 @@ std::string StaticEntity::GetClassName() const{ return "StaticEntity"; }
 StaticEntity::StaticEntity() :
 	Entity()
 {
-	c = clock();
 }
 
 StaticEntity::~StaticEntity()

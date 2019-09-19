@@ -21,8 +21,6 @@ void Player::Tick( const float deltaTime )
 	Character::Tick( deltaTime );
 }
 
-
-
 void Player::Load( std::istream & stream )
 {
 	Character::Load( stream );

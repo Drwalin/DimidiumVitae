@@ -30,10 +30,7 @@ protected:
 	std::shared_ptr<MotionController> motionController;
 	
 	
-	
 	void CorrectCameraRotation();
-	
-	
 	
 public:
 	
@@ -48,7 +45,6 @@ public:
 	void EventRotateCameraBy( const btVector3 & rotation );
 	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
 	
-	
 	void SetCameraLocation( const btVector3 & location );
 	void SetCameraRotation( const btVector3 & rotation );
 	
@@ -58,12 +54,9 @@ public:
 	btVector3 GetLeftVector() const;
 	btVector3 GetFlatLeftVector() const;
 	
-	
 	virtual void Tick( const float deltaTime ) override;
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
 	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
-	
-	
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;

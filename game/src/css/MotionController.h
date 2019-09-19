@@ -41,9 +41,9 @@ protected:
 		SNEAKING
 	};
 	
-	
 	std::vector<State> states;
 	btVector3 walkingDirection;
+	
 	
 	void UpdateSpeed( const float deltaTime );
 	void AddState( State state );

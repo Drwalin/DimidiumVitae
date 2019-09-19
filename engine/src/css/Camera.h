@@ -30,6 +30,7 @@ private:
 	
 	class Engine * engine;
 	
+	
 	void UpdateCameraView();
 	
 public:
@@ -40,7 +41,6 @@ public:
 	bool IsMainTarget();
 	
 	irr::scene::ICameraSceneNode * GetCameraNode();
-	
 	
 	btTransform GetTransform() const;
 	btQuaternion GetRotation() const;

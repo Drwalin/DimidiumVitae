@@ -14,7 +14,7 @@ class StringToEnter
 {
 private:
 	
-	class BasicWindow * basicWindow;
+	class Window * window;
 	
 	std::string str;
 	int currentPosition;
@@ -22,13 +22,14 @@ private:
 	
 	unsigned charactersLimit;
 	
-	void InsertSign( char sign );
+	
+	void InsertCharacter( char character );
 	
 public:
 	
 	void SetCharactersLimit( unsigned value );
 	
-	void SetBasicWindow( class BasicWindow * basicWindow );
+	void SetWindow( class Window * window );
 	
 	void PressKey( const irr::SEvent::SKeyInput & key );
 	

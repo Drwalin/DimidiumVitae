@@ -206,17 +206,17 @@ std::shared_ptr<PrimitiveShape> CollisionShapeConstructor::LoadPrimitive( std::i
 	stream >> typeName;
 	stream >> word;	// word="{"
 	
-	if( CMP(typeName,("box")) )
+	if( typeName=="box" )//CMP(typeName,("box")) )
 		type = PrimitiveShape::Type::BOX;
-	else if( CMP(typeName,("sphere")) )
+	else if( typeName=="sphere" )//CMP(typeName,("sphere")) )
 		type = PrimitiveShape::Type::SPHERE;
-	else if( CMP(typeName,("cylinder")) )
+	else if( typeName=="cylinder" )//CMP(typeName,("cylinder")) )
 		type = PrimitiveShape::Type::CYLINDER;
-	else if( CMP(typeName,("capsule")) )
+	else if( typeName=="capsule" )//CMP(typeName,("capsule")) )
 		type = PrimitiveShape::Type::CAPSULE;
-	else if( CMP(typeName,("convex")) )
+	else if( typeName=="convex" )//CMP(typeName,("convex")) )
 		type = PrimitiveShape::Type::CONVEX;
-	else if( CMP(typeName,("trimesh")) )
+	else if( typeName=="trimesh" )//CMP(typeName,("trimesh")) )
 		type = PrimitiveShape::Type::TRIMESH;
 	
 	if( type == PrimitiveShape::Type::NONE )

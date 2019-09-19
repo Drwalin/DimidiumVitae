@@ -81,8 +81,6 @@ void World::Init()
 	this->dynamicsWorld->setGravity( btVector3(0, -20, 0) );
 }
 
-
-
 bool World::AddBody( const std::string & name, std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask )
 {
 	if( body )
