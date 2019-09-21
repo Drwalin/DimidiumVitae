@@ -22,10 +22,13 @@ bool CharacterWalkTrigger::IsBottomCollision() const
 	return this->bottomCollision;
 }
 
-void CharacterWalkTrigger::Init( std::shared_ptr<Entity> parent, float stepHeight )
+void CharacterWalkTrigger::Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight )
 {
-	this->parent = parent;
+	this->character = character;
+	this->otherTrigger = otherTrigger;
 	this->stepHeight = stepHeight;
+	this->bottom = 0.0f;
+	this->top = 1.75f;
 }
 
 void CharacterWalkTrigger::NextOverlappingFrame()
@@ -52,7 +55,8 @@ void CharacterWalkTrigger::NextOverlappingFrame()
 
 void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
-	if( other != parent.get() )
+	float mid = (this->bottom + this->top)*0.5f;
+	if( other != this->character.get() && other != this && other != this->otherTrigger.get() )
 	{
 		for( int i=0; i<persisstentManifold->getNumContacts(); ++i )
 		{
@@ -67,8 +71,10 @@ void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold *
 			{
 				if( this->bottom + this->stepHeight >= contactPoint.y() )
 					this->bottomCollision = true;
-				if( this->top - this->stepHeight <= contactPoint.y() )
+				if( mid <= contactPoint.y() )
+				{
 					this->topCollision = true;
+				}
 			}
 			else
 				this->sideCollision = true;
@@ -96,7 +102,6 @@ void CharacterWalkTrigger::EventOnEntityEndOverlapp( Entity * other )
 void CharacterWalkTrigger::Tick( const float deltaTime )
 {
 	Trigger::Tick( deltaTime );
-	this->SetTransform( this->parent->GetTransform() );
 }
 
 void CharacterWalkTrigger::Load( std::istream & stream )
@@ -121,6 +126,8 @@ void CharacterWalkTrigger::Despawn()
 
 void CharacterWalkTrigger::Destroy()
 {
+	this->character = NULL;
+	this->otherTrigger = NULL;
 	Trigger::Destroy();
 }
 

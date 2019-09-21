@@ -87,7 +87,7 @@ btCollisionShape * PrimitiveShape::Get()
 	case PrimitiveShape::Type::CYLINDER:
 		return new btCylinderShape( btVector3( this->cylinder->radius, this->cylinder->height, this->cylinder->radius ) );
 	case PrimitiveShape::Type::CAPSULE:
-		return new btCapsuleShape( this->capsule->radius, this->capsule->height*0.5f );
+		return new btCapsuleShape( this->capsule->radius, this->capsule->height - 2.0f*this->capsule->radius );
 	case PrimitiveShape::Type::CONVEX:
 		return new btConvexHullShape( this->convex->vertices.front().m_floats, this->convex->vertices.size(), sizeof(btVector3) );
 	case PrimitiveShape::Type::TRIMESH:

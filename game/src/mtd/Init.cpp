@@ -16,8 +16,6 @@
 
 #include <EventResponser.h>
 
-#include "..\css\Character.h"
-
 #include <cassert>
 
 #include <conio.h>
@@ -28,6 +26,9 @@
 
 extern "C" int Init( int argc, char ** argv )
 {
+	Dll triggerModule( "dlls/Trigger.dll" );
+	Dll characterWalkTriggerModule( "dlls/CharacterWalkTrigger.dll" );
+	Dll characterModule( "dlls/Character.dll" );
 	Dll eventModule( "dlls/Event.dll" );
 	
 	srand( time( NULL ) );
@@ -50,8 +51,8 @@ extern "C" int Init( int argc, char ** argv )
 		
 		// create player
 		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 15.0 );
-		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.8, 0 ) );
-		((Character*)(player.get()))->SetCamera( engine->GetCamera() );
+		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.7f, 0 ) );
+		player->SetCamera( engine->GetCamera() );
 		
 		// create test balls
 		{

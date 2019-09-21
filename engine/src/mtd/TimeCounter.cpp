@@ -24,17 +24,51 @@ TimeDuration TimeCounter::GetDuration( TimePoint begin, TimePoint end )
 	return std::chrono::duration_cast<TimeDuration>( end - begin );
 }
 
-void TimeCounter::SetTimeSpan( TimeDuration time )
+void TimeCounter::SetTimeSpan( float time )
 {
 	this->timeSpan = time;
+}
+
+float TimeCounter::GetPeakTime() const
+{
+	if( this->array.size() )
+	{
+		float peak = TimeCounter::GetDurationSeconds( this->array.front().begin, this->array.front().end );
+		float temp;
+		for( auto it=this->array.begin(); it!=this->array.end(); ++it )
+		{
+			temp = TimeCounter::GetDurationSeconds( it->begin, it->end );
+			if( peak < temp )
+				peak = temp;
+		}
+		return peak;
+	}
+	return 0.00001f;
+}
+
+float TimeCounter::GetPitTime() const
+{
+	if( this->array.size() )
+	{
+		float pit = TimeCounter::GetDurationSeconds( this->array.front().begin, this->array.front().end );
+		float temp;
+		for( auto it=this->array.begin(); it!=this->array.end(); ++it )
+		{
+			temp = TimeCounter::GetDurationSeconds( it->begin, it->end );
+			if( pit > temp )
+				pit = temp;
+		}
+		return pit;
+	}
+	return 0.00001f;
 }
 
 float TimeCounter::GetSmoothTime() const
 {
 	float ret = 0.000001f;
 	for( int i = 0; i < this->array.size(); ++i )
-		ret += TimeCounter::GetDurationSeconds( this->array[i].end, this->array[i].begin );
-	if( array.size() )
+		ret += TimeCounter::GetDurationSeconds( this->array[i].begin, this->array[i].end );
+	if( this->array.size() )
 	{
 		ret -= 0.000001f;
 		ret /= float(this->array.size());
@@ -51,14 +85,14 @@ void TimeCounter::SubscribeStart()
 
 void TimeCounter::SubscribeEnd()
 {
-	TimePoint curretnTime = TimeCounter::GetCurrentTime();
-	this->array.back().end = curretnTime;
-	
-	if( this->array.size() )
+	if( this->array.size() > 0 )
 	{
+		TimePoint currentTime = TimeCounter::GetCurrentTime();
+		this->array.back().end = currentTime;
+		
 		for( int i=this->array.size()-1; i>=0; --i )
 		{
-			if( TimeCounter::GetDuration( curretnTime, this->array[i].end ) > this->timeSpan )
+			if( TimeCounter::GetDurationSeconds( this->array[i].end, currentTime ) > this->timeSpan )
 			{
 				this->array.erase( this->array.begin(), this->array.begin() + i );
 				break;
@@ -70,7 +104,7 @@ void TimeCounter::SubscribeEnd()
 TimeCounter::TimeCounter()
 {
 	this->array.reserve(50);
-	this->timeSpan = TimeDuration(0.5f);
+	this->timeSpan = 0.5f;
 }
 
 TimeCounter::~TimeCounter()

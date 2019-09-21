@@ -41,7 +41,7 @@ void Character::EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bo
 		
 		float dot = flatForward.normalized().dot( flatDstLookingDirection.normalized() );
 		dstCameraRotation.m_floats[1] = ( ( dot <= -1 || dot >= 1 ) ? 0.001f : acos( dot ) ) * ( flatDstLookingDirection.dot( GetFlatLeftVector() ) > 0.0f ? -1.0f : 1.0f );
-		dot = forwardVector.normalized().dot( ( MakeTransformFromEuler( btVector3( 0, -dstCameraRotation.y(), 0 ) ) * dstLookingDirection ).normalized() );
+		dot = forwardVector.normalized().dot( ( Math::MakeTransformFromEuler( btVector3( 0, -dstCameraRotation.y(), 0 ) ) * dstLookingDirection ).normalized() );
 		dstCameraRotation.m_floats[0] = ( ( dot <= -1 || dot >= 1 ) ? 0.001f : acos( dot ) ) * ( dstLookingDirection.y() > forwardVector.y() ? -1.0f : 1.0f );
 	}
 	

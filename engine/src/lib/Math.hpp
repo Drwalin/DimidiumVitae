@@ -54,6 +54,14 @@ namespace Math
 	{
 	    return Math::GetIrrVec( trans.getOrigin() );
 	}
+	
+	inline btTransform MakeTransformFromEuler( const btVector3 & euler )
+	{
+		btQuaternion quat( btVector3( 0, 1, 0 ), -euler.y() );
+		quat *= btQuaternion( btVector3( 1, 0, 0 ), euler.x() );
+		quat *= btQuaternion( btVector3( 0, 0, 1 ), euler.z() );
+		return btTransform( quat );
+	}
 };
 
 

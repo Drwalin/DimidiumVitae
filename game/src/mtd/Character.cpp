@@ -27,82 +27,20 @@ void Character::NextOverlappingFrame()
 	Entity::NextOverlappingFrame();
 }
 
-btTransform Character::MakeTransformFromEuler( const btVector3 & euler )
-{
-	btQuaternion quat( btVector3( 0, 1, 0 ), -euler.y() );
-	quat *= btQuaternion( btVector3( 1, 0, 0 ), euler.x() );
-	quat *= btQuaternion( btVector3( 0, 0, 1 ), euler.z() );
-	return btTransform( quat );
-}
-
-void Character::CorrectCameraRotation()
-{
-	if( cameraRotation.m_floats[0] < -Math::PI*0.5f )
-		cameraRotation.m_floats[0] = -Math::PI*0.5f;
-	else if( cameraRotation.m_floats[0] > Math::PI*0.5f )
-		cameraRotation.m_floats[0] = Math::PI*0.5f;
-	
-	while( cameraRotation.m_floats[1] >= Math::PI * 2.0f )
-		cameraRotation.m_floats[1] -= Math::PI * 2.0f;
-	while( cameraRotation.m_floats[1] < 0.0f )
-		cameraRotation.m_floats[1] += Math::PI * 2.0f;
-}
-
-void Character::SetCamera( std::shared_ptr<Camera> camera )
-{
-	this->camera = camera;
-}
-
-void Character::SetCameraLocation( const btVector3 & location )
-{
-	cameraLocation = location;
-	if( camera )
-		camera->SetPos( cameraLocation );
-}
-
-void Character::SetCameraRotation( const btVector3 & rotation )
-{
-	cameraRotation = rotation;
-	CorrectCameraRotation();
-	if( camera )
-		camera->SetRotation( cameraRotation );
-}
-
-btVector3 Character::GetCameraLocation() const
-{
-	return GetLocation() + cameraLocation;
-}
-
-btVector3 Character::GetForwardVector() const
-{
-	return ( Character::MakeTransformFromEuler( btVector3( cameraRotation.x(), cameraRotation.y(), 0.0 ) ) * btVector3(0.0,0.0,-1.0) ) * btVector3( 1, -1, 1 );
-}
-
-btVector3 Character::GetFlatForwardVector() const
-{
-	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), 0.0 ) ) * btVector3(0.0,0.0,-1.0);
-}
-
-btVector3 Character::GetLeftVector() const
-{
-	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), cameraRotation.z() ) ) * btVector3(-1.0,0.0,0.0);
-}
-
-btVector3 Character::GetFlatLeftVector() const
-{
-	return Character::MakeTransformFromEuler( btVector3( 0.0, cameraRotation.y(), 0.0 ) ) * btVector3(-1.0,0.0,0.0);
-}
-
 void Character::Tick( const float deltaTime )
 {
+	static TimeCounter fpsCounter;
+	fpsCounter.SetTimeSpan( 2.0f );
 	Entity::Tick( deltaTime );
 	this->motionController->Tick( deltaTime );
 	this->engine->GetWindow()->GetGUI() << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << this->GetTransform().getOrigin();
 	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-	if( rigidBody )
-		this->engine->GetWindow()->GetGUI() << "\nCharacter velocity: " << (btVector3(rigidBody->getLinearVelocity().x(),0,rigidBody->getLinearVelocity().z()).length());
-	else
-		this->engine->GetWindow()->GetGUI() << "\nCharacter rigidBody = NULL";
+	this->engine->GetWindow()->GetGUI() << "\nCharacter velocity: " << (btVector3(rigidBody->getLinearVelocity().x(),0,rigidBody->getLinearVelocity().z()).length());
+	this->engine->GetWindow()->GetGUI() << "\nFPS: " << (int)(1.0f/fpsCounter.GetSmoothTime());
+	this->engine->GetWindow()->GetGUI() << "\nFrame seconds peak: " << fpsCounter.GetPeakTime();
+	this->engine->GetWindow()->GetGUI() << "\nFrame seconds pit: " << fpsCounter.GetPitTime();
+	fpsCounter.SubscribeEnd();
+	fpsCounter.SubscribeStart();
 }
 
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
@@ -142,7 +80,7 @@ void Character::Spawn( std::shared_ptr<Entity> self, std::string name, std::shar
 	this->SetBody( collisionObject, shape );
 	
 	this->motionController = std::shared_ptr<MotionController>( new MotionController() );
-	this->motionController->Init( self, 0.3f );
+	this->motionController->Init( this->engine, self, 0.3f );
 }
 
 void Character::Despawn()
@@ -168,8 +106,7 @@ std::shared_ptr<Entity> Character::New() const{ return std::dynamic_pointer_cast
 std::string Character::GetClassName() const{ return "Character"; }
 
 Character::Character() :
-	Entity(), cameraRotation(0,0,0), cameraLocation(0,0,0),
-	defaultVelocity(3.7), height(1.75)
+	Entity(), defaultVelocity(3.7), height(1.75)
 {
 	
 	this->SetCameraLocation( btVector3( 0.0, height * 0.9, 0.0 ) );

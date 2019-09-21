@@ -26,7 +26,7 @@ private:
 	
 	std::vector < TimePair > array;
 	
-	TimeDuration timeSpan;
+	float timeSpan;
 	
 public:
 	
@@ -34,8 +34,10 @@ public:
 	static TimeDuration GetDuration( TimePoint begin, TimePoint end );
 	static float GetDurationSeconds( TimePoint begin, TimePoint end );
 	
-	void SetTimeSpan( TimeDuration time );
+	void SetTimeSpan( float time );
 	
+	float GetPeakTime() const;
+	float GetPitTime() const;
 	float GetSmoothTime() const;
 	
 	void SubscribeStart();

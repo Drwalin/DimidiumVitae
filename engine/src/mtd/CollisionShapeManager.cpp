@@ -8,6 +8,74 @@
 #include "..\css\CollisionShapeManager.h"
 #include "..\css\CollisionShapeConstructor.h"
 
+#include "..\lib\Debug.h"
+
+std::shared_ptr<btCollisionShape> CollisionShapeManager::Clone( const std::shared_ptr<btCollisionShape> & shape )
+{
+	{
+		btCapsuleShape * capsule = dynamic_cast<btCapsuleShape*>( shape.get() );
+		if( capsule )
+		{
+			float radius = capsule->getRadius();
+			float height = capsule->getHalfHeight()*2.0f;
+			return std::shared_ptr<btCollisionShape>( new btCapsuleShape( radius, height ) );
+		}
+	}
+	{
+		btConeShape * cone = dynamic_cast<btConeShape*>( shape.get() );
+		if( cone )
+		{
+			float radius = cone->getRadius();
+			float height = cone->getHeight()*2.0f;
+			return std::shared_ptr<btCollisionShape>( new btConeShape( radius, height ) );
+		}
+	}
+	{
+		btCylinderShape * cylinder = dynamic_cast<btCylinderShape*>( shape.get() );
+		if( cylinder )
+		{
+			btVector3 halfExtents = cylinder->getHalfExtentsWithoutMargin();
+			halfExtents.setY( halfExtents.y() * 2.0f );
+			return std::shared_ptr<btCollisionShape>( new btCylinderShape( halfExtents ) );
+		}
+	}
+	{
+		btSphereShape * sphere = dynamic_cast<btSphereShape*>( shape.get() );
+		if( sphere )
+		{
+			float radius = sphere->getRadius();
+			return std::shared_ptr<btCollisionShape>( new btSphereShape( radius ) );
+		}
+	}
+	{
+		btBoxShape * box = dynamic_cast<btBoxShape*>( shape.get() );
+		if( box )
+		{
+			btVector3 halfExtents = box->getHalfExtentsWithoutMargin();
+			return std::shared_ptr<btCollisionShape>( new btBoxShape( halfExtents ) );
+		}
+	}
+	{
+		btConvexHullShape * convexHull = dynamic_cast<btConvexHullShape*>( shape.get() );
+		if( convexHull )
+		{
+			btVector3 * vertices = convexHull->getUnscaledPoints();
+			int numberOfVertices = convexHull->getNumPoints();
+			return std::shared_ptr<btCollisionShape>( new btConvexHullShape( vertices->m_floats, numberOfVertices, sizeof(btVector3) ) );
+		}
+	}
+	{
+		btBvhTriangleMeshShape * triangleMesh = dynamic_cast<btBvhTriangleMeshShape*>( shape.get() );
+		if( triangleMesh )
+		{
+			btStridingMeshInterface * trianglesData = triangleMesh->getMeshInterface();
+			return std::shared_ptr<btCollisionShape>( new btBvhTriangleMeshShape( trianglesData, true, true ) );
+		}
+	}
+	MESSAGE( std::string("Unrecognized collision shape type:") + std::to_string((unsigned long long)shape.get()) + " shape type id: " + std::to_string(shape->getShapeType()) );
+	return NULL;
+}
+
 bool CollisionShapeManager::IsNameAvailable( const std::string & name )
 {
 	if( name == "" )
@@ -68,7 +136,7 @@ std::shared_ptr<btCollisionShape> CollisionShapeManager::GetSphere( btScalar rad
 
 std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCapsule( btScalar radius, btScalar height )
 {
-	return std::shared_ptr<btCollisionShape>( new btCapsuleShape( radius, height ) );
+	return std::shared_ptr<btCollisionShape>( new btCapsuleShape( radius, height - 2.0f*radius ) );
 }
 
 std::shared_ptr<btCollisionShape> CollisionShapeManager::GetCylinder( btScalar radius, btScalar height )

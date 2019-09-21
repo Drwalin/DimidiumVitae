@@ -20,15 +20,14 @@
 
 #include "..\lib\Debug.h"
 
+#include "Camera.h"
 #include "SceneNode.h"
-
-class Engine;
 
 class Entity
 {
 protected:
 	
-	Engine * engine;
+	class Engine * engine;
 	
 	std::string name;
 	
@@ -47,7 +46,22 @@ protected:
 	std::set< Entity* > overlappingInPreviousFrame;
 	std::set< Entity* > overlappingInCurrentFrame;
 	
+	btVector3 cameraRotation;
+	btVector3 cameraLocation;
+	std::shared_ptr<Camera> camera;
+	
 public:
+	
+	void SetCamera( std::shared_ptr<Camera> camera );
+	std::shared_ptr<Camera> GetCamera();
+	void CorrectCameraRotation();
+	void SetCameraLocation( const btVector3 & location );
+	void SetCameraRotation( const btVector3 & rotation );
+	btVector3 GetCameraLocation() const;
+	btVector3 GetForwardVector() const;
+	btVector3 GetFlatForwardVector() const;
+	btVector3 GetLeftVector() const;
+	btVector3 GetFlatLeftVector() const;
 	
 	std::shared_ptr<SceneNode> GetSceneNode();
 	
@@ -59,26 +73,24 @@ public:
 	void SetRotation( const btQuaternion & quat );
 	void Move( const btVector3 & move );
 	void Rotate( const btQuaternion & quat );
+	btTransform GetTransform();
+	btVector3 GetLocation() const;
+	virtual void SetScale( btVector3 scale );
+	btVector3 GetScale();
 	
 	std::shared_ptr<btCollisionShape> GetCollisionShape();
 	
 	void SetMass( float mass );
 	
-	Engine * GetEngine();
+	class Engine * GetEngine();
 	
 	const std::string & GetName() const;
 	
 	void SetRayTraceChannel( int src );
 	int GetRayTraceChannel();
 	
-	virtual void SetScale( btVector3 scale );
-	btVector3 GetScale();
-	
-	btTransform GetTransform();
-	btVector3 GetLocation() const;
-	
 	template < typename T = btRigidBody >
-	std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( body ); }
+	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( body ); }
 	
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
@@ -91,7 +103,7 @@ public:
 	void SetModel( std::shared_ptr<Model> model );
 	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
 	
-	void Init( Engine * engine );
+	void Init( class Engine * engine );
 	
 	virtual void Load( std::istream & stream );
 	virtual void Save( std::ostream & stream ) const;

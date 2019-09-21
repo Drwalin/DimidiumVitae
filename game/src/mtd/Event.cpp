@@ -84,6 +84,7 @@ void Event::KeyPressedEvent( int keyCode )
 		playerMotionController->StartRunning();
 		break;
 	case irr::KEY_LCONTROL:
+		playerMotionController->StartCrouching();
 		break;
 	case irr::KEY_LMENU:
 		playerMotionController->StartSneaking();
@@ -138,6 +139,7 @@ void Event::KeyReleasedEvent( int keyCode )
 		playerMotionController->StopRunning();
 		break;
 	case irr::KEY_LCONTROL:
+		playerMotionController->StopCrouching();
 		break;
 	case irr::KEY_LMENU:
 		playerMotionController->StopSneaking();

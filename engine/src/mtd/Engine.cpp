@@ -214,9 +214,7 @@ void Engine::AttachCameraToEntity( const std::string & name, btVector3 location 
 		this->cameraParent = it->second;
 	}
 	else
-	{
 		this->cameraParent = NULL;
-	}
 	this->GetCamera()->SetPos( location );
 }
 

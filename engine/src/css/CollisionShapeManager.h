@@ -22,6 +22,8 @@ private:
 	
 public:
 	
+	std::shared_ptr<btCollisionShape> Clone( const std::shared_ptr<btCollisionShape> & shape );
+	
 	bool IsNameAvailable( const std::string & name );
 	std::string GetFirstAvailableName( const std::string & name );
 	

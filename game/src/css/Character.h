@@ -20,17 +20,8 @@ class Character : public Entity
 {
 protected:
 	
-	btVector3 cameraRotation;
-	btVector3 cameraLocation;
-	
-	std::shared_ptr<Camera> camera;
-	
 	float defaultVelocity, height;
-	
 	std::shared_ptr<MotionController> motionController;
-	
-	
-	void CorrectCameraRotation();
 	
 public:
 	
@@ -38,21 +29,8 @@ public:
 	
 	virtual void NextOverlappingFrame() override;
 	
-	static btTransform MakeTransformFromEuler( const btVector3 & euler );
-	
-	void SetCamera( std::shared_ptr<Camera> camera );
-	
 	void EventRotateCameraBy( const btVector3 & rotation );
 	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
-	
-	void SetCameraLocation( const btVector3 & location );
-	void SetCameraRotation( const btVector3 & rotation );
-	
-	btVector3 GetCameraLocation() const;
-	btVector3 GetForwardVector() const;
-	btVector3 GetFlatForwardVector() const;
-	btVector3 GetLeftVector() const;
-	btVector3 GetFlatLeftVector() const;
 	
 	virtual void Tick( const float deltaTime ) override;
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;

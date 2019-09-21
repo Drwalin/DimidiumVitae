@@ -27,31 +27,51 @@ protected:
 	class Engine * engine;
 	std::shared_ptr<Entity> character;
 	
-	//std::shared_ptr<CharacterWalkTrigger> triggerLow;
+	btVector3 triggerLowOffsetCrouching;
+	btVector3 triggerLowOffsetStanding;
+	btVector3 triggerHighOffsetCrouching;
+	btVector3 triggerHighOffsetStanding;
+	std::shared_ptr<CharacterWalkTrigger> triggerLow;
 	std::shared_ptr<CharacterWalkTrigger> triggerHigh;
 	float stepHeight;
 	float jumpCooldownLimit;
 	float jumpCooldown;
+	float characterStandingHeight;
+	float characterCrouchingHeight;
+	float characterRadius;
 	
-	enum State
+	float crouchingScale;
+	
+	enum class State
 	{
 		WALKING,
 		CROUCHING,
 		RUNNING,
 		SNEAKING
 	};
-	
 	std::vector<State> states;
 	btVector3 walkingDirection;
 	
+	
+	enum class CrouchingState
+	{
+		CROUCHING,
+		STANDING,
+		STANDING_UP
+	} crouchingState;
+	
+	
+	MotionController::State GetCurrentState() const;
 	
 	void UpdateSpeed( const float deltaTime );
 	void AddState( State state );
 	void RemoveState( State state );
 	
+	void UpdateTriggersTransform();
+	
 public:
 	
-	void Init( std::shared_ptr<Entity> characterEntity, float stepHeight = 0.3f );
+	void Init( class Engine * engine, std::shared_ptr<Entity> characterEntity, float stepHeight = 0.3f );
 	
 	float GetCurrentSpeed();
 	float GetJumpVelocity();

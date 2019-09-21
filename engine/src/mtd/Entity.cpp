@@ -12,6 +12,69 @@
 
 #include <cassert>
 
+void Entity::SetCamera( std::shared_ptr<Camera> camera )
+{
+	this->camera = camera;
+}
+
+std::shared_ptr<Camera> Entity::GetCamera()
+{
+	return this->camera;
+}
+
+void Entity::CorrectCameraRotation()
+{
+	if( this->cameraRotation.m_floats[0] < -Math::PI*0.5f )
+		this->cameraRotation.m_floats[0] = -Math::PI*0.5f;
+	else if( this->cameraRotation.m_floats[0] > Math::PI*0.5f )
+		this->cameraRotation.m_floats[0] = Math::PI*0.5f;
+	
+	while( this->cameraRotation.m_floats[1] >= Math::PI * 2.0f )
+		this->cameraRotation.m_floats[1] -= Math::PI * 2.0f;
+	while( this->cameraRotation.m_floats[1] < 0.0f )
+		this->cameraRotation.m_floats[1] += Math::PI * 2.0f;
+}
+
+void Entity::SetCameraLocation( const btVector3 & location )
+{
+	this->cameraLocation = location;
+	if( this->camera )
+		this->camera->SetPos( this->cameraLocation );
+}
+
+void Entity::SetCameraRotation( const btVector3 & rotation )
+{
+	this->cameraRotation = rotation;
+	this->CorrectCameraRotation();
+	if( this->camera )
+		this->camera->SetRotation( this->cameraRotation );
+}
+
+btVector3 Entity::GetCameraLocation() const
+{
+	return this->GetLocation() + this->cameraLocation;
+}
+
+btVector3 Entity::GetForwardVector() const
+{
+	return ( Math::MakeTransformFromEuler( btVector3( this->cameraRotation.x(), this->cameraRotation.y(), 0.0 ) ) * btVector3(0.0,0.0,-1.0) ) * btVector3( 1, -1, 1 );
+}
+
+btVector3 Entity::GetFlatForwardVector() const
+{
+	return Math::MakeTransformFromEuler( btVector3( 0.0, this->cameraRotation.y(), 0.0 ) ) * btVector3(0.0,0.0,-1.0);
+}
+
+btVector3 Entity::GetLeftVector() const
+{
+	return Math::MakeTransformFromEuler( btVector3( 0.0, this->cameraRotation.y(), this->cameraRotation.z() ) ) * btVector3(-1.0,0.0,0.0);
+}
+
+btVector3 Entity::GetFlatLeftVector() const
+{
+	return Math::MakeTransformFromEuler( btVector3( 0.0, this->cameraRotation.y(), 0.0 ) ) * btVector3(-1.0,0.0,0.0);
+}
+
 std::shared_ptr<SceneNode> Entity::GetSceneNode()
 {
 	return this->sceneNode;
@@ -287,7 +350,6 @@ void Entity::Save( std::ostream & stream ) const
 
 void Entity::Init( Engine * engine )
 {
-	this->Destroy();
 	this->engine = engine;
 }
 

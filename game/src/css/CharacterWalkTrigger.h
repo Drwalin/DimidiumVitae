@@ -13,7 +13,7 @@ class CharacterWalkTrigger : public Trigger
 {
 protected:
 	
-	std::shared_ptr<Entity> parent;
+	std::shared_ptr<Entity> character, otherTrigger;
 	bool topCollision;
 	bool sideCollision;
 	bool bottomCollision;
@@ -30,7 +30,7 @@ public:
 	
 	virtual void NextOverlappingFrame() override;
 	
-	void Init( std::shared_ptr<Entity> parent, float stepHeight );
+	void Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight );
 	
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;

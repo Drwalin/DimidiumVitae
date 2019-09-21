@@ -12,7 +12,7 @@ CXXFLAGS = -m64 -std=c++17 -ggdb -g3 -ggdb3
 MAINOBJECTS = game\\bin\\MeshLoader.o game\\bin\\LoadModules.o game\\bin\\Init.o game\\bin\\ShapeLoader.o
 
 GAMECOREMODULESOBJECTS = game\\bin\\Player.o game\\bin\\Event.o game\\bin\\Trigger.o game\\bin\\StaticEntity.o game\\bin\\CharacterWalkTrigger.o game\\bin\\DynamicEntity.o game\\bin\\Character.o game\\bin\\MotionController.o
-GAMECOREMODULES = game\\dlls\\Player.dll game\\dlls\\Event.dll game\\dlls\\Trigger.dll game\\dlls\\StaticEntity.dll game\\dlls\\CharacterWalkTrigger.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Character.dll game\\dlls\\MotionController.dll
+GAMECOREMODULES = game\\dlls\\Player.dll game\\dlls\\Event.dll game\\dlls\\Trigger.dll game\\dlls\\StaticEntity.dll game\\dlls\\CharacterWalkTrigger.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Character.dll
 RELEASEGAMECOREMODULES = $(subst game,release,$(GAMECOREMODULES))
 
 ENGINECOREOBJECTS = engine\\bin\\Camera.o engine\\bin\\SceneNode.o engine\\bin\\CollisionShapeManager.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\Model.o engine\\bin\\Entity.o engine\\bin\\StringToEnter.o engine\\bin\\GUI.o engine\\bin\\TimeCounter.o engine\\bin\\Window.o engine\\bin\\World.o engine\\bin\\CollisionObjectManager.o engine\\bin\\DllImporter.o engine\\bin\\ClassFactoryBase.o engine\\bin\\ModulesFactory.o engine\\bin\\CollisionShapeConstructor.o
@@ -35,13 +35,13 @@ release\\game.exe: game\\game.exe release\\engine.dll release\\game-core.dll $(R
 game\\game.exe: game\\engine.dll game\\game-core.dll game\\bin\\Main.o $(GAMECOREMODULES)
 	$(CXX) -o $@ $(CXXFLAGS) game\engine.dll game\bin\Main.o $(LIBS)
 
-	
+
 engine\\engine.dll: $(ENGINECOREOBJECTS)
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
 
 game\\engine.dll: engine\\engine.dll
 	@$(CP) engine\engine.dll game\engine.dll
-game\\game-core.dll: engine\\engine.dll game\\dlls\\Character.dll $(MAINOBJECTS)
+game\\game-core.dll: engine\\engine.dll $(MAINOBJECTS)
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
 
 game\\dlls\\Trigger.dll: game\\engine.dll game\\bin\\Trigger.o
@@ -52,13 +52,11 @@ game\\dlls\\StaticEntity.dll: game\\engine.dll game\\bin\\StaticEntity.o
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
 game\\dlls\\DynamicEntity.dll: game\\engine.dll game\\bin\\DynamicEntity.o
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
-game\\dlls\\MotionController.dll: game\\engine.dll game\\dlls\\CharacterWalkTrigger.dll game\\bin\\MotionController.o
+game\\dlls\\Character.dll: game\\engine.dll game\\dlls\\CharacterWalkTrigger.dll game\\bin\\MotionController.o game\\bin\\Character.o
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
-game\\dlls\\Character.dll: game\\engine.dll game\\dlls\\MotionController.dll game\\bin\\Character.o
+game\\dlls\\Player.dll: game\\engine.dll game\\dlls\\Character.dll game\\bin\\Player.o
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
-game\\dlls\\Player.dll: game\\engine.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Character.dll game\\bin\\Player.o
-	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
-game\\dlls\\Event.dll: game\\engine.dll game\\dlls\\Character.dll game\\dlls\\MotionController.dll game\\bin\\Event.o
+game\\dlls\\Event.dll: game\\engine.dll game\\dlls\\Character.dll game\\bin\\Event.o
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
 
 
