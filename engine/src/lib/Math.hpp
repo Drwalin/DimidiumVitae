@@ -27,40 +27,26 @@ namespace Math
 	
 	inline irr::core::vector3d<float> GetIrrVec( const btVector3 & vec )
 	{
-		return irr::core::vector3d<float>( vec.x(), vec.y(), vec.z() );
+		return irr::core::vector3d<float>( -vec.x(), vec.y(), vec.z() );
 	}
 	
 	template < class T >
 	inline btVector3 GetBtVec( const irr::core::vector3d<T> & vec )
 	{
-		return btVector3( vec.X, vec.Y, vec.Z );
+		return btVector3( -vec.X, vec.Y, vec.Z );
 	}
 	
-	inline irr::core::quaternion GetIrrQuaternion( const btQuaternion & quat )
-	{
-	    irr::core::quaternion q;
-	    q.fromAngleAxis( quat.getAngle(), Math::GetIrrVec( quat.getAxis() ) );
-		return q;
-	}
-	
-	inline irr::core::quaternion GetIrrQuaternion( const btTransform & trans )
-	{
-	    irr::core::quaternion q;
-	    q.fromAngleAxis( trans.getRotation().getAngle(), Math::GetIrrVec( trans.getRotation().getAxis() ) );
-		return q;
-	}
-	
-	inline irr::core::vector3d<float> GetIrrVec( const btTransform & trans )
-	{
-	    return Math::GetIrrVec( trans.getOrigin() );
-	}
-	
-	inline btTransform MakeTransformFromEuler( const btVector3 & euler )
+	inline btQuaternion MakeQuaternionFromEuler( const btVector3 & euler )
 	{
 		btQuaternion quat( btVector3( 0, 1, 0 ), -euler.y() );
 		quat *= btQuaternion( btVector3( 1, 0, 0 ), euler.x() );
 		quat *= btQuaternion( btVector3( 0, 0, 1 ), euler.z() );
-		return btTransform( quat );
+		return quat;
+	}
+	
+	inline btTransform MakeTransformFromEuler( const btVector3 & euler )
+	{
+		return btTransform( Math::MakeQuaternionFromEuler( euler ) );
 	}
 };
 

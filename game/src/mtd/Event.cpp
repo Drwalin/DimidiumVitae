@@ -20,15 +20,7 @@
 
 void Event::MouseMoveEvent( int x, int y, int w, int dx, int dy, int dw )
 {
-	std::shared_ptr<Entity> player = this->engine->GetEntity( std::string("Player") );
-	if( player )
-	{
-		Character * character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
-		if( character )
-		{
-			character->EventRotateCameraBy( btVector3( float(dy)/160.0, float(dx)/160.0, 0.0 ) );
-		}
-	}
+	this->engine->GetCamera()->Rotate( btVector3( float(dy)/160.0, float(dx)/160.0, 0.0 ) );
 }
 
 irr::scene::ISceneNode * lightSceneNode = 0;
@@ -56,8 +48,8 @@ void Event::KeyPressedEvent( int keyCode )
 	case irr::KEY_KEY_F:
 		if( !lightSceneNode )
 		{
-			lightSceneNode = this->engine->GetWindow()->GetSceneManager()->addLightSceneNode( 0, Math::GetIrrVec( this->window->GetCamera()->GetLocation() ), irr::video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 60.0f );
-			lightSceneNode->setPosition( Math::GetIrrVec( this->window->GetCamera()->GetLocation() ) );
+			lightSceneNode = this->engine->GetWindow()->GetSceneManager()->addLightSceneNode( 0, Math::GetIrrVec( this->engine->GetCamera()->GetWorldPosition() ), irr::video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 60.0f );
+			lightSceneNode->setPosition( Math::GetIrrVec( this->engine->GetCamera()->GetWorldPosition() ) );
 		}
 		else
 		{
@@ -91,14 +83,14 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_LBUTTON:
-		euler = window->GetCamera()->GetRot();
-		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), this->engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( btQuaternion(-euler.y(),-euler.x(),euler.z()), this->window->GetCamera()->GetLocation() + character->GetForwardVector() ), 20.0f );
+		euler = this->engine->GetCamera()->GetEulerRotation();
+		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), this->engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( this->engine->GetCamera()->GetRotation()/*btQuaternion(-euler.y(),euler.x(),euler.z())*/, this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
 			temp->SetModel( this->engine->GetModel( "Crate01" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
@@ -106,13 +98,13 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), this->engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), this->window->GetCamera()->GetLocation() + character->GetForwardVector() ), 20.0f );
+		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), this->engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector() ), 20.0f );
 		if( temp )
 		{
 			temp->SetModel( this->engine->GetModel( "Sphere" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( character->GetForwardVector() * 16.0 );
+			temp->GetBody()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
 			temp->GetBody()->setDamping( 0.1, 0.1 );
 		}
 		else
@@ -163,14 +155,7 @@ void Event::KeyHoldedEvent( int keyCode )
 	switch( keyCode )
 	{
 	case irr::KEY_MBUTTON:
-		if( character )
-		{
-			temp = this->engine->GetEntity( std::string("Box") );
-			if( temp )
-			{
-				character->EventRotateCameraToLookAtPoint( temp->GetLocation(), true );
-			}
-		}
+		this->engine->GetCamera()->RotateCameraToLookAtPoint( btVector3(0,0,0), true );
 		break;
 		
 	case irr::KEY_ESCAPE:
@@ -181,8 +166,8 @@ void Event::KeyHoldedEvent( int keyCode )
 	case irr::KEY_DELETE:
 		if( keyCode == irr::KEY_DELETE )
 		{
-			begin = this->engine->GetCamera()->GetLocation();
-			end = begin + ( character->GetForwardVector() * 10000.0 );
+			begin = this->engine->GetCamera()->GetWorldPosition();
+			end = begin + ( this->engine->GetCamera()->GetForwardVector() * 10000.0 );
 		}
 		else
 		{
@@ -202,20 +187,16 @@ void Event::KeyHoldedEvent( int keyCode )
 		break;
 		
 	case irr::KEY_UP:
-		if( character )
-			character->EventRotateCameraBy( btVector3( -(this->window->GetDeltaTime()), 0.0, 0.0 ) * 2.0 );
+		this->engine->GetCamera()->Rotate( btVector3( -(this->window->GetDeltaTime()), 0.0, 0.0 ) * 2.0 );
 		break;
 	case irr::KEY_DOWN:
-		if( character )
-			character->EventRotateCameraBy( btVector3( (this->window->GetDeltaTime()), 0.0, 0.0 ) * 2.0 );
+		this->engine->GetCamera()->Rotate( btVector3( (this->window->GetDeltaTime()), 0.0, 0.0 ) * 2.0 );
 		break;
 	case irr::KEY_RIGHT:
-		if( character )
-			character->EventRotateCameraBy( btVector3( 0.0, (this->window->GetDeltaTime()), 0.0 ) * 2.0 );
+		this->engine->GetCamera()->Rotate( btVector3( 0.0, (this->window->GetDeltaTime()), 0.0 ) * 2.0 );
 		break;
 	case irr::KEY_LEFT:
-		if( character )
-			character->EventRotateCameraBy( btVector3( 0.0, -(this->window->GetDeltaTime()), 0.0 ) * 2.0 );
+		this->engine->GetCamera()->Rotate( btVector3( 0.0, -(this->window->GetDeltaTime()), 0.0 ) * 2.0 );
 		break;
 		
 	case irr::KEY_SPACE:
@@ -225,19 +206,19 @@ void Event::KeyHoldedEvent( int keyCode )
 		
 	case irr::KEY_KEY_W:
 		if( character && playerMotionController )
-			playerMotionController->MoveInDirection( character->GetFlatForwardVector() );
+			playerMotionController->MoveInDirection( this->engine->GetCamera()->GetFlatForwardVector() );
 		break;
 	case irr::KEY_KEY_A:
 		if( character && playerMotionController )
-			playerMotionController->MoveInDirection( character->GetFlatLeftVector() );
+			playerMotionController->MoveInDirection( this->engine->GetCamera()->GetFlatLeftVector() );
 		break;
 	case irr::KEY_KEY_S:
 		if( character && playerMotionController )
-			playerMotionController->MoveInDirection( -character->GetFlatForwardVector() );
+			playerMotionController->MoveInDirection( -this->engine->GetCamera()->GetFlatForwardVector() );
 		break;
 	case irr::KEY_KEY_D:
 		if( character && playerMotionController )
-			playerMotionController->MoveInDirection( -character->GetFlatLeftVector() );
+			playerMotionController->MoveInDirection( -this->engine->GetCamera()->GetFlatLeftVector() );
 		break;
 	}
 }
@@ -257,10 +238,6 @@ void Event::StringToEnterEvent( std::string str )
 	{
 		fprintf( stderr, "\n StringToEnterEvent( %s ); ", str.c_str() );
 		this->engine->GetCamera()->SetRotation( btVector3( 0, 0, 0 ) );
-		if( character )
-		{
-			character->SetCameraRotation( btVector3( 0, 0, 0 ) );
-		}
 	}
 }
 

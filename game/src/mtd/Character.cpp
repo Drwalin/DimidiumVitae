@@ -106,10 +106,8 @@ std::shared_ptr<Entity> Character::New() const{ return std::dynamic_pointer_cast
 std::string Character::GetClassName() const{ return "Character"; }
 
 Character::Character() :
-	Entity(), defaultVelocity(3.7), height(1.75)
+	Entity(), height(1.75)
 {
-	
-	this->SetCameraLocation( btVector3( 0.0, height * 0.9, 0.0 ) );
 }
 
 Character::~Character()

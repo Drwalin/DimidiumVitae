@@ -36,15 +36,18 @@ irr::scene::IAnimatedMeshSceneNode * SceneNode::GetISceneNode()
 
 void SceneNode::SetTransform( btTransform transform )
 {
-	iSceneNode->setPosition( Math::GetIrrVec( transform ) * irr::core::vector3d<float>(-1,1,1) );
-	irr::core::vector3d<float> eulerRadians; 
-	Math::GetIrrQuaternion( btQuaternion( transform.getRotation().getAxis() * btVector3(1,-1,-1), transform.getRotation().getAngle() ) ).toEuler( eulerRadians );
+	iSceneNode->setPosition( Math::GetIrrVec( transform.getOrigin() ) );
+	irr::core::vector3d<float> eulerRadians;
+	btQuaternion quat( transform.getRotation().getAxis() * btVector3(1,-1,-1), transform.getRotation().getAngle() );
+    irr::core::quaternion q;
+    q.fromAngleAxis( quat.getAngle(), irr::core::vector3d<float>(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z()) );
+	q.toEuler( eulerRadians );
 	iSceneNode->setRotation( eulerRadians * irr::core::RADTODEG );
 }
 
 void SceneNode::SetScale( btVector3 scale )
 {
-	this->iSceneNode->setScale( Math::GetIrrVec( scale ) );
+	this->iSceneNode->setScale( irr::core::vector3d<float>(scale.x(),scale.y(),scale.z()) );
 }
 
 std::shared_ptr<SceneNode> SceneNode::AddChild( class Engine * engine, std::shared_ptr<Model> model )

@@ -46,22 +46,12 @@ protected:
 	std::set< Entity* > overlappingInPreviousFrame;
 	std::set< Entity* > overlappingInCurrentFrame;
 	
-	btVector3 cameraRotation;
-	btVector3 cameraLocation;
 	std::shared_ptr<Camera> camera;
 	
 public:
 	
 	void SetCamera( std::shared_ptr<Camera> camera );
 	std::shared_ptr<Camera> GetCamera();
-	void CorrectCameraRotation();
-	void SetCameraLocation( const btVector3 & location );
-	void SetCameraRotation( const btVector3 & rotation );
-	btVector3 GetCameraLocation() const;
-	btVector3 GetForwardVector() const;
-	btVector3 GetFlatForwardVector() const;
-	btVector3 GetLeftVector() const;
-	btVector3 GetFlatLeftVector() const;
 	
 	std::shared_ptr<SceneNode> GetSceneNode();
 	

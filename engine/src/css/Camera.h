@@ -21,10 +21,9 @@ private:
 	irr::video::ITexture * target;
 	irr::scene::ICameraSceneNode * sceneNode;
 	
-	btVector3 pos;
-	btVector3 rot;
+	btVector3 position;
+	btVector3 rotation;
 	btTransform parentTransformation;
-	btVector3 locationScale;
 	
 	btVector3 currentLocation;
 	
@@ -46,22 +45,24 @@ public:
 	btQuaternion GetRotation() const;
 	btQuaternion GetFlatRotation() const;
 	
+	btVector3 GetUpVector() const;
 	btVector3 GetFlatRightVector() const;
 	btVector3 GetRightVector() const;
+	btVector3 GetFlatLeftVector() const;
+	btVector3 GetLeftVector() const;
 	btVector3 GetFlatForwardVector() const;
 	btVector3 GetForwardVector() const;
-	btVector3 GetUpVector() const;
 	
-	btVector3 GetLocation() const;
+	btVector3 GetPosition() const;
+	btVector3 GetEulerRotation() const;
+	btVector3 GetWorldPosition() const;
 	
-	btVector3 GetPos() const;
-	btVector3 GetRot() const;
-	
-	void SetPos( btVector3 src );
+	void RotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
+	void SetRelativePosition( btVector3 src );
 	void SetRotation( btVector3 src );
 	void Move( btVector3 src );
 	void Rotate( btVector3 src );
-	void SetCameraTransform( btTransform transform );
+	void SetCameraParentTransform( btTransform transform );
 	
 	Camera( Engine * engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode * cameraNode );
 	~Camera();

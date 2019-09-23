@@ -20,7 +20,7 @@ class Character : public Entity
 {
 protected:
 	
-	float defaultVelocity, height;
+	float height;
 	std::shared_ptr<MotionController> motionController;
 	
 public:
@@ -29,8 +29,8 @@ public:
 	
 	virtual void NextOverlappingFrame() override;
 	
-	void EventRotateCameraBy( const btVector3 & rotation );
-	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
+//	void EventRotateCameraBy( const btVector3 & rotation );
+//	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
 	
 	virtual void Tick( const float deltaTime ) override;
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;

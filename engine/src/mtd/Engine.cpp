@@ -101,7 +101,7 @@ inline void Engine::UpdateEntities( const float deltaTime )
 		it->second->Tick( deltaTime );
 	
 	if( this->cameraParent )
-		this->GetCamera()->SetCameraTransform( this->cameraParent->GetTransform() );
+		this->GetCamera()->SetCameraParentTransform( this->cameraParent->GetTransform() );
 }
 
 void Engine::QueueEntityToDestroy( std::shared_ptr<Entity> ptr )
@@ -215,7 +215,7 @@ void Engine::AttachCameraToEntity( const std::string & name, btVector3 location 
 	}
 	else
 		this->cameraParent = NULL;
-	this->GetCamera()->SetPos( location );
+	this->GetCamera()->SetRelativePosition( location );
 }
 
 bool Engine::SetCustomModelName( const std::string & name, std::shared_ptr<Model> mdl )

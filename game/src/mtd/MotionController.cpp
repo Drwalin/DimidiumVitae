@@ -19,43 +19,39 @@ void MotionController::Init( class Engine * engine, std::shared_ptr<Entity> char
 		this->engine = characterEntity->GetEngine();
 		if( characterEntity->GetCollisionShape() )
 		{
-			auto body = characterEntity->GetBody<btRigidBody>();
-			if( body )
-			{
-				this->crouchingScale = 0.6f;
-				this->stepHeight = stepHeight;
-				this->character = characterEntity;
-				
-				btVector3 aabbMin, aabbMax;
-				this->character->GetCollisionShape()->getAabb( btTransform(btQuaternion(btVector3(0,1,0),0),btVector3(0,0,0)), aabbMin, aabbMax );
-				this->characterStandingHeight = aabbMax.y() - aabbMin.y();
-				this->characterCrouchingHeight = this->characterStandingHeight * this->crouchingScale;
-				this->characterRadius = (aabbMax.x()-aabbMin.x()) * 0.5f;
-				
-				this->triggerHigh = std::dynamic_pointer_cast<CharacterWalkTrigger>(
-						this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
-						engine->GetAvailableEntityName("Trigger"),
-						engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterStandingHeight ),
-						btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 1.0 ) );
-				this->triggerLow = std::dynamic_pointer_cast<CharacterWalkTrigger>(
-						this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
-						engine->GetAvailableEntityName("Trigger"),
-						engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterCrouchingHeight ),
-						btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 1.0 ) );
-				this->triggerHigh->Init( characterEntity, this->triggerLow, this->stepHeight );
-				this->triggerLow->Init( characterEntity, this->triggerHigh, this->stepHeight );
-				
-				this->jumpCooldownLimit = 0.2f;
-				this->jumpCooldown = this->jumpCooldownLimit;
-				
-				float centerHeightsDifference = (this->characterStandingHeight - this->characterCrouchingHeight) * 0.5f;
-				this->triggerLowOffsetCrouching = btVector3(0,0,0);
-				this->triggerLowOffsetStanding = btVector3(0,-centerHeightsDifference,0);
-				this->triggerHighOffsetCrouching = btVector3(0,centerHeightsDifference,0);
-				this->triggerHighOffsetStanding = btVector3(0,0,0);
-			}
-			else
-				MESSAGE("NULL btRigidBody");
+			this->crouchingScale = 0.6f;
+			this->stepHeight = stepHeight;
+			this->character = characterEntity;
+			
+			btVector3 aabbMin, aabbMax;
+			this->character->GetCollisionShape()->getAabb( btTransform(btQuaternion(btVector3(0,1,0),0),btVector3(0,0,0)), aabbMin, aabbMax );
+			this->characterStandingHeight = aabbMax.y() - aabbMin.y();
+			this->characterCrouchingHeight = this->characterStandingHeight * this->crouchingScale;
+			this->characterRadius = (aabbMax.x()-aabbMin.x()) * 0.5f;
+			
+			this->triggerHigh = std::dynamic_pointer_cast<CharacterWalkTrigger>(
+					this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
+					engine->GetAvailableEntityName("Trigger"),
+					engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterStandingHeight ),
+					btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 1.0 ) );
+			this->triggerLow = std::dynamic_pointer_cast<CharacterWalkTrigger>(
+					this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
+					engine->GetAvailableEntityName("Trigger"),
+					engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterCrouchingHeight ),
+					btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 1.0 ) );
+			this->triggerHigh->Init( characterEntity, this->triggerLow, this->stepHeight );
+			this->triggerLow->Init( characterEntity, this->triggerHigh, this->stepHeight );
+			
+			this->jumpCooldownLimit = 0.2f;
+			this->jumpCooldown = this->jumpCooldownLimit;
+			
+			float centerHeightsDifference = (this->characterStandingHeight - this->characterCrouchingHeight) * 0.5f;
+			this->triggerLowOffsetCrouching = btVector3(0,0,0);
+			this->triggerLowOffsetStanding = btVector3(0,-centerHeightsDifference,0);
+			this->triggerHighOffsetCrouching = btVector3(0,centerHeightsDifference,0);
+			this->triggerHighOffsetStanding = btVector3(0,0,0);
+			
+			this->crouchingState = MotionController::CrouchingState::STANDING;
 		}
 		else
 			MESSAGE("NULL btCollisionShape");
@@ -108,13 +104,15 @@ void MotionController::UpdateTriggersTransform()
 	{
 		this->triggerLow->SetPosition( characterOrigin + this->triggerLowOffsetCrouching );
 		this->triggerHigh->SetPosition( characterOrigin + this->triggerHighOffsetCrouching );
-		this->character->SetCameraLocation( btVector3( 0, this->characterCrouchingHeight * 0.5f - 0.1f, 0 ) );
+		if( this->character->GetCamera() )
+			this->character->GetCamera()->SetRelativePosition( btVector3( 0, this->characterCrouchingHeight * 0.5f - 0.1f, 0 ) );
 	}
 	else
 	{
 		this->triggerLow->SetPosition( characterOrigin + this->triggerLowOffsetStanding );
 		this->triggerHigh->SetPosition( characterOrigin + this->triggerHighOffsetStanding );
-		this->character->SetCameraLocation( btVector3( 0, this->characterStandingHeight * 0.5f - 0.1f, 0 ) );
+		if( this->character->GetCamera() )
+			this->character->GetCamera()->SetRelativePosition( btVector3( 0, this->characterStandingHeight * 0.5f - 0.1f, 0 ) );
 	}
 }
 
@@ -174,7 +172,6 @@ void MotionController::Tick( const float deltaTime )
 {
 	if( this->crouchingState == MotionController::CrouchingState::STANDING_UP && !this->triggerHigh->IsTopCollision() )
 	{
-		//this->character->SetScale( btVector3(1,1,1) );
 		this->character->GetBody()->setCollisionShape( this->triggerHigh->GetCollisionShape().get() );
 		this->engine->GetWorld()->UpdateColliderForObject( this->character->GetBody() );
 		this->crouchingState = MotionController::CrouchingState::STANDING;
@@ -184,12 +181,10 @@ void MotionController::Tick( const float deltaTime )
 	this->UpdateSpeed( deltaTime );
 	this->walkingDirection = btVector3(0,0,0);
 	
-	/*
 	if( this->triggerHigh->IsBottomCollision() || this->triggerLow->IsBottomCollision() )
 		this->character->GetBody<btRigidBody>()->setFriction( 0.5 );
 	else
 		this->character->GetBody<btRigidBody>()->setFriction( 0 );
-	*/
 	
 	this->UpdateTriggersTransform();
 }
@@ -241,7 +236,6 @@ void MotionController::StartCrouching()
 	{
 		this->character->GetBody()->setCollisionShape( this->triggerLow->GetCollisionShape().get() );
 		this->engine->GetWorld()->UpdateColliderForObject( this->character->GetBody() );
-	//	this->character->SetScale( btVector3(1,this->crouchingScale,1) );
 	}
 	this->AddState( State::CROUCHING );
 	this->crouchingState = MotionController::CrouchingState::CROUCHING;
