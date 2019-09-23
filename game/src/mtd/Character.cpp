@@ -15,8 +15,6 @@
 
 #include <ctime>
 
-#include "CharacterEvent.cpp"
-
 std::shared_ptr<MotionController> Character::GetMotionController()
 {
 	return this->motionController;
