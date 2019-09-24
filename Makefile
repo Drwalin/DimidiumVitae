@@ -7,9 +7,9 @@ RM = del
 CXX = g++
 
 RM_FLAGS = /f
-CXXFLAGS = -m64 -std=c++17 -ggdb -g3 -ggdb3
+CXXFLAGS = -m64 -std=c++17 -ggdb -g3 -ggdb3 -g
 
-MAINOBJECTS = game\\bin\\Init.o game\\bin\\LoadModules.o game\\bin\\MeshLoader.o game\\bin\\ShapeLoader.o
+MAINOBJECTS = game\\bin\\Init.o game\\bin\\MeshLoader.o game\\bin\\ModulesLoader.o game\\bin\\ShapeLoader.o
 
 GAMECOREMODULESOBJECTS = game\\bin\\Character.o game\\bin\\CharacterWalkTrigger.o game\\bin\\DynamicEntity.o game\\bin\\Event.o game\\bin\\MotionController.o game\\bin\\Player.o game\\bin\\StaticEntity.o game\\bin\\Trigger.o
 GAMECOREMODULES = game\\dlls\\Character.dll game\\dlls\\CharacterWalkTrigger.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Event.dll game\\dlls\\Player.dll game\\dlls\\StaticEntity.dll game\\dlls\\Trigger.dll

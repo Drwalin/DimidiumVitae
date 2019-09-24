@@ -25,10 +25,13 @@ private:
 	class Engine * engine;
 	std::shared_ptr<Model> model;
 	irr::scene::IAnimatedMeshSceneNode * iSceneNode;
+	irr::scene::IAnimatedMeshSceneNode * iParentSceneNode;
 	
 	std::set<std::shared_ptr<SceneNode>> children;
 	
 public:
+	
+	Animation GetAnimation( const std::string & name ) const;
 	
 	static irr::scene::IAnimatedMeshSceneNode * New( class Engine * engine, std::shared_ptr<Model> model );
 	
@@ -37,10 +40,11 @@ public:
 	void SetTransform( btTransform transform );
 	void SetScale( btVector3 scale );
 	
-	std::shared_ptr<SceneNode> AddChild( class Engine * engine, std::shared_ptr<Model> model );
+	std::shared_ptr<SceneNode> AddChild( std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode * iParentSceneNode );
+	std::shared_ptr<SceneNode> AddChild( std::shared_ptr<Model> model );
 	void DestroyChild( std::shared_ptr<SceneNode> child );
 	
-	void Init( class Engine * engine, std::shared_ptr<Model> model );
+	void Init( class Engine * engine, std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode * iParentSceneNode = NULL );
 	
 	void Destroy();
 	

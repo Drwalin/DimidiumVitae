@@ -24,14 +24,34 @@
 #include "..\lib\Debug.h"
 #include "..\lib\AR.hpp"
 
-class Engine;
+class Animation
+{
+private:
+	
+	irr::scene::IAnimatedMeshSceneNode * iSceneNode;
+	float duration;
+	int startFrame;
+	int endFrame;
+	
+public:
+	
+	void Play( bool loop );
+	
+	void SetSceneNode( irr::scene::IAnimatedMeshSceneNode * iSceneNode );
+	
+	Animation();
+	Animation( const Animation & other );
+	Animation( int startFrame, int endFrame, float duration );
+	Animation( const Animation & other, irr::scene::IAnimatedMeshSceneNode * iSceneNode );
+};
 
 class Model
 {
 private:
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
-	std::map < int, irr::video::SMaterial > materials;
+	std::vector < irr::video::SMaterial > materials;
+	std::map < std::string, Animation > animations;
 	
 	class Engine * engine;
 	
@@ -42,11 +62,13 @@ public:
 	
 	void SetName( std::string name );
 	
-	void SetMaterialsToNode( irr::scene::ISceneNode * node );
-	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
+	void SetMaterialsToNode( irr::scene::ISceneNode * node ) const;
+	Animation GetAnimation( const std::string & animationName ) const;
 	
-	bool LoadFromFile( Engine * engine, std::string objFileName );
+	bool LoadMesh( class Engine * engine, const std::string & objFileName );
+	bool LoadMaterials( const std::string & materialsFileName );
+	bool LoadAnimations( const std::string & animationsFileName );
 	
 	void Destroy();
 	

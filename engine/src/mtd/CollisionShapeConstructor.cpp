@@ -185,18 +185,6 @@ std::shared_ptr<btCollisionShape> CollisionShapeConstructor::Get()
 	return std::dynamic_pointer_cast<btCollisionShape>( compoundShape );
 }
 
-bool CMP( std::string a, std::string b )
-{
-	for( int i=0; i<a.size() && i<b.size(); ++i )
-	{
-		if( a[i] != b[i] )
-			return false;
-	}
-	if( a.size() != b.size() )
-		return false;
-	return true;
-}
-
 std::shared_ptr<PrimitiveShape> CollisionShapeConstructor::LoadPrimitive( std::istream & stream )
 {
 	std::string typeName = "", word, line;
@@ -206,23 +194,21 @@ std::shared_ptr<PrimitiveShape> CollisionShapeConstructor::LoadPrimitive( std::i
 	stream >> typeName;
 	stream >> word;	// word="{"
 	
-	if( typeName=="box" )//CMP(typeName,("box")) )
+	if( typeName=="box" )
 		type = PrimitiveShape::Type::BOX;
-	else if( typeName=="sphere" )//CMP(typeName,("sphere")) )
+	else if( typeName=="sphere" )
 		type = PrimitiveShape::Type::SPHERE;
-	else if( typeName=="cylinder" )//CMP(typeName,("cylinder")) )
+	else if( typeName=="cylinder" )
 		type = PrimitiveShape::Type::CYLINDER;
-	else if( typeName=="capsule" )//CMP(typeName,("capsule")) )
+	else if( typeName=="capsule" )
 		type = PrimitiveShape::Type::CAPSULE;
-	else if( typeName=="convex" )//CMP(typeName,("convex")) )
+	else if( typeName=="convex" )
 		type = PrimitiveShape::Type::CONVEX;
-	else if( typeName=="trimesh" )//CMP(typeName,("trimesh")) )
+	else if( typeName=="trimesh" )
 		type = PrimitiveShape::Type::TRIMESH;
 	
 	if( type == PrimitiveShape::Type::NONE )
-	{
 		return NULL;
-	}
 	
 	std::shared_ptr<PrimitiveShape> primitive = this->AddPrimitive( type );
 	
@@ -305,7 +291,7 @@ void CollisionShapeConstructor::LoadOBJ( std::istream & stream, std::vector<std:
 			s >> ftemp2;
 			s >> ftemp3;
 			vertices.resize( vertices.size() + 1 );
-			vertices.back() = btVector3(ftemp1,ftemp2,ftemp3);
+			vertices.back() = btVector3(-ftemp1,ftemp2,-ftemp3);
 			break;
 		case 'o':
 			objects.resize( objects.size() + 1 );
@@ -633,6 +619,8 @@ bool CollisionShapeConstructor::Convert( const std::string & objFileName, const 
 		constructor.LoadOBJ( in, objects );
 		constructor.CreateFromFaces( objects );
 		constructor.SaveShapeFile( out );
+		in.close();
+		out.close();
 		return true;
 	}
 	return false;

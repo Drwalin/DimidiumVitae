@@ -246,7 +246,7 @@ std::shared_ptr<Model> Engine::LoadModel( const std::string & name )
 	else
 	{
 		std::shared_ptr<Model> mdl( new Model );
-		if( mdl->LoadFromFile( this, name ) == false )
+		if( mdl->LoadMesh( this, name ) == false )
 		{
 			mdl.reset();
 			return std::shared_ptr<Model>();

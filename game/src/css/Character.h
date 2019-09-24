@@ -5,7 +5,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include "Trigger.h"
 #include "MotionController.h"
 
 #include <Entity.h>
@@ -28,9 +27,6 @@ public:
 	std::shared_ptr<MotionController> GetMotionController();
 	
 	virtual void NextOverlappingFrame() override;
-	
-//	void EventRotateCameraBy( const btVector3 & rotation );
-//	void EventRotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
 	
 	virtual void Tick( const float deltaTime ) override;
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;

@@ -7,6 +7,8 @@
 
 #include "..\css\Header.h"
 
+#include <StdUtil.hpp>
+
 #include <cassert>
 
 void LoadMeshes( std::string loadMeshesListFile, Engine * engine )
@@ -17,31 +19,26 @@ void LoadMeshes( std::string loadMeshesListFile, Engine * engine )
 		while( !file.eof() )
 		{
 			std::string  meshFile(""), customName("");
-			std::getline( file, meshFile );
-			std::getline( file, customName );
+			GetLine( file, meshFile );
+			GetLine( file, customName );
 			if( file.eof() )
 				break;
-			
-			if( meshFile.size() )
-			{
-				if( meshFile[meshFile.size()-1] == 13 )
-					meshFile.resize( meshFile.size() - 1 );
-			}
-			if( customName.size() )
-			{
-				if( customName[customName.size()-1] == 13 )
-					customName.resize( customName.size() - 1 );
-			}
+			if( meshFile == "" || customName == "" )
+				continue;
 			
 			std::shared_ptr<Model> ptr = engine->LoadModel( meshFile );
 			assert( (bool)ptr );
 			if( ptr )
 			{
 				if( engine->SetCustomModelName( customName, ptr ) == false )
+				{
 					MESSAGE( std::string("Couldn't set custom mesh: \"") + customName + "\"" );
+				}
 			}
 			else
+			{
 				MESSAGE( std::string("Couldn't load mesh: \"") + meshFile + "\"" );
+			}
 		}
 	}
 }

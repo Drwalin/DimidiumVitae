@@ -47,30 +47,27 @@ extern "C" int Init( int argc, char ** argv )
 		std::shared_ptr<Model> crate = engine->GetModel( "Crate01" );
 		std::shared_ptr<Model> mapModel = engine->GetModel( "TestMap" );
 		
+		
+		
+		// create animated bow
+		std::shared_ptr<Entity> animatedBow = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetCollisionShapeManager()->GetCylinder( 0.3, 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15) ), 3.0f );
+		animatedBow->SetModel( engine->GetModel( "AnimatedBow" ) );
+		animatedBow->GetBody()->setFriction( 0.75 );
+		animatedBow->GetBody()->setDamping( 0.1, 0.1 );
+		animatedBow->GetSceneNode()->GetISceneNode()->setAnimationSpeed( 24.0f );
+		animatedBow->GetSceneNode()->GetISceneNode()->setFrameLoop( 0, 19 );
+		animatedBow->GetSceneNode()->GetISceneNode()->setLoopMode( false );
+		
+		
+		
 		auto mapShape = engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap");
 		
 		// create player
-		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 15.0 );
+		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,15,0) ), 75.0 );
 		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.7f, 0 ) );
 		player->SetCamera( engine->GetCamera() );
 		
-		// create test balls
-		{
-			for( float x = -40; x < 41; x += 10 )
-			{
-				for( float y = -40; y < 41; y += 10 )
-				{
-					auto temp = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Ball"), engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(x,30,y) ), 300.0f );
-					if( temp )
-					{
-						temp->SetModel( sphere );
-						temp->SetScale( btVector3( 2, 2, 2 ) );
-						temp->GetBody()->setFriction( 0.75 );
-						temp->GetBody()->setDamping( 0.1, 0.1 );
-					}
-				}
-			}
-		}
+		
 		
 		// create map
 		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );

@@ -39,6 +39,11 @@ void Event::KeyPressedEvent( int keyCode )
 	}
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
+	std::shared_ptr<Entity> bow = this->engine->GetEntity( "Bow" );
+	static Animation bowDraw = bow->GetSceneNode()->GetAnimation( "draw" );
+	static Animation bowRelease = bow->GetSceneNode()->GetAnimation( "release" );
+	
+	
 	switch( keyCode )
 	{
 	case irr::KEY_ESCAPE:
@@ -56,6 +61,19 @@ void Event::KeyPressedEvent( int keyCode )
 			lightSceneNode->remove();
 			lightSceneNode = 0;
 		}
+		break;
+		
+	case irr::KEY_KEY_1:
+		bowDraw.Play( false );
+		break;
+	case irr::KEY_KEY_2:
+		bowRelease.Play( false );
+		break;
+	case irr::KEY_KEY_3:
+		bowDraw.Play( true );
+		break;
+	case irr::KEY_KEY_4:
+		bowRelease.Play( true );
 		break;
 		
 	case irr::KEY_KEY_T:

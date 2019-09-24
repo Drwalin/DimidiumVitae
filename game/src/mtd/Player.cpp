@@ -7,9 +7,6 @@
 
 #include "..\css\Player.h"
 
-#include <Debug.h>
-#include <Math.h>
-
 #include <sstream>
 #include <string>
 #include <fstream>

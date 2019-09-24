@@ -9,6 +9,13 @@
 #include "..\css\Engine.h"
 #include "..\lib\Math.hpp"
 
+Animation SceneNode::GetAnimation( const std::string & name ) const
+{
+	if( this->model )
+		return Animation( this->model->GetAnimation(name), this->iSceneNode );
+	return Animation( 0, 0, 1 );
+}
+
 irr::scene::IAnimatedMeshSceneNode * SceneNode::New( class Engine * engine, std::shared_ptr<Model> model )
 {
 	if( engine )
@@ -50,12 +57,18 @@ void SceneNode::SetScale( btVector3 scale )
 	this->iSceneNode->setScale( irr::core::vector3d<float>(scale.x(),scale.y(),scale.z()) );
 }
 
-std::shared_ptr<SceneNode> SceneNode::AddChild( class Engine * engine, std::shared_ptr<Model> model )
+std::shared_ptr<SceneNode> SceneNode::AddChild( std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode * iSceneNode )
 {
 	std::shared_ptr<SceneNode> child( new SceneNode );
-	child->Init( engine, model );
+	child->Init( this->engine, model );
+	iSceneNode->addChild( child->iSceneNode );
 	this->children.insert( child );
 	return child;
+}
+
+std::shared_ptr<SceneNode> SceneNode::AddChild( std::shared_ptr<Model> model )
+{
+	return this->AddChild( model, this->iSceneNode );
 }
 
 void SceneNode::DestroyChild( std::shared_ptr<SceneNode> child )
@@ -65,34 +78,36 @@ void SceneNode::DestroyChild( std::shared_ptr<SceneNode> child )
 	this->children.erase( child );
 }
 
-void SceneNode::Init( class Engine * engine, std::shared_ptr<Model> model )
+void SceneNode::Init( class Engine * engine, std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode * iParentSceneNode )
 {
 	this->engine = engine;
 	this->model = model;
-	this->iSceneNode = SceneNode::New( engine, model );
+	this->iSceneNode = SceneNode::New( this->engine, this->model );
+	this->iParentSceneNode = iParentSceneNode;
+	if( this->iParentSceneNode )
+		this->iParentSceneNode->addChild( this->iSceneNode );
 }
 
 void SceneNode::Destroy()
 {
-	for( auto it=this->children.begin(); it!=this->children.end(); ++it )
+	if( this->iParentSceneNode )
 	{
-		this->iSceneNode->removeChild( (*it)->iSceneNode );
-		(*it)->Destroy();
+		this->iParentSceneNode->removeChild( this->iSceneNode );
+		this->iParentSceneNode = NULL;
 	}
+	
+	for( auto it=this->children.begin(); it!=this->children.end(); ++it )
+		(*it)->Destroy();
 	this->children.clear();
 	
 	if( this->iSceneNode )
 	{
-		if( this->engine )
-			if( this->engine->GetWindow() )
-				if( this->engine->GetWindow()->GetSceneManager() )
-					this->engine->GetWindow()->GetSceneManager()->addToDeletionQueue( this->iSceneNode );
+		this->iSceneNode->remove();
 		this->iSceneNode = NULL;
 	}
 	
 	this->model = NULL;
 	this->engine = engine;
-	
 }
 
 SceneNode::SceneNode()

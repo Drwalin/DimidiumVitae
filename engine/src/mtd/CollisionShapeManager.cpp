@@ -72,7 +72,7 @@ std::shared_ptr<btCollisionShape> CollisionShapeManager::Clone( const std::share
 			return std::shared_ptr<btCollisionShape>( new btBvhTriangleMeshShape( trianglesData, true, true ) );
 		}
 	}
-	MESSAGE( std::string("Unrecognized collision shape type:") + std::to_string((unsigned long long)shape.get()) + " shape type id: " + std::to_string(shape->getShapeType()) );
+	MESSAGE( std::string("Not supported collision shape type to clone:") + std::to_string((unsigned long long)shape.get()) + " shape type id: " + std::to_string(shape->getShapeType()) );
 	return NULL;
 }
 

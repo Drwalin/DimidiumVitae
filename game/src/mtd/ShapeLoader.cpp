@@ -7,6 +7,8 @@
 
 #include "..\css\Header.h"
 
+#include <StdUtil.hpp>
+
 #include <fstream>
 
 #include <cassert>
@@ -19,27 +21,14 @@ void LoadShapes( std::string loadShapesListFile, Engine * engine )
 		while( !file.eof() )
 		{
 			std::string objFile(""), shapeFile(""), customName("");
-			std::getline( file, objFile );
-			std::getline( file, shapeFile );
-			std::getline( file, customName );
+			GetLine( file, objFile );
+			GetLine( file, shapeFile );
+			GetLine( file, customName );
 			if( file.eof() )
 				break;
 			
-			if( objFile.size() )
-			{
-				if( objFile[objFile.size()-1] == 13 )
-					objFile.resize( objFile.size() - 1 );
-			}
-			if( shapeFile.size() )
-			{
-				if( shapeFile[shapeFile.size()-1] == 13 )
-					shapeFile.resize( shapeFile.size() - 1 );
-			}
-			if( customName.size() )
-			{
-				if( customName[customName.size()-1] == 13 )
-					customName.resize( customName.size() - 1 );
-			}
+			if( objFile == "" || shapeFile == "" || customName == "" )
+				continue;
 			
 			if( !std::ifstream(shapeFile).good() )
 			{

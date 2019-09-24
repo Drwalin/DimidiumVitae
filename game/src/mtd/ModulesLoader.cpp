@@ -7,6 +7,8 @@
 
 #include "..\css\Header.h"
 
+#include <StdUtil.hpp>
+
 void LoadModules( Engine * engine, const std::string & modulesList )
 {
 	std::ifstream file( modulesList );
@@ -15,28 +17,17 @@ void LoadModules( Engine * engine, const std::string & modulesList )
 		while( !file.eof() )
 		{
 			std::string  moduleFile(""), moduleName("");
-			std::getline( file, moduleName );
-			std::getline( file, moduleFile );
+			GetLine( file, moduleName );
+			GetLine( file, moduleFile );
 			if( file.eof() )
 				break;
-			
-			if( moduleFile.size() )
-			{
-				if( moduleFile[moduleFile.size()-1] == 13 )
-					moduleFile.resize( moduleFile.size() - 1 );
-			}
-			else
-				continue;
-			if( moduleName.size() )
-			{
-				if( moduleName[moduleName.size()-1] == 13 )
-					moduleName.resize( moduleName.size() - 1 );
-			}
-			else
+			if( moduleName == "" || moduleFile == "" )
 				continue;
 			
 			if( !engine->RegisterType( moduleName, moduleFile ) )
+			{
 				MESSAGE( std::string("Couldn't load module: \"") + moduleName + "\" -> \"" + moduleFile + "\"" );
+			}
 		}
 	}
 }
