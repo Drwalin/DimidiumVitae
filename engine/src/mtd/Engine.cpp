@@ -101,7 +101,10 @@ inline void Engine::UpdateEntities( const float deltaTime )
 		it->second->Tick( deltaTime );
 	
 	if( this->cameraParent )
+	{
 		this->GetCamera()->SetCameraParentTransform( this->cameraParent->GetTransform() );
+		SoundEngine::SetListenerTransform( this->GetCamera()->GetTransform() );
+	}
 }
 
 void Engine::QueueEntityToDestroy( std::shared_ptr<Entity> ptr )
@@ -135,6 +138,16 @@ World * Engine::GetWorld()
 Window * Engine::GetWindow()
 {
 	return this->window;
+}
+
+SoundEngine * Engine::GetSoundEngine()
+{
+	return this->soundEngine;
+}
+
+SoundsManager * Engine::GetSoundsManager()
+{
+	return this->soundsManager;
 }
 
 void Engine::PauseSimulation()
@@ -312,6 +325,8 @@ void Engine::Init( EventResponser * eventResponser, const char * windowName, con
 	this->world->Init();
 	this->window = new Window;
 	this->window->Init( this, windowName, iconFile, width, height, this->event, fullscreen );
+	this->soundEngine = new SoundEngine();
+	this->soundsManager = new SoundsManager();
 	
 	this->window->HideMouse();
 	this->window->LockMouse();
@@ -335,7 +350,6 @@ void Engine::Destroy()
 	{
 		if( it->second )
 		{
-			assert( it->second );
 			it->second->Destroy();
 			it->second.reset();
 		}
@@ -347,10 +361,7 @@ void Engine::Destroy()
 	for( auto it = this->models.begin(); it != this->models.end(); ++it )
 	{
 		if( it->second )
-		{
-			assert( it->second );
 			it->second.reset();
-		}
 		else
 			DEBUG("It shouldn't appear");
 	}
@@ -358,7 +369,6 @@ void Engine::Destroy()
 	
 	if( this->window )
 	{
-		assert( this->window != NULL );
 		this->window->Destroy();
 		delete this->window;
 		this->window = NULL;
@@ -366,7 +376,6 @@ void Engine::Destroy()
 	
 	if( this->world )
 	{
-		assert( this->world != NULL );
 		this->world->Destroy();
 		delete this->world;
 		this->world = NULL;
@@ -374,17 +383,27 @@ void Engine::Destroy()
 	
 	if( this->event )
 	{
-		assert( this->event != NULL );
 		delete this->event;
 		this->event = NULL;
 	}
 	
 	if( this->collisionShapeManager )
 	{
-		assert( this->collisionShapeManager != NULL );
 		this->collisionShapeManager->Destroy();
 		delete this->collisionShapeManager;
 		this->collisionShapeManager = NULL;
+	}
+	
+	if( this->soundsManager )
+	{
+		delete this->soundsManager;
+		this->soundsManager = NULL;
+	}
+	
+	if( this->soundEngine )
+	{
+		delete this->soundEngine;
+		this->soundEngine = NULL;
 	}
 	
 	this->pausePhysics = false;
@@ -397,6 +416,8 @@ Engine::Engine()
 	this->window = NULL;
 	this->pausePhysics = true;
 	this->collisionShapeManager = NULL;
+	this->soundsManager = NULL;
+	this->soundEngine = NULL;
 }
 
 Engine::~Engine()

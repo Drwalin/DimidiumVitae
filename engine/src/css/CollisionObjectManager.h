@@ -1,4 +1,7 @@
 
+//	This file is part of The Drwalin Engine project
+// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+
 #ifndef COLLISION_OBJECT_MANAGER_H
 #define COLLISION_OBJECT_MANAGER_H
 

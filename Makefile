@@ -1,23 +1,26 @@
 
-LIBS = -LC:\mingw-w64\lib\bullet -LC:\mingw-w64\lib -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread -lfreetype
+LIBS = -LC:\mingw-w64\lib\bullet -LC:\mingw-w64\lib -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread -lfreetype dep\OpenAL32.dll
 INCLUDEDIRECTORIES = -IC:\mingw-w64\include\bullet -IC:\mingw-w64\include -Iengine\src\css -Iengine\src\lib
 
 CP = copy
 RM = del
 CXX = g++
+CC = gcc
 
 RM_FLAGS = /f
-CXXFLAGS = -m64 -std=c++17 -ggdb -g3 -ggdb3 -g
+CFLAGS =  -m64 -ggdb -g3 -ggdb3 -g
+CXXFLAGS = $(CFLAGS)
+CXXFLAGS += -std=c++17
 
-MAINOBJECTS = game\\bin\\Init.o game\\bin\\MeshLoader.o game\\bin\\ModulesLoader.o game\\bin\\ShapeLoader.o
+MAINOBJECTS = game\\bin\\Init.o game\\bin\\MeshLoader.o game\\bin\\ModulesLoader.o game\\bin\\SoundsLoader.o game\\bin\\ShapesLoader.o
 
 GAMECOREMODULESOBJECTS = game\\bin\\Character.o game\\bin\\CharacterWalkTrigger.o game\\bin\\DynamicEntity.o game\\bin\\Event.o game\\bin\\MotionController.o game\\bin\\Player.o game\\bin\\StaticEntity.o game\\bin\\Trigger.o
 GAMECOREMODULES = game\\dlls\\Character.dll game\\dlls\\CharacterWalkTrigger.dll game\\dlls\\DynamicEntity.dll game\\dlls\\Event.dll game\\dlls\\Player.dll game\\dlls\\StaticEntity.dll game\\dlls\\Trigger.dll
 RELEASEGAMECOREMODULES = $(subst game,release,$(GAMECOREMODULES))
 
-ENGINECOREOBJECTS = engine\\bin\\Camera.o engine\\bin\\ClassFactoryBase.o engine\\bin\\CollisionObjectManager.o engine\\bin\\CollisionShapeConstructor.o engine\\bin\\CollisionShapeManager.o engine\\bin\\DllImporter.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\Entity.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\GUI.o engine\\bin\\Model.o engine\\bin\\ModulesFactory.o engine\\bin\\SceneNode.o engine\\bin\\StringToEnter.o engine\\bin\\TimeCounter.o engine\\bin\\World.o engine\\bin\\Window.o
+ENGINECOREOBJECTS = engine\\bin\\Camera.o engine\\bin\\ClassFactoryBase.o engine\\bin\\CollisionObjectManager.o engine\\bin\\CollisionShapeConstructor.o engine\\bin\\CollisionShapeManager.o engine\\bin\\DllImporter.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\Entity.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\GUI.o engine\\bin\\Model.o engine\\bin\\ModulesFactory.o engine\\bin\\SceneNode.o engine\\bin\\SoundEngine.o engine\\bin\\StringToEnter.o engine\\bin\\TimeCounter.o engine\\bin\\Wav.o engine\\bin\\World.o engine\\bin\\Window.o
 
-DEPENDENCIES = Irrlicht.dll libBulletCollision.dll libBulletDynamics.dll libgcc_s_seh-1.dll libLinearMath.dll libstdc++-6.dll libwinpthread-1.dll libyse64.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll
+DEPENDENCIES = Irrlicht.dll libBulletCollision.dll libBulletDynamics.dll libgcc_s_seh-1.dll libLinearMath.dll libstdc++-6.dll libwinpthread-1.dll libyse64.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll OpenAL32.dll
 RELEASEDEPENDENCIES = $(addprefix release\\,$(DEPENDENCIES))
 
 
@@ -79,6 +82,8 @@ engine\\bin\\%.o: engine\\src\\mtd\\%.cpp
 game\\bin\\%.o: game\\src\\mtd\\%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
 engine\\bin\\%.o: engine\\src\\lib\\dll\\%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
+engine\\bin\\%.o: engine\\src\\lib\\%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
 
 

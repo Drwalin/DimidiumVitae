@@ -2,8 +2,8 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef SHAPE_LOADER_CPP
-#define SHAPE_LOADER_CPP
+#ifndef SHAPES_LOADER_CPP
+#define SHAPES_LOADER_CPP
 
 #include "..\css\Header.h"
 
@@ -13,9 +13,9 @@
 
 #include <cassert>
 
-void LoadShapes( std::string loadShapesListFile, Engine * engine )
+void LoadShapes( Engine * engine, const std::string & shapesListFileName )
 {
-	std::ifstream file( loadShapesListFile );
+	std::ifstream file( shapesListFileName );
 	if( file.good() )
 	{
 		while( !file.eof() )

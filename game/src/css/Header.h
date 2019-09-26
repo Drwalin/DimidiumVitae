@@ -12,13 +12,10 @@
 
 #include <string>
 
-void LoadMeshes( std::string loadMeshesListFile, Engine * engine );
-
-// between every word need to be a white sign ( ' ', '\n', '\t' )
-int LoadMapPause( Engine * engine, std::string mapFile );		// return 0 -> no errors
-
-void LoadModules( Engine * engine, const std::string & modulesList );
-void LoadShapes( std::string loadShapesListFile, Engine * engine );
+void LoadMeshes( Engine * engine, const std::string & meshesListFileName );
+void LoadModules( Engine * engine, const std::string & modulesListFileName );
+void LoadShapes( Engine * engine, const std::string & shapesListFileName );
+void LoadSounds( Engine * engine, const std::string & soundsListFileName );
 
 #endif
 

@@ -34,21 +34,22 @@ extern "C" int Init( int argc, char ** argv )
 	srand( time( NULL ) );
 	
 	EventResponser * eventResponser = eventModule.Get<EventResponser*(*)(void)>( "EventConstructor" )();
-	
 	Engine * engine = new Engine;
 	engine->Init( eventResponser, "Engine 0.0.2", NULL, 800, 600, false );
 	
-	LoadShapes( "media/shapes.list", engine );
-	LoadMeshes( "media/meshes.list", engine );
 	LoadModules( engine, "modules.list" );
 	
+	LoadMeshes( engine, "media/meshes.list" );
+	LoadShapes( engine, "media/shapes.list" );
+	LoadSounds( engine, "media/sounds.list" );
+	
+	SoundSource musicSource( engine->GetSoundsManager()->GetSoundSampler( "track01" ) );
+	musicSource.Set2D();
+	musicSource.SetVolume( 0.07f );
+	musicSource.Loop( true );
+	musicSource.Play();
+	
 	{
-		std::shared_ptr<Model> sphere = engine->GetModel( "Sphere" );
-		std::shared_ptr<Model> crate = engine->GetModel( "Crate01" );
-		std::shared_ptr<Model> mapModel = engine->GetModel( "TestMap" );
-		
-		
-		
 		// create animated bow
 		std::shared_ptr<Entity> animatedBow = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetCollisionShapeManager()->GetCylinder( 0.3, 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15) ), 3.0f );
 		animatedBow->SetModel( engine->GetModel( "AnimatedBow" ) );
@@ -58,22 +59,15 @@ extern "C" int Init( int argc, char ** argv )
 		animatedBow->GetSceneNode()->GetISceneNode()->setFrameLoop( 0, 19 );
 		animatedBow->GetSceneNode()->GetISceneNode()->setLoopMode( false );
 		
-		
-		
-		auto mapShape = engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap");
-		
 		// create player
 		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,15,0) ), 75.0 );
 		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.7f, 0 ) );
 		player->SetCamera( engine->GetCamera() );
 		
-		
-		
 		// create map
 		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
-		map->SetModel( mapModel );
+		map->SetModel( engine->GetModel( "TestMap" ) );
 	}
-	
 	
 	MESSAGE( std::string("Loading cpu time: ") + std::to_string(float(clock())/float(CLOCKS_PER_SEC)) );
 	MESSAGE( std::string("Loading time: ") + std::to_string(float(clock())/1000.0f) );

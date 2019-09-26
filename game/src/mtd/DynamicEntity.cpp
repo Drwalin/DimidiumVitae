@@ -15,14 +15,21 @@
 
 #include <ctime>
 
+void DynamicEntity::NextOverlappingFrame()
+{
+	this->anyOverlapp = false;
+}
+
 void DynamicEntity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	Entity::EventOnEntityBeginOverlapp( other, persisstentManifold );
+	this->anyOverlapp = true;
 }
 
 void DynamicEntity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	Entity::EventOnEntityTickOverlapp( other, persisstentManifold );
+	this->anyOverlapp = true;
 }
 
 void DynamicEntity::EventOnEntityEndOverlapp( Entity * other )
@@ -33,6 +40,25 @@ void DynamicEntity::EventOnEntityEndOverlapp( Entity * other )
 void DynamicEntity::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
+	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	if( rigidBody )
+	{
+		btVector3 currentLinearVelocity = rigidBody->getLinearVelocity();
+		btVector3 currentAngularVelocity = rigidBody->getAngularVelocity();
+		float dv = (this->previousLinearVelocity-currentLinearVelocity).length() + (this->previousAngularVelocity-currentAngularVelocity).length();
+		if( this->anyOverlapp && dv > 1.0f )
+		{
+			float volume = (dv-1/.0f)*0.1f;
+			if( this->hitSoundSource->IsPlaying() == false )
+			{
+				this->hitSoundSource->SetLocation( this->GetLocation() );
+				this->hitSoundSource->Play();
+				this->hitSoundSource->SetVolume( volume );
+			}
+		}
+		this->previousLinearVelocity = currentLinearVelocity;
+		this->previousAngularVelocity = currentAngularVelocity;
+	}
 }
 
 void DynamicEntity::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
@@ -66,15 +92,23 @@ void DynamicEntity::Spawn( std::shared_ptr<Entity> self, std::string name, std::
 	rigidBody->setFriction( 0.75 );
 	
 	this->SetBody( collisionObject, shape );
+	
+	this->hitSoundSource = new SoundSource( this->engine->GetSoundsManager()->GetSoundSampler("wood1") );
 }
 
 void DynamicEntity::Despawn()
 {
+	if( this->hitSoundSource )
+		delete this->hitSoundSource;
+	this->hitSoundSource = NULL;
 	Entity::Despawn();
 }
 
 void DynamicEntity::Destroy()
 {
+	if( this->hitSoundSource )
+		delete this->hitSoundSource;
+	this->hitSoundSource = NULL;
 	Entity::Destroy();
 }
 
@@ -87,6 +121,7 @@ std::string DynamicEntity::GetClassName() const{ return "DynamicEntity"; }
 DynamicEntity::DynamicEntity() :
 	Entity()
 {
+	this->hitSoundSource = NULL;
 }
 
 DynamicEntity::~DynamicEntity()

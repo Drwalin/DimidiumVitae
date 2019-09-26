@@ -183,7 +183,6 @@ bool Model::LoadAnimations( const std::string & animationsFileName )
 			file >> duration;
 			if( !(name == "" || start < 0 || end < 0 || duration < 0) )
 				this->animations[name] = Animation( start, end, duration );
-			printf( "\n %s : { %i -> %i in %f }", name.c_str(), start, end, duration );
 		}
 		return true;
 	}

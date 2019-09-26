@@ -2,16 +2,16 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef LOAD_MODULES_CPP
-#define LOAD_MODULES_CPP
+#ifndef MODULES_LOADER_CPP
+#define MODULES_LOADER_CPP
 
 #include "..\css\Header.h"
 
 #include <StdUtil.hpp>
 
-void LoadModules( Engine * engine, const std::string & modulesList )
+void LoadModules( Engine * engine, const std::string & modulesListFileName )
 {
-	std::ifstream file( modulesList );
+	std::ifstream file( modulesListFileName );
 	if( file.good() )
 	{
 		while( !file.eof() )

@@ -24,6 +24,7 @@
 #include "Window.h"
 #include "EventResponser.h"
 #include "CollisionShapeManager.h"
+#include "SoundEngine.h"
 
 #include "..\lib\dll\ClassFactory.h"
 
@@ -37,6 +38,8 @@ private:
 	Window * window;
 	EventResponser * event;
 	CollisionShapeManager * collisionShapeManager;
+	SoundsManager * soundsManager;
+	SoundEngine * soundEngine;
 	
 	std::map < std::string, std::shared_ptr<Model> > models;
 	std::map < std::string, std::shared_ptr<Entity> > entities;
@@ -95,14 +98,15 @@ public:
 	
 	World * GetWorld();
 	Window * GetWindow();
+	SoundEngine * GetSoundEngine();
+	SoundsManager * GetSoundsManager();
+	CollisionShapeManager * GetCollisionShapeManager();
 	
 	void PauseSimulation();
 	void ResumeSimulation();
 	
 	std::shared_ptr<Camera> GetCamera() const;
 	std::shared_ptr<Entity> GetCameraParent() const;
-	
-	CollisionShapeManager * GetCollisionShapeManager();
 	
 	std::string GetAvailableEntityName( const std::string & name );
 	std::shared_ptr<Entity> AddEntity( std::shared_ptr<Entity> emptyEntity, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0) );

@@ -11,9 +11,9 @@
 
 #include <cassert>
 
-void LoadMeshes( std::string loadMeshesListFile, Engine * engine )
+void LoadMeshes( Engine * engine, const std::string & meshesListFileName )
 {
-	std::ifstream file( loadMeshesListFile );
+	std::ifstream file( meshesListFileName );
 	if( file.good() )
 	{
 		while( !file.eof() )

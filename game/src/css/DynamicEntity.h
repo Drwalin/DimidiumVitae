@@ -7,14 +7,20 @@
 
 #include <Entity.h>
 
+#include <SoundEngine.h>
+
 class DynamicEntity : public Entity
 {
 protected:
 	
-	
+	SoundSource * hitSoundSource;
+	btVector3 previousLinearVelocity;
+	btVector3 previousAngularVelocity;
+	bool anyOverlapp;
 	
 public:
 	
+	virtual void NextOverlappingFrame() override;
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
 	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
