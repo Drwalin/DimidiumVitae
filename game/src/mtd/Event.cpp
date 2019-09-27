@@ -85,9 +85,15 @@ void Event::KeyPressedEvent( int keyCode )
 		
 	case irr::KEY_KEY_P:
 		if( this->engine->GetWindow()->IsMouseLocked() )
+		{
 			this->engine->GetWindow()->UnlockMouse();
+			this->engine->GetWindow()->ShowMouse();
+		}
 		else
+		{
 			this->engine->GetWindow()->LockMouse();
+			this->engine->GetWindow()->HideMouse();
+		}
 		break;
 		
 	case irr::KEY_LSHIFT:

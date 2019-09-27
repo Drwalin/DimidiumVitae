@@ -66,7 +66,7 @@ void StaticEntity::Destroy()
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new StaticEntity(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetStaticEntityInstantiator(){ static std::shared_ptr<Entity> instantiator( new StaticEntity(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int StaticEntity::GetTypeSize() const{ return sizeof(StaticEntity); }
 void StaticEntity::Free(){ delete this; }
 std::shared_ptr<Entity> StaticEntity::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<StaticEntity>( new StaticEntity(), [](Entity * ptr){delete ptr;} ) ); }

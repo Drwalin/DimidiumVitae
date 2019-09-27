@@ -112,7 +112,7 @@ void DynamicEntity::Destroy()
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new DynamicEntity(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetDynamicEntityInstantiator(){ static std::shared_ptr<Entity> instantiator( new DynamicEntity(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int DynamicEntity::GetTypeSize() const{ return sizeof(DynamicEntity); }
 void DynamicEntity::Free(){ delete this; }
 std::shared_ptr<Entity> DynamicEntity::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<DynamicEntity>( new DynamicEntity(), [](Entity * ptr){delete ptr;} ) ); }

@@ -20,7 +20,7 @@ void ModulesFactory::RemoveModule( const char * moduleName )
 	this->dlls.erase( moduleName );
 }
 
-std::shared_ptr<Dll> ModulesFactory::AddModule( const char * modulePath, const char * moduleName )
+std::shared_ptr<Dll> ModulesFactory::AddModule( const char * moduleName, const char * modulePath )
 {
 	auto it = this->dlls.find( std::string(moduleName) );
 	if( it != this->dlls.end() )

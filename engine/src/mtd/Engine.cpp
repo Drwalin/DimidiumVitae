@@ -24,9 +24,10 @@ std::shared_ptr<Entity> Engine::GetNewEntityOfType( const std::string & name )
 	return entity;
 }
 
-bool Engine::RegisterType( const std::string & name, const std::string & modulePath )
+bool Engine::RegisterType( const std::string & className, const std::string & moduleName, const std::string & modulePath )
 {
-	return (bool)this->classFactory.AddClass( modulePath.c_str(), name.c_str() );
+	this->classFactory.AddModule( moduleName.c_str(), modulePath.c_str() );
+	return (bool)this->classFactory.AddClass( className.c_str(), moduleName.c_str() );
 }
 
 std::shared_ptr<Entity> Engine::AddEntity( std::shared_ptr<Entity> emptyEntity, const std::string & name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia )
@@ -316,7 +317,7 @@ void Engine::BeginLoop()
 	this->window->BeginLoop();
 }
 
-void Engine::Init( EventResponser * eventResponser, const char * windowName, const char * iconFile, int width, int height, bool fullscreen )
+void Engine::Init( EventResponser * eventResponser, const std::string & windowName, const std::string & iconFile, int width, int height, bool fullscreen )
 {
 	this->Destroy();
 	this->event = eventResponser;

@@ -74,7 +74,7 @@ void Trigger::Destroy()
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new Trigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetTriggerInstantiator(){ static std::shared_ptr<Entity> instantiator( new Trigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int Trigger::GetTypeSize() const{ return sizeof(Trigger); }
 void Trigger::Free(){ delete this; }
 std::shared_ptr<Entity> Trigger::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<Trigger>( new Trigger(), [](Entity * ptr){delete ptr;} ) ); }

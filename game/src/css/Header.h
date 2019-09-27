@@ -17,5 +17,8 @@ void LoadModules( Engine * engine, const std::string & modulesListFileName );
 void LoadShapes( Engine * engine, const std::string & shapesListFileName );
 void LoadSounds( Engine * engine, const std::string & soundsListFileName );
 
+std::string GetVersionString();
+std::string GetVersionReleaseDateString();
+
 #endif
 

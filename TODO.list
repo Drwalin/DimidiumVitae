@@ -2,19 +2,31 @@
 Testing/debugging:
 	CollisionShapeConstructor::Clone
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
-	
+	Executable once locked whole system (needed to cut power to do anything)
 	
 
 Features:
-	Light maps
-	Animations - done
-	Sounds - done
-	Sound occlusion
+	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
+		StaticEntity
+		DynamicEntity
+		Trigger
+		CharacterWalkTrigger -> MotionControllerTrigger
+		MotionController
+	Decoding ogg sound files
+	Particles
 	
 
 Pre-alpha features:
+	Light maps
+	Dynamic light maps
+	Sound occlusion
 	
 	
 	
 	
 
+Done:
+	Multiple Entity-derived classes in one module
+	Sounds
+	Animations
+	

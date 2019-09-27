@@ -106,7 +106,7 @@ public:
 	void Draw();
 	void DrawGUI();
 	
-	void Init( Engine * engine, const char * windowName, const char * iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen = false );
+	void Init( Engine * engine, const std::string & windowName, const std::string & iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen = false );
 	void BeginLoop();
 	
 	void Destroy();

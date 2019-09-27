@@ -16,7 +16,8 @@ void LoadModules( Engine * engine, const std::string & modulesListFileName )
 	{
 		while( !file.eof() )
 		{
-			std::string  moduleFile(""), moduleName("");
+			std::string  moduleFile(""), moduleName(""), className("");
+			GetLine( file, className );
 			GetLine( file, moduleName );
 			GetLine( file, moduleFile );
 			if( file.eof() )
@@ -24,9 +25,9 @@ void LoadModules( Engine * engine, const std::string & modulesListFileName )
 			if( moduleName == "" || moduleFile == "" )
 				continue;
 			
-			if( !engine->RegisterType( moduleName, moduleFile ) )
+			if( !engine->RegisterType( className, moduleName, moduleFile ) )
 			{
-				MESSAGE( std::string("Couldn't load module: \"") + moduleName + "\" -> \"" + moduleFile + "\"" );
+				MESSAGE( std::string("Couldn't load module: \"") + moduleName + "\" -> \"" + moduleFile + "\" : " + className );
 			}
 		}
 	}

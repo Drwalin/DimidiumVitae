@@ -86,7 +86,7 @@ public:
 	
 	int GetNumberOfEntities() const;
 	std::shared_ptr<Entity> GetNewEntityOfType( const std::string & name );
-	bool RegisterType( const std::string & name, const std::string & modulePath );
+	bool RegisterType( const std::string & className, const std::string & moduleName, const std::string & modulePath );
 	
 	void QueueEntityToDestroy( std::shared_ptr<Entity> ptr );
 	void QueueEntityToDestroy( const std::string & name );
@@ -122,7 +122,7 @@ public:
 	void Tick( const float deltaTime );
 	void ParallelToDrawTick( const float deltaTime );
 	
-	void Init( EventResponser * eventResponser, const char * windowName, const char * iconFile, int width, int height, bool fullscreen = false );
+	void Init( EventResponser * eventResponser, const std::string & windowName, const std::string & iconFile, int width, int height, bool fullscreen = false );
 	void BeginLoop();
 	
 	void Destroy();

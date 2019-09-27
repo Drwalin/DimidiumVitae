@@ -13,6 +13,8 @@
 
 #include "..\lib\Debug.h"
 
+#include <cstring>
+
 void ParallelThreadFunctionToDraw( Window * window )
 {
 	if( window )
@@ -259,7 +261,7 @@ void Window::DrawGUI()
 	this->gui.Flush();
 }
 
-void Window::Init( Engine * engine, const char * windowName, const char * iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen )
+void Window::Init( Engine * engine, const std::string & windowName, const std::string & iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen )
 {
 	this->Destroy();
 	
@@ -269,6 +271,7 @@ void Window::Init( Engine * engine, const char * windowName, const char * iconFi
 	
 	this->screenResolution = irr::core::dimension2du( width, height );
 	this->device = irr::createDevice( irr::video::EDT_OPENGL, this->screenResolution, 16, fullscreen, true, false, this->eventIrrlichtReceiver );
+	this->device->setWindowCaption( std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str() );
 	
 	this->videoDriver = this->device->getVideoDriver();
 	this->sceneManager = this->device->getSceneManager();

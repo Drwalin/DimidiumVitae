@@ -21,7 +21,7 @@ public:
 	
 	std::shared_ptr<Dll> GetModule( const char * moduleName );
 	
-	std::shared_ptr<Dll> AddModule( const char * modulePath, const char * moduleName );
+	std::shared_ptr<Dll> AddModule( const char * moduleName, const char * modulePath );
 	void RemoveModule( const char * moduleName );
 	
 	ModulesFactory();

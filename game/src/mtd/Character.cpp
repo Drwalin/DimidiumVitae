@@ -97,7 +97,7 @@ void Character::Destroy()
 	this->motionController = NULL;
 }
 
-extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new Character(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetCharacterInstantiator(){ static std::shared_ptr<Entity> instantiator( new Character(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int Character::GetTypeSize() const{ return sizeof(Character); }
 void Character::Free(){ delete this; }
 std::shared_ptr<Entity> Character::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<Character>( new Character(), [](Entity * ptr){delete ptr;} ) ); }

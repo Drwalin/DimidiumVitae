@@ -131,7 +131,7 @@ void CharacterWalkTrigger::Destroy()
 	Trigger::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetClassInstantiator(){ static std::shared_ptr<Entity> instantiator( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+extern "C" std::shared_ptr<Entity> GetCharacterWalkTriggerInstantiator(){ static std::shared_ptr<Entity> instantiator( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
 int CharacterWalkTrigger::GetTypeSize() const{ return sizeof(CharacterWalkTrigger); }
 void CharacterWalkTrigger::Free(){ delete this; }
 std::shared_ptr<Entity> CharacterWalkTrigger::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<CharacterWalkTrigger>( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ) ); }

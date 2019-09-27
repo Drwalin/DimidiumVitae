@@ -10,54 +10,57 @@
 #include <cstdio>
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::GetNewOf( const char * moduleName )
+std::shared_ptr<T> ClassFactory<T>::GetNewOf( const char * className )
 {
-	auto it = this->uniqueObjects.find( moduleName );
+	auto it = this->uniqueObjects.find( className );
 	if( it == this->uniqueObjects.end() )
 		return NULL;
 	return it->second->New();
 }
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::GetClassInstantiator( const char * moduleName )
+std::shared_ptr<T> ClassFactory<T>::GetClassInstantiator( const char * className )
 {
-	auto it = this->uniqueObjects.find( moduleName );
+	auto it = this->uniqueObjects.find( className );
 	if( it == this->uniqueObjects.end() )
 		return NULL;
 	return it->second;
 }
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::AddClass( const char * modulePath, const char * moduleName )
+std::shared_ptr<T> ClassFactory<T>::AddClass( const char * className, const char * moduleName )
 {
-	auto it = this->uniqueObjects.find( moduleName );
+	auto it = this->uniqueObjects.find( className );
 	if( it != this->uniqueObjects.end() )
 		return it->second;
-	std::shared_ptr<Dll> dll = this->AddModule( modulePath, moduleName );
+	
+	std::shared_ptr<Dll> dll = this->GetModule( moduleName );
 	if( dll == NULL )
 	{
-		fprintf( stderr, "\n Cannot get module: <%s>", modulePath );
+		fprintf( stderr, "\n Module: \"%s\" is not registered while getting %s class instantiator", moduleName, className );
 		return NULL;
 	}
 	
+	std::string instantiatorSymbol = std::string("Get") + className + "Instantiator";
+	
 	std::shared_ptr<T>(*GetClassInstantiator)();
-	GetClassInstantiator = dll->Get<decltype(GetClassInstantiator)>( "GetClassInstantiator" );
+	GetClassInstantiator = dll->Get<std::shared_ptr<T>(*)(void)>( instantiatorSymbol.c_str() );
+	
 	if( GetClassInstantiator == NULL )
 	{
-		fprintf( stderr, "\n Cannot get symbol: \"GetClassInstantiator\" from: <%s>", modulePath );
-		this->RemoveModule( moduleName );
+		fprintf( stderr, "\n Cannot get symbol: \"%s\" from: <%s>", instantiatorSymbol.c_str(), moduleName );
 		return NULL;
 	}
 	
 	std::shared_ptr<T> instantiator = GetClassInstantiator();
 	if( instantiator == NULL )
 	{
-		fprintf( stderr, "\n Cannot get instantiator from: <%s>", moduleName );
+		fprintf( stderr, "\n Cannot get instantiator from: %s::%s", moduleName, className );
 		this->RemoveModule( moduleName );
 		return NULL;
 	}
 	
-	this->uniqueObjects.insert( std::pair(std::string(moduleName),instantiator) );
+	this->uniqueObjects.insert( std::pair(std::string(className),instantiator) );
 	return instantiator;
 }
 

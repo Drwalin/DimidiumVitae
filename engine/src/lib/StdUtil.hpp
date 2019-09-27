@@ -32,5 +32,10 @@ inline std::string GetPathWithoutSlash( const std::string & name )
 	return name.substr( 0, dot );
 }
 
+inline std::string operator+( const char * cstring, const std::string & string )
+{
+	return std::string(cstring) + string;
+}
+
 #endif
 

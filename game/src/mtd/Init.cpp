@@ -2,40 +2,33 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#include <ctime>
 
-#include <Engine.h>
-
+#include <dll\DllImporter.h>
+#include <Math.hpp>
 #include <Debug.h>
+#include <StdUtil.hpp>
 
-#include <memory>
-#include <iostream>
+#include <EventResponser.h>
+#include <Engine.h>
 
 #include "..\css\Header.h"
 #include "..\css\Player.h"
 
-#include <EventResponser.h>
+#include <iostream>
+#include <memory>
 
 #include <cassert>
+#include <ctime>
 
-#include <conio.h>
-
-#include <dll\DllImporter.h>
-
-#include <Math.hpp>
+extern "C" EventResponser * EventConstructor();
 
 extern "C" int Init( int argc, char ** argv )
 {
-	Dll triggerModule( "dlls/Trigger.dll" );
-	Dll characterWalkTriggerModule( "dlls/CharacterWalkTrigger.dll" );
-	Dll characterModule( "dlls/Character.dll" );
-	Dll eventModule( "dlls/Event.dll" );
-	
 	srand( time( NULL ) );
 	
-	EventResponser * eventResponser = eventModule.Get<EventResponser*(*)(void)>( "EventConstructor" )();
+	EventResponser * eventResponser = EventConstructor();
 	Engine * engine = new Engine;
-	engine->Init( eventResponser, "Engine 0.0.2", NULL, 800, 600, false );
+	engine->Init( eventResponser, "Engine "+GetVersionString(), "", 800, 600, false );
 	
 	LoadModules( engine, "modules.list" );
 	

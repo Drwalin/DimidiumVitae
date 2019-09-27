@@ -6,9 +6,8 @@
 #define CLASS_FACTORY_H
 
 #include "ModulesFactory.h"
-#include "ClassFactoryBase.h"
 
-template < typename T = ClassFactoryBase >
+template < typename T >
 class ClassFactory : public ModulesFactory
 {
 protected:
@@ -17,10 +16,10 @@ protected:
 	
 public:
 	
-	std::shared_ptr<T> GetNewOf( const char * moduleName );
+	std::shared_ptr<T> GetNewOf( const char * className );
 	
-	std::shared_ptr<T> GetClassInstantiator( const char * moduleName );
-	std::shared_ptr<T> AddClass( const char * modulePath, const char * moduleName );
+	std::shared_ptr<T> GetClassInstantiator( const char * className );
+	std::shared_ptr<T> AddClass( const char * className, const char * moduleName );
 	void RemoveClass( const char * moduleName );
 	
 	ClassFactory();
