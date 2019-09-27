@@ -7,8 +7,10 @@
 
 #include "..\css\SoundEngine.h"
 
-#include "..\lib\Wav.h"
+#include "..\lib\StdUtil.hpp"
 #include "..\lib\Debug.h"
+#include "..\lib\Wav.h"
+#include "..\lib\Ogg.h"
 
 #include <AL\al.h>
 #include <AL\alc.h>
@@ -17,11 +19,11 @@
 
 #include <ctime>
 
-void SoundSampler::LoadFromWAV( const std::string & wavFile )
+void SoundSampler::LoadFromWAV( const std::string & wavFileName )
 {
 	this->Destroy();
 	WavHeader wavHeader;
-	void * bufferData = WAVLoadFromFile( &wavHeader, wavFile.c_str() );
+	void * bufferData = WAVLoadFromFile( &wavHeader, wavFileName.c_str() );
 	if( bufferData )
 	{
 		ALenum format;
@@ -64,6 +66,30 @@ void SoundSampler::LoadFromWAV( const std::string & wavFile )
 		WAVFree( bufferData );
 		this->IncrementRefCounter();
 	}
+}
+
+void SoundSampler::LoadFromOGG( const std::string & oggFileName )
+{
+	std::vector<char> bufferData;
+	ALenum format;
+	ALsizei sampleRate;
+	if( OGGLoadFromFile( oggFileName.c_str(), bufferData, format, sampleRate ) )
+	{
+		alGenBuffers( 1, &(this->bufferID) );
+		alBufferData( this->bufferID, format, &(bufferData[0]), bufferData.size(), sampleRate );
+		this->IncrementRefCounter();
+	}
+}
+
+void SoundSampler::LoadFromFile( const std::string & fileName )
+{
+	std::string extension = GetExtension( fileName );
+	if( extension == "ogg" )
+		this->LoadFromOGG( fileName );
+	else if( extension == "wav" )
+		this->LoadFromWAV( fileName );
+	else
+		MESSAGE( "Unrecognized sound file extension: " + fileName + " -> " + extension );
 }
 
 unsigned SoundSampler::GetBuffer() const
@@ -161,7 +187,7 @@ SoundSampler::SoundSampler( const std::string & wavFile )
 {
 	this->bufferID = 0;
 	this->refCounter = NULL;
-	this->LoadFromWAV( wavFile );
+	this->LoadFromFile( wavFile );
 }
 
 SoundSampler::~SoundSampler()

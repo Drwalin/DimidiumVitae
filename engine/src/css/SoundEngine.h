@@ -20,7 +20,9 @@ private:
 	std::atomic<unsigned> * refCounter;
 	unsigned bufferID;
 	
-	void LoadFromWAV( const std::string & wavFile );
+	void LoadFromWAV( const std::string & wavFileName );
+	void LoadFromOGG( const std::string & oggFileName );
+	void LoadFromFile( const std::string & fileName );
 	
 	void IncrementRefCounter();
 	void DecrementRefCounter();

@@ -1,6 +1,9 @@
 Change log
 
-v0.3.1b - :
+v0.3.2 - 2019.09.27:
+	Reading sound from *.ogg files works
+
+v0.3.1b - 2019.09.27:
 	Moved StaticEntity, DynamicEntity, Trigger and MotionController classes to engine
 	Moved from game to engine and renamed CharacterWalkTrigger to MotionControllerTrigger
 	Added ChangeLog.txt

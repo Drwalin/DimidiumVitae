@@ -6,7 +6,6 @@ Testing/debugging:
 	
 
 Features:
-	Decoding ogg sound files
 	Particles
 	
 
@@ -17,6 +16,7 @@ Pre-alpha features:
 	
 
 Done:
+	Decoding ogg sound files
 	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
 		StaticEntity
 		DynamicEntity
