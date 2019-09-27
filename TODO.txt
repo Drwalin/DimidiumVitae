@@ -6,12 +6,6 @@ Testing/debugging:
 	
 
 Features:
-	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
-		StaticEntity
-		DynamicEntity
-		Trigger
-		CharacterWalkTrigger -> MotionControllerTrigger
-		MotionController
 	Decoding ogg sound files
 	Particles
 	
@@ -21,11 +15,14 @@ Pre-alpha features:
 	Dynamic light maps
 	Sound occlusion
 	
-	
-	
-	
 
 Done:
+	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
+		StaticEntity
+		DynamicEntity
+		Trigger
+		CharacterWalkTrigger -> MotionControllerTrigger
+		MotionController
 	Multiple Entity-derived classes in one module
 	Sounds
 	Animations

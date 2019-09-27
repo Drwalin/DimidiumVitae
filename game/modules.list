@@ -1,15 +1,3 @@
-Trigger
-game-core
-game-core.dll
-CharacterWalkTrigger
-game-core
-game-core.dll
-StaticEntity
-game-core
-game-core.dll
-DynamicEntity
-game-core
-game-core.dll
 Character
 game-core
 game-core.dll

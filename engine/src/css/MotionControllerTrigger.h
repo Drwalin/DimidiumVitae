@@ -2,14 +2,14 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef CHARACTER_WALK_TRIGGER_H
-#define CHARACTER_WALK_TRIGGER_H
+#ifndef MOTION_CONTROLLER_TRIGGER_H
+#define MOTION_CONTROLLER_TRIGGER_H
 
 #include "Trigger.h"
 
 #include <cmath>
 
-class CharacterWalkTrigger : public Trigger
+class MotionControllerTrigger : public Trigger
 {
 protected:
 	
@@ -50,8 +50,8 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	CharacterWalkTrigger();
-	virtual ~CharacterWalkTrigger() override;
+	MotionControllerTrigger();
+	virtual ~MotionControllerTrigger() override;
 };
 
 #endif

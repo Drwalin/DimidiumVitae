@@ -13,6 +13,7 @@
 
 #include "..\css\Header.h"
 #include "..\css\Player.h"
+#include "..\css\Event.h"
 
 #include <iostream>
 #include <memory>
@@ -26,9 +27,8 @@ extern "C" int Init( int argc, char ** argv )
 {
 	srand( time( NULL ) );
 	
-	EventResponser * eventResponser = EventConstructor();
 	Engine * engine = new Engine;
-	engine->Init( eventResponser, "Engine "+GetVersionString(), "", 800, 600, false );
+	engine->Init( new Event(), "Engine "+GetVersionString(), "", 800, 600, false );
 	
 	LoadModules( engine, "modules.list" );
 	

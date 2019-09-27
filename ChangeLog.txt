@@ -1,0 +1,77 @@
+Change log
+
+v0.3.1b - :
+	Moved StaticEntity, DynamicEntity, Trigger and MotionController classes to engine
+	Moved from game to engine and renamed CharacterWalkTrigger to MotionControllerTrigger
+	Added ChangeLog.txt
+	Renamed TODO.list to TODO.txt
+
+v0.3.1a - 2019.09.27:
+	Multiple Entity-derived classes in one dll module
+	Added GetVersionString function
+
+v0.3.0 - 2019.09.26:
+	Added SoundEngine using OpenAL
+	Code refactoring
+
+v0.2.0 - 2019.09.24:
+	Animation class added
+	Loading animations list from file
+	Renamed LoadModules.cpp to ModulesLoader.cpp
+
+v0.1.0 - 2019.09.23:
+	Compile-able release
+
+v0.0.3a - 2019.09.22:
+	Camera-related stuff moved to Camera class
+	Camera code refactoring
+
+v0.0.3a - 2019.09.22:
+	Better crouching
+	Added TODO.list
+
+v0.0.3 - 2019.09.19:
+	World class code refactoring
+	Added SceneNode class
+
+v0.0.2a_02 - 2019.09.19:
+	Code refactoring
+	BasicWindow and Window classes merged into Window
+
+v0.0.2a_01 - 2019.09.19:
+	Code refactoring
+	TextPrinter renamed to GUI
+	GUI works
+
+v0.0.2 - 2019.09.18:
+	MotionController added with CharacterWalkTrigger
+
+v0.0.1a - 2019.09.16:
+	Improved TimeCounter
+	Model class cleaned
+
+v0.0.1 - 2019.09.13:
+	CollisionShapeConstructor added
+	Added converter from *.obj to *.shape
+	Rewritten collision shapes manager
+	Loading custom collision shapes from file *.shape
+
+v0.0.0d - 2019.09.11:
+	Better Makefile
+	Camera-alignd box throwing (rotation).
+
+v0.0.0c - 2019.9.10:
+	Created StaticEntity, DynamicEntity, Trigger, Character
+
+v0.0.0b_02 - 2019.09.09:
+	Code refactoring
+
+v0.0.0b_01 - 2019.09.09:
+	Code reorganization
+
+v0.0.0a - 2019.08.28:
+	Makefile reorganization
+	Folders renaming
+
+v0.0.0 - 2019.08.28 - Initial commit:
+	Code copied from TheDrwalinEngine project and refactoring.

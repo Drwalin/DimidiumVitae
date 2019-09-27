@@ -12,7 +12,7 @@
 #include <btBulletCollisionCommon.h>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
-#include "CharacterWalkTrigger.h"
+#include "MotionControllerTrigger.h"
 
 #include <Entity.h>
 
@@ -31,8 +31,8 @@ protected:
 	btVector3 triggerLowOffsetStanding;
 	btVector3 triggerHighOffsetCrouching;
 	btVector3 triggerHighOffsetStanding;
-	std::shared_ptr<CharacterWalkTrigger> triggerLow;
-	std::shared_ptr<CharacterWalkTrigger> triggerHigh;
+	std::shared_ptr<MotionControllerTrigger> triggerLow;
+	std::shared_ptr<MotionControllerTrigger> triggerHigh;
 	float stepHeight;
 	float jumpCooldownLimit;
 	float jumpCooldown;

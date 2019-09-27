@@ -2,27 +2,27 @@
 //	This file is part of The Drwalin Game project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef CHARACTER_WALK_TRIGGER_CPP
-#define CHARACTER_WALK_TRIGGER_CPP
+#ifndef MOTION_CONTROLLER_TRIGGER_CPP
+#define MOTION_CONTROLLER_TRIGGER_CPP
 
-#include "..\css\CharacterWalkTrigger.h"
+#include "..\css\MotionControllerTrigger.h"
 
-bool CharacterWalkTrigger::IsTopCollision() const
+bool MotionControllerTrigger::IsTopCollision() const
 {
 	return this->topCollision;
 }
 
-bool CharacterWalkTrigger::IsSideCollision() const
+bool MotionControllerTrigger::IsSideCollision() const
 {
 	return this->sideCollision;
 }
 
-bool CharacterWalkTrigger::IsBottomCollision() const
+bool MotionControllerTrigger::IsBottomCollision() const
 {
 	return this->bottomCollision;
 }
 
-void CharacterWalkTrigger::Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight )
+void MotionControllerTrigger::Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight )
 {
 	this->character = character;
 	this->otherTrigger = otherTrigger;
@@ -31,7 +31,7 @@ void CharacterWalkTrigger::Init( std::shared_ptr<Entity> character, std::shared_
 	this->top = 1.75f;
 }
 
-void CharacterWalkTrigger::NextOverlappingFrame()
+void MotionControllerTrigger::NextOverlappingFrame()
 {
 	Trigger::NextOverlappingFrame();
 	this->topCollision = false;
@@ -49,11 +49,11 @@ void CharacterWalkTrigger::NextOverlappingFrame()
 	else
 	{
 		this->bottom = this->top = this->GetTransform().getOrigin().y();
-		MESSAGE( std::string("CharacterWalkTrigger::body is not btRigidBody (") + this->name + ")" );
+		MESSAGE( std::string("MotionControllerTrigger::body is not btRigidBody (") + this->name + ")" );
 	}
 }
 
-void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
+void MotionControllerTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	float mid = (this->bottom + this->top)*0.5f;
 	if( other != this->character.get() && other != this && other != this->otherTrigger.get() )
@@ -82,66 +82,66 @@ void CharacterWalkTrigger::EventOverlapp( Entity * other, btPersistentManifold *
 	}
 }
 
-void CharacterWalkTrigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
+void MotionControllerTrigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	Trigger::EventOnEntityBeginOverlapp( other, persisstentManifold );
 	this->EventOverlapp( other, persisstentManifold );
 }
 
-void CharacterWalkTrigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
+void MotionControllerTrigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
 {
 	Trigger::EventOnEntityTickOverlapp( other, persisstentManifold );
 	this->EventOverlapp( other, persisstentManifold );
 }
 
-void CharacterWalkTrigger::EventOnEntityEndOverlapp( Entity * other )
+void MotionControllerTrigger::EventOnEntityEndOverlapp( Entity * other )
 {
 	Trigger::EventOnEntityEndOverlapp( other );
 }
 
-void CharacterWalkTrigger::Tick( const float deltaTime )
+void MotionControllerTrigger::Tick( const float deltaTime )
 {
 	Trigger::Tick( deltaTime );
 }
 
-void CharacterWalkTrigger::Load( std::istream & stream )
+void MotionControllerTrigger::Load( std::istream & stream )
 {
 	Trigger::Load( stream );
 }
 
-void CharacterWalkTrigger::Save( std::ostream & stream ) const
+void MotionControllerTrigger::Save( std::ostream & stream ) const
 {
 	Trigger::Save( stream );
 }
 
-void CharacterWalkTrigger::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
+void MotionControllerTrigger::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
 	Trigger::Spawn( self, name, shape, transform );
 }
 
-void CharacterWalkTrigger::Despawn()
+void MotionControllerTrigger::Despawn()
 {
 	Trigger::Despawn();
 }
 
-void CharacterWalkTrigger::Destroy()
+void MotionControllerTrigger::Destroy()
 {
 	this->character = NULL;
 	this->otherTrigger = NULL;
 	Trigger::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetCharacterWalkTriggerInstantiator(){ static std::shared_ptr<Entity> instantiator( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
-int CharacterWalkTrigger::GetTypeSize() const{ return sizeof(CharacterWalkTrigger); }
-void CharacterWalkTrigger::Free(){ delete this; }
-std::shared_ptr<Entity> CharacterWalkTrigger::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<CharacterWalkTrigger>( new CharacterWalkTrigger(), [](Entity * ptr){delete ptr;} ) ); }
-std::string CharacterWalkTrigger::GetClassName() const{ return "CharacterWalkTrigger"; }
+extern "C" std::shared_ptr<Entity> GetMotionControllerTriggerInstantiator(){ static std::shared_ptr<Entity> instantiator( new MotionControllerTrigger(), [](Entity * ptr){delete ptr;} ); return instantiator; }
+int MotionControllerTrigger::GetTypeSize() const{ return sizeof(MotionControllerTrigger); }
+void MotionControllerTrigger::Free(){ delete this; }
+std::shared_ptr<Entity> MotionControllerTrigger::New() const{ return std::dynamic_pointer_cast<Entity>( std::shared_ptr<MotionControllerTrigger>( new MotionControllerTrigger(), [](Entity * ptr){delete ptr;} ) ); }
+std::string MotionControllerTrigger::GetClassName() const{ return "MotionControllerTrigger"; }
 
-CharacterWalkTrigger::CharacterWalkTrigger()
+MotionControllerTrigger::MotionControllerTrigger()
 {
 }
 
-CharacterWalkTrigger::~CharacterWalkTrigger()
+MotionControllerTrigger::~MotionControllerTrigger()
 {
 }
 

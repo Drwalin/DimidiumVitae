@@ -273,10 +273,5 @@ Event::~Event()
 {
 }
 
-extern "C" EventResponser * EventConstructor()
-{
-	return new Event();
-}
-
 #endif
 

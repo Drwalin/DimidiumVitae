@@ -58,6 +58,8 @@ private:
 	inline void UpdateEntitiesOverlapp();
 	inline void UpdateEntities( const float deltaTime );
 	
+	void RegisterEngineCoreEntityClasses();
+	
 	friend class EventResponser;
 	
 public:

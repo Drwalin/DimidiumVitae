@@ -1,17 +1,16 @@
 
-//	This file is part of The Drwalin Game project
+//	This file is part of The Drwalin Engine project
 // Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef DYNAMIC_ENTITY_CPP
 #define DYNAMIC_ENTITY_CPP
 
+#include "..\css\CollisionObjectManager.h"
 #include "..\css\DynamicEntity.h"
+#include "..\css\Engine.h"
 
-#include <Engine.h>
-#include <CollisionObjectManager.h>
-
-#include <Debug.h>
-#include <Math.hpp>
+#include "..\lib\Debug.h"
+#include "..\lib\Math.hpp"
 
 #include <ctime>
 

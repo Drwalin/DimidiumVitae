@@ -29,13 +29,13 @@ void MotionController::Init( class Engine * engine, std::shared_ptr<Entity> char
 			this->characterCrouchingHeight = this->characterStandingHeight * this->crouchingScale;
 			this->characterRadius = (aabbMax.x()-aabbMin.x()) * 0.5f;
 			
-			this->triggerHigh = std::dynamic_pointer_cast<CharacterWalkTrigger>(
-					this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
+			this->triggerHigh = std::dynamic_pointer_cast<MotionControllerTrigger>(
+					this->engine->AddEntity( engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
 					engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterStandingHeight ),
 					btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 75.0 ) );
-			this->triggerLow = std::dynamic_pointer_cast<CharacterWalkTrigger>(
-					this->engine->AddEntity( engine->GetNewEntityOfType("CharacterWalkTrigger"),
+			this->triggerLow = std::dynamic_pointer_cast<MotionControllerTrigger>(
+					this->engine->AddEntity( engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
 					engine->GetCollisionShapeManager()->GetCapsule( this->characterRadius, this->characterCrouchingHeight ),
 					btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0) ), 75.0 ) );

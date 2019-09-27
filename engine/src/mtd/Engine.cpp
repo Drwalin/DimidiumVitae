@@ -12,6 +12,14 @@
 
 #include <cassert>
 
+void Engine::RegisterEngineCoreEntityClasses()
+{
+	this->RegisterType( "StaticEntity", "engine", "engine.dll" );
+	this->RegisterType( "DynamicEntity", "engine", "engine.dll" );
+	this->RegisterType( "Trigger", "engine", "engine.dll" );
+	this->RegisterType( "MotionControllerTrigger", "engine", "engine.dll" );
+}
+
 int Engine::GetNumberOfEntities() const
 {
 	return this->entities.size();
@@ -339,6 +347,8 @@ void Engine::Init( EventResponser * eventResponser, const std::string & windowNa
 		this->window->SetCamera( std::shared_ptr<Camera>( new Camera( this, false, width, height, this->window->GetSceneManager()->addCameraSceneNode() ) ) );
 		this->window->GetCamera()->GetCameraNode()->setFOV( 70.0f * Math::PI / 180.0f );
 	}
+	
+	this->RegisterEngineCoreEntityClasses();
 	
 	//this->window->UseParallelThreadToDraw();
 }
