@@ -340,7 +340,7 @@ void Engine::Init( EventResponser * eventResponser, const std::string & windowNa
 	this->window->HideMouse();
 	this->window->LockMouse();
 	
-	this->collisionShapeManager = new CollisionShapeManager();
+	this->collisionShapeManager = new CollisionShapeManager( this );
 	
 	if( this->GetCamera() == NULL )
 	{

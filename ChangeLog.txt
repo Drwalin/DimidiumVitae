@@ -1,5 +1,13 @@
 Change log
 
+v0.3.3 - 2019.09.29
+	Added licenses/notes/copyright notices from dependent libraries
+	Added Dependencies.txt file
+	Added StlStreamExtension
+	*.shape format is now binary and compressed
+	Changed loding model - now Models, Textures and *.obj collision shape info are in *.zip archives (managed by Irrlicht)
+	Code refactoring
+
 v0.3.2 - 2019.09.27:
 	Reading sound from *.ogg files works
 

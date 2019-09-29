@@ -59,7 +59,7 @@ public:
 	void OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold );
 	
 	void SetTransform( const btTransform & transform );
-	void SetPosition( const btVector3 & loc );
+	void SetLocation( const btVector3 & loc );
 	void SetRotation( const btQuaternion & quat );
 	void Move( const btVector3 & move );
 	void Rotate( const btQuaternion & quat );
@@ -79,8 +79,8 @@ public:
 	void SetRayTraceChannel( int src );
 	int GetRayTraceChannel();
 	
-	template < typename T = btRigidBody >
-	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( body ); }
+	template < typename T = btCollisionObject >
+	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( this->body ); }
 	
 	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
 	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold );

@@ -107,7 +107,7 @@ void SceneNode::Destroy()
 	}
 	
 	this->model = NULL;
-	this->engine = engine;
+	this->engine = NULL;
 }
 
 SceneNode::SceneNode()

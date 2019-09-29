@@ -50,7 +50,7 @@ void Entity::SetTransform( const btTransform & transform )
 	}
 }
 
-void Entity::SetPosition( const btVector3 & loc )
+void Entity::SetLocation( const btVector3 & loc )
 {
 	this->SetTransform( btTransform( this->currentTransform.getRotation(), loc ) );
 }
@@ -62,7 +62,7 @@ void Entity::SetRotation( const btQuaternion & quat )
 
 void Entity::Move( const btVector3 & move )
 {
-	this->SetPosition( this->currentTransform.getOrigin() + move );
+	this->SetLocation( this->currentTransform.getOrigin() + move );
 }
 
 void Entity::Rotate( const btQuaternion & quat )
@@ -112,7 +112,7 @@ void Entity::Tick( const float deltaTime )
 	{
 		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
 		if( rigidBody ) rigidBody->getMotionState()->getWorldTransform( this->currentTransform );
-		else this->currentTransform = this->body->getWorldTransform();
+		else this->currentTransform = this->GetBody<btCollisionObject>()->getWorldTransform();
 	}
 	
 	if( this->sceneNode )

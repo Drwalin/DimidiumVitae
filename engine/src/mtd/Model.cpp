@@ -9,6 +9,7 @@
 #include "..\css\Engine.h"
 
 #include "..\lib\StdUtil.hpp"
+#include "..\lib\StlStreamExtension.h"
 
 void Animation::Play( bool loop )
 {
@@ -97,7 +98,7 @@ bool Model::LoadMesh( Engine * engine, const std::string & fileName )
 	irr::scene::IAnimatedMesh * newMesh = engine->GetWindow()->GetSceneManager()->getMesh( fileName.c_str() );
 	if( newMesh == NULL )
 		return false;
-	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>( newMesh, [](irr::scene::IAnimatedMesh*ptr){MESSAGE("Should use: \"ptr->drop();\" here")} );
+	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>( newMesh, [engine](irr::scene::IAnimatedMesh*ptr){engine->GetWindow()->GetSceneManager()->getMeshCache()->removeMesh( ptr );} );
 	
 	this->fileName = fileName;
 	this->engine = engine;
@@ -113,7 +114,7 @@ bool Model::LoadMesh( Engine * engine, const std::string & fileName )
 
 bool Model::LoadMaterials( const std::string & materialsFileName )
 {
-	std::ifstream file( materialsFileName );
+	iirrfstream file( this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile( materialsFileName.c_str() ) );
 	if( file )
 	{
 		std::string line;
@@ -130,7 +131,7 @@ bool Model::LoadMaterials( const std::string & materialsFileName )
 				}
 				else if( line.find( "map_K" ) == 0 )
 				{
-					std::string textureFileName = GetPathWithoutSlash(materialsFileName) + "/" + (line.c_str()+7);
+					std::string textureFileName = (line.c_str()+7);//GetPathWithoutSlash(materialsFileName) + "/" + (line.c_str()+7);
 					this->materials.back().setTexture( 0, this->engine->GetWindow()->GetVideoDriver()->getTexture( textureFileName.c_str() ) );
 				}
 				else if( line[0] == 'K' )
@@ -166,7 +167,7 @@ bool Model::LoadMaterials( const std::string & materialsFileName )
 
 bool Model::LoadAnimations( const std::string & animationsFileName )
 {
-	std::ifstream file( animationsFileName );
+	iirrfstream file( this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile( animationsFileName.c_str() ) );
 	if( file )
 	{
 		std::string name;

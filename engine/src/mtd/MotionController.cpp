@@ -102,15 +102,15 @@ void MotionController::UpdateTriggersTransform()
 	this->triggerHigh->SetRotation( characterRotation );
 	if( this->IsCrouching() )
 	{
-		this->triggerLow->SetPosition( characterOrigin + this->triggerLowOffsetCrouching );
-		this->triggerHigh->SetPosition( characterOrigin + this->triggerHighOffsetCrouching );
+		this->triggerLow->SetLocation( characterOrigin + this->triggerLowOffsetCrouching );
+		this->triggerHigh->SetLocation( characterOrigin + this->triggerHighOffsetCrouching );
 		if( this->character->GetCamera() )
 			this->character->GetCamera()->SetRelativePosition( btVector3( 0, this->characterCrouchingHeight * 0.5f - 0.1f, 0 ) );
 	}
 	else
 	{
-		this->triggerLow->SetPosition( characterOrigin + this->triggerLowOffsetStanding );
-		this->triggerHigh->SetPosition( characterOrigin + this->triggerHighOffsetStanding );
+		this->triggerLow->SetLocation( characterOrigin + this->triggerLowOffsetStanding );
+		this->triggerHigh->SetLocation( characterOrigin + this->triggerHighOffsetStanding );
 		if( this->character->GetCamera() )
 			this->character->GetCamera()->SetRelativePosition( btVector3( 0, this->characterStandingHeight * 0.5f - 0.1f, 0 ) );
 	}

@@ -114,8 +114,8 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->SetModel( this->engine->GetModel( "Crate01" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
-			temp->GetBody()->setDamping( 0.1, 0.1 );
+			temp->GetBody<btRigidBody>()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
+			temp->GetBody<btRigidBody>()->setDamping( 0.1, 0.1 );
 		}
 		else
 			MESSAGE("Couldn't spawn new object");
@@ -128,8 +128,8 @@ void Event::KeyPressedEvent( int keyCode )
 			temp->SetModel( this->engine->GetModel( "Sphere" ) );
 			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
 			temp->GetBody()->setFriction( 0.75 );
-			temp->GetBody()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
-			temp->GetBody()->setDamping( 0.1, 0.1 );
+			temp->GetBody<btRigidBody>()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
+			temp->GetBody<btRigidBody>()->setDamping( 0.1, 0.1 );
 		}
 		else
 			MESSAGE("Couldn't spawn new object");

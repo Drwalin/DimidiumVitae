@@ -1,11 +1,13 @@
 
-Testing/debugging:
+Testing/debugging/bugs:
 	CollisionShapeConstructor::Clone
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything)
 	
 
 Features:
+	Archives loader
+	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from std::iostream
 	Particles
 	
 
@@ -16,6 +18,7 @@ Pre-alpha features:
 	
 
 Done:
+	Using compressed files
 	Decoding ogg sound files
 	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
 		StaticEntity

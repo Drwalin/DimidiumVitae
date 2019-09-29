@@ -9,12 +9,12 @@
 
 std::string GetVersionString()
 {
-	return std::string("0.3.1a");
+	return std::string("0.3.3");
 }
 
 std::string GetVersionReleaseDateString()
 {
-	return std::string("2019-09-27");
+	return std::string("2019-09-29");
 }
 
 #endif

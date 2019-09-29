@@ -6,9 +6,12 @@
 #define COLLISION_SHAPE_CONSTRUCTOR_CP
 
 #include "..\css\CollisionShapeConstructor.h"
+#include "..\css\Engine.h"
 
 #include "..\lib\Debug.h"
 #include "..\lib\Math.hpp"
+#include "..\lib\StdUtil.hpp"
+#include "..\lib\StlStreamExtension.h"
 
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btTransform.h>
@@ -22,6 +25,34 @@
 #include <sstream>
 
 #include <cstdlib>
+
+PrimitiveShape::Type PrimitiveShape::GetType( char ch )
+{
+	switch( ch )
+	{
+	case 1: return PrimitiveShape::Type::BOX;
+	case 2: return PrimitiveShape::Type::SPHERE;
+	case 3: return PrimitiveShape::Type::CYLINDER;
+	case 4: return PrimitiveShape::Type::CAPSULE;
+	case 5: return PrimitiveShape::Type::CONVEX;
+	case 6: return PrimitiveShape::Type::TRIMESH;
+	}
+	return PrimitiveShape::Type::NONE;
+}
+
+char PrimitiveShape::GetChar( PrimitiveShape::Type type )
+{
+	switch( type )
+	{
+	case PrimitiveShape::Type::BOX: return 1;
+	case PrimitiveShape::Type::SPHERE: return 2;
+	case PrimitiveShape::Type::CYLINDER: return 3;
+	case PrimitiveShape::Type::CAPSULE: return 4;
+	case PrimitiveShape::Type::CONVEX: return 5;
+	case PrimitiveShape::Type::TRIMESH: return 6;
+	}
+	return 0;
+}
 
 PrimitiveShape::BoxInfo::BoxInfo()
 {
@@ -152,6 +183,38 @@ PrimitiveShape::~PrimitiveShape()
 	this->box = NULL;
 }
 
+
+
+void CollisionShapeConstructor::AddBox( const btTransform & transform, const btVector3 & halfSize )
+{
+	std::shared_ptr<PrimitiveShape> shape = this->AddPrimitive( PrimitiveShape::Type::BOX );
+	shape->transform = transform;
+	shape->box->size = halfSize;
+}
+
+void CollisionShapeConstructor::AddSphere( const btTransform & transform, const float radius )
+{
+	std::shared_ptr<PrimitiveShape> shape = this->AddPrimitive( PrimitiveShape::Type::BOX );
+	shape->transform = transform;
+	shape->sphere->radius = radius;
+}
+
+void CollisionShapeConstructor::AddCylinder( const btTransform & transform, const float radius, const float height )
+{
+	std::shared_ptr<PrimitiveShape> shape = this->AddPrimitive( PrimitiveShape::Type::BOX );
+	shape->transform = transform;
+	shape->cylinder->height = height;
+	shape->cylinder->radius = radius;
+}
+
+void CollisionShapeConstructor::AddCapsule( const btTransform & transform, const float radius, const float height )
+{
+	std::shared_ptr<PrimitiveShape> shape = this->AddPrimitive( PrimitiveShape::Type::BOX );
+	shape->transform = transform;
+	shape->capsule->height = height;
+	shape->capsule->radius = radius;
+}
+
 std::string CollisionShapeConstructor::GetName() const
 {
 	return this->name;
@@ -187,75 +250,69 @@ std::shared_ptr<btCollisionShape> CollisionShapeConstructor::Get()
 
 std::shared_ptr<PrimitiveShape> CollisionShapeConstructor::LoadPrimitive( std::istream & stream )
 {
-	std::string typeName = "", word, line;
 	PrimitiveShape::Type type = PrimitiveShape::Type::NONE;
 	int vertices, indices, i;
 	
-	stream >> typeName;
-	stream >> word;	// word="{"
+	char ch = 0;
+	stream.read( &ch, 1 );
+	type = PrimitiveShape::GetType( ch );
 	
-	if( typeName=="box" )
-		type = PrimitiveShape::Type::BOX;
-	else if( typeName=="sphere" )
-		type = PrimitiveShape::Type::SPHERE;
-	else if( typeName=="cylinder" )
-		type = PrimitiveShape::Type::CYLINDER;
-	else if( typeName=="capsule" )
-		type = PrimitiveShape::Type::CAPSULE;
-	else if( typeName=="convex" )
-		type = PrimitiveShape::Type::CONVEX;
-	else if( typeName=="trimesh" )
-		type = PrimitiveShape::Type::TRIMESH;
+	if( stream.eof() )
+		return NULL;
 	
 	if( type == PrimitiveShape::Type::NONE )
+	{
+		MESSAGE( "Cannot read PrimitiveShape::Type from file" );
 		return NULL;
+	}
 	
 	std::shared_ptr<PrimitiveShape> primitive = this->AddPrimitive( type );
 	
 	if( primitive == NULL )
 	{
-		MESSAGE( std::string("Cannot create PrimitiveShape with type: ") + typeName );
+		MESSAGE( std::string("Cannot create PrimitiveShape with type: ") + std::to_string((int)type) );
 		return NULL;
 	}
 	
-	stream >> (primitive->transform);
+	btQuaternion rot;
+	btVector3 orig;
+	stream.read( (char*)&(rot), sizeof(btQuaternion) );
+	stream.read( (char*)&(orig), sizeof(float)*3 );
+	primitive->transform = btTransform( rot, orig );
 	
 	switch( type )
 	{
 	case PrimitiveShape::Type::BOX:
-		stream >> (primitive->box->size);
+		stream.read( (char*)&(primitive->box->size), sizeof(float)*3 );
 		break;
 	case PrimitiveShape::Type::SPHERE:
-		stream >> (primitive->sphere->radius);
+		stream.read( (char*)&(primitive->sphere->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CYLINDER:
-		stream >> (primitive->cylinder->height);
-		stream >> (primitive->cylinder->radius);
+		stream.read( (char*)&(primitive->cylinder->height), sizeof(float) );
+		stream.read( (char*)&(primitive->cylinder->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CAPSULE:
-		stream >> (primitive->cylinder->height);
-		stream >> (primitive->cylinder->radius);
+		stream.read( (char*)&(primitive->capsule->height), sizeof(float) );
+		stream.read( (char*)&(primitive->capsule->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CONVEX:
-		stream >> vertices;
+		stream.read( (char*)&(vertices), sizeof(int) );
 		primitive->convex->vertices.resize( vertices );
 		for( i=0; i<vertices; ++i )
-			stream >> (primitive->convex->vertices[i]);
+			stream.read( (char*)&(primitive->convex->vertices[i]), sizeof(float)*3 );
 		break;
 	case PrimitiveShape::Type::TRIMESH:
-		stream >> vertices;
+		stream.read( (char*)&(vertices), sizeof(int) );
 		primitive->trimesh->vertices.resize( vertices );
 		for( i=0; i<vertices; ++i )
-			stream >> (primitive->trimesh->vertices[i]);
-		stream >> indices;
+			stream.read( (char*)&(primitive->trimesh->vertices[i]), sizeof(float)*3 );
+		stream.read( (char*)&(indices), sizeof(int) );
 		primitive->trimesh->indices.resize( indices );
-		for( i=0; i<indices; ++i )
-			stream >> (primitive->trimesh->indices[i]);
+		stream.read( (char*)&(primitive->trimesh->indices[0]), sizeof(int)*indices );
 		primitive->trimesh->Done();
 		break;
 	}
-	
-	stream >> word;
 	
 	return primitive;
 }
@@ -264,7 +321,7 @@ bool CollisionShapeConstructor::Load( const std::string & name, const std::strin
 {
 	this->name = name;
 	this->collisionShapeFileName = collisionShapeFileName;
-	std::ifstream in( this->collisionShapeFileName );
+	igzfstream in( this->collisionShapeFileName.c_str() );
 	while( this->LoadPrimitive( in ) );
 	return bool(this->primitives.size());
 }
@@ -280,7 +337,7 @@ void CollisionShapeConstructor::LoadOBJ( std::istream & stream, std::vector<std:
 	{
 		line = "";
 		word = "";
-		std::getline( stream, line );
+		GetLine( stream, line );
 		std::stringstream s(line);
 		s.str( line );
 		s >> word;
@@ -492,9 +549,6 @@ void CollisionShapeConstructor::CreateNewObject( std::vector<std::vector<btVecto
 			std::shared_ptr<PrimitiveShape> shape = this->AddPrimitive( PrimitiveShape::Type::BOX );
 			shape->transform = btTransform( rot, origin );
 			shape->box->size = size;
-			
-			float x, y, z;
-			rot.getEulerZYX( z, y, x );
 			return;
 		}
 	}
@@ -530,74 +584,48 @@ void CollisionShapeConstructor::CreateFromFaces( std::vector<std::vector<std::ve
 
 void CollisionShapeConstructor::SavePrimitive( std::ostream & stream, std::shared_ptr<PrimitiveShape> primitive )
 {
-	std::string typeName = "";
+	int vertices, indices, i;
+	
+	char ch = PrimitiveShape::GetChar( primitive->type );
+	stream.write( &ch, 1 );
+	
+	btQuaternion rot = primitive->transform.getRotation();
+	btVector3 orig = primitive->transform.getOrigin();
+	stream.write( (char*)&(rot), sizeof(btQuaternion) );
+	stream.write( (char*)&(orig), sizeof(float)*3 );
+	
 	switch( primitive->type )
 	{
 	case PrimitiveShape::Type::BOX:
-		typeName = "box";
+		stream.write( (char*)&(primitive->box->size), sizeof(float)*3 );
 		break;
 	case PrimitiveShape::Type::SPHERE:
-		typeName = "sphere";
+		stream.write( (char*)&(primitive->sphere->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CYLINDER:
-		typeName = "cylinder";
+		stream.write( (char*)&(primitive->cylinder->height), sizeof(float) );
+		stream.write( (char*)&(primitive->cylinder->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CAPSULE:
-		typeName = "capsule";
+		stream.write( (char*)&(primitive->capsule->height), sizeof(float) );
+		stream.write( (char*)&(primitive->capsule->radius), sizeof(float) );
 		break;
 	case PrimitiveShape::Type::CONVEX:
-		typeName = "convex";
+		vertices = primitive->convex->vertices.size();
+		stream.write( (char*)&(vertices), sizeof(int) );
+		for( i=0; i<vertices; ++i )
+			stream.write( (char*)&(primitive->convex->vertices[i]), sizeof(float)*3 );
 		break;
 	case PrimitiveShape::Type::TRIMESH:
-		typeName = "trimesh";
+		vertices = primitive->trimesh->vertices.size();
+		indices = primitive->trimesh->indices.size();
+		stream.write( (char*)&(vertices), sizeof(int) );
+		for( i=0; i<vertices; ++i )
+			stream.write( (char*)&(primitive->trimesh->vertices[i]), sizeof(float)*3 );
+		stream.write( (char*)&(indices), sizeof(int) );
+		stream.write( (char*)&(primitive->trimesh->indices[0]), sizeof(int)*indices );
 		break;
 	}
-	
-	if( typeName == "" )
-	{
-		MESSAGE( std::string("Unrecognized primitive type: ") + std::to_string((int)primitive->type) );
-		return;
-	}
-	
-	stream << "\n" << typeName << "\n{";
-	stream << "\n " << (primitive->transform);
-	
-	int i;
-	switch( primitive->type )
-	{
-	case PrimitiveShape::Type::BOX:
-		stream << "\n " << primitive->box->size;
-		break;
-	case PrimitiveShape::Type::SPHERE:
-		stream << "\n " << primitive->sphere->radius;
-		break;
-	case PrimitiveShape::Type::CYLINDER:
-		stream << "\n " << primitive->cylinder->height;
-		stream << "\n " << primitive->cylinder->radius;
-		break;
-	case PrimitiveShape::Type::CAPSULE:
-		stream << "\n " << primitive->capsule->height;
-		stream << "\n " << primitive->capsule->radius;
-		break;
-	case PrimitiveShape::Type::CONVEX:
-		stream << "\n " << primitive->convex->vertices.size();
-		stream << "\n ";
-		for( i=0; i<primitive->convex->vertices.size(); ++i )
-			stream << " " << primitive->convex->vertices[i];
-		break;
-	case PrimitiveShape::Type::TRIMESH:
-		stream << "\n " << primitive->trimesh->vertices.size();
-		stream << "\n ";
-		for( i=0; i<primitive->trimesh->vertices.size(); ++i )
-			stream << " " << primitive->trimesh->vertices[i];
-		stream << "\n " << primitive->trimesh->vertices.size();
-		stream << "\n ";
-		for( i=0; i<primitive->trimesh->indices.size(); ++i )
-			stream << " " << primitive->trimesh->indices[i];
-		break;
-	}
-	
-	stream << "\n}\n";
 }
 
 void CollisionShapeConstructor::SaveShapeFile( std::ostream & stream )
@@ -606,10 +634,12 @@ void CollisionShapeConstructor::SaveShapeFile( std::ostream & stream )
 		this->SavePrimitive( stream, this->primitives[i] );
 }
 
-bool CollisionShapeConstructor::Convert( const std::string & objFileName, const std::string & collisionShapeFileName )
+bool CollisionShapeConstructor::Convert( Engine * engine, const std::string & objFileName, const std::string & collisionShapeFileName )
 {
-	std::ifstream in( objFileName );
-	std::ofstream out( collisionShapeFileName );
+	MESSAGE( "Converting: " + objFileName + " into: " + collisionShapeFileName );
+	
+	iirrfstream in( engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile( objFileName.c_str() ) );
+	ogzfstream out( collisionShapeFileName.c_str() );
 	if( in.good() && out.good() )
 	{
 		std::vector<std::vector<std::vector<btVector3>>> objects;		// objects->faces->vertices
@@ -619,8 +649,6 @@ bool CollisionShapeConstructor::Convert( const std::string & objFileName, const 
 		constructor.LoadOBJ( in, objects );
 		constructor.CreateFromFaces( objects );
 		constructor.SaveShapeFile( out );
-		in.close();
-		out.close();
 		return true;
 	}
 	return false;

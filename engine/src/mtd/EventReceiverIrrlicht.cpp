@@ -28,7 +28,7 @@ bool EventReceiverIrrlicht::OnEvent( const irr::SEvent& event )
 	this->eventQueue.resize( this->eventQueue.size() + 1 );
 	this->eventQueue.back() = event;
 	this->queueMutex.unlock();
-	return false;
+	return true;
 }
 
 void EventReceiverIrrlicht::GenerateOneEvent( const irr::SEvent& event )

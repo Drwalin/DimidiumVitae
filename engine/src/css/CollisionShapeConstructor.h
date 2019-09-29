@@ -20,14 +20,17 @@ public:
 	
 	enum Type
 	{
-		NONE,
-		BOX,
-		SPHERE,
-		CYLINDER,
-		CAPSULE,
-		CONVEX,
-		TRIMESH
+		NONE = 0,
+		BOX = 1,
+		SPHERE = 2,
+		CYLINDER = 3,
+		CAPSULE = 4,
+		CONVEX = 5,
+		TRIMESH = 6
 	};
+	
+	static PrimitiveShape::Type GetType( char ch );
+	static char GetChar( PrimitiveShape::Type type );
 	
 	class BoxInfo{public:
 		btVector3 size;
@@ -100,12 +103,17 @@ private:
 	
 public:
 	
+	void AddBox( const btTransform & transform, const btVector3 & halfSize );
+	void AddSphere( const btTransform & transform, const float radius );
+	void AddCylinder( const btTransform & transform, const float radius, const float height );
+	void AddCapsule( const btTransform & transform, const float radius, const float height );
+	
 	std::string GetName() const;
 	std::string GetCollisionShapeFileName() const;
 	
 	std::shared_ptr<btCollisionShape> Get();
 	bool Load( const std::string & name, const std::string & collisionShapeFileName );
-	static bool Convert( const std::string & objFileName, const std::string & collisionShapeFileName );
+	static bool Convert( class Engine * engine, const std::string & objFileName, const std::string & collisionShapeFileName );
 	
 	CollisionShapeConstructor();
 	~CollisionShapeConstructor();
