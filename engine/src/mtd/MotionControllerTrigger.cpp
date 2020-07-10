@@ -1,11 +1,14 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef MOTION_CONTROLLER_TRIGGER_CPP
 #define MOTION_CONTROLLER_TRIGGER_CPP
 
+#include <BulletCollision\CollisionDispatch\btCollisionWorld.h>
+
 #include "..\css\MotionControllerTrigger.h"
+#include <Engine.h>
 
 bool MotionControllerTrigger::IsTopCollision() const
 {
@@ -38,18 +41,63 @@ void MotionControllerTrigger::NextOverlappingFrame()
 	this->sideCollision = false;
 	this->bottomCollision = false;
 	
-	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-	if( rigidBody )
+	btVector3 min, max;
+	collisionShape->getAabb( body->getWorldTransform(), min, max );
+	this->bottom = min.y();
+	this->top = max.y();
+	float mid = (this->bottom + this->top)*0.5f;
+	
+	for(Entity* ent : overlappingInCurrentFrame)
 	{
-		btVector3 min, max;
-		rigidBody->getAabb( min, max );
-		this->bottom = min.y();
-		this->top = max.y();
-	}
-	else
-	{
-		this->bottom = this->top = this->GetTransform().getOrigin().y();
-		MESSAGE( std::string("MotionControllerTrigger::body is not btRigidBody (") + this->name + ")" );
+		if( ent != this->character.get() && ent != this && ent != this->otherTrigger.get() )
+		{
+			struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback
+			{
+				MotionControllerTrigger *trigger;
+				float mid;
+				SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid) : trigger(trigger), mid(mid)
+				{}
+
+				btScalar addSingleResult(btManifoldPoint& manifoldPoint,
+					const btCollisionObjectWrapper* colObj0Wrap,
+					int partId0,
+					int index0,
+					const btCollisionObjectWrapper* colObj1Wrap,
+					int partId1,
+					int index1)
+				{
+					btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) * 0.5f;
+					btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
+					if( normal.y() < 0.0f )
+						normal.setY( -normal.y() );
+					bool isNormalVertical = normal.dot( btVector3(0,1,0) ) > 0.8f;
+					
+					if( isNormalVertical )
+					{
+						if( trigger->bottom + trigger->stepHeight >= contactPoint.y() )
+						{
+							trigger->bottomCollision = true;
+							trigger->engine->GetWindow()->GetGUI() << "\n bottomCollision";
+						}
+						if( mid <= contactPoint.y() )
+						{
+							trigger->topCollision = true;
+							trigger->engine->GetWindow()->GetGUI() << "\n topCollision";
+						}
+					}
+					else
+					{
+						trigger->sideCollision = true;
+							trigger->engine->GetWindow()->GetGUI() << "\n sideCollision";
+					}
+					
+					return 0.0f;
+				}
+			};
+			SimulationContactResultCallback resultCallback(this, mid);
+			
+			engine->GetWorld()->GetDynamicsWorld()->contactPairTest( body.get(), ent->GetBody().get(), resultCallback );
+		}
 	}
 }
 

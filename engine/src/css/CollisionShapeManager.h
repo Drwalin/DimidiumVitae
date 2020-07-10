@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef COLLISION_SHAPE_MANAGER_H
 #define COLLISION_SHAPE_MANAGER_H

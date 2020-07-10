@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef EVENT_CPP
 #define EVENT_CPP
@@ -42,6 +42,7 @@ void Event::KeyPressedEvent( int keyCode )
 	std::shared_ptr<Entity> bow = this->engine->GetEntity( "Bow" );
 	static Animation bowDraw = bow->GetSceneNode()->GetAnimation( "draw" );
 	static Animation bowRelease = bow->GetSceneNode()->GetAnimation( "release" );
+	static Animation bowFull = bow->GetSceneNode()->GetAnimation( "full" );
 	
 	
 	switch( keyCode )
@@ -74,6 +75,12 @@ void Event::KeyPressedEvent( int keyCode )
 		break;
 	case irr::KEY_KEY_4:
 		bowRelease.Play( true );
+		break;
+	case irr::KEY_KEY_5:
+		bowFull.Play( false );
+		break;
+	case irr::KEY_KEY_6:
+		bowFull.Play( true );
 		break;
 		
 	case irr::KEY_KEY_T:

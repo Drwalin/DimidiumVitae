@@ -3,19 +3,21 @@ Testing/debugging/bugs:
 	CollisionShapeConstructor::Clone
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything)
+	Sometimes undefined coordinates while starting game (randomly)
 	
 
 Features:
-	Archives loader
+	Makefile (and binaries?) for linux
 	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from std::iostream
+	MotionController steps on staircase or low objects
 	Particles
+	NavMesh
 	
 
 Pre-alpha features:
 	Light maps
 	Dynamic light maps
 	Sound occlusion
-	
 
 Done:
 	Using compressed files
@@ -29,4 +31,5 @@ Done:
 	Multiple Entity-derived classes in one module
 	Sounds
 	Animations
+	Loading archives from irrlicht file system
 	

@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef STRING_TO_ENTER_H
 #define STRING_TO_ENTER_H

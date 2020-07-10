@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef SOUND_ENGINE_H
 #define SOUND_ENGINE_H
@@ -94,7 +94,7 @@ public:
 	
 	operator bool() const;
 	
-	void PrintError();
+	int PrintError();
 	
 	static void SetListenerLocation( const btVector3 & location );
 	static void SetListenerVelocity( const btVector3 & velocity );

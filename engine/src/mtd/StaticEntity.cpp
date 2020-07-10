@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef STATIC_ENTITY_CPP
 #define STATIC_ENTITY_CPP
@@ -39,6 +39,7 @@ void StaticEntity::Save( std::ostream & stream ) const
 
 void StaticEntity::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
+	/*
 	Entity::Spawn( self, name, shape, transform );
 	
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f );
@@ -50,6 +51,18 @@ void StaticEntity::Spawn( std::shared_ptr<Entity> self, std::string name, std::s
 	rigidBody->setLinearFactor( btVector3( 0.0, 0.0, 0.0 ) );
 	//rigidBody->setCollisionFlags( rigidBody->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT );
 	rigidBody->setGravity( btVector3(0.0f,0.0f,0.0f) );
+	
+	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
+	
+	this->SetBody( collisionObject, shape );
+	*/
+	
+	Entity::Spawn( self, name, shape, transform );
+	
+	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateCollisionObject( shape, transform );
+	
+	collisionObject->setFriction( 0.75 );
+	collisionObject->setCollisionFlags( btCollisionObject::CollisionFlags::CF_STATIC_OBJECT );
 	
 	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
 	

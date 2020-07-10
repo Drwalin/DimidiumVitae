@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -44,6 +44,7 @@ private:
 	TimeCounter skippedTime;
 	TimeCounter eventsTime;
 	TimeCounter wholeDrawTime;
+	TimeCounter engineTickTime;
 	
 	bool lockMouse;
 	
@@ -75,6 +76,7 @@ public:
 	TimeCounter GetEventGenerationTime() const;
 	TimeCounter GetWholeDrawTime() const;
 	TimeCounter GetSkippedTime() const;
+	TimeCounter GetEngineTickTime() const;
 	void ParallelToDrawTick( const float deltaTime );
 	
 	void UseParallelThreadToDraw();

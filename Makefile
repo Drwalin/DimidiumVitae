@@ -1,14 +1,15 @@
 
-LIBS = -LC:\mingw-w64\lib\bullet -LC:\mingw-w64\lib -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread -lfreetype dep\OpenAL32.dll
-INCLUDEDIRECTORIES = -IC:\mingw-w64\include\bullet -IC:\mingw-w64\include -Iengine\src\css -Iengine\src\lib
+LIBS = -LC:\Programs\mingw-w64\lib\bullet -LC:\Programs\mingw-w64\lib -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread -lfreetype dep\OpenAL32.dll
+INCLUDEDIRECTORIES = -IC:\Programs\mingw-w64\include\bullet -IC:\Programs\mingw-w64\include -Iengine\src\css -Iengine\src\lib
 
+MD = mkdir
 CP = copy
 RM = del
 CXX = g++
 CC = gcc
 
 RM_FLAGS = /f
-CFLAGS =  -m64 -Ofast -s
+CFLAGS = -m64 -ggdb3 -ggdb -g3 -g -Og -pg
 CXXFLAGS = $(CFLAGS)
 CXXFLAGS += -std=c++17
 
@@ -23,15 +24,27 @@ ENGINECOREOBJECTS = engine\\bin\\Camera.o engine\\bin\\ClassFactoryBase.o engine
 DEPENDENCIES = Irrlicht.dll libBulletCollision.dll libBulletDynamics.dll libgcc_s_seh-1.dll libLinearMath.dll libstdc++-6.dll libwinpthread-1.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll OpenAL32.dll libvorbisogg.dll libzlib.dll
 RELEASEDEPENDENCIES = $(addprefix release\\,$(DEPENDENCIES))
 
+RELEASEDOCS = release\\ChangeLog.txt release\\Dependencies.txt release\\Readme.txt
+RELEASEDEPENDENCYLICENSES = release\\dependency-licenses\\irrlicht release\\dependency-licenses\\jpeg release\\dependency-licenses\\libogg release\\dependency-licenses\\libpng release\\dependency-licenses\\libvorbis release\\dependency-licenses\\irrlicht\\readme.txt release\\dependency-licenses\\jpeg\\README release\\dependency-licenses\\libogg\\COPYING release\\dependency-licenses\\libpng\\ANNOUNCE release\\dependency-licenses\\libpng\\AUTHORS release\\dependency-licenses\\libpng\\LICENSE release\\dependency-licenses\\libpng\\README release\\dependency-licenses\\libpng\\TRADEMARK release\\dependency-licenses\\libvorbis\\COPYING
 
 
-install: release\\game.exe
-release: release\\game.exe
+
+install: release
+release: release\\game.exe $(RELEASEDOCS) $(RELEASEDEPENDENCYLICENSES)
 game: game\\game.exe game\\game-core.dll game\\engine.dll $(GAMECOREMODULES)
 engine: engine\\engine.dll
 
 run: release\\game.exe
 	@cd release && game.exe
+
+
+
+release\\%.txt: .\\%.txt
+	@$(CP) "$<" "$@"
+release\\dependency-licenses\\%: dependency-licenses\\%
+	@$(CP) "$<" "$@"
+
+
 
 release\\game.exe: game\\game.exe release\\engine.dll release\\game-core.dll $(RELEASEDEPENDENCIES) $(RELEASEGAMECOREMODULES) release\\modules.list
 	@$(CP) game\game.exe release\game.exe

@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef ENGINE_CPP
 #define ENGINE_CPP
@@ -62,38 +62,6 @@ inline void Engine::UpdateEntitiesOverlapp()
 		if( it->second )
 			it->second->NextOverlappingFrame();
 	}
-	
-	btDispatcher * dispacher = this->world->GetDynamicsWorld()->getDispatcher();
-	if( dispacher )
-	{
-		int numberOfManifolds = dispacher->getNumManifolds();
-		for( int i = 0; i < numberOfManifolds; ++i )
-		{
-			btPersistentManifold * contactManifold = dispacher->getManifoldByIndexInternal(i);
-			if( contactManifold )
-			{
-				if( contactManifold->getNumContacts() > 0 )
-				{
-					Entity * a = ((Entity*)(contactManifold->getBody0()->getUserPointer()));
-					Entity * b = ((Entity*)(contactManifold->getBody1()->getUserPointer()));
-					
-					if( a && b )
-					{
-						a->OverlapWithEntity( b, contactManifold );
-						b->OverlapWithEntity( a, contactManifold );
-					}
-					else
-						MESSAGE( "btCollisionShape->getUserPointer() = NULL" );
-				}
-				else
-					DEBUG( "No contact manifold points" );
-			}
-			else
-				MESSAGE( std::string( "dispacher->getManifoldByIndexInternal(") + std::to_string(i) + ") = NULL " );
-		}
-	}
-	else
-		MESSAGE( std::string( "world->GetDynamicsWorld()->getDispatcher() = NULL " ) );
 }
 
 inline void Engine::UpdateEntities( const float deltaTime )
@@ -193,13 +161,23 @@ void Engine::ParallelToDrawTick( const float deltaTime )
 
 void Engine::Tick( const float deltaTime )
 {
-	this->physicsSimulationTime.SubscribeStart();
-	
+	this->entityUpdateTime.SubscribeStart();
 	this->UpdateEntities( deltaTime );
+	this->entityUpdateTime.SubscribeEnd();
+	
+	this->GetWindow()->GetGUI() << "\n entityUpdateTime: " << this->entityUpdateTime.GetSmoothTime();
+	this->GetWindow()->GetGUI() << "\n entityUpdateTime peak: " << this->entityUpdateTime.GetPeakTime();
+	this->GetWindow()->GetGUI() << "\n entityUpdateTime pit: " << this->entityUpdateTime.GetPitTime();
+	
+	this->physicsSimulationTime.SubscribeStart();
 	if( !this->pausePhysics )
 		this->world->Tick( deltaTime, this->CalculateNumberOfSimulationsPerFrame( deltaTime ) );
 	
 	this->physicsSimulationTime.SubscribeEnd();
+	
+	this->GetWindow()->GetGUI() << "\n physicsSimulationTime: " << this->physicsSimulationTime.GetSmoothTime();
+	this->GetWindow()->GetGUI() << "\n physicsSimulationTime peak: " << this->physicsSimulationTime.GetPeakTime();
+	this->GetWindow()->GetGUI() << "\n physicsSimulationTime pit: " << this->physicsSimulationTime.GetPitTime();
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const
@@ -220,9 +198,10 @@ std::string Engine::GetAvailableEntityName( const std::string & name )
 	}
 	for( int i = 0;; ++i )
 	{
-		if( this->entities.find( name+std::to_string(i) ) == this->entities.end() )
+		int id = i^rand();
+		if( this->entities.find( name+std::to_string(id) ) == this->entities.end() )
 		{
-			return name+std::to_string(i);
+			return name+std::to_string(id);
 		}
 	}
 	return name;

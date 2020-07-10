@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef TRIGGER_CPP
 #define TRIGGER_CPP
@@ -14,6 +14,22 @@
 
 #include <cassert>
 
+void Trigger::NextOverlappingFrame()
+{
+	Entity::NextOverlappingFrame();
+	std::shared_ptr<btGhostObject> ghostObject = std::dynamic_pointer_cast<btGhostObject>( body );
+	for(int i = 0; i < ghostObject->getNumOverlappingObjects(); i++)
+	{
+		btCollisionObject *body = ghostObject->getOverlappingObject(i);
+		if( body )
+		{
+			Entity * objectT = (Entity*)(body->getUserPointer());
+			if( objectT )
+				overlappingInCurrentFrame.insert( objectT );
+		}
+	}
+}
+
 void Trigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold ){}
 void Trigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold ){}
 void Trigger::EventOnEntityEndOverlapp( Entity * other ){}
@@ -24,14 +40,16 @@ void Trigger::Tick( const float deltaTime )
 {
 	if( body )
 	{
-		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-		if( rigidBody )
 		{
-			rigidBody->setLinearVelocity( btVector3(0.0,0.0,0.0) );
-			rigidBody->setAngularVelocity( btVector3(0.0,0.0,0.0) );
+			std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+			if( rigidBody )
+			{
+				rigidBody->setLinearVelocity( btVector3(0.0,0.0,0.0) );
+				rigidBody->setAngularVelocity( btVector3(0.0,0.0,0.0) );
+			}
+			body->setWorldTransform( currentTransform );
+			engine->GetWorld()->UpdateColliderForObject( body );
 		}
-		body->setWorldTransform( currentTransform );
-		engine->GetWorld()->UpdateColliderForObject( body );
 	}
 }
 
@@ -49,15 +67,8 @@ void Trigger::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared
 {
 	Entity::Spawn( self, name, shape, transform );
 	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f );
-	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>( collisionObject );
-	
-	rigidBody->setDamping( 1.0, 1.0 );
-	rigidBody->setFriction( 0.0 );
-	rigidBody->setAngularFactor( 0.0 );
-	rigidBody->setLinearFactor( btVector3( 0.0, 0.0, 0.0 ) );
-	rigidBody->setCollisionFlags( rigidBody->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT );
-	rigidBody->setGravity( btVector3(0.0f,0.0f,0.0f) );
+	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateGhostObject( shape, transform );
+	collisionObject->setCollisionFlags( collisionObject->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT );
 	
 	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
 	

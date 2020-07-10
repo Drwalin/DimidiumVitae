@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef WORLD_CPP
 #define WORLD_CPP
@@ -52,9 +52,7 @@ inline void World::UpdateObjectsActivation()
 
 void World::Tick( btScalar deltaTime, int count )
 {
-	this->UpdateObjectsActivation();
-	
-	if( count > 0 )
+	if( count > 1 )
 		this->dynamicsWorld->stepSimulation( deltaTime, count );
 	else
 		this->dynamicsWorld->stepSimulation( deltaTime );
@@ -63,6 +61,7 @@ void World::Tick( btScalar deltaTime, int count )
 void World::UpdateColliderForObject( std::shared_ptr<btCollisionObject> body )
 {
 	this->dynamicsWorld->getCollisionWorld()->updateSingleAabb( body.get() );
+	body->activate();
 }
 
 btVector3 World::GetGravity()
@@ -79,6 +78,7 @@ void World::Init()
 	this->solver = new btSequentialImpulseConstraintSolver();
 	this->dynamicsWorld = new btDiscreteDynamicsWorld( this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration );
 	this->dynamicsWorld->setGravity( btVector3(0, -20, 0) );
+	this->dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 }
 
 bool World::AddBody( std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask )

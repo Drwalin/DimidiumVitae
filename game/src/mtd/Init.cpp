@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 
 #include <dll\DllImporter.h>
@@ -61,8 +61,7 @@ extern "C" int Init( int argc, char ** argv )
 		player->SetCamera( engine->GetCamera() );
 		
 		// create map
-		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );
-		map->SetModel( engine->GetModel( "TestMap" ) );
+		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,0,0) ), 100000000.0f );		map->SetModel( engine->GetModel( "TestMap" ) );
 	}
 	
 	engine->BeginLoop();

@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef CHARACTER_CPP
 #define CHARACTER_CPP
@@ -37,6 +37,18 @@ void Character::Tick( const float deltaTime )
 	this->engine->GetWindow()->GetGUI() << "\nFPS: " << (int)(1.0f/fpsCounter.GetSmoothTime());
 	this->engine->GetWindow()->GetGUI() << "\nFrame seconds peak: " << fpsCounter.GetPeakTime();
 	this->engine->GetWindow()->GetGUI() << "\nFrame seconds pit: " << fpsCounter.GetPitTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEventGenerationTime: " << engine->GetWindow()->GetEventGenerationTime().GetSmoothTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEventGenerationTime peak: " << engine->GetWindow()->GetEventGenerationTime().GetPeakTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEventGenerationTime pit: " << engine->GetWindow()->GetEventGenerationTime().GetPitTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetWholeDrawTime: " << engine->GetWindow()->GetWholeDrawTime().GetSmoothTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetWholeDrawTime peak: " << engine->GetWindow()->GetWholeDrawTime().GetPeakTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetWholeDrawTime pit: " << engine->GetWindow()->GetWholeDrawTime().GetPitTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetSkippedTime: " << engine->GetWindow()->GetSkippedTime().GetSmoothTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetSkippedTime peak: " << engine->GetWindow()->GetSkippedTime().GetPeakTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetSkippedTime pit: " << engine->GetWindow()->GetSkippedTime().GetPitTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEngineTickTime: " << engine->GetWindow()->GetEngineTickTime().GetSmoothTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEngineTickTime peak: " << engine->GetWindow()->GetEngineTickTime().GetPeakTime();
+	this->engine->GetWindow()->GetGUI() << "\n GetEngineTickTime pit: " << engine->GetWindow()->GetEngineTickTime().GetPitTime();
 	fpsCounter.SubscribeEnd();
 	fpsCounter.SubscribeStart();
 }

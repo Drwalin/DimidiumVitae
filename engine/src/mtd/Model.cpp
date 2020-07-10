@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef MODEL_CPP
 #define MODEL_CPP
@@ -107,7 +107,8 @@ bool Model::LoadMesh( Engine * engine, const std::string & fileName )
 	this->LoadMaterials( mtlFileName );
 	
 	std::string animFileName = GetCoreName(this->fileName) + ".anim";
-	this->LoadAnimations( animFileName );
+	bool anim = this->LoadAnimations( animFileName );
+	printf( anim ? "\nAnimation loaded: %s" : "\nAimation not loaded: %s", animFileName.c_str() );
 	
 	return true;
 }
@@ -115,7 +116,7 @@ bool Model::LoadMesh( Engine * engine, const std::string & fileName )
 bool Model::LoadMaterials( const std::string & materialsFileName )
 {
 	iirrfstream file( this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile( materialsFileName.c_str() ) );
-	if( file )
+	if( file && file.good() && !file.eof() )
 	{
 		std::string line;
 		while( file.good() && !file.eof() )
@@ -168,7 +169,7 @@ bool Model::LoadMaterials( const std::string & materialsFileName )
 bool Model::LoadAnimations( const std::string & animationsFileName )
 {
 	iirrfstream file( this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile( animationsFileName.c_str() ) );
-	if( file )
+	if( file && file.good() && !file.eof() )
 	{
 		std::string name;
 		int start, end;
@@ -182,6 +183,7 @@ bool Model::LoadAnimations( const std::string & animationsFileName )
 			file >> start;
 			file >> end;
 			file >> duration;
+			printf( "\n '%s' '%i' '%i' '%f'", name.c_str(), start, end, duration );
 			if( !(name == "" || start < 0 || end < 0 || duration < 0) )
 				this->animations[name] = Animation( start, end, duration );
 		}

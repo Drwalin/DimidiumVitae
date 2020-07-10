@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Game project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef MOTION_CONTROLLER_CPP
 #define MOTION_CONTROLLER_CPP
@@ -42,7 +42,7 @@ void MotionController::Init( class Engine * engine, std::shared_ptr<Entity> char
 			this->triggerHigh->Init( characterEntity, this->triggerLow, this->stepHeight );
 			this->triggerLow->Init( characterEntity, this->triggerHigh, this->stepHeight );
 			
-			this->jumpCooldownLimit = 0.2f;
+			this->jumpCooldownLimit = 0.03f;
 			this->jumpCooldown = this->jumpCooldownLimit;
 			
 			float centerHeightsDifference = (this->characterStandingHeight - this->characterCrouchingHeight) * 0.5f;
@@ -187,6 +187,7 @@ void MotionController::Tick( const float deltaTime )
 		this->character->GetBody<btRigidBody>()->setFriction( 0 );
 	
 	this->UpdateTriggersTransform();
+	this->character->GetBody<btRigidBody>()->activate();
 }
 
 void MotionController::MoveInDirection( btVector3 direction )

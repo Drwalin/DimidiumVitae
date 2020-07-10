@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef SOUND_ENGINE_CPP
 #define SOUND_ENGINE_CPP
@@ -21,7 +21,6 @@
 
 void SoundSampler::LoadFromWAV( const std::string & wavFileName )
 {
-	this->Destroy();
 	WavHeader wavHeader;
 	void * bufferData = WAVLoadFromFile( &wavHeader, wavFileName.c_str() );
 	if( bufferData )
@@ -83,6 +82,7 @@ void SoundSampler::LoadFromOGG( const std::string & oggFileName )
 
 void SoundSampler::LoadFromFile( const std::string & fileName )
 {
+	this->Destroy();
 	std::string extension = GetExtension( fileName );
 	if( extension == "ogg" )
 		this->LoadFromOGG( fileName );
@@ -339,9 +339,11 @@ SoundEngine::operator bool() const
 	return (this->device) && (this->context);
 }
 
-void SoundEngine::PrintError()
+int SoundEngine::PrintError()
 {
-	fprintf( stderr, "\n OpenAL error: %i", alcGetError( (ALCdevice*)(this->device) ) );
+	int error = alcGetError( (ALCdevice*)(this->device) );
+	fprintf( stderr, "\n OpenAL error: %i", error );
+	return error;
 }
 
 void SoundEngine::SetListenerLocation( const btVector3 & location )
@@ -379,13 +381,13 @@ SoundEngine::SoundEngine()
     this->device = (ALCdevice*)alcOpenDevice( NULL );
     if( this->device == NULL )
     {
-    	this->PrintError();
+    	MESSAGE( "OpenAL error: " + std::to_string(this->PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds" );
         return;
     }
     this->context = (ALCcontext*)alcCreateContext( (ALCdevice*)(this->device), NULL );
     if( this->context == NULL )
     {
-    	this->PrintError();
+    	MESSAGE( "OpenAL error: " + std::to_string(this->PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds" );
     	return;
     }
     alcMakeContextCurrent( (ALCcontext*)(this->context) );

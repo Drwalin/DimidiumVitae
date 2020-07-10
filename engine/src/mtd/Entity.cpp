@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef ENTITY_CPP
 #define ENTITY_CPP
@@ -72,6 +72,7 @@ void Entity::Rotate( const btQuaternion & quat )
 
 void Entity::NextOverlappingFrame()
 {
+	/*
 	for( auto it = this->overlappingInPreviousFrame.begin(); it != this->overlappingInPreviousFrame.end(); ++it )
 	{
 		if( this->overlappingInCurrentFrame.find( *it ) == this->overlappingInCurrentFrame.end() )
@@ -79,8 +80,8 @@ void Entity::NextOverlappingFrame()
 			this->EventOnEntityEndOverlapp( *it );
 		}
 	}
-	
-	this->overlappingInPreviousFrame = this->overlappingInCurrentFrame;
+	*/
+	std::swap(this->overlappingInPreviousFrame, this->overlappingInCurrentFrame);
 	this->overlappingInCurrentFrame.clear();
 }
 

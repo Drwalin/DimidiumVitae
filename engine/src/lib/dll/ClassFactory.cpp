@@ -1,6 +1,6 @@
 
 // This file is part of Drwalin's Dll Importer
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef CLASS_FACTORY_CPP
 #define CLASS_FACTORY_CPP

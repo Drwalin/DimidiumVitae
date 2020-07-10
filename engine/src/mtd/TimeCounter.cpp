@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef TIME_COUNTER_CPP
 #define TIME_COUNTER_CPP
@@ -50,7 +50,7 @@ float TimeCounter::GetPitTime() const
 {
 	if( this->array.size() )
 	{
-		float pit = TimeCounter::GetDurationSeconds( this->array.front().begin, this->array.front().end );
+		float pit = TimeCounter::GetDurationSeconds( this->array.front().begin, this->array.back().end );
 		float temp;
 		for( auto it=this->array.begin(); it!=this->array.end(); ++it )
 		{

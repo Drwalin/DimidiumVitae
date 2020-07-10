@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef WINDOW_CPP
 #define WINDOW_CPP
@@ -25,7 +25,7 @@ void ParallelThreadFunctionToDraw( Window * window )
 			{
 				if( window->IsParallelToDrawTickInUse() == false )
 					return;
-				//al_rest( 0.001 );
+				std::this_thread::yield();
 			}
 			
 			window->ParallelToDrawTick( window->GetDeltaTime() );
@@ -85,6 +85,11 @@ TimeCounter Window::GetWholeDrawTime() const
 TimeCounter Window::GetSkippedTime() const
 {
 	return this->skippedTime;
+}
+
+TimeCounter Window::GetEngineTickTime() const
+{
+	return this->engineTickTime;
 }
 
 void Window::UseParallelThreadToDraw()
@@ -192,8 +197,8 @@ void Window::OneLoopFullTick()
 	deltaTime = (float(clock())/1000.0f) - beginTime;
 	beginTime = (float(clock())/1000.0f);
 	
-	if( deltaTime < 0.0001 )
-		deltaTime = 0.0001;
+	if( deltaTime < 0.001 )
+		deltaTime = 0.001;
 	else if( deltaTime > 0.3 )
 		deltaTime = 0.3;
 	
@@ -228,8 +233,10 @@ void Window::GenerateEvents()
 
 void Window::Tick( const float deltaTime )
 {
+	engineTickTime.SubscribeStart();
 	if( this->engine )
 		this->engine->Tick( deltaTime );
+	engineTickTime.SubscribeEnd();
 }
 
 void Window::Draw()

@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef COLLISION_SHAPE_CONSTRUCTOR_CPP
 #define COLLISION_SHAPE_CONSTRUCTOR_CP
@@ -447,8 +447,14 @@ void CollisionShapeConstructor::CreateNewObject( std::vector<std::vector<btVecto
 		origin += vertices[j];
 	origin /= float(vertices.size());
 	
+#ifdef __COLLISION_SHAPE_CONSTUCTOR_USE_BOXES_WHEN_POSSIBLE
+	bool useBoxes = true;
+#else
+	bool useBoxes = false;
+#endif
+	
 	// is it box
-	if( combinedFaces.size() == 6 && vertices.size() == 8 )
+	if( useBoxes && combinedFaces.size() == 6 && vertices.size() == 8 )
 	{
 		int i;
 		for( i=0; i<combinedFaces.size(); ++i )
@@ -488,8 +494,13 @@ void CollisionShapeConstructor::CreateNewObject( std::vector<std::vector<btVecto
 				}
 			}
 			
-			if( (X.cross(Y)-Z).length2() > 0.1 )
+			//if( (X.cross(Y)-Z).length2() > 0.0 )
+			//	Z = -Z;
+			if( X.cross(Y).dot(Z) > 0.0 ) {
+				Y = -Y;
 				Z = -Z;
+				X = -X;
+			}
 			
 			btVector3 betweenXaxis = btVector3(1,0,0).cross(X);
 			float betweenXangle = btVector3(1,0,0).angle(X);

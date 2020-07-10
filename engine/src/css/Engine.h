@@ -1,6 +1,6 @@
 
 //	This file is part of The Drwalin Engine project
-// Copyright (C) 2018-2019 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef ENGINE_H
 #define ENGINE_H
@@ -49,6 +49,7 @@ private:
 	TimeCounter guiDrawTime;
 	TimeCounter sceneDrawTime;
 	TimeCounter physicsSimulationTime;
+	TimeCounter entityUpdateTime;
 	
 	std::shared_ptr<Entity> cameraParent;
 	
