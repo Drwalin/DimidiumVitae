@@ -21,63 +21,62 @@
 #include <cassert>
 #include <ctime>
 
-extern "C" int Init( int argc, char ** argv )
-{
-	srand( time( NULL ) );
+extern "C" int Init(int argc, char ** argv) {
+	srand(time(NULL));
 	
-	Engine * engine = new Engine;
-	engine->Init( new Event(), "Engine "+GetVersionString(), "", 800, 600, false );
+	Engine *engine = new Engine;
+	engine->Init(new Event(), "Engine "+GetVersionString(), "", 800, 600, false);
 	
-	irr::io::IFileSystem * fileSystem = engine->GetWindow()->GetDevice()->getFileSystem();
-	fileSystem->addFileArchive( "media/Textures.zip", false, false );
-	fileSystem->addFileArchive( "media/Models.zip", false, false );
-	fileSystem->addFileArchive( "media/Shapes.zip", false, false );
+	irr::io::IFileSystem *fileSystem = engine->GetWindow()->GetDevice()->getFileSystem();
+	fileSystem->addFileArchive("media/Textures.zip", false, false);
+	fileSystem->addFileArchive("media/Models.zip", false, false);
+	fileSystem->addFileArchive("media/Shapes.zip", false, false);
 	
-	LoadModules( engine, "modules.list" );
+	LoadModules(engine, "modules.list");
 	
-	LoadMeshes( engine, "media/models.list" );
-	LoadShapes( engine, "media/shapes.list" );
-	LoadSounds( engine, "media/sounds.list" );
+	LoadMeshes(engine, "media/models.list");
+	LoadShapes(engine, "media/shapes.list");
+	LoadSounds(engine, "media/sounds.list");
 	
-	SoundSource musicSource( engine->GetSoundsManager()->GetSoundSampler( "track01" ) );
+	SoundSource musicSource(engine->GetSoundsManager()->GetSoundSampler("track01"));
 	musicSource.Set2D();
-	musicSource.SetVolume( 0.07f );
-	musicSource.Loop( true );
+	musicSource.SetVolume(0.07f);
+	musicSource.Loop(true);
 	musicSource.Play();
 	
 	{
 		// create animated bow
-		std::shared_ptr<Entity> animatedBow = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetCollisionShapeManager()->GetCylinder( 0.3, 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15) ), 3.0f );
-		animatedBow->SetModel( engine->GetModel( "AnimatedBow" ) );
-		animatedBow->GetBody()->setFriction( 0.75 );
-		animatedBow->GetBody<btRigidBody>()->setDamping( 0.1, 0.1 );
-		animatedBow->GetSceneNode()->GetISceneNode()->setAnimationSpeed( 24.0f );
-		animatedBow->GetSceneNode()->GetISceneNode()->setFrameLoop( 0, 19 );
-		animatedBow->GetSceneNode()->GetISceneNode()->setLoopMode( false );
+		std::shared_ptr<Entity> animatedBow = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetCollisionShapeManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
+		animatedBow->SetModel(engine->GetModel("AnimatedBow"));
+		animatedBow->GetBody()->setFriction(0.75);
+		animatedBow->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
+		animatedBow->GetSceneNode()->GetISceneNode()->setAnimationSpeed(24.0f);
+		animatedBow->GetSceneNode()->GetISceneNode()->setFrameLoop(0, 19);
+		animatedBow->GetSceneNode()->GetISceneNode()->setLoopMode(false);
 		
 		// create player
-		std::shared_ptr<Entity> player = engine->AddEntity( engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule( 0.3f, 1.75f ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14) ), 75.0 );
-		engine->AttachCameraToEntity( "Player", btVector3( 0, 0.7f, 0 ) );
-		player->SetCamera( engine->GetCamera() );
+		std::shared_ptr<Entity> player = engine->AddEntity(engine->GetNewEntityOfType("Player"), "Player", engine->GetCollisionShapeManager()->GetCapsule(0.3f, 1.75f), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14)), 75.0);
+		engine->AttachCameraToEntity("Player", btVector3(0, 0.7f, 0));
+		player->SetCamera(engine->GetCamera());
 		
 		// create map
 		for(float x = -100; x<=100.1; x+=27) {
 			for(float z = -100; z<=100.1; z+=27) {
-				std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap" + std::to_string(x) + "_" + std::to_string(z), engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(x,0,z) ), 100000000.0f );
-				map->SetModel( engine->GetModel( "TestMap" ) );
-				map->SetScale( btVector3( 0.3, 0.3, 0.3 ) );
+				std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap" + std::to_string(x) + "_" + std::to_string(z), engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,0,z)), 100000000.0f);
+				map->SetModel(engine->GetModel("TestMap"));
+				map->SetScale(btVector3(0.3, 0.3, 0.3));
 			}
 		}
-		std::shared_ptr<Entity> map = engine->AddEntity( engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0) ), 100000000.0f );
-		map->SetModel( engine->GetModel( "TestMap" ) );
-		map->SetScale( btVector3( 3, 3, 3 ) );
+		std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
+		map->SetModel(engine->GetModel("TestMap"));
+		map->SetScale(btVector3(3, 3, 3));
 		
 		for(float x = -100; x<=100.1; x+=10) {
 			for(float y = 30; y<=50.1; y+=3.5f) {
 				for(float z = -100; z<=100.1; z+=10) {
-					std::shared_ptr<Entity> box = engine->AddEntity( engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z) ), 75.0f );
-					box->SetModel( engine->GetModel( "Crate01" ) );
-					box->SetScale( btVector3( 0.8, 2.5, 0.8 ) * 0.5f );
+					std::shared_ptr<Entity> box = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", engine->GetCollisionShapeManager()->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
+					box->SetModel(engine->GetModel("Crate01"));
+					box->SetScale(btVector3(0.8, 2.5, 0.8) *0.5f);
 				}
 			}
 		}

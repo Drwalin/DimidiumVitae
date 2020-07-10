@@ -18,8 +18,8 @@ typedef struct
 	uint16_t AudioFormat;	// 1
 	uint16_t NumChannels;	// 1, 2
 	uint32_t SampleRate;	// 8000, 11025, 22050, 44100, ...
-	uint32_t ByteRate;		// SampleRate * NumChannels * BitsPerSample/8
-	uint16_t BlockAlign;	// NumChannels * BitsPerSample/8
+	uint32_t ByteRate;		// SampleRate *NumChannels *BitsPerSample/8
+	uint16_t BlockAlign;	// NumChannels *BitsPerSample/8
 	uint16_t BitsPerSample;	// 8, 16
 
 	uint32_t Subchunk2Id;	// "data"
@@ -27,9 +27,9 @@ typedef struct
 	// buffer data...
 } WavHeader;
 
-extern "C" float WAVGetDuration( const WavHeader * wavHeader );
-extern "C" void * WAVLoadFromFile( WavHeader * wavHeader, const char * fileName );
-extern "C" void WAVFree( void * buffer );
+extern "C" float WAVGetDuration(const WavHeader *wavHeader);
+extern "C" void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName);
+extern "C" void WAVFree(void *buffer);
 
 #endif
 

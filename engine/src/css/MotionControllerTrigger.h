@@ -9,22 +9,26 @@
 
 #include <cmath>
 
-class MotionControllerTrigger : public Trigger
+struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
-protected:
-	
-	std::shared_ptr<Entity> character, otherTrigger;
-	bool topCollision;
-	bool sideCollision;
-	bool bottomCollision;
-	float stepHeight;
-	float bottom, top;
-	
-	friend struct SimulationContactResultCallback;
-	
-	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) override;
-	
+	class MotionControllerTrigger *trigger;
+	float mid;
+	SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid);
+
+	btScalar addSingleResult(btManifoldPoint& manifoldPoint,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1);
+};
+
+class MotionControllerTrigger : public Trigger {
 public:
+	
+	MotionControllerTrigger();
+	virtual ~MotionControllerTrigger() override;
 	
 	bool IsTopCollision() const;
 	bool IsSideCollision() const;
@@ -32,13 +36,13 @@ public:
 	
 	virtual void NextOverlappingFrame() override;
 	
-	void Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight );
+	void Init(std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight);
 	
-	virtual void Tick( const float deltaTime ) override;
+	virtual void Tick(const float deltaTime) override;
 	
-	virtual void Load( std::istream & stream ) override;
-	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Load(std::istream &stream) override;
+	virtual void Save(std::ostream &stream) const override;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;
@@ -48,9 +52,20 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	MotionControllerTrigger();
-	virtual ~MotionControllerTrigger() override;
+	friend struct SimulationContactResultCallback;
+	
+protected:
+	
+	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) override;
+	
+protected:
+	
+	std::shared_ptr<Entity> character, otherTrigger;
+	bool topCollision;
+	bool sideCollision;
+	bool bottomCollision;
+	float stepHeight;
+	float bottom, top;
 };
 
 #endif
-

@@ -23,11 +23,65 @@
 #include "Camera.h"
 #include "SceneNode.h"
 
-class Entity
-{
+class Entity {
+public:
+
+	Entity();
+	virtual ~Entity();
+	
+	void SetCamera(std::shared_ptr<Camera> camera);
+	std::shared_ptr<Camera> GetCamera();
+	
+	std::shared_ptr<SceneNode> GetSceneNode();
+	
+	void SetTransform(const btTransform &transform);
+	void SetLocation(const btVector3 &loc);
+	void SetRotation(const btQuaternion &quat);
+	void Move(const btVector3 &move);
+	void Rotate(const btQuaternion &quat);
+	btTransform GetTransform();
+	btVector3 GetLocation() const;
+	virtual void SetScale(btVector3 scale);
+	btVector3 GetScale();
+	
+	std::shared_ptr<btCollisionShape> GetCollisionShape();
+	
+	void SetMass(float mass);
+	
+	class Engine *GetEngine();
+	
+	const std::string &GetName() const;
+	
+	void SetRayTraceChannel(int src);
+	int GetRayTraceChannel();
+	
+	template <typename T = btCollisionObject >
+	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>(this->body); }
+	
+	virtual void Tick(const float deltaTime);
+	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal);
+	
+	void SetModel(std::shared_ptr<Model> model);
+	void SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	
+	void Init(class Engine *engine);
+	
+	virtual void Load(std::istream &stream);
+	virtual void Save(std::ostream &stream) const;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform);
+	virtual void Despawn();
+	
+	virtual void Destroy();
+	void DestroyBody();
+	
+	virtual int GetTypeSize() const = 0;								// return size of type in bytes
+	virtual void Free() = 0;											// calls type destructor and frees an Entity
+	virtual std::shared_ptr<Entity> New() const = 0;					// allocate memory and calls type constructor
+	virtual std::string GetClassName() const = 0;						// returns type name
+	
 protected:
 	
-	class Engine * engine;
+	class Engine *engine;
 	
 	std::string name;
 	
@@ -44,61 +98,6 @@ protected:
 	float mass;
 	
 	std::shared_ptr<Camera> camera;
-	
-public:
-	
-	void SetCamera( std::shared_ptr<Camera> camera );
-	std::shared_ptr<Camera> GetCamera();
-	
-	std::shared_ptr<SceneNode> GetSceneNode();
-	
-	void SetTransform( const btTransform & transform );
-	void SetLocation( const btVector3 & loc );
-	void SetRotation( const btQuaternion & quat );
-	void Move( const btVector3 & move );
-	void Rotate( const btQuaternion & quat );
-	btTransform GetTransform();
-	btVector3 GetLocation() const;
-	virtual void SetScale( btVector3 scale );
-	btVector3 GetScale();
-	
-	std::shared_ptr<btCollisionShape> GetCollisionShape();
-	
-	void SetMass( float mass );
-	
-	class Engine * GetEngine();
-	
-	const std::string & GetName() const;
-	
-	void SetRayTraceChannel( int src );
-	int GetRayTraceChannel();
-	
-	template < typename T = btCollisionObject >
-	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( this->body ); }
-	
-	virtual void Tick( const float deltaTime );
-	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal );
-	
-	void SetModel( std::shared_ptr<Model> model );
-	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
-	
-	void Init( class Engine * engine );
-	
-	virtual void Load( std::istream & stream );
-	virtual void Save( std::ostream & stream ) const;
-	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform );
-	virtual void Despawn();
-	
-	virtual void Destroy();
-	void DestroyBody();
-	
-	virtual int GetTypeSize() const = 0;								// return size of type in bytes
-	virtual void Free() = 0;											// calls type destructor and frees an Entity
-	virtual std::shared_ptr<Entity> New() const = 0;					// allocate memory and calls type constructor
-	virtual std::string GetClassName() const = 0;						// returns type name
-	
-	Entity();
-	virtual ~Entity();
 };
 
 #endif

@@ -16,44 +16,46 @@
 #include <set>
 #include <memory>
 
-class World
-{
+class World {
+public:
+	
+	World();
+	~World();
+	
+	void Init();
+	
+	void ActivateAll();
+	
+	btDiscreteDynamicsWorld *GetDynamicsWorld();
+	
+	void UpdateColliderForObject(std::shared_ptr<btCollisionObject> body);
+	
+	btVector3 GetGravity();
+	
+	void Tick(btScalar deltaTime, int count = 0);
+	
+	bool AddBody(std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	bool RemoveBody(std::shared_ptr<btCollisionObject> body);
+	void RemoveBodys();
+	
+	void Destroy();
+	
+private:
+
+	inline void UpdateObjectsActivation();
+	
 private:
 	
-	btBroadphaseInterface * broadphase;
-	btDefaultCollisionConfiguration * collisionConfiguration;
-	btCollisionDispatcher * dispatcher;
-	btSequentialImpulseConstraintSolver * solver;
-	btDiscreteDynamicsWorld * dynamicsWorld;
+	btBroadphaseInterface *broadphase;
+	btDefaultCollisionConfiguration *collisionConfiguration;
+	btCollisionDispatcher *dispatcher;
+	btSequentialImpulseConstraintSolver *solver;
+	btDiscreteDynamicsWorld *dynamicsWorld;
 	
 	std::set < std::shared_ptr<btCollisionObject> > object;
 	
 	std::shared_ptr<btCollisionObject> currentActivator;
 	int activateAll;
-	
-	inline void UpdateObjectsActivation();
-	
-public:
-	
-	void ActivateAll();
-	
-	btDiscreteDynamicsWorld * GetDynamicsWorld();
-	
-	void UpdateColliderForObject( std::shared_ptr<btCollisionObject> body );
-	
-	btVector3 GetGravity();
-	
-	void Tick( btScalar deltaTime, int count = 0 );
-	
-	bool AddBody( std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );
-	bool RemoveBody( std::shared_ptr<btCollisionObject> body );
-	void RemoveBodys();
-	
-	void Init();
-	void Destroy();
-	
-	World();
-	~World();
 };
 
 #endif

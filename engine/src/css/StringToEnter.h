@@ -10,34 +10,34 @@
 #include <string>
 #include <map>
 
-class StringToEnter
-{
+class StringToEnter {
+public:
+	
+	StringToEnter();
+	~StringToEnter();
+	
+	void SetCharactersLimit(unsigned value);
+	
+	void SetWindow(class Window *window);
+	
+	void PressKey(const irr::SEvent::SKeyInput &key);
+	
+	void Clear();
+	std::string GetCurrent();
+	
+private:
+
+	void InsertCharacter(char character);
+	
 private:
 	
-	class Window * window;
+	class Window *window;
 	
 	std::string str;
 	int currentPosition;
 	std::map < int, float > cooldownToUseKey;
 	
 	unsigned charactersLimit;
-	
-	
-	void InsertCharacter( char character );
-	
-public:
-	
-	void SetCharactersLimit( unsigned value );
-	
-	void SetWindow( class Window * window );
-	
-	void PressKey( const irr::SEvent::SKeyInput & key );
-	
-	void Clear();
-	std::string GetCurrent();
-	
-	StringToEnter();
-	~StringToEnter();
 };
 
 #endif

@@ -20,11 +20,37 @@
 
 #include <vector>
 
-class MotionController
-{
+class MotionController {
+public:
+	
+	MotionController();
+	~MotionController();
+	
+	void Init(class Engine *engine, std::shared_ptr<Entity> characterEntity, float stepHeight = 0.3f);
+	
+	float GetCurrentSpeed();
+	float GetJumpVelocity();
+	float GetFlatDeceleration();
+	
+	void Tick(const float deltaTime);
+	
+	void MoveInDirection(btVector3 direction);
+	void Jump();
+	
+	bool IsCrouching();
+	
+	void StartCrouching();
+	void StopCrouching();
+	void StartSneaking();
+	void StopSneaking();
+	void StartRunning();
+	void StopRunning();
+	
+	void Destroy();
+	
 protected:
 	
-	class Engine * engine;
+	class Engine *engine;
 	std::shared_ptr<Entity> character;
 	
 	btVector3 triggerLowOffsetCrouching;
@@ -42,8 +68,7 @@ protected:
 	
 	float crouchingScale;
 	
-	enum class State
-	{
+	enum class State {
 		WALKING,
 		CROUCHING,
 		RUNNING,
@@ -52,49 +77,19 @@ protected:
 	std::vector<State> states;
 	btVector3 walkingDirection;
 	
-	
-	enum class CrouchingState
-	{
+	enum class CrouchingState {
 		CROUCHING,
 		STANDING,
 		STANDING_UP
 	} crouchingState;
 	
-	
 	MotionController::State GetCurrentState() const;
 	
-	void UpdateSpeed( const float deltaTime );
-	void AddState( State state );
-	void RemoveState( State state );
+	void UpdateSpeed(const float deltaTime);
+	void AddState(State state);
+	void RemoveState(State state);
 	
 	void UpdateTriggersTransform();
-	
-public:
-	
-	void Init( class Engine * engine, std::shared_ptr<Entity> characterEntity, float stepHeight = 0.3f );
-	
-	float GetCurrentSpeed();
-	float GetJumpVelocity();
-	float GetFlatDeceleration();
-	
-	void Tick( const float deltaTime );
-	
-	void MoveInDirection( btVector3 direction );
-	void Jump();
-	
-	bool IsCrouching();
-	
-	void StartCrouching();
-	void StopCrouching();
-	void StartSneaking();
-	void StopSneaking();
-	void StartRunning();
-	void StopRunning();
-	
-	void Destroy();
-	
-	MotionController();
-	~MotionController();
 };
 
 #endif

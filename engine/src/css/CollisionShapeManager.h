@@ -16,46 +16,43 @@
 
 #include "CollisionShapeConstructor.h"
 
-class CollisionShapeManager
-{
-private:
-	
-	class Engine * engine;
-	std::map < std::string, std::shared_ptr<CollisionShapeConstructor> > shapeConstructors;
-	
+class CollisionShapeManager {
 public:
 	
-	std::shared_ptr<btCollisionShape> Clone( const std::shared_ptr<btCollisionShape> & shape );
-	void SerializeCollisionShape( std::ostream & stream, std::shared_ptr<btCollisionShape> & shape );
-	std::shared_ptr<btCollisionShape> DeserializeCollisionShape( std::istream & stream );
+	CollisionShapeManager(class Engine *engine);
+	~CollisionShapeManager();
 	
-	bool IsNameAvailable( const std::string & name );
-	std::string GetFirstAvailableName( const std::string & name );
+	std::shared_ptr<btCollisionShape> Clone(const std::shared_ptr<btCollisionShape> &shape);
+	void SerializeCollisionShape(std::ostream &stream, std::shared_ptr<btCollisionShape> &shape);
+	std::shared_ptr<btCollisionShape> DeserializeCollisionShape(std::istream &stream);
 	
-	void DestroyShapeConstructionInfo( const std::string & name );
-	void DestroyShape( std::shared_ptr<btCollisionShape> & shape );
+	bool IsNameAvailable(const std::string &name);
+	std::string GetFirstAvailableName(const std::string &name);
 	
-	std::shared_ptr<CollisionShapeConstructor> GetBoxConstructor( btVector3 size );
-	std::shared_ptr<CollisionShapeConstructor> GetSphereConstructor( btScalar radius );
-	std::shared_ptr<CollisionShapeConstructor> GetCapsuleConstructor( btScalar radius, btScalar height );
-	std::shared_ptr<CollisionShapeConstructor> GetCylinderConstructor( btScalar radius, btScalar height );
-	std::shared_ptr<CollisionShapeConstructor> GetCollisionShapeConstructor( const std::string & name );
+	void DestroyShapeConstructionInfo(const std::string &name);
+	void DestroyShape(std::shared_ptr<btCollisionShape> &shape);
 	
-	std::shared_ptr<btCollisionShape> GetBox( btVector3 size );
-	std::shared_ptr<btCollisionShape> GetSphere( btScalar radius );
-	std::shared_ptr<btCollisionShape> GetCapsule( btScalar radius, btScalar height );
-	std::shared_ptr<btCollisionShape> GetCylinder( btScalar radius, btScalar height );
-	std::shared_ptr<btCollisionShape> GetCustomShape( const std::string & name );
+	std::shared_ptr<CollisionShapeConstructor> GetBoxConstructor(btVector3 size);
+	std::shared_ptr<CollisionShapeConstructor> GetSphereConstructor(btScalar radius);
+	std::shared_ptr<CollisionShapeConstructor> GetCapsuleConstructor(btScalar radius, btScalar height);
+	std::shared_ptr<CollisionShapeConstructor> GetCylinderConstructor(btScalar radius, btScalar height);
+	std::shared_ptr<CollisionShapeConstructor> GetCollisionShapeConstructor(const std::string &name);
 	
-	bool RegisterCustomShape( const std::string & name, const std::string & collisionShapeFileName );
-	bool ConvertObjToCustomShape( const std::string & objFileName, const std::string & collisionShapeFileName );
+	std::shared_ptr<btCollisionShape> GetBox(btVector3 size);
+	std::shared_ptr<btCollisionShape> GetSphere(btScalar radius);
+	std::shared_ptr<btCollisionShape> GetCapsule(btScalar radius, btScalar height);
+	std::shared_ptr<btCollisionShape> GetCylinder(btScalar radius, btScalar height);
+	std::shared_ptr<btCollisionShape> GetCustomShape(const std::string &name);
+	
+	bool RegisterCustomShape(const std::string &name, const std::string &collisionShapeFileName);
+	bool ConvertObjToCustomShape(const std::string &objFileName, const std::string &collisionShapeFileName);
 	
 	void Destroy();
 	
-	CollisionShapeManager( class Engine * engine );
-	~CollisionShapeManager();
+private:
+	
+	class Engine *engine;
+	std::map < std::string, std::shared_ptr<CollisionShapeConstructor> > shapeConstructors;
 };
 
-
 #endif
-

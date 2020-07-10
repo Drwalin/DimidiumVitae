@@ -7,19 +7,17 @@
 
 #include "Character.h"
 
-class Player : public Character
-{
-protected:
-	
-	
-	
+class Player : public Character  {
 public:
 	
-	virtual void Tick( const float deltaTime ) override;
+	Player();
+	virtual ~Player() override;
 	
-	virtual void Load( std::istream & stream ) override;
-	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Tick(const float deltaTime) override;
+	
+	virtual void Load(std::istream &stream) override;
+	virtual void Save(std::ostream &stream) const override;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;
@@ -29,9 +27,9 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	Player();
-	virtual ~Player() override;
+protected:
+	
+	
 };
 
 #endif
-

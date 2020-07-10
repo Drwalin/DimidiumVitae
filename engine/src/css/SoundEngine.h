@@ -13,21 +13,13 @@
 #include <string>
 #include <atomic>
 
-class SoundSampler
-{
-private:
-	
-	std::atomic<unsigned> * refCounter;
-	unsigned bufferID;
-	
-	void LoadFromWAV( const std::string & wavFileName );
-	void LoadFromOGG( const std::string & oggFileName );
-	void LoadFromFile( const std::string & fileName );
-	
-	void IncrementRefCounter();
-	void DecrementRefCounter();
-	
+class SoundSampler {
 public:
+
+	SoundSampler();
+	SoundSampler(const SoundSampler &other);
+	SoundSampler(const std::string &wavFile);
+	~SoundSampler();
 	
 	unsigned GetBuffer() const;
 	
@@ -36,24 +28,31 @@ public:
 	unsigned GetRefCounterValue() const;
 	operator bool() const;
 	
-	SoundSampler & operator = ( const SoundSampler & other );
+	SoundSampler &operator = (const SoundSampler &other);
 	
 	void Destroy();
 	
-	SoundSampler();
-	SoundSampler( const SoundSampler & other );
-	SoundSampler( const std::string & wavFile );
-	~SoundSampler();
-};
-
-class SoundSource
-{
 private:
 	
-	SoundSampler sampler;
-	unsigned sourceID;
+	void LoadFromWAV(const std::string &wavFileName);
+	void LoadFromOGG(const std::string &oggFileName);
+	void LoadFromFile(const std::string &fileName);
 	
+	void IncrementRefCounter();
+	void DecrementRefCounter();
+	
+private:
+	
+	std::atomic<unsigned> *refCounter;
+	unsigned bufferID;
+};
+
+class SoundSource {
 public:
+	
+	SoundSource(const SoundSampler &sampler);
+	SoundSource();
+	~SoundSource();
 	
 	void Set2D();
 	void Set3D();
@@ -61,53 +60,71 @@ public:
 	void Play();
 	void Pause();
 	void Rewind();
-	void SetCurretnMoment( const float time );
+	void SetCurretnMoment(const float time);
 	bool IsPlaying() const;
-	void Loop( const bool loop );
+	void Loop(const bool loop);
 	
 	float GetCurrentSecond() const;
 	float GetDuration() const;
 	
-	void SetLocation( const btVector3 & location );
-	void SetVelocity( const btVector3 & velocity );
-	void SetDirectionAngle( const btQuaternion & rotation, const float innerAngle, const float outerAngle );
-	void SetDirectionAngle( const btVector3 & direction, const float innerAngle, const float outerAngle );
-	void SetListenerTransform( const btTransform & transform );
-	void SetListenerTransformAngle( const btTransform & transform, const float innerAngle, const float outerAngle );
+	void SetLocation(const btVector3 &location);
+	void SetVelocity(const btVector3 &velocity);
+	void SetDirectionAngle(const btQuaternion &rotation, const float innerAngle, const float outerAngle);
+	void SetDirectionAngle(const btVector3 &direction, const float innerAngle, const float outerAngle);
+	void SetListenerTransform(const btTransform &transform);
+	void SetListenerTransformAngle(const btTransform &transform, const float innerAngle, const float outerAngle);
 	
-	void SetVolume( const float volume );
-	void SetSampler( const SoundSampler & sampler );
+	void SetVolume(const float volume);
+	void SetSampler(const SoundSampler &sampler);
 	
-	SoundSource( const SoundSampler & sampler );
-	SoundSource();
-	~SoundSource();
-};
-
-class SoundEngine
-{
 private:
 	
-	void * device;
-	void * context;
-	
+	SoundSampler sampler;
+	unsigned sourceID;
+};
+
+class SoundEngine {
 public:
+	
+	SoundEngine();
+	~SoundEngine();
 	
 	operator bool() const;
 	
 	int PrintError();
 	
-	static void SetListenerLocation( const btVector3 & location );
-	static void SetListenerVelocity( const btVector3 & velocity );
-	static void SetListenerOrientation( const btVector3 & forward, const btVector3 & up );
-	static void SetListenerOrientation( const btQuaternion & rotation );
-	static void SetListenerTransform( const btTransform & transform );
+	static void SetListenerLocation(const btVector3 &location);
+	static void SetListenerVelocity(const btVector3 &velocity);
+	static void SetListenerOrientation(const btVector3 &forward, const btVector3 &up);
+	static void SetListenerOrientation(const btQuaternion &rotation);
+	static void SetListenerTransform(const btTransform &transform);
 	
-	SoundEngine();
-	~SoundEngine();
+private:
+	
+	void *device;
+	void *context;
 };
 
-class SoundsManager
-{
+class SoundsManager {
+public:
+	
+	SoundsManager();
+	~SoundsManager();
+	
+	SoundSampler GetSoundSampler(const std::string &soundName);
+	SoundSampler GetSoundSampler(const unsigned soundID);
+	
+	unsigned GetSoundID(const std::string &soundName) const;
+	unsigned RegisterSound(const std::string &soundName, const std::string &soundfilePath);
+	void RemoveSound(const unsigned soundID);
+	void RemoveSound(const std::string &soundName);
+	void ImplicitFreeMemory(const unsigned soundID);
+	
+	void RemoveUnusedSamplersFromMemory();
+	void SetIdleMilisecondsTillRemove(unsigned miliseconds);
+	
+	void Clear();
+	
 private:
 	
 	std::map < std::string, unsigned > nids;		// < soundName, soundID >
@@ -118,25 +135,6 @@ private:
 	
 	unsigned idleMilisecondsTillRemove;
 	unsigned lastRegisteredID;
-	
-public:
-	
-	SoundSampler GetSoundSampler( const std::string & soundName );
-	SoundSampler GetSoundSampler( const unsigned soundID );
-	
-	unsigned GetSoundID( const std::string & soundName ) const;
-	unsigned RegisterSound( const std::string & soundName, const std::string & soundfilePath );
-	void RemoveSound( const unsigned soundID );
-	void RemoveSound( const std::string & soundName );
-	void ImplicitFreeMemory( const unsigned soundID );
-	
-	void RemoveUnusedSamplersFromMemory();
-	void SetIdleMilisecondsTillRemove( unsigned miliseconds );
-	
-	void Clear();
-	
-	SoundsManager();
-	~SoundsManager();
 };
 
 #endif

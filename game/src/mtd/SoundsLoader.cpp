@@ -9,24 +9,20 @@
 
 #include <StdUtil.hpp>
 
-void LoadSounds( Engine * engine, const std::string & soundsListFileName )
-{
-	std::ifstream file( soundsListFileName );
-	if( file.good() )
-	{
-		while( !file.eof() )
-		{
+void LoadSounds(Engine *engine, const std::string &soundsListFileName) {
+	std::ifstream file(soundsListFileName);
+	if(file.good()) {
+		while(!file.eof()) {
 			std::string  soundFile(""), soundName("");
-			GetLine( file, soundName );
-			GetLine( file, soundFile );
-			if( file.eof() )
+			GetLine(file, soundName);
+			GetLine(file, soundFile);
+			if(file.eof())
 				break;
-			if( soundName == "" || soundFile == "" )
+			if(soundName == "" || soundFile == "")
 				continue;
 			
-			if( engine->GetSoundsManager()->RegisterSound( soundName, soundFile ) == 0 )
-			{
-				MESSAGE( std::string("Couldn't load sound file: \"") + soundName + "\" -> \"" + soundFile + "\"" );
+			if(engine->GetSoundsManager()->RegisterSound(soundName, soundFile) == 0) {
+				MESSAGE(std::string("Couldn't load sound file: \"") + soundName + "\" -> \"" + soundFile + "\"");
 			}
 		}
 	}

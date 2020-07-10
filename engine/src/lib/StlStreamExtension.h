@@ -8,133 +8,120 @@
 #include <streambuf>
 #include <iostream>
 
-class __base_ostreambuf : public std::streambuf
-{
+class __base_ostreambuf : public std::streambuf {
 public:
 	
-	virtual std::streamsize xsputn( const char * buffer, std::streamsize buffersize ) = 0;
-	int overflow( int ch );
+	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) = 0;
+	int overflow(int ch);
 };
 
-class __base_istreambuf : public std::streambuf
-{
-protected:
-	
-	int buffersize;
-	char * buffer;
-	
+class __base_istreambuf : public std::streambuf {
 public:
 	
 	virtual int __read_to_buffer() = 0;
 	virtual int underflow() override;
-	__base_istreambuf( const int buffersize = 4096 );
+	__base_istreambuf(const int buffersize = 4096);
 	~__base_istreambuf();
+	
+protected:
+	
+	int buffersize;
+	char *buffer;
 };
 
-class ocstreambuf : public __base_ostreambuf
-{
-private:
-	
-	struct _iobuf * filefd;
-	
+class ocstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn( const char * buffer, std::streamsize buffersize ) override;
-	ocstreambuf( const char * filename );
+	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	ocstreambuf(const char *filename);
 	~ocstreambuf();
-};
-
-class icstreambuf : public __base_istreambuf
-{
+	
 private:
 	
-	struct _iobuf * filefd;
-	
+	struct _iobuf *filefd;
+};
+
+class icstreambuf : public __base_istreambuf {
 public:
 	
 	virtual int __read_to_buffer() override;
-	icstreambuf( const char * filename );
+	icstreambuf(const char *filename);
 	~icstreambuf();
-};
-
-class ogzstreambuf : public __base_ostreambuf
-{
+	
 private:
 	
-	struct gzFile_s * filefd;
-	
+	struct _iobuf *filefd;
+};
+
+class ogzstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn( const char * buffer, std::streamsize buffersize ) override;
-	ogzstreambuf( const char * filename );
+	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	ogzstreambuf(const char *filename);
 	~ogzstreambuf();
-};
-
-class igzstreambuf : public __base_istreambuf
-{
+	
 private:
 	
-	struct gzFile_s * filefd;
-	
+	struct gzFile_s *filefd;
+};
+
+class igzstreambuf : public __base_istreambuf {
 public:
 	
 	virtual int __read_to_buffer() override;
-	igzstreambuf( const char * filename );
+	igzstreambuf(const char *filename);
 	~igzstreambuf();
+	
+private:
+	
+	struct gzFile_s *filefd;
 };
 
-namespace irr
-{
-	namespace io
-	{
+namespace irr {
+	namespace io {
 		class IWriteFile;
 		class IReadFile;
 	};
 };
 
-class oirrstreambuf : public __base_ostreambuf
-{
-private:
-	
-	irr::io::IWriteFile * file;
-	
+class oirrstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn( const char * buffer, std::streamsize buffersize ) override;
-	oirrstreambuf( irr::io::IWriteFile * file );
+	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	oirrstreambuf(irr::io::IWriteFile *file);
 	~oirrstreambuf();
-};
-
-class iirrstreambuf : public __base_istreambuf
-{
+	
 private:
 	
-	irr::io::IReadFile * file;
-	
+	irr::io::IWriteFile *file;
+};
+
+class iirrstreambuf : public __base_istreambuf {
 public:
 	
 	virtual int __read_to_buffer() override;
-	iirrstreambuf( irr::io::IReadFile * file );
+	iirrstreambuf(irr::io::IReadFile *file);
 	~iirrstreambuf();
+	
+private:
+	
+	irr::io::IReadFile *file;
 };
 
-template < typename T, typename Tstream, typename... Args >
-class __t_iostream : public Tstream
-{
+template <typename T, typename Tstream, typename... Args >
+class __t_iostream : public Tstream {
+public:
+	
+	__t_iostream(Args... args) :
+		__streambuf(args...), Tstream(&__streambuf) {
+	}
+	
+	~__t_iostream() {
+	}
+	
 private:
 	
 	T __streambuf;
-	
-public:
-	
-	__t_iostream( Args... args ) :
-		__streambuf(args...), Tstream(&__streambuf)
-	{
-	}
-	
-	~__t_iostream()
-	{
-	}
 };
 
 typedef __t_iostream<icstreambuf,std::istream,const char*> icfstream;

@@ -21,21 +21,19 @@
 
 class Engine;
 
-class Trigger : public Entity
-{
-protected:
-	
-	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject);
-	
+class Trigger : public Entity {
 public:
+	
+	Trigger();
+	virtual ~Trigger() override;
 	
 	virtual void NextOverlappingFrame();
 	
-	virtual void Tick( const float deltaTime ) override;
+	virtual void Tick(const float deltaTime) override;
 	
-	virtual void Load( std::istream & stream ) override;
-	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Load(std::istream &stream) override;
+	virtual void Save(std::ostream &stream) const override;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;
@@ -45,8 +43,9 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	Trigger();
-	virtual ~Trigger() override;
+protected:
+	
+	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject);
 };
 
 #endif

@@ -14,8 +14,7 @@
 #include <string>
 #include <vector>
 
-class PrimitiveShape
-{
+class PrimitiveShape {
 public:
 	
 	enum Type
@@ -29,34 +28,37 @@ public:
 		TRIMESH = 6
 	};
 	
-	static PrimitiveShape::Type GetType( char ch );
-	static char GetChar( PrimitiveShape::Type type );
+	PrimitiveShape(PrimitiveShape::Type type);
+	~PrimitiveShape();
 	
-	class BoxInfo{public:
+	static PrimitiveShape::Type GetType(char ch);
+	static char GetChar(PrimitiveShape::Type type);
+	
+	class BoxInfo {public:
 		btVector3 size;
 		BoxInfo();
 		~BoxInfo();
 	};
-	class SphereInfo{public:
+	class SphereInfo {public:
 		float radius;
 		SphereInfo();
 		~SphereInfo();
 	};
-	class CylindricInfo{public:
+	class CylindricInfo {public:
 		float height;
 		float radius;
 		CylindricInfo();
 		~CylindricInfo();
 	};
-	class ConvexInfo{public:
+	class ConvexInfo {public:
 		std::vector<btVector3> vertices;
 		ConvexInfo();
 		~ConvexInfo();
 	};
-	class TrimeshInfo{public:
+	class TrimeshInfo {public:
 		std::vector<btVector3> vertices;
 		std::vector<int> indices;
-		btTriangleIndexVertexArray * triangleData;
+		btTriangleIndexVertexArray *triangleData;
 		TrimeshInfo();
 		~TrimeshInfo();
 		void Done();
@@ -66,22 +68,35 @@ public:
 	PrimitiveShape::Type type;
 	union
 	{
-		BoxInfo * box;
-		SphereInfo * sphere;
-		CylindricInfo * cylinder;
-		CylindricInfo * capsule;
-		ConvexInfo * convex;
-		TrimeshInfo * trimesh;
+		BoxInfo *box;
+		SphereInfo *sphere;
+		CylindricInfo *cylinder;
+		CylindricInfo *capsule;
+		ConvexInfo *convex;
+		TrimeshInfo *trimesh;
 	};
 	
-	btCollisionShape * Get();
-	
-	PrimitiveShape( PrimitiveShape::Type type );
-	~PrimitiveShape();
+	btCollisionShape *Get();
 };
 
-class CollisionShapeConstructor
-{
+class CollisionShapeConstructor {
+public:
+	
+	CollisionShapeConstructor();
+	~CollisionShapeConstructor();
+	
+	void AddBox(const btTransform &transform, const btVector3 &halfSize);
+	void AddSphere(const btTransform &transform, const float radius);
+	void AddCylinder(const btTransform &transform, const float radius, const float height);
+	void AddCapsule(const btTransform &transform, const float radius, const float height);
+	
+	std::string GetName() const;
+	std::string GetCollisionShapeFileName() const;
+	
+	std::shared_ptr<btCollisionShape> Get();
+	bool Load(const std::string &name, const std::string &collisionShapeFileName);
+	static bool Convert(class Engine *engine, const std::string &objFileName, const std::string &collisionShapeFileName);
+	
 private:
 	
 	std::string name;
@@ -90,33 +105,16 @@ private:
 	std::vector < std::shared_ptr<PrimitiveShape> > primitives;
 	
 	
-	std::shared_ptr<PrimitiveShape> AddPrimitive( PrimitiveShape::Type type );
+	std::shared_ptr<PrimitiveShape> AddPrimitive(PrimitiveShape::Type type);
 	
-	void LoadOBJ( std::istream & stream, std::vector<std::vector<std::vector<btVector3>>> & objects );
-	void CreateNewObject( std::vector<std::vector<btVector3>> & faces );
-	void CreateFromFaces( std::vector<std::vector<std::vector<btVector3>>> & objects );
+	void LoadOBJ(std::istream &stream, std::vector<std::vector<std::vector<btVector3>>> &objects);
+	void CreateNewObject(std::vector<std::vector<btVector3>> &faces);
+	void CreateFromFaces(std::vector<std::vector<std::vector<btVector3>>> &objects);
 	
-	void SavePrimitive( std::ostream & stream, std::shared_ptr<PrimitiveShape> primitive );
-	void SaveShapeFile( std::ostream & stream );
+	void SavePrimitive(std::ostream &stream, std::shared_ptr<PrimitiveShape> primitive);
+	void SaveShapeFile(std::ostream &stream);
 	
-	std::shared_ptr<PrimitiveShape> LoadPrimitive( std::istream & stream );
-	
-public:
-	
-	void AddBox( const btTransform & transform, const btVector3 & halfSize );
-	void AddSphere( const btTransform & transform, const float radius );
-	void AddCylinder( const btTransform & transform, const float radius, const float height );
-	void AddCapsule( const btTransform & transform, const float radius, const float height );
-	
-	std::string GetName() const;
-	std::string GetCollisionShapeFileName() const;
-	
-	std::shared_ptr<btCollisionShape> Get();
-	bool Load( const std::string & name, const std::string & collisionShapeFileName );
-	static bool Convert( class Engine * engine, const std::string & objFileName, const std::string & collisionShapeFileName );
-	
-	CollisionShapeConstructor();
-	~CollisionShapeConstructor();
+	std::shared_ptr<PrimitiveShape> LoadPrimitive(std::istream &stream);
 };
 
 #endif

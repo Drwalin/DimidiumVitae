@@ -15,13 +15,12 @@
 #include <memory>
 #include <string>
 
-class CollisionObjectManager
-{
+class CollisionObjectManager {
 public:
 	
-	static std::shared_ptr<btCollisionObject> CreateCollisionObject( std::shared_ptr<btCollisionShape> shape, btTransform transform );
-	static std::shared_ptr<btCollisionObject> CreateRigidBody( std::shared_ptr<btCollisionShape> shape, btTransform transform, float mass, btVector3 inertia = btVector3(0.0f,0.0f,0.0f) );
-	static std::shared_ptr<btCollisionObject> CreateGhostObject( std::shared_ptr<btCollisionShape> shape, btTransform transform );
+	static std::shared_ptr<btCollisionObject> CreateCollisionObject(std::shared_ptr<btCollisionShape> shape, btTransform transform);
+	static std::shared_ptr<btCollisionObject> CreateRigidBody(std::shared_ptr<btCollisionShape> shape, btTransform transform, float mass, btVector3 inertia = btVector3(0.0f,0.0f,0.0f));
+	static std::shared_ptr<btCollisionObject> CreateGhostObject(std::shared_ptr<btCollisionShape> shape, btTransform transform);
 	static std::shared_ptr<btCollisionObject> CreatePairCachingGhostObject();
 };
 

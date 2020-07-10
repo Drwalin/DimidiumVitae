@@ -13,50 +13,46 @@
 
 #include <cstdio>
 
-extern "C" bool OGGLoadFromFile( const char * oggFileName, std::vector<char> & bufferData, ALenum & format, ALsizei & sampleRate )
-{
-	FILE * file = fopen( oggFileName, "rb" );
-	if( file == NULL )
+extern "C" bool OGGLoadFromFile(const char *oggFileName, std::vector<char> &bufferData, ALenum &format, ALsizei &sampleRate) {
+	FILE *file = fopen(oggFileName, "rb");
+	if(file == NULL)
 		return false;
 	
 	OggVorbis_File oggFileStream;
-	if( ov_open( file, &oggFileStream, NULL, 0 ) != 0 )
+	if(ov_open(file, &oggFileStream, NULL, 0) != 0)
 		return false;
 	
 	vorbis_info *oggInfo;
-	oggInfo = ov_info( &oggFileStream, -1 );
+	oggInfo = ov_info(&oggFileStream, -1);
 	sampleRate = oggInfo->rate;
-	if( oggInfo->channels == 1 )
+	if(oggInfo->channels == 1)
 		format = AL_FORMAT_MONO16;
 	else
 		format = AL_FORMAT_STEREO16;
 	
 	const int cacheBufferSize = 32768;
-	char * cacheBuffer = (char*)malloc( cacheBufferSize );
-	if( cacheBuffer == NULL )
-	{
-		ov_clear( &oggFileStream );
+	char *cacheBuffer = (char*)malloc(cacheBufferSize);
+	if(cacheBuffer == NULL) {
+		ov_clear(&oggFileStream);
 		return false;
 	}
 	
 	int bitStream = 0;
-	while( true )
-	{
+	while(true) {
 		long bytesReaded;
-		bytesReaded = ov_read( &oggFileStream, cacheBuffer, cacheBufferSize, 0, 2, 1, &bitStream );
-		if( bytesReaded < 0 )
-		{
-			ov_clear( &oggFileStream );
-			free( cacheBuffer );
+		bytesReaded = ov_read(&oggFileStream, cacheBuffer, cacheBufferSize, 0, 2, 1, &bitStream);
+		if(bytesReaded < 0) {
+			ov_clear(&oggFileStream);
+			free(cacheBuffer);
 			return false;
 		}
-		bufferData.insert( bufferData.end(), cacheBuffer, cacheBuffer+bytesReaded );
-		if( bytesReaded == 0 )
+		bufferData.insert(bufferData.end(), cacheBuffer, cacheBuffer+bytesReaded);
+		if(bytesReaded == 0)
 			break;
 	}
 	
-	ov_clear( &oggFileStream );
-	free( cacheBuffer );
+	ov_clear(&oggFileStream);
+	free(cacheBuffer);
 	return true;
 }
 

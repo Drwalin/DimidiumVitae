@@ -5,36 +5,30 @@
 #ifndef AR_HPP
 #define AR_HPP
 
-template < class T, int N >
-class AR
-{
-private:
-	
-	T data[N];
-	
+template <class T, int N >
+class AR {
 public:
 	
-	inline T * Data()
-	{
+	inline T *Data() {
 		return data;
 	}
 	
-	inline T&operator[](int id)
-	{
+	inline T&operator[](int id) {
 		return data[id];
 	}
 	
-	AR()
-	{
-		memset( data, 0, N*sizeof(T) );
+	AR() {
+		memset(data, 0, N*sizeof(T));
 	}
 	
-	AR( T defaultValue )
-	{
-		for( int i = 0; i < N; ++i )
+	AR(T defaultValue) {
+		for(int i = 0; i < N; ++i)
 			data[i] = defaultValue;
 	}
+	
+private:
+	
+	T data[N];
 };
 
 #endif
-

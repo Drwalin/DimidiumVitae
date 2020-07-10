@@ -7,14 +7,12 @@
 
 #include "..\css\Header.h"
 
-std::string GetVersionString()
-{
-	return std::string("0.3.4");
+std::string GetVersionString() {
+	return std::string("0.3.4b");
 }
 
-std::string GetVersionReleaseDateString()
-{
-	return std::string("2020-10-07");
+std::string GetVersionReleaseDateString() {
+	return std::string("2020-07-10");
 }
 
 #endif

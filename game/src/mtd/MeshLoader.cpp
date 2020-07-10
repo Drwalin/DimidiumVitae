@@ -11,37 +11,31 @@
 
 #include <cassert>
 
-void LoadMeshes( Engine * engine, const std::string & meshesListFileName )
-{
-	std::ifstream file( meshesListFileName );
-	if( file.good() )
-	{
-		while( !file.eof() )
-		{
+void LoadMeshes(Engine *engine, const std::string &meshesListFileName) {
+	std::ifstream file(meshesListFileName);
+	if(file.good()) {
+		while(!file.eof()) {
 			std::string  meshFile(""), customName("");
-			GetLine( file, meshFile );
-			GetLine( file, customName );
-			if( file.eof() )
+			GetLine(file, meshFile);
+			GetLine(file, customName);
+			if(file.eof())
 				break;
-			if( meshFile == "" || customName == "" )
+			if(meshFile == "" || customName == "")
 				continue;
 			
-			std::shared_ptr<Model> ptr = engine->LoadModel( meshFile );
-			assert( (bool)ptr );
-			if( ptr )
-			{
-				if( engine->SetCustomModelName( customName, ptr ) == false )
-				{
-					MESSAGE( std::string("Couldn't set custom mesh: \"") + customName + "\"" );
+			std::shared_ptr<Model> ptr = engine->LoadModel(meshFile);
+			assert((bool)ptr);
+			if(ptr) {
+				if(engine->SetCustomModelName(customName, ptr) == false) {
+					MESSAGE(std::string("Couldn't set custom mesh: \"") + customName + "\"");
 				}
 			}
 			else
 			{
-				MESSAGE( std::string("Couldn't load mesh: \"") + meshFile + "\"" );
+				MESSAGE(std::string("Couldn't load mesh: \"") + meshFile + "\"");
 			}
 		}
 	}
 }
 
 #endif
-

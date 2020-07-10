@@ -22,13 +22,69 @@
 #include <thread>
 #include <memory>
 
-void ParallelThreadFunctionToDraw( class Window * window );
+void ParallelThreadFunctionToDraw(class Window *window);
 
-class Window
-{
-private:
+class Window {
+public:
 	
-	class Engine * engine;
+	Window();
+	~Window();
+	
+	void Init(class Engine *engine, const std::string &windowName, const std::string &iconFile, int width, int height, class EventResponser *eventResponser, bool fullscreen = false);
+	void BeginLoop();
+	
+	irr::IrrlichtDevice *GetDevice();
+	irr::video::IVideoDriver *GetVideoDriver();
+	irr::scene::ISceneManager *GetSceneManager();
+	irr::gui::IGUIEnvironment *GetIgui();
+	
+	GUI &GetGUI();
+	
+	void SetCamera(std::shared_ptr<Camera> camera);
+	std::shared_ptr<Camera> GetCamera();
+	
+	TimeCounter GetEventGenerationTime() const;
+	TimeCounter GetWholeDrawTime() const;
+	TimeCounter GetSkippedTime() const;
+	TimeCounter GetEngineTickTime() const;
+	void ParallelToDrawTick(const float deltaTime);
+	
+	void UseParallelThreadToDraw();
+	void ShutDownParallelThreadToDraw();
+	bool IsParallelToDrawTickInUse();
+	
+	class StringToEnter *GetStringToEnterObject();
+	class EventResponser *GetEventResponser();
+	
+	bool IsMouseLocked();
+	void LockMouse();
+	void UnlockMouse();
+	void HideMouse();
+	void ShowMouse();
+	
+	float GetDeltaTime();
+	
+	unsigned GetWidth();
+	unsigned GetHeight();
+	
+	void QueueQuit();
+	
+	void AlTick();
+	void OneLoopFullTick();
+	float GetSmoothFps();
+	void GenerateEvents();
+	void Tick(const float deltaTime);
+	
+	void Draw();
+	void DrawGUI();
+	
+	void Destroy();
+	
+	friend void ParallelThreadFunctionToDraw(Window*);
+	
+private:
+
+	class Engine *engine;
 	
 	irr::IrrlichtDevice *device;
 	irr::video::IVideoDriver *videoDriver;
@@ -54,67 +110,10 @@ private:
 	
 	std::shared_ptr<Camera> camera;
 	
-	class EventReceiverIrrlicht * eventIrrlichtReceiver;
-	class EventResponser * eventResponser;
-	class StringToEnter * stringToEnter;
+	class EventReceiverIrrlicht *eventIrrlichtReceiver;
+	class EventResponser *eventResponser;
+	class StringToEnter *stringToEnter;
 	GUI gui;
-	
-	friend void ParallelThreadFunctionToDraw( Window* );
-	
-public:
-	
-	irr::IrrlichtDevice * GetDevice();
-	irr::video::IVideoDriver * GetVideoDriver();
-	irr::scene::ISceneManager * GetSceneManager();
-	irr::gui::IGUIEnvironment * GetIgui();
-	
-	GUI & GetGUI();
-	
-	void SetCamera( std::shared_ptr<Camera> camera );
-	std::shared_ptr<Camera> GetCamera();
-	
-	TimeCounter GetEventGenerationTime() const;
-	TimeCounter GetWholeDrawTime() const;
-	TimeCounter GetSkippedTime() const;
-	TimeCounter GetEngineTickTime() const;
-	void ParallelToDrawTick( const float deltaTime );
-	
-	void UseParallelThreadToDraw();
-	void ShutDownParallelThreadToDraw();
-	bool IsParallelToDrawTickInUse();
-	
-	class StringToEnter * GetStringToEnterObject();
-	class EventResponser * GetEventResponser();
-	
-	bool IsMouseLocked();
-	void LockMouse();
-	void UnlockMouse();
-	void HideMouse();
-	void ShowMouse();
-	
-	float GetDeltaTime();
-	
-	unsigned GetWidth();
-	unsigned GetHeight();
-	
-	void QueueQuit();
-	
-	void AlTick();
-	void OneLoopFullTick();
-	float GetSmoothFps();
-	void GenerateEvents();
-	void Tick( const float deltaTime );
-	
-	void Draw();
-	void DrawGUI();
-	
-	void Init( Engine * engine, const std::string & windowName, const std::string & iconFile, int width, int height, EventResponser * eventResponser, bool fullscreen = false );
-	void BeginLoop();
-	
-	void Destroy();
-	
-	Window();
-	~Window();
 };
 
 #endif

@@ -7,20 +7,18 @@
 
 #include <Entity.h>
 
-class StaticEntity : public Entity
-{
-protected:
-	
-	
-	
+class StaticEntity : public Entity {
 public:
 	
-	virtual void Tick( const float deltaTime ) override;
-	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
+	StaticEntity();
+	virtual ~StaticEntity() override;
 	
-	virtual void Load( std::istream & stream ) override;
-	virtual void Save( std::ostream & stream ) const override;
-	virtual void Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform ) override;
+	virtual void Tick(const float deltaTime) override;
+	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
+	
+	virtual void Load(std::istream &stream) override;
+	virtual void Save(std::ostream &stream) const override;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;
@@ -30,8 +28,9 @@ public:
 	virtual std::shared_ptr<Entity> New() const override;
 	virtual std::string GetClassName() const override;
 	
-	StaticEntity();
-	virtual ~StaticEntity() override;
+protected:
+	
+	
 };
 
 #endif

@@ -7,30 +7,24 @@
 
 #include "..\css\EventResponser.h"
 
-class Window * EventResponser::GetWindow()
-{
+class Window *EventResponser::GetWindow() {
 	return this->window;
 }
 
-void EventResponser::SetEngine( class Engine * engine )
-{
+void EventResponser::SetEngine(class Engine *engine) {
 	this->engine = engine;
 }
 
-void EventResponser::SetWindow( Window * window )
-{
+void EventResponser::SetWindow(Window *window) {
 	this->window = window;
 }
 
-EventResponser::EventResponser()
-{
+EventResponser::EventResponser() {
 	this->window = NULL;
 }
 
-EventResponser::~EventResponser()
-{
+EventResponser::~EventResponser() {
 	this->window = NULL;
 }
 
 #endif
-

@@ -15,34 +15,33 @@
 #include "EventResponser.h"
 #include "Window.h"
 
-class EventReceiverIrrlicht : public irr::IEventReceiver
-{
+class EventReceiverIrrlicht : public irr::IEventReceiver {
+public:
+	
+	EventReceiverIrrlicht(EventResponser *event, Window *window);
+	~EventReceiverIrrlicht();
+	
+	void SetCursor(int x, int y);
+	void GetCursor(int &x, int &y);
+	
+	virtual bool OnEvent(const irr::SEvent& event) override;
+	
+	void GenerateEvents();
+	
 private:
 	
 	std::vector < irr::SEvent > eventQueue;
 	std::mutex queueMutex;
 	
-	EventResponser * eventResponser;
-	Window * window;
+	EventResponser *eventResponser;
+	Window *window;
 	
 	int mouseX, mouseY, mouseW;
 	
 	std::set < unsigned > keyHolded;
 	std::set < unsigned > keyPressed;
 	
-	void GenerateOneEvent( const irr::SEvent& event );
-	
-public:
-	
-	void SetCursor( int x, int y );
-	void GetCursor( int & x, int & y );
-	
-	virtual bool OnEvent( const irr::SEvent& event ) override;
-	
-	void GenerateEvents();
-	
-	EventReceiverIrrlicht( EventResponser * event, Window * window );
-	~EventReceiverIrrlicht();
+	void GenerateOneEvent(const irr::SEvent& event);
 };
 
 #endif

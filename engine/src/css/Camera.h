@@ -14,32 +14,18 @@
 #include "..\lib\Debug.h"
 #include <memory>
 
-class Camera
-{
-private:
-	
-	irr::video::ITexture * target;
-	irr::scene::ICameraSceneNode * sceneNode;
-	
-	btVector3 position;
-	btVector3 rotation;
-	btTransform parentTransformation;
-	
-	btVector3 currentLocation;
-	
-	class Engine * engine;
-	
-	
-	void UpdateCameraView();
-	
+class Camera {
 public:
 	
+	Camera(class Engine *engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode);
+	~Camera();
+	
 	void UseTarget();
-	irr::video::ITexture * GetTexture();
+	irr::video::ITexture *GetTexture();
 	void RenderToThis();
 	bool IsMainTarget();
 	
-	irr::scene::ICameraSceneNode * GetCameraNode();
+	irr::scene::ICameraSceneNode *GetCameraNode();
 	
 	btTransform GetTransform() const;
 	btQuaternion GetRotation() const;
@@ -57,15 +43,29 @@ public:
 	btVector3 GetEulerRotation() const;
 	btVector3 GetWorldPosition() const;
 	
-	void RotateCameraToLookAtPoint( const btVector3 & worldPoint, bool smooth );
-	void SetRelativePosition( btVector3 src );
-	void SetRotation( btVector3 src );
-	void Move( btVector3 src );
-	void Rotate( btVector3 src );
-	void SetCameraParentTransform( btTransform transform );
+	void RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth);
+	void SetRelativePosition(btVector3 src);
+	void SetRotation(btVector3 src);
+	void Move(btVector3 src);
+	void Rotate(btVector3 src);
+	void SetCameraParentTransform(btTransform transform);
 	
-	Camera( Engine * engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode * cameraNode );
-	~Camera();
+private:
+	
+	void UpdateCameraView();
+	
+private:
+	
+	irr::video::ITexture *target;
+	irr::scene::ICameraSceneNode *sceneNode;
+	
+	btVector3 position;
+	btVector3 rotation;
+	btTransform parentTransformation;
+	
+	btVector3 currentLocation;
+	
+	class Engine *engine;
 };
 
 #endif

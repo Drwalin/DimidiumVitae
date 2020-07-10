@@ -7,7 +7,7 @@
 
 #include "ClassFactoryBase.h"
 
-ClassFactoryBase::~ClassFactoryBase(){}
+ClassFactoryBase::~ClassFactoryBase() {}
 
 #endif
 

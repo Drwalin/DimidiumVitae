@@ -17,19 +17,17 @@
 
 #include <memory>
 
-class Event : public EventResponser
-{
+class Event : public EventResponser  {
 public:
-	
-	virtual void MouseMoveEvent( int x, int y, int w, int dx, int dy, int dw ) override;
-	virtual void KeyPressedEvent( int keyCode ) override;
-	virtual void KeyReleasedEvent( int keyCode ) override;
-	virtual void KeyHoldedEvent( int keyCode ) override;
-	virtual void StringToEnterEvent( std::string str ) override;
 	
 	Event();
 	~Event();
+	
+	virtual void MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) override;
+	virtual void KeyPressedEvent(int keyCode) override;
+	virtual void KeyReleasedEvent(int keyCode) override;
+	virtual void KeyHoldedEvent(int keyCode) override;
+	virtual void StringToEnterEvent(std::string str) override;
 };
 
 #endif
-

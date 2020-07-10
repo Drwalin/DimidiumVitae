@@ -14,8 +14,25 @@
 typedef std::chrono::high_resolution_clock::time_point TimePoint;
 typedef std::chrono::duration<float> TimeDuration;
 
-class TimeCounter
-{
+class TimeCounter {
+public:
+	
+	TimeCounter();
+	~TimeCounter();
+	
+	static TimePoint GetCurrentTime();
+	static TimeDuration GetDuration(TimePoint begin, TimePoint end);
+	static float GetDurationSeconds(TimePoint begin, TimePoint end);
+	
+	void SetTimeSpan(float time);
+	
+	float GetPeakTime() const;
+	float GetPitTime() const;
+	float GetSmoothTime() const;
+	
+	void SubscribeStart();
+	void SubscribeEnd();
+	
 private:
 	
 	struct TimePair
@@ -27,24 +44,6 @@ private:
 	std::vector < TimePair > array;
 	
 	float timeSpan;
-	
-public:
-	
-	static TimePoint GetCurrentTime();
-	static TimeDuration GetDuration( TimePoint begin, TimePoint end );
-	static float GetDurationSeconds( TimePoint begin, TimePoint end );
-	
-	void SetTimeSpan( float time );
-	
-	float GetPeakTime() const;
-	float GetPitTime() const;
-	float GetSmoothTime() const;
-	
-	void SubscribeStart();
-	void SubscribeEnd();
-	
-	TimeCounter();
-	~TimeCounter();
 };
 
 #endif

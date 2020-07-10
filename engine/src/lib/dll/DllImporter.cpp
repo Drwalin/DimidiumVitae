@@ -25,48 +25,41 @@ struct DllHandleCounterElement
 	int counter;
 };
 
-DllHandleCounterElement * dllHandleCounterMap = (DllHandleCounterElement*)malloc( sizeof(DllHandleCounterElement) * 16 );
+DllHandleCounterElement *dllHandleCounterMap = (DllHandleCounterElement*)malloc(sizeof(DllHandleCounterElement)*16);
 int dllHandleCounterElements = 0;
 int dllHandleCounterAllocatedElements = 16;
 
-DllHandleCounterElement * DllHandleCounterGetElement( void * handle )
-{
+DllHandleCounterElement *DllHandleCounterGetElement(void *handle) {
 	intptr_t value = (intptr_t)handle;
 	int i;
-	for( i=0; i<dllHandleCounterElements; ++i )
-	{
-		if( dllHandleCounterMap[i].handle == value )
+	for(i=0; i<dllHandleCounterElements; ++i) {
+		if(dllHandleCounterMap[i].handle == value)
 			return &(dllHandleCounterMap[i]);
 	}
 	
-	if( dllHandleCounterElements == dllHandleCounterAllocatedElements )
-	{
+	if(dllHandleCounterElements == dllHandleCounterAllocatedElements) {
 		dllHandleCounterAllocatedElements *= 2;
-		dllHandleCounterMap = (DllHandleCounterElement*)realloc( dllHandleCounterMap, sizeof(DllHandleCounterElement) * dllHandleCounterAllocatedElements );
+		dllHandleCounterMap = (DllHandleCounterElement*)realloc(dllHandleCounterMap, sizeof(DllHandleCounterElement)*dllHandleCounterAllocatedElements);
 	}
 	
 	++dllHandleCounterElements;
-	DllHandleCounterElement * ret = &(dllHandleCounterMap[dllHandleCounterElements-1]);
+	DllHandleCounterElement *ret = &(dllHandleCounterMap[dllHandleCounterElements-1]);
 	ret->handle = value;
 	ret->counter = 0;
 	return ret;
 }
 
-void DllHandleCounterIncrement( void * handle )
-{
-	DllHandleCounterGetElement( handle )->counter += 1;
+void DllHandleCounterIncrement(void *handle) {
+	DllHandleCounterGetElement(handle)->counter += 1;
 }
 
-void DllHandleCounterDecrement( void * handle )
-{
-	DllHandleCounterGetElement( handle )->counter -= 1;
+void DllHandleCounterDecrement(void *handle) {
+	DllHandleCounterGetElement(handle)->counter -= 1;
 }
 
-int DllHandleCounterGet( void * handle )
-{
-	DllHandleCounterElement * ptr = DllHandleCounterGetElement( handle );
-	if( ptr )
-	{
+int DllHandleCounterGet(void *handle) {
+	DllHandleCounterElement *ptr = DllHandleCounterGetElement(handle);
+	if(ptr) {
 		return ptr->counter;
 	}
 	return 0;
@@ -78,45 +71,37 @@ int DllHandleCounterGet( void * handle )
 
 #include <windows.h>
 
-void * DllLoad( const char * file )
-{
-	if( file )
-	{
-		void * handle = LoadLibrary( file );
-		DllHandleCounterIncrement( handle );
+void *DllLoad(const char *file) {
+	if(file) {
+		void *handle = LoadLibrary(file);
+		DllHandleCounterIncrement(handle);
 		return handle;
 	}
 	return nullptr;
 }
 
-void DllRelease( void * handle )
-{
-	if( handle )
-	{
-		DllHandleCounterDecrement( handle );
-		if( DllHandleCounterGetElement( handle )->counter <= 0 )
-		{
-			FreeLibrary( (HINSTANCE)handle );
-			DllHandleCounterGetElement( handle )->counter = 0;
+void DllRelease(void *handle) {
+	if(handle) {
+		DllHandleCounterDecrement(handle);
+		if(DllHandleCounterGetElement(handle)->counter <= 0) {
+			FreeLibrary((HINSTANCE)handle);
+			DllHandleCounterGetElement(handle)->counter = 0;
 		}
 	}
 }
 
-void * DllGetObject( void * handle, const char * objectName )
-{
-	if( handle && objectName )
-	{
-		return (void*)GetProcAddress( (HINSTANCE)handle, objectName );
+void *DllGetObject(void *handle, const char *objectName) {
+	if(handle && objectName) {
+		return (void*)GetProcAddress((HINSTANCE)handle, objectName);
 	}
 	return nullptr;
 }
 
-char * DllGetErrorString()
-{
+char *DllGetErrorString() {
 	const int msgSize = 1024;
 	static char msg[msgSize];
 	DWORD err = GetLastError();
-	if( err == 0 )
+	if(err == 0)
 		return (msg[0]=0,msg);
 	
 	/*
@@ -126,12 +111,12 @@ char * DllGetErrorString()
 									MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 									(LPSTR)&msg,
 									msgSize,
-									NULL );
+									NULL);
 	*/
 	
 	FormatMessageA(	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 					NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
-					msg, msgSize, NULL );
+					msg, msgSize, NULL);
 	
 	return msg;
 }
@@ -140,37 +125,30 @@ char * DllGetErrorString()
 
 #include <dlfcn.h>
 
-void * DllLoad( const char * file )
-{
-	if( file )
-	{
-		void * handle = dlopen( file, RTLD_NOW );	// RTLD_LAZY );
-		DllHandleCounterIncrement( handle );
+void *DllLoad(const char *file) {
+	if(file) {
+		void *handle = dlopen(file, RTLD_NOW);	// RTLD_LAZY);
+		DllHandleCounterIncrement(handle);
 		return handle;
 	}
 	return nullptr;
 }
 
-void DllRelease( void * handle )
-{
-	if( handle )
-	{
-		DllHandleCounterDecrement( handle );
-		dlclose( handle );
+void DllRelease(void *handle) {
+	if(handle) {
+		DllHandleCounterDecrement(handle);
+		dlclose(handle);
 	}
 }
 
-void * DllGetObject( void * handle, const char * objectName )
-{
-	if( handle && objectName )
-	{
-		return dlsym( handle, objectName );
+void *DllGetObject(void *handle, const char *objectName) {
+	if(handle && objectName) {
+		return dlsym(handle, objectName);
 	}
 	return nullptr;
 }
 
-char * DllGetErrorString()
-{
+char *DllGetErrorString() {
 	return dlerror();
 }
 
@@ -178,7 +156,7 @@ char * DllGetErrorString()
 
 #else
 
-#  error Unknown system, or not defined symbol ( __unix__ or __WIN32__ or _WIN64 )
+#  error Unknown system, or not defined symbol (__unix__ or __WIN32__ or _WIN64)
 
 #endif		// system type
 
@@ -191,35 +169,30 @@ bool Dll::IsValid() const
 	return this->handle != NULL;
 }
 
-void * Dll::Open( const char * dllFileName )
-{
+void *Dll::Open(const char *dllFileName) {
 	this->Close();
-	this->handle = DllLoad( dllFileName );
-	if( this->handle == NULL )
-		printf( "\n Dll::Open error <%s>: %s", dllFileName, DllGetErrorString() );
+	this->handle = DllLoad(dllFileName);
+	if(this->handle == NULL)
+		printf("\n Dll::Open error <%s>: %s", dllFileName, DllGetErrorString());
 	return this->handle;
 }
 
-void Dll::Close()
-{
-//	if( this->handle )
-//		DllRelease( this->handle );
+void Dll::Close() {
+//	if(this->handle)
+//		DllRelease(this->handle);
 	this->handle = NULL;
 }
 
-Dll::Dll()
-{
+Dll::Dll() {
 	this->handle = NULL;
 }
 
-Dll::Dll( const char * dllFileName )
-{
+Dll::Dll(const char *dllFileName) {
 	this->handle = NULL;
-	this->Open( dllFileName );
+	this->Open(dllFileName);
 }
 
-Dll::~Dll()
-{
+Dll::~Dll() {
 	this->Close();
 }
 

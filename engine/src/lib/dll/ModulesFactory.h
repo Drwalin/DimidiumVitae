@@ -11,23 +11,21 @@
 #include <string>
 #include <memory>
 
-class ModulesFactory
-{
+class ModulesFactory {
+public:
+
+	ModulesFactory();
+	~ModulesFactory();
+	
+	std::shared_ptr<Dll> GetModule(const char *moduleName);
+	
+	std::shared_ptr<Dll> AddModule(const char *moduleName, const char *modulePath);
+	void RemoveModule(const char *moduleName);
+	
 protected:
 	
 	std::map < std::string, std::shared_ptr<Dll> > dlls;
 	
-public:
-	
-	std::shared_ptr<Dll> GetModule( const char * moduleName );
-	
-	std::shared_ptr<Dll> AddModule( const char * moduleName, const char * modulePath );
-	void RemoveModule( const char * moduleName );
-	
-	ModulesFactory();
-	~ModulesFactory();
 };
 
-
 #endif
-
