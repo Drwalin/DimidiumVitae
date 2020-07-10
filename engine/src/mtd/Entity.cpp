@@ -70,43 +70,6 @@ void Entity::Rotate( const btQuaternion & quat )
 	this->SetRotation( this->currentTransform.getRotation() * quat );
 }
 
-void Entity::NextOverlappingFrame()
-{
-	/*
-	for( auto it = this->overlappingInPreviousFrame.begin(); it != this->overlappingInPreviousFrame.end(); ++it )
-	{
-		if( this->overlappingInCurrentFrame.find( *it ) == this->overlappingInCurrentFrame.end() )
-		{
-			this->EventOnEntityEndOverlapp( *it );
-		}
-	}
-	*/
-	std::swap(this->overlappingInPreviousFrame, this->overlappingInCurrentFrame);
-	this->overlappingInCurrentFrame.clear();
-}
-
-void Entity::OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	if( other != this )
-	{
-		if( persisstentManifold )
-		{
-			if( other )
-			{
-				if( this->overlappingInPreviousFrame.find( other ) != this->overlappingInPreviousFrame.end() )
-					this->EventOnEntityTickOverlapp( other, persisstentManifold );
-				else
-					this->EventOnEntityBeginOverlapp( other, persisstentManifold );
-				this->overlappingInCurrentFrame.insert( other );
-			}
-		}
-	}
-}
-
-void Entity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
-void Entity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
-void Entity::EventOnEntityEndOverlapp( Entity * other ){}
-
 void Entity::Tick( const float deltaTime )
 {
 	if( this->body )
@@ -121,24 +84,6 @@ void Entity::Tick( const float deltaTime )
 }
 
 void Entity::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
-
-void Entity::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
-{
-	if( this->body )
-	{
-		if( normal.dot( direction ) > 0 )
-			normal *= -1;
-		
-		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-		
-		if( rigidBody )
-		{
-			rigidBody->activate( true );
-			rigidBody->applyImpulse( direction.normalized() * impetus,  point - this->currentTransform.getOrigin() );
-			rigidBody->activate( true );
-		}
-	}
-}
 
 void Entity::SetMass( float mass )
 {

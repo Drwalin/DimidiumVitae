@@ -14,9 +14,12 @@
 
 #include <cassert>
 
+void Trigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject)
+{
+}
+
 void Trigger::NextOverlappingFrame()
 {
-	Entity::NextOverlappingFrame();
 	std::shared_ptr<btGhostObject> ghostObject = std::dynamic_pointer_cast<btGhostObject>( body );
 	for(int i = 0; i < ghostObject->getNumOverlappingObjects(); i++)
 	{
@@ -24,32 +27,20 @@ void Trigger::NextOverlappingFrame()
 		if( body )
 		{
 			Entity * objectT = (Entity*)(body->getUserPointer());
-			if( objectT )
-				overlappingInCurrentFrame.insert( objectT );
+			if( objectT ) {
+				this->ProcessOverlappingEntity(objectT, body);
+			}
 		}
 	}
+	this->engine->GetWindow()->GetGUI() << "\n Trigger overlapps: " << ghostObject->getNumOverlappingObjects();
 }
-
-void Trigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold ){}
-void Trigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold ){}
-void Trigger::EventOnEntityEndOverlapp( Entity * other ){}
-void Trigger::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
-void Trigger::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ){}
 
 void Trigger::Tick( const float deltaTime )
 {
 	if( body )
 	{
-		{
-			std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-			if( rigidBody )
-			{
-				rigidBody->setLinearVelocity( btVector3(0.0,0.0,0.0) );
-				rigidBody->setAngularVelocity( btVector3(0.0,0.0,0.0) );
-			}
-			body->setWorldTransform( currentTransform );
-			engine->GetWorld()->UpdateColliderForObject( body );
-		}
+		body->setWorldTransform( currentTransform );
+		engine->GetWorld()->UpdateColliderForObject( body );
 	}
 }
 

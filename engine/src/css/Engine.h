@@ -20,6 +20,7 @@
 
 #include "Model.h"
 #include "Entity.h"
+#include "Trigger.h"
 #include "World.h"
 #include "Window.h"
 #include "EventResponser.h"
@@ -43,6 +44,7 @@ private:
 	
 	std::map < std::string, std::shared_ptr<Model> > models;
 	std::map < std::string, std::shared_ptr<Entity> > entities;
+	std::map < std::string, std::shared_ptr<Trigger> > triggerEntities;
 	
 	std::queue < std::string > entitiesQueuedToDestroy;
 	

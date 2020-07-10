@@ -20,11 +20,6 @@ std::shared_ptr<MotionController> Character::GetMotionController()
 	return this->motionController;
 }
 
-void Character::NextOverlappingFrame()
-{
-	Entity::NextOverlappingFrame();
-}
-
 void Character::Tick( const float deltaTime )
 {
 	static TimeCounter fpsCounter;
@@ -56,12 +51,6 @@ void Character::Tick( const float deltaTime )
 void Character::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
 {
 	Entity::ApplyDamage( damage, point, normal );
-}
-
-void Character::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
-{
-	Entity::ApplyImpactDamage( damage, impetus, direction, point, normal );
-	this->ApplyDamage( damage, point, normal );
 }
 
 void Character::Load( std::istream & stream )

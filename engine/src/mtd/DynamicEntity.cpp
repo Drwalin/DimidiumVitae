@@ -14,28 +14,6 @@
 
 #include <ctime>
 
-void DynamicEntity::NextOverlappingFrame()
-{
-	this->anyOverlapp = false;
-}
-
-void DynamicEntity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Entity::EventOnEntityBeginOverlapp( other, persisstentManifold );
-	this->anyOverlapp = true;
-}
-
-void DynamicEntity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Entity::EventOnEntityTickOverlapp( other, persisstentManifold );
-	this->anyOverlapp = true;
-}
-
-void DynamicEntity::EventOnEntityEndOverlapp( Entity * other )
-{
-	Entity::EventOnEntityEndOverlapp( other );
-}
-
 void DynamicEntity::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
@@ -45,7 +23,7 @@ void DynamicEntity::Tick( const float deltaTime )
 		btVector3 currentLinearVelocity = rigidBody->getLinearVelocity();
 		btVector3 currentAngularVelocity = rigidBody->getAngularVelocity();
 		float dv = (this->previousLinearVelocity-currentLinearVelocity).length() + (this->previousAngularVelocity-currentAngularVelocity).length();
-		if( this->anyOverlapp && dv > 1.0f )
+		if( dv > 15.0f )
 		{
 			float volume = (dv-1/.0f)*0.1f;
 			if( this->hitSoundSource->IsPlaying() == false )
@@ -63,11 +41,6 @@ void DynamicEntity::Tick( const float deltaTime )
 void DynamicEntity::ApplyDamage( const float damage, btVector3 point, btVector3 normal )
 {
 	Entity::ApplyDamage( damage, point, normal );
-}
-
-void DynamicEntity::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal )
-{
-	Entity::ApplyImpactDamage( damage, impetus, direction, point, normal );
 }
 
 void DynamicEntity::Load( std::istream & stream )

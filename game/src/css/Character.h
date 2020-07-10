@@ -26,11 +26,8 @@ public:
 	
 	std::shared_ptr<MotionController> GetMotionController();
 	
-	virtual void NextOverlappingFrame() override;
-	
 	virtual void Tick( const float deltaTime ) override;
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
-	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;

@@ -43,9 +43,6 @@ protected:
 	
 	float mass;
 	
-	std::set< Entity* > overlappingInPreviousFrame;
-	std::set< Entity* > overlappingInCurrentFrame;
-	
 	std::shared_ptr<Camera> camera;
 	
 public:
@@ -54,9 +51,6 @@ public:
 	std::shared_ptr<Camera> GetCamera();
 	
 	std::shared_ptr<SceneNode> GetSceneNode();
-	
-	virtual void NextOverlappingFrame();
-	void OverlapWithEntity( Entity * other, btPersistentManifold * persisstentManifold );
 	
 	void SetTransform( const btTransform & transform );
 	void SetLocation( const btVector3 & loc );
@@ -82,13 +76,8 @@ public:
 	template < typename T = btCollisionObject >
 	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>( this->body ); }
 	
-	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
-	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
-	virtual void EventOnEntityEndOverlapp( Entity * other );
-	
 	virtual void Tick( const float deltaTime );
 	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal );
-	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal );
 	
 	void SetModel( std::shared_ptr<Model> model );
 	void SetBody( std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter );

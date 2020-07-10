@@ -25,19 +25,13 @@ class Trigger : public Entity
 {
 protected:
 	
-	
+	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject);
 	
 public:
 	
-	virtual void NextOverlappingFrame() override;
-	
-	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * perisstentManifold ) override;
-	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
+	virtual void NextOverlappingFrame();
 	
 	virtual void Tick( const float deltaTime ) override;
-	virtual void ApplyDamage( const float damage, btVector3 point, btVector3 normal ) override;
-	virtual void ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ) override;
 	
 	virtual void Load( std::istream & stream ) override;
 	virtual void Save( std::ostream & stream ) const override;

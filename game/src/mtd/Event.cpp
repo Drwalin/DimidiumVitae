@@ -172,12 +172,17 @@ void Event::KeyReleasedEvent( int keyCode )
 
 void Event::KeyHoldedEvent( int keyCode )
 {
+	
 	std::shared_ptr<Entity> player = this->engine->GetEntity( std::string("Player") );
 	std::shared_ptr<Entity> temp;
-	btVector3 begin, end, point, normal;
+	btVector3 begin, end, point, normal, euler;
 	Character * character = NULL;
+	Player * playerPtr = NULL;
 	if( player )
-		character = dynamic_cast < Character* > ( (Entity*)(player.get()) );
+	{
+		character = dynamic_cast < Character* > ( ((Entity*)(player.get())) );
+		playerPtr = dynamic_cast < Player* > ( ((Entity*)(player.get())) );
+	}
 	
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
@@ -250,6 +255,40 @@ void Event::KeyHoldedEvent( int keyCode )
 	case irr::KEY_KEY_D:
 		if( character && playerMotionController )
 			playerMotionController->MoveInDirection( -this->engine->GetCamera()->GetFlatLeftVector() );
+		break;
+		
+		
+		
+		
+		
+		
+	case irr::KEY_LBUTTON:
+		euler = this->engine->GetCamera()->GetEulerRotation();
+		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), this->engine->GetCollisionShapeManager()->GetBox( btVector3(1,1,1) ), btTransform( this->engine->GetCamera()->GetRotation()/*btQuaternion(-euler.y(),euler.x(),euler.z())*/, this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector() ), 20.0f );
+		if( temp )
+		{
+			temp->SetModel( this->engine->GetModel( "Crate01" ) );
+			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+			temp->GetBody()->setFriction( 0.75 );
+			temp->GetBody<btRigidBody>()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
+			temp->GetBody<btRigidBody>()->setDamping( 0.1, 0.1 );
+		}
+		else
+			MESSAGE("Couldn't spawn new object");
+		break;
+		
+	case irr::KEY_RBUTTON:
+		temp = this->engine->AddEntity( this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), this->engine->GetCollisionShapeManager()->GetSphere( 1 ), btTransform( btQuaternion(btVector3(1,1,1),0), this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector() ), 20.0f );
+		if( temp )
+		{
+			temp->SetModel( this->engine->GetModel( "Sphere" ) );
+			temp->SetScale( btVector3( 0.5, 0.5, 0.5 ) );
+			temp->GetBody()->setFriction( 0.75 );
+			temp->GetBody<btRigidBody>()->setLinearVelocity( this->engine->GetCamera()->GetForwardVector() * 16.0 );
+			temp->GetBody<btRigidBody>()->setDamping( 0.1, 0.1 );
+		}
+		else
+			MESSAGE("Couldn't spawn new object");
 		break;
 	}
 }

@@ -15,17 +15,12 @@
 
 #include <ctime>
 
-void StaticEntity::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
-void StaticEntity::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ){}
-void StaticEntity::EventOnEntityEndOverlapp( Entity * other ){}
-
 void StaticEntity::Tick( const float deltaTime )
 {
 	Entity::Tick( deltaTime );
 }
 
 void StaticEntity::ApplyDamage( const float damage, btVector3 point, btVector3 normal ){}
-void StaticEntity::ApplyImpactDamage( const float damage, const float impetus, btVector3 direction, btVector3 point, btVector3 normal ){}
 
 void StaticEntity::Load( std::istream & stream )
 {
@@ -39,24 +34,6 @@ void StaticEntity::Save( std::ostream & stream ) const
 
 void StaticEntity::Spawn( std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform )
 {
-	/*
-	Entity::Spawn( self, name, shape, transform );
-	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody( shape, transform, 1.0f );
-	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>( collisionObject );
-	
-	rigidBody->setDamping( 1.0, 1.0 );
-	rigidBody->setFriction( 0.75 );
-	rigidBody->setAngularFactor( 0.0 );
-	rigidBody->setLinearFactor( btVector3( 0.0, 0.0, 0.0 ) );
-	//rigidBody->setCollisionFlags( rigidBody->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT );
-	rigidBody->setGravity( btVector3(0.0f,0.0f,0.0f) );
-	
-	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
-	
-	this->SetBody( collisionObject, shape );
-	*/
-	
 	Entity::Spawn( self, name, shape, transform );
 	
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateCollisionObject( shape, transform );

@@ -20,9 +20,9 @@ protected:
 	float stepHeight;
 	float bottom, top;
 	
-	void EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold );
-	
 	friend struct SimulationContactResultCallback;
+	
+	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) override;
 	
 public:
 	
@@ -33,10 +33,6 @@ public:
 	virtual void NextOverlappingFrame() override;
 	
 	void Init( std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight );
-	
-	virtual void EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold ) override;
-	virtual void EventOnEntityEndOverlapp( Entity * other ) override;
 	
 	virtual void Tick( const float deltaTime ) override;
 	

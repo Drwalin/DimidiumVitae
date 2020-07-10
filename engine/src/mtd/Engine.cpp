@@ -49,6 +49,11 @@ std::shared_ptr<Entity> Engine::AddEntity( std::shared_ptr<Entity> emptyEntity, 
 			emptyEntity->Spawn( emptyEntity, name, shape, transform );
 			emptyEntity->SetMass( mass );
 			this->entities[name] = emptyEntity;
+			{
+				std::shared_ptr<Trigger> trigger = std::dynamic_pointer_cast<Trigger>(emptyEntity);
+				if(trigger.get())
+					this->triggerEntities[name] = trigger;
+			}
 			return emptyEntity;
 		}
 	}
@@ -57,10 +62,9 @@ std::shared_ptr<Entity> Engine::AddEntity( std::shared_ptr<Entity> emptyEntity, 
 
 inline void Engine::UpdateEntitiesOverlapp()
 {
-	for( auto it = this->entities.begin(); it != this->entities.end(); ++it )
+	for( auto it = this->triggerEntities.begin(); it != this->triggerEntities.end(); ++it )
 	{
-		if( it->second )
-			it->second->NextOverlappingFrame();
+		it->second->NextOverlappingFrame();
 	}
 }
 
@@ -287,6 +291,11 @@ void Engine::DeleteEntity( const std::string & name )
 	{
 		if( it->second )
 		{
+			if( dynamic_cast<Trigger*>(it->second.get()) )
+			{
+				this->triggerEntities.erase(name);
+			}
+			
 			if( it->second == this->cameraParent )
 				this->cameraParent = NULL;
 			

@@ -34,9 +34,60 @@ void MotionControllerTrigger::Init( std::shared_ptr<Entity> character, std::shar
 	this->top = 1.75f;
 }
 
+struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MotionControllerTrigger *trigger;
+	float mid;
+	SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid) : trigger(trigger), mid(mid)
+	{}
+
+	btScalar addSingleResult(btManifoldPoint& manifoldPoint,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) * 0.5f;
+		btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
+		if( normal.y() < 0.0f )
+			normal.setY( -normal.y() );
+		bool isNormalVertical = normal.dot( btVector3(0,1,0) ) > 0.8f;
+		
+		if( isNormalVertical )
+		{
+			if( trigger->bottom + trigger->stepHeight >= contactPoint.y() )
+			{
+				trigger->bottomCollision = true;
+			}
+			if( mid <= contactPoint.y() )
+			{
+				trigger->topCollision = true;
+			}
+		}
+		else
+		{
+			trigger->sideCollision = true;
+		}
+		
+		return 0.0f;
+	}
+};
+
+void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject)
+{
+	if( entity != this->character.get() && entity != this && entity != this->otherTrigger.get() )
+	{
+		float mid = (this->bottom + this->top)*0.5f;
+		
+		SimulationContactResultCallback resultCallback(this, mid);
+		engine->GetWorld()->GetDynamicsWorld()->contactPairTest( collisionObject, this->body.get(), resultCallback );
+	}
+}
+
 void MotionControllerTrigger::NextOverlappingFrame()
 {
-	Trigger::NextOverlappingFrame();
 	this->topCollision = false;
 	this->sideCollision = false;
 	this->bottomCollision = false;
@@ -47,104 +98,7 @@ void MotionControllerTrigger::NextOverlappingFrame()
 	this->top = max.y();
 	float mid = (this->bottom + this->top)*0.5f;
 	
-	for(Entity* ent : overlappingInCurrentFrame)
-	{
-		if( ent != this->character.get() && ent != this && ent != this->otherTrigger.get() )
-		{
-			struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback
-			{
-				MotionControllerTrigger *trigger;
-				float mid;
-				SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid) : trigger(trigger), mid(mid)
-				{}
-
-				btScalar addSingleResult(btManifoldPoint& manifoldPoint,
-					const btCollisionObjectWrapper* colObj0Wrap,
-					int partId0,
-					int index0,
-					const btCollisionObjectWrapper* colObj1Wrap,
-					int partId1,
-					int index1)
-				{
-					btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) * 0.5f;
-					btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
-					if( normal.y() < 0.0f )
-						normal.setY( -normal.y() );
-					bool isNormalVertical = normal.dot( btVector3(0,1,0) ) > 0.8f;
-					
-					if( isNormalVertical )
-					{
-						if( trigger->bottom + trigger->stepHeight >= contactPoint.y() )
-						{
-							trigger->bottomCollision = true;
-							trigger->engine->GetWindow()->GetGUI() << "\n bottomCollision";
-						}
-						if( mid <= contactPoint.y() )
-						{
-							trigger->topCollision = true;
-							trigger->engine->GetWindow()->GetGUI() << "\n topCollision";
-						}
-					}
-					else
-					{
-						trigger->sideCollision = true;
-							trigger->engine->GetWindow()->GetGUI() << "\n sideCollision";
-					}
-					
-					return 0.0f;
-				}
-			};
-			SimulationContactResultCallback resultCallback(this, mid);
-			
-			engine->GetWorld()->GetDynamicsWorld()->contactPairTest( body.get(), ent->GetBody().get(), resultCallback );
-		}
-	}
-}
-
-void MotionControllerTrigger::EventOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	float mid = (this->bottom + this->top)*0.5f;
-	if( other != this->character.get() && other != this && other != this->otherTrigger.get() )
-	{
-		for( int i=0; i<persisstentManifold->getNumContacts(); ++i )
-		{
-			btManifoldPoint manifoldPoint = persisstentManifold->getContactPoint( i );
-			btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) * 0.5f;
-			btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
-			if( normal.y() < 0.0f )
-				normal.setY( -normal.y() );
-			bool isNormalVertical = normal.dot( btVector3(0,1,0) ) > 0.8f;
-			
-			if( isNormalVertical )
-			{
-				if( this->bottom + this->stepHeight >= contactPoint.y() )
-					this->bottomCollision = true;
-				if( mid <= contactPoint.y() )
-				{
-					this->topCollision = true;
-				}
-			}
-			else
-				this->sideCollision = true;
-		}
-	}
-}
-
-void MotionControllerTrigger::EventOnEntityBeginOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Trigger::EventOnEntityBeginOverlapp( other, persisstentManifold );
-	this->EventOverlapp( other, persisstentManifold );
-}
-
-void MotionControllerTrigger::EventOnEntityTickOverlapp( Entity * other, btPersistentManifold * persisstentManifold )
-{
-	Trigger::EventOnEntityTickOverlapp( other, persisstentManifold );
-	this->EventOverlapp( other, persisstentManifold );
-}
-
-void MotionControllerTrigger::EventOnEntityEndOverlapp( Entity * other )
-{
-	Trigger::EventOnEntityEndOverlapp( other );
+	Trigger::NextOverlappingFrame();
 }
 
 void MotionControllerTrigger::Tick( const float deltaTime )
