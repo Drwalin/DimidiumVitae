@@ -5,7 +5,7 @@
 #ifndef MATH_ENGINE_HPP
 #define MATH_ENGINE_HPP
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btTransform.h>
@@ -19,7 +19,7 @@
 #include <istream>
 #include <ostream>
 
-#include "..\css\GUI.h"
+#include "../css/GUI.h"
 
 namespace Math {
 	const float PI = 3.14159265359f;

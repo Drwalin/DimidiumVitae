@@ -5,9 +5,9 @@
 #ifndef SCENE_NODE_CPP
 #define SCENE_NODE_CPP
 
-#include "..\css\SceneNode.h"
-#include "..\css\Engine.h"
-#include "..\lib\Math.hpp"
+#include "../css/SceneNode.h"
+#include "../css/Engine.h"
+#include "../lib/Math.hpp"
 
 Animation SceneNode::GetAnimation(const std::string &name) const {
 	if(this->model)

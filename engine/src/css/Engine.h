@@ -5,11 +5,11 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btTransform.h>
-#include <LinearMath/btQuaternion.h>
-#include <btBulletDynamicsCommon.h>
-#include <btBulletCollisionCommon.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/LinearMath/btTransform.h>
+#include <bullet/LinearMath/btQuaternion.h>
+#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletCollisionCommon.h>
 
 #include <set>
 #include <map>
@@ -27,7 +27,7 @@
 #include "CollisionShapeManager.h"
 #include "SoundEngine.h"
 
-#include "..\lib\dll\ClassFactory.h"
+#include "../lib/dll\ClassFactory.h"
 
 class Engine {
 public:

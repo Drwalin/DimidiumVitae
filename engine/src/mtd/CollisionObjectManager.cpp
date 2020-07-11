@@ -5,9 +5,9 @@
 #ifndef COLLISION_OBJECT_MANAGER_CPP
 #define COLLISION_OBJECT_MANAGER_CPP
 
-#include "..\css\CollisionObjectManager.h"
+#include "../css/CollisionObjectManager.h"
 
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 
 std::shared_ptr<btCollisionObject> CollisionObjectManager::CreateCollisionObject(std::shared_ptr<btCollisionShape> shape, btTransform transform) {
 	if(shape == NULL)

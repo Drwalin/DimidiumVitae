@@ -1,113 +1,110 @@
 
-LIBS = -LC:\Programs\mingw-w64\lib\bullet -LC:\Programs\mingw-w64\lib -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread -lfreetype dep\OpenAL32.dll
-INCLUDEDIRECTORIES = -IC:\Programs\mingw-w64\include\bullet -IC:\Programs\mingw-w64\include -Iengine\src\css -Iengine\src\lib
+include Makefile.win
 
-MD = mkdir
-CP = copy
-RM = del
 CXX = g++
 CC = gcc
 
-RM_FLAGS = /f
 CFLAGS = -m64 -ggdb3 -ggdb -g3 -g -Og -pg
-CXXFLAGS = $(CFLAGS)
-CXXFLAGS += -std=c++17
+CXXFLAGS = $(CFLAGS) -std=c++17
 
-MAINOBJECTS = game\\bin\\Character.o game\\bin\\Event.o game\\bin\\GetVersion.o game\\bin\\MeshLoader.o game\\bin\\ModulesLoader.o game\\bin\\Init.o game\\bin\\Player.o game\\bin\\ShapesLoader.o game\\bin\\SoundsLoader.o
+GAMEOBJDIR = game$(S)bin$(S)
+MAINOBJECTS = $(GAMEOBJDIR)Character.o $(GAMEOBJDIR)Event.o $(GAMEOBJDIR)GetVersion.o $(GAMEOBJDIR)MeshLoader.o $(GAMEOBJDIR)ModulesLoader.o $(GAMEOBJDIR)Init.o $(GAMEOBJDIR)Player.o $(GAMEOBJDIR)ShapesLoader.o $(GAMEOBJDIR)SoundsLoader.o
 
 GAMECOREMODULESOBJECTS = 
 GAMECOREMODULES = 
 RELEASEGAMECOREMODULES = $(subst game,release,$(GAMECOREMODULES))
 
-ENGINECOREOBJECTS = engine\\bin\\Camera.o engine\\bin\\ClassFactoryBase.o engine\\bin\\CollisionObjectManager.o engine\\bin\\CollisionShapeConstructor.o engine\\bin\\CollisionShapeManager.o engine\\bin\\DllImporter.o engine\\bin\\DynamicEntity.o engine\\bin\\Engine.o engine\\bin\\EngineRayTraceData.o engine\\bin\\Entity.o engine\\bin\\EventReceiverIrrlicht.o engine\\bin\\EventResponser.o engine\\bin\\GUI.o engine\\bin\\Model.o engine\\bin\\ModulesFactory.o engine\\bin\\MotionController.o engine\\bin\\MotionControllerTrigger.o engine\\bin\\Ogg.o engine\\bin\\SceneNode.o engine\\bin\\SoundEngine.o engine\\bin\\StaticEntity.o engine\\bin\\StlStreamExtension.o engine\\bin\\StringToEnter.o engine\\bin\\TimeCounter.o engine\\bin\\Trigger.o engine\\bin\\Wav.o engine\\bin\\World.o engine\\bin\\Window.o
+ENGOBJDIR = engine$(S)bin$(S)
+ENGINECOREOBJECTS = $(ENGOBJDIR)Camera.o $(ENGOBJDIR)ClassFactoryBase.o $(ENGOBJDIR)CollisionObjectManager.o $(ENGOBJDIR)CollisionShapeConstructor.o $(ENGOBJDIR)CollisionShapeManager.o $(ENGOBJDIR)DllImporter.o $(ENGOBJDIR)DynamicEntity.o $(ENGOBJDIR)Engine.o $(ENGOBJDIR)EngineRayTraceData.o $(ENGOBJDIR)Entity.o $(ENGOBJDIR)EventReceiverIrrlicht.o $(ENGOBJDIR)EventResponser.o $(ENGOBJDIR)GUI.o $(ENGOBJDIR)Model.o $(ENGOBJDIR)ModulesFactory.o $(ENGOBJDIR)MotionController.o $(ENGOBJDIR)MotionControllerTrigger.o $(ENGOBJDIR)Ogg.o $(ENGOBJDIR)SceneNode.o $(ENGOBJDIR)SoundEngine.o $(ENGOBJDIR)StaticEntity.o $(ENGOBJDIR)StlStreamExtension.o $(ENGOBJDIR)StringToEnter.o $(ENGOBJDIR)TimeCounter.o $(ENGOBJDIR)Trigger.o $(ENGOBJDIR)Wav.o $(ENGOBJDIR)World.o $(ENGOBJDIR)Window.o
 
-DEPENDENCIES = Irrlicht.dll libBulletCollision.dll libBulletDynamics.dll libgcc_s_seh-1.dll libLinearMath.dll libstdc++-6.dll libwinpthread-1.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll OpenAL32.dll libvorbisogg.dll libzlib.dll
-RELEASEDEPENDENCIES = $(addprefix release\\,$(DEPENDENCIES))
+SHAREDLIBS = -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread
+RELEASEDEPENDENCIES = $(addprefix release$(S),$(DEPENDENCIES))
+LIBS = $(DIRLIBS) $(SHAREDLIBS) $(PLATFORMSPECIFICLIBS)
 
-RELEASEDOCS = release\\ChangeLog.txt release\\Dependencies.txt release\\Readme.txt
-RELEASEDEPENDENCYLICENSES = release\\dependency-licenses\\irrlicht release\\dependency-licenses\\jpeg release\\dependency-licenses\\libogg release\\dependency-licenses\\libpng release\\dependency-licenses\\libvorbis release\\dependency-licenses\\irrlicht\\readme.txt release\\dependency-licenses\\jpeg\\README release\\dependency-licenses\\libogg\\COPYING release\\dependency-licenses\\libpng\\ANNOUNCE release\\dependency-licenses\\libpng\\AUTHORS release\\dependency-licenses\\libpng\\LICENSE release\\dependency-licenses\\libpng\\README release\\dependency-licenses\\libpng\\TRADEMARK release\\dependency-licenses\\libvorbis\\COPYING
+RELEASEDOCS = release$(S)ChangeLog.txt release$(S)Dependencies.txt release$(S)Readme.txt
+RELEASEDEPENDENCYLICENSES = release$(S)dependency-licenses$(S)irrlicht release$(S)dependency-licenses$(S)jpeg release$(S)dependency-licenses$(S)libogg release$(S)dependency-licenses$(S)libpng release$(S)dependency-licenses$(S)libvorbis release$(S)dependency-licenses$(S)irrlicht$(S)readme.txt release$(S)dependency-licenses$(S)jpeg$(S)README release$(S)dependency-licenses$(S)libogg$(S)COPYING release$(S)dependency-licenses$(S)libpng$(S)ANNOUNCE release$(S)dependency-licenses$(S)libpng$(S)AUTHORS release$(S)dependency-licenses$(S)libpng$(S)LICENSE release$(S)dependency-licenses$(S)libpng$(S)README release$(S)dependency-licenses$(S)libpng$(S)TRADEMARK release$(S)dependency-licenses$(S)libvorbis$(S)COPYING
 
 
 
 install: release
-release: release\\game.exe $(RELEASEDOCS) $(RELEASEDEPENDENCYLICENSES)
-game: game\\game.exe game\\game-core.dll game\\engine.dll $(GAMECOREMODULES)
-engine: engine\\engine.dll
+release: release$(S)game.exe $(RELEASEDOCS) $(RELEASEDEPENDENCYLICENSES)
+game: game$(S)game.exe game$(S)game-core.dll game$(S)engine.dll $(GAMECOREMODULES)
+engine: engine$(S)engine.dll
 
-run: release\\game.exe
+run: release$(S)game.exe
 	@cd release && game.exe
 
 
 
-release\\%.txt: .\\%.txt
+release$(S)%.txt: .$(S)%.txt
 	@$(CP) "$<" "$@"
-release\\dependency-licenses\\%: dependency-licenses\\%
+release$(S)dependency-licenses$(S)%: dependency-licenses$(S)%
 	@$(CP) "$<" "$@"
 
 
 
-release\\game.exe: game\\game.exe release\\engine.dll release\\game-core.dll $(RELEASEDEPENDENCIES) $(RELEASEGAMECOREMODULES) release\\modules.list
-	@$(CP) game\game.exe release\game.exe
-game\\game.exe: game\\engine.dll game\\game-core.dll game\\bin\\Main.o $(GAMECOREMODULES)
-	$(CXX) -o $@ $(CXXFLAGS) game\engine.dll game\bin\Main.o $(LIBS)
+release$(S)game.exe: game$(S)game.exe release$(S)engine.dll release$(S)game-core.dll $(RELEASEDEPENDENCIES) $(RELEASEGAMECOREMODULES) release$(S)modules.list
+	@$(CP) game$(S)game.exe release$(S)game.exe
+game$(S)game.exe: game$(S)engine.dll game$(S)game-core.dll game$(S)bin$(S)Main.o $(GAMECOREMODULES)
+	$(CXX) -o $@ $(CXXFLAGS) game$(S)engine.dll game$(S)bin$(S)Main.o $(LIBS)
 
 
-engine\\engine.dll: $(ENGINECOREOBJECTS) engine\\libvorbisogg.dll engine\\libzlib.dll
+engine$(S)engine.dll: $(ENGINECOREOBJECTS) engine$(S)libvorbisogg.dll engine$(S)libzlib.dll
 	$(CXX) -shared -fPIC -o $@ $(CXXFLAGS) $^ $(LIBS)
-engine\\libvorbisogg.dll: dep\\libvorbisogg.dll
+engine$(S)libvorbisogg.dll: dep$(S)libvorbisogg.dll
 	@$(CP) "$<" "$@"
-engine\\libzlib.dll: dep\\libzlib.dll
+engine$(S)libzlib.dll: dep$(S)libzlib.dll
 	@$(CP) "$<" "$@"
 
-game\\engine.dll: engine\\engine.dll
-	@$(CP) engine\engine.dll game\engine.dll
-game\\game-core.dll: engine\\engine.dll $(MAINOBJECTS)
+game$(S)engine.dll: engine$(S)engine.dll
+	@$(CP) engine$(S)engine.dll game$(S)engine.dll
+game$(S)game-core.dll: engine$(S)engine.dll $(MAINOBJECTS)
 	$(CXX) -o $@ -shared -fPIC $(CXXFLAGS) $^ $(LIBS)
 
-game\\dlls\\Trigger.dll: game\\engine.dll game\\bin\\Trigger.o
+game$(S)dlls$(S)Trigger.dll: game$(S)engine.dll game$(S)bin$(S)Trigger.o
 	$(CXX) -o $@ -shared -fPIC $(CXXFLAGS) $^ $(LIBS)
 
 
 
-release\\modules.list: game\\modules.list
+release$(S)modules.list: game$(S)modules.list
 	@$(CP) "$<" "$@"
-release\\%.dll: dep\\%.dll
+release$(S)%.dll: dep$(S)%.dll
 	@$(CP) "$<" "$@"
-release\\engine.dll: engine\\engine.dll
+release$(S)engine.dll: engine$(S)engine.dll
 	@$(CP) "$<" "$@"
-release\\dlls\\%.dll: game\\dlls\\%.dll
+release$(S)dlls$(S)%.dll: game$(S)dlls$(S)%.dll
 	@$(CP) "$<" "$@"
-release\\game-core.dll: game\\game-core.dll
+release$(S)game-core.dll: game$(S)game-core.dll
 	@$(CP) "$<" "$@"
 
 
 
-engine\\bin\\%.o: engine\\src\\mtd\\%.cpp
-	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
-game\\bin\\%.o: game\\src\\mtd\\%.cpp
-	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
-engine\\bin\\%.o: engine\\src\\lib\\dll\\%.cpp
-	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
-engine\\bin\\%.o: engine\\src\\lib\\%.cpp
-	$(CXX) -o $@ -c $(CXXFLAGS) $(INCLUDEDIRECTORIES) $<
+$(ENGOBJDIR)%.o: engine$(S)src$(S)mtd$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+$(ENGOBJDIR)%.o: engine$(S)src$(S)lib$(S)dll$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+$(ENGOBJDIR)%.o: engine$(S)src$(S)lib$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+$(GAMEOBJDIR)%.o: game$(S)src$(S)mtd$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 
 
 .PHONY: clean
 clean:
-	@$(RM) $(RM_FLAGS) release\game.exe
-	@$(RM) $(RM_FLAGS) release\engine.dll
-	@$(RM) $(RM_FLAGS) release\game-core.dll
-	@$(RM) $(RM_FLAGS) release\modules.list
-	@$(RM) $(RM_FLAGS) release\dlls\*.dll
-	@$(RM) $(RM_FLAGS) release\*.dll
+	@$(RM) release$(S)game.exe
+	@$(RM) release$(S)engine.dll
+	@$(RM) release$(S)game-core.dll
+	@$(RM) release$(S)modules.list
+	@$(RM) release$(S)dlls$(S)*.dll
+	@$(RM) release$(S)*.dll
 	
-	@$(RM) $(RM_FLAGS) game\bin\*.o
-	@$(RM) $(RM_FLAGS) game\game.exe
-	@$(RM) $(RM_FLAGS) game\engine.dll
-	@$(RM) $(RM_FLAGS) game\game-core.dll
-	@$(RM) $(RM_FLAGS) game\dlls\*.dll
-	@$(RM) $(RM_FLAGS) game\*.dll
+	@$(RM) $(GAMEOBJDIR)*.o
+	@$(RM) game$(S)game.exe
+	@$(RM) game$(S)engine.dll
+	@$(RM) game$(S)game-core.dll
+	@$(RM) game$(S)dlls$(S)*.dll
+	@$(RM) game$(S)*.dll
 	
-	@$(RM) $(RM_FLAGS) engine\bin\*.o
-	@$(RM) $(RM_FLAGS) engine\engine.dll
+	@$(RM) $(ENGOBJDIR)*.o
+	@$(RM) engine$(S)engine.dll

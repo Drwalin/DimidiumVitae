@@ -5,7 +5,7 @@
 #ifndef MOTION_CONTROLLER_TRIGGER_CPP
 #define MOTION_CONTROLLER_TRIGGER_CPP
 
-#include "..\css\MotionControllerTrigger.h"
+#include "../css/MotionControllerTrigger.h"
 #include <Engine.h>
 
 SimulationContactResultCallback::SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid) : trigger(trigger), mid(mid) {}

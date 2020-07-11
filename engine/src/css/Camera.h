@@ -5,13 +5,13 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btTransform.h>
-#include <LinearMath/btQuaternion.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/LinearMath/btTransform.h>
+#include <bullet/LinearMath/btQuaternion.h>
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 #include <memory>
 
 class Camera {

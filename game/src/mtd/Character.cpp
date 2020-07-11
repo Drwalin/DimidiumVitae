@@ -5,7 +5,7 @@
 #ifndef CHARACTER_CPP
 #define CHARACTER_CPP
 
-#include "..\css\Character.h"
+#include "../css/Character.h"
 
 #include <Engine.h>
 #include <World.h>

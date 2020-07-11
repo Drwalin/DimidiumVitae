@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
 typedef irr::video::SColor Color;
 typedef irr::core::rect<irr::s32> Rectanglei;

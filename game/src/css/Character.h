@@ -12,8 +12,8 @@
 
 #include <cmath>
 
-#include <BulletDynamics\Character\btKinematicCharacterController.h>
-#include <BulletCollision\CollisionDispatch\btGhostObject.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 class Character : public Entity  {
 public:

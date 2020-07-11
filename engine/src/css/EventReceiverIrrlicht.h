@@ -5,7 +5,7 @@
 #ifndef EVENT_RECEIVER_IRRLICHT_H
 #define EVENT_RECEIVER_IRRLICHT_H
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
 #include <atomic>
 #include <mutex>

@@ -5,10 +5,10 @@
 #ifndef ENTITY_CPP
 #define ENTITY_CPP
 
-#include "..\css\Entity.h"
-#include "..\css\Engine.h"
+#include "../css/Entity.h"
+#include "../css/Engine.h"
 
-#include "..\lib\Math.hpp"
+#include "../lib/Math.hpp"
 
 #include <cassert>
 

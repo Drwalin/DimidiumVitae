@@ -5,12 +5,12 @@
 #ifndef DYNAMIC_ENTITY_CPP
 #define DYNAMIC_ENTITY_CPP
 
-#include "..\css\CollisionObjectManager.h"
-#include "..\css\DynamicEntity.h"
-#include "..\css\Engine.h"
+#include "../css/CollisionObjectManager.h"
+#include "../css/DynamicEntity.h"
+#include "../css/Engine.h"
 
-#include "..\lib\Debug.h"
-#include "..\lib\Math.hpp"
+#include "../lib/Debug.h"
+#include "../lib/Math.hpp"
 
 #include <ctime>
 

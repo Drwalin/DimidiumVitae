@@ -5,9 +5,9 @@
 #ifndef TIME_COUNTER_CPP
 #define TIME_COUNTER_CPP
 
-#include "..\css\TimeCounter.h"
+#include "../css/TimeCounter.h"
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 TimePoint TimeCounter::GetCurrentTime() {
 	return std::chrono::high_resolution_clock::now();

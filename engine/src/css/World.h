@@ -5,11 +5,11 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btTransform.h>
-#include <LinearMath/btQuaternion.h>
-#include <btBulletDynamicsCommon.h>
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/LinearMath/btTransform.h>
+#include <bullet/LinearMath/btQuaternion.h>
+#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include <cstdio>
 
@@ -40,7 +40,8 @@ enum CollisionDefaultMasks {
 	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger,
 	CollisionDefaultMaskTrigger = CollisionGroupDynamic | CollisionGroupStatic,
 	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
-	CollisionDefaultMaskLiquid = CollisionGroupDynamic | CollisionGroupTrigger
+	CollisionDefaultMaskLiquid = CollisionGroupDynamic | CollisionGroupTrigger,
+	CollisionDefaultMaskDynamicNotinteractive = CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger
 };
 
 class World {

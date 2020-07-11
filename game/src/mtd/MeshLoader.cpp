@@ -5,7 +5,7 @@
 #ifndef MESH_LOADER_CPP
 #define MESH_LOADER_CPP
 
-#include "..\css\Header.h"
+#include "../css/Header.h"
 
 #include <StdUtil.hpp>
 

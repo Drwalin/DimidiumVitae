@@ -5,15 +5,15 @@
 #ifndef SOUND_ENGINE_CPP
 #define SOUND_ENGINE_CPP
 
-#include "..\css\SoundEngine.h"
+#include "../css/SoundEngine.h"
 
-#include "..\lib\StdUtil.hpp"
-#include "..\lib\Debug.h"
-#include "..\lib\Wav.h"
-#include "..\lib\Ogg.h"
+#include "../lib/StdUtil.hpp"
+#include "../lib/Debug.h"
+#include "../lib/Wav.h"
+#include "../lib/Ogg.h"
 
-#include <AL\al.h>
-#include <AL\alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
 #include <vector>
 

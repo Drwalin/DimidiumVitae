@@ -5,7 +5,7 @@
 #ifndef SOUNDS_LOADER_CPP
 #define SOUNDS_LOADER_CPP
 
-#include "..\css\Header.h"
+#include "../css/Header.h"
 
 #include <StdUtil.hpp>
 

@@ -5,7 +5,7 @@
 #ifndef EVENT_RESPONSER_CPP
 #define EVENT_RESPONSER_CPP
 
-#include "..\css\EventResponser.h"
+#include "../css/EventResponser.h"
 
 class Window *EventResponser::GetWindow() {
 	return this->window;

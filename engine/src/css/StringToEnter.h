@@ -5,7 +5,7 @@
 #ifndef STRING_TO_ENTER_H
 #define STRING_TO_ENTER_H
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
 #include <string>
 #include <map>

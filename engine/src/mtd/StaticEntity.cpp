@@ -5,7 +5,7 @@
 #ifndef STATIC_ENTITY_CPP
 #define STATIC_ENTITY_CPP
 
-#include "..\css\StaticEntity.h"
+#include "../css/StaticEntity.h"
 
 #include <Engine.h>
 #include <CollisionObjectManager.h>

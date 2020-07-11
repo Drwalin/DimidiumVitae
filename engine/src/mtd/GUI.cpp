@@ -5,10 +5,10 @@
 #ifndef GUI_CPP
 #define GUI_CPP
 
-#include "..\css\GUI.h"
-#include "..\css\Window.h"
+#include "../css/GUI.h"
+#include "../css/Window.h"
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 #include <cstdio>
 #include <cstring>

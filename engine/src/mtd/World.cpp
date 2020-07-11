@@ -5,9 +5,9 @@
 #ifndef WORLD_CPP
 #define WORLD_CPP
 
-#include "..\css\World.h"
+#include "../css/World.h"
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 void World::ActivateAll() {
 	++this->activateAll;

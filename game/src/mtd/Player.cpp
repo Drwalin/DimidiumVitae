@@ -5,7 +5,7 @@
 #ifndef PLAYER_CPP
 #define PLAYER_CPP
 
-#include "..\css\Player.h"
+#include "../css/Player.h"
 
 #include <sstream>
 #include <string>

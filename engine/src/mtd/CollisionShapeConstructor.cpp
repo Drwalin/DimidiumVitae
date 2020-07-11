@@ -5,18 +5,18 @@
 #ifndef COLLISION_SHAPE_CONSTRUCTOR_CPP
 #define COLLISION_SHAPE_CONSTRUCTOR_CP
 
-#include "..\css\CollisionShapeConstructor.h"
-#include "..\css\Engine.h"
+#include "../css/CollisionShapeConstructor.h"
+#include "../css/Engine.h"
 
-#include "..\lib\Debug.h"
-#include "..\lib\Math.hpp"
-#include "..\lib\StdUtil.hpp"
-#include "..\lib\StlStreamExtension.h"
+#include "../lib/Debug.h"
+#include "../lib/Math.hpp"
+#include "../lib/StdUtil.hpp"
+#include "../lib/StlStreamExtension.h"
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btTransform.h>
-#include <LinearMath/btQuaternion.h>
-#include <btBulletCollisionCommon.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/LinearMath/btTransform.h>
+#include <bullet/LinearMath/btQuaternion.h>
+#include <bullet/btBulletCollisionCommon.h>
 
 #include <memory>
 #include <string>

@@ -5,9 +5,9 @@
 #ifndef STRING_TO_ENTER_CPP
 #define STRING_TO_ENTER_CPP
 
-#include "..\css\EventResponser.h"
-#include "..\css\StringToEnter.h"
-#include "..\css\Window.h"
+#include "../css/EventResponser.h"
+#include "../css/StringToEnter.h"
+#include "../css/Window.h"
 
 void StringToEnter::SetWindow(Window *window) {
 	this->window = window;

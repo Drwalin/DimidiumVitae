@@ -5,10 +5,10 @@
 #ifndef GET_VERSION_CPP
 #define GET_VERSION_CPP
 
-#include "..\css\Header.h"
+#include "../css/Header.h"
 
 std::string GetVersionString() {
-	return std::string("0.3.4c");
+	return std::string("0.3.4d");
 }
 
 std::string GetVersionReleaseDateString() {

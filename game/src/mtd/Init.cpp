@@ -3,7 +3,7 @@
 // Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 
-#include <dll\DllImporter.h>
+#include <dll/DllImporter.h>
 #include <Math.hpp>
 #include <Debug.h>
 #include <StdUtil.hpp>
@@ -11,9 +11,9 @@
 #include <EventResponser.h>
 #include <Engine.h>
 
-#include "..\css\Header.h"
-#include "..\css\Player.h"
-#include "..\css\Event.h"
+#include "../css/Header.h"
+#include "../css/Player.h"
+#include "../css/Event.h"
 
 #include <iostream>
 #include <memory>
@@ -72,12 +72,12 @@ extern "C" int Init(int argc, char ** argv) {
 		map->SetModel(engine->GetModel("TestMap"));
 		map->SetScale(btVector3(3, 3, 3));
 		
-		for(float x = -100; x<=100.1; x+=10) {
-			for(float y = 30; y<=55.1; y+=3.5f) {
-				for(float z = -100; z<=100.1; z+=10) {
+		for(float x = -10; x<=10.1; x+=10) {
+			for(float y = 30; y<=75.1; y+=3.5f) {
+				for(float z = -10; z<=10.1; z+=10) {
 					std::shared_ptr<Entity> box = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", engine->GetCollisionShapeManager()->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
 					box->SetModel(engine->GetModel("Crate01"));
-					box->SetScale(btVector3(0.8, 2.5, 0.8) *0.5f);
+					box->SetScale(btVector3(0.8, 2.5, 0.8)*0.5f);
 				}
 			}
 		}

@@ -5,7 +5,7 @@
 #ifndef EVENT_RECEIVER_IRRLICHT_CPP
 #define EVENT_RECEIVER_IRRLICHT_CPP
 
-#include "..\css\EventReceiverIrrlicht.h"
+#include "../css/EventReceiverIrrlicht.h"
 #include "StringToEnter.h"
 
 #include <cstdio>

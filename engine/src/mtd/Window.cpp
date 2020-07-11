@@ -5,13 +5,13 @@
 #ifndef WINDOW_CPP
 #define WINDOW_CPP
 
-#include "..\css\EventReceiverIrrlicht.h"
-#include "..\css\EventResponser.h"
-#include "..\css\StringToEnter.h"
-#include "..\css\Window.h"
-#include "..\css\Engine.h"
+#include "../css/EventReceiverIrrlicht.h"
+#include "../css/EventResponser.h"
+#include "../css/StringToEnter.h"
+#include "../css/Window.h"
+#include "../css/Engine.h"
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 #include <cstring>
 

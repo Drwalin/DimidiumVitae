@@ -5,7 +5,7 @@
 #ifndef TRIGGER_CPP
 #define TRIGGER_CPP
 
-#include "..\css\Trigger.h"
+#include "../css/Trigger.h"
 
 #include <Engine.h>
 #include <CollisionObjectManager.h>

@@ -5,10 +5,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
-#include <LinearMath/btVector3.h>
-#include <btBulletDynamicsCommon.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <map>
 #include <string>
@@ -21,8 +21,8 @@
 
 #include <memory>
 
-#include "..\lib\Debug.h"
-#include "..\lib\AR.hpp"
+#include "../lib/Debug.h"
+#include "../lib/AR.hpp"
 
 class Animation {
 public:

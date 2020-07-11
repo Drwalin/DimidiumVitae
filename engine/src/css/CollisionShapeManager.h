@@ -5,8 +5,8 @@
 #ifndef COLLISION_SHAPE_MANAGER_H
 #define COLLISION_SHAPE_MANAGER_H
 
-#include <LinearMath/btVector3.h>
-#include <btBulletDynamicsCommon.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <vector>
 #include <string>

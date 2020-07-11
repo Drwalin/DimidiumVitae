@@ -5,20 +5,20 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <irrlicht\irrlicht.h>
+#include <irrlicht/irrlicht.h>
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btTransform.h>
-#include <LinearMath/btQuaternion.h>
-#include <btBulletDynamicsCommon.h>
-#include <btBulletCollisionCommon.h>
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/LinearMath/btTransform.h>
+#include <bullet/LinearMath/btQuaternion.h>
+#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletCollisionCommon.h>
 
 #include <iostream>
 #include <string>
 #include <memory>
 #include <set>
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 #include "Camera.h"
 #include "SceneNode.h"

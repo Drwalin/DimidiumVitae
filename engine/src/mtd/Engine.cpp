@@ -5,18 +5,18 @@
 #ifndef ENGINE_CPP
 #define ENGINE_CPP
 
-#include "..\css\Engine.h"
+#include "../css/Engine.h"
 
-#include "..\lib\Debug.h"
-#include "..\lib\Math.hpp"
+#include "../lib/Debug.h"
+#include "../lib/Math.hpp"
 
 #include <cassert>
 
 void Engine::RegisterEngineCoreEntityClasses() {
-	this->RegisterType("StaticEntity", "engine", "engine.dll");
-	this->RegisterType("DynamicEntity", "engine", "engine.dll");
-	this->RegisterType("Trigger", "engine", "engine.dll");
-	this->RegisterType("MotionControllerTrigger", "engine", "engine.dll");
+	this->RegisterType("StaticEntity", "engine", "./engine.dll");
+	this->RegisterType("DynamicEntity", "engine", "./engine.dll");
+	this->RegisterType("Trigger", "engine", "./engine.dll");
+	this->RegisterType("MotionControllerTrigger", "engine", "./engine.dll");
 }
 
 int Engine::GetNumberOfEntities() const {
@@ -355,6 +355,6 @@ Engine::~Engine() {
 	this->Destroy();
 }
 
-#include "..\lib\dll\ClassFactory.cpp"
+#include "../lib/dll\ClassFactory.cpp"
 
 #endif

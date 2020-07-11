@@ -5,7 +5,7 @@
 #ifndef LOAD_MAP_PAUSE_CPP
 #define LOAD_MAP_PAUSE_CPP
 
-#include "..\css\Header.h"
+#include "../css/Header.h"
 
 #include <Debug.h>
 

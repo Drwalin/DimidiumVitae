@@ -8,10 +8,10 @@
 #include <Window.h>
 #include <Engine.h>
 
-#include "..\css\Event.h"
-#include "..\css\Character.h"
-#include "..\css\Player.h"
-#include "..\css\MotionController.h"
+#include "../css/Event.h"
+#include "../css/Character.h"
+#include "../css/Player.h"
+#include "../css/MotionController.h"
 
 #include <irrlicht/irrlicht.h>
 

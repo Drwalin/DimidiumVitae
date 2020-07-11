@@ -5,11 +5,11 @@
 #ifndef MODEL_CPP
 #define MODEL_CPP
 
-#include "..\css\Model.h"
-#include "..\css\Engine.h"
+#include "../css/Model.h"
+#include "../css/Engine.h"
 
-#include "..\lib\StdUtil.hpp"
-#include "..\lib\StlStreamExtension.h"
+#include "../lib/StdUtil.hpp"
+#include "../lib/StlStreamExtension.h"
 
 void Animation::Play(bool loop) {
 	if(this->iSceneNode) {

@@ -5,9 +5,9 @@
 #ifndef COLLISION_SHAPE_MANAGER_CPP
 #define COLLISION_SHAPE_MANAGER_CPP
 
-#include "..\css\CollisionShapeManager.h"
+#include "../css/CollisionShapeManager.h"
 
-#include "..\lib\Debug.h"
+#include "../lib/Debug.h"
 
 std::shared_ptr<btCollisionShape> CollisionShapeManager::Clone(const std::shared_ptr<btCollisionShape> &shape) {
 	btCapsuleShape *capsule = dynamic_cast<btCapsuleShape*>(shape.get());
