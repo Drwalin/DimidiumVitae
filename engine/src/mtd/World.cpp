@@ -67,6 +67,7 @@ void World::Init() {
 	this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
 	this->dynamicsWorld->setGravity(btVector3(0, -20, 0));
 	this->dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	this->dynamicsWorld->setForceUpdateAllAabbs(false);
 }
 
 bool World::AddBody(std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask) {

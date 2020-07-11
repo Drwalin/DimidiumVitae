@@ -47,11 +47,7 @@ public:
 	TimeCounter GetWholeDrawTime() const;
 	TimeCounter GetSkippedTime() const;
 	TimeCounter GetEngineTickTime() const;
-	void ParallelToDrawTick(const float deltaTime);
-	
-	void UseParallelThreadToDraw();
-	void ShutDownParallelThreadToDraw();
-	bool IsParallelToDrawTickInUse();
+	TimeCounter GetAsynchronousTickTime() const;
 	
 	class StringToEnter *GetStringToEnterObject();
 	class EventResponser *GetEventResponser();
@@ -69,18 +65,23 @@ public:
 	
 	void QueueQuit();
 	
-	void AlTick();
 	void OneLoopFullTick();
 	float GetSmoothFps();
 	void GenerateEvents();
-	void Tick(const float deltaTime);
+	void Tick();
 	
 	void Draw();
 	void DrawGUI();
 	
 	void Destroy();
 	
-	friend void ParallelThreadFunctionToDraw(Window*);
+	void ParallelToDrawTick();
+	
+private:
+	
+	void UseParallelThreadToDraw();
+	void ShutDownParallelThreadToDraw();
+	bool IsParallelToDrawTickInUse();
 	
 private:
 
@@ -97,10 +98,10 @@ private:
 	
 	float deltaTime;
 	
-	TimeCounter skippedTime;
 	TimeCounter eventsTime;
 	TimeCounter wholeDrawTime;
 	TimeCounter engineTickTime;
+	TimeCounter asynchronousTickTime;
 	
 	bool lockMouse;
 	

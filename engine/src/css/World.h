@@ -16,6 +16,33 @@
 #include <set>
 #include <memory>
 
+enum CollisionGroups {
+	CollisionGroupStatic = 1<<6,
+	CollisionGroupDynamic = 1<<7,
+	CollisionGroupIgnore = 1<<8,
+	CollisionGroupVisible = 1<<9,
+	CollisionGroupLiquid = 1<<10,
+	CollisionGroupTrigger = 1<<10
+};
+
+enum CollisionDefaultGroups {
+	CollisionDefaultGroup = CollisionGroupDynamic | CollisionGroupVisible,
+	CollisionDefaultGroupDynamic = CollisionGroupDynamic | CollisionGroupVisible,
+	CollisionDefaultGroupStatic = CollisionGroupStatic | CollisionGroupVisible,
+	CollisionDefaultGroupTrigger = CollisionGroupTrigger,
+	CollisionDefaultGroupCharacter = CollisionGroupDynamic | CollisionGroupVisible,
+	CollisionDefaultGroupLiquid = CollisionGroupLiquid
+};
+
+enum CollisionDefaultMasks {
+	CollisionDefaultMask = -1,
+	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
+	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger,
+	CollisionDefaultMaskTrigger = CollisionGroupDynamic | CollisionGroupStatic,
+	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
+	CollisionDefaultMaskLiquid = CollisionGroupDynamic | CollisionGroupTrigger
+};
+
 class World {
 public:
 	

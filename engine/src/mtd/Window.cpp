@@ -17,19 +17,22 @@
 
 void ParallelThreadFunctionToDraw(Window *window) {
 	if(window) {
-		while(window->IsParallelToDrawTickInUse()) {
-			while(window->parallelThreadToDrawContinue.load() == false) {
-				if(window->IsParallelToDrawTickInUse() == false)
-					return;
-				std::this_thread::yield();
-			}
-			window->ParallelToDrawTick(window->GetDeltaTime());
-			window->parallelThreadToDrawContinue.store(false);
-		}
+		window->ParallelToDrawTick();
 	}
 }
 
-
+void Window::ParallelToDrawTick() {
+	while(this->IsParallelToDrawTickInUse()) {
+		while(this->parallelThreadToDrawContinue.load() == false) {
+			if(this->IsParallelToDrawTickInUse() == false)
+				return;
+			std::this_thread::yield();
+		}
+		if(this->engine)
+			this->engine->AsynchronousTick(this->GetDeltaTime());
+		this->parallelThreadToDrawContinue.store(false);
+	}
+}
 
 irr::IrrlichtDevice *Window::GetDevice() {
 	return this->device;
@@ -67,12 +70,12 @@ TimeCounter Window::GetWholeDrawTime() const {
 	return this->wholeDrawTime;
 }
 
-TimeCounter Window::GetSkippedTime() const {
-	return this->skippedTime;
-}
-
 TimeCounter Window::GetEngineTickTime() const {
 	return this->engineTickTime;
+}
+
+TimeCounter Window::GetAsynchronousTickTime() const {
+	return this->asynchronousTickTime;
 }
 
 void Window::UseParallelThreadToDraw() {
@@ -92,11 +95,6 @@ void Window::ShutDownParallelThreadToDraw() {
 
 bool Window::IsParallelToDrawTickInUse() {
 	return this->useParallelThreadToDraw.load();
-}
-
-void Window::ParallelToDrawTick(const float deltaTime) {
-	if(this->engine)
-		this->engine->ParallelToDrawTick(deltaTime);
 }
 
 StringToEnter *Window::GetStringToEnterObject() {
@@ -143,17 +141,6 @@ void Window::QueueQuit() {
 	this->quitWhenPossible = true;
 }
 
-void Window::AlTick() {
-	if(this->lockMouse) {
-		this->eventIrrlichtReceiver->SetCursor(this->GetWidth()/2, this->GetHeight()/2);
-		this->device->getCursorControl()->setPosition(0.5f, 0.5f);
-	}
-	
-	this->GenerateEvents();
-	this->Tick(this->deltaTime);
-	this->Draw();
-}
-
 void Window::OneLoopFullTick() {
 	static float beginTime = (float(clock())/1000.0f);
 	
@@ -165,7 +152,7 @@ void Window::OneLoopFullTick() {
 	else if(deltaTime > 0.3)
 		deltaTime = 0.3;
 	
-	this->AlTick();
+	this->Tick();
 }
 
 float Window::GetSmoothFps() {
@@ -191,31 +178,38 @@ void Window::GenerateEvents() {
 	this->eventsTime.SubscribeEnd();
 }
 
-void Window::Tick(const float deltaTime) {
+void Window::Tick() {
+	if(this->lockMouse) {
+		this->eventIrrlichtReceiver->SetCursor(this->GetWidth()/2, this->GetHeight()/2);
+		this->device->getCursorControl()->setPosition(0.5f, 0.5f);
+	}
+	
+	this->GenerateEvents();
+	
 	engineTickTime.SubscribeStart();
 	if(this->engine)
-		this->engine->Tick(deltaTime);
+		this->engine->SynchronousTick(this->deltaTime);
 	engineTickTime.SubscribeEnd();
+	
+	this->asynchronousTickTime.SubscribeStart();
+	if(this->IsParallelToDrawTickInUse())
+		this->parallelThreadToDrawContinue.store(true);
+	this->Draw();
+	if(this->IsParallelToDrawTickInUse()) {
+		while(this->parallelThreadToDrawContinue.load())
+			std::this_thread::yield();
+	}
+	this->asynchronousTickTime.SubscribeEnd();
 }
 
 void Window::Draw() {
 	this->wholeDrawTime.SubscribeStart();
-	
-	if(this->IsParallelToDrawTickInUse()) {
-		this->parallelThreadToDrawContinue.store(true);
-	}
-	
 	this->videoDriver->beginScene(true, true, irr::video::SColor(255,16,32,64));
 	this->GetCamera()->UseTarget();
 	this->sceneManager->drawAll();
 	this->igui->drawAll();
 	this->DrawGUI();
 	this->videoDriver->endScene();
-	
-	if(this->IsParallelToDrawTickInUse()) {
-		while(this->parallelThreadToDrawContinue.load()) {}
-	}
-	
 	this->wholeDrawTime.SubscribeEnd();
 }
 
@@ -247,6 +241,8 @@ void Window::Init(Engine *engine, const std::string &windowName, const std::stri
 	this->engine = engine;
 	
 	this->gui.Init(this);
+	
+	this->UseParallelThreadToDraw();
 }
 
 void Window::BeginLoop() {
@@ -270,7 +266,8 @@ void Window::Destroy() {
 }
 
 Window::Window() :
-	useParallelThreadToDraw(false) {
+	useParallelThreadToDraw(false)
+{
 	this->device = NULL;
 	this->videoDriver = NULL;
 	this->sceneManager = NULL;

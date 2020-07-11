@@ -55,7 +55,7 @@ void Trigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_
 	
 	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
 	
-	this->SetBody(collisionObject, shape);
+	this->SetBody(collisionObject, shape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
 }
 
 void Trigger::Despawn() {

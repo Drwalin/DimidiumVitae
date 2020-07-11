@@ -55,7 +55,7 @@ void DynamicEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::s
 	rigidBody->setDamping(0.2, 0.2);
 	rigidBody->setFriction(0.75);
 	
-	this->SetBody(collisionObject, shape);
+	this->SetBody(collisionObject, shape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
 	
 	this->hitSoundSource = new SoundSource(this->engine->GetSoundsManager()->GetSoundSampler("wood1"));
 }

@@ -135,28 +135,25 @@ int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
 	return 1;
 }
 
-void Engine::ParallelToDrawTick(const float deltaTime) {
-	this->Tick(deltaTime);
+void Engine::AsynchronousTick(const float deltaTime) {
+	this->physicsSimulationTime.SubscribeStart();
+	if(!this->pausePhysics)
+		this->world->Tick(deltaTime, this->CalculateNumberOfSimulationsPerFrame(deltaTime));
+	this->physicsSimulationTime.SubscribeEnd();
 }
 
-void Engine::Tick(const float deltaTime) {
+void Engine::SynchronousTick(const float deltaTime) {
 	this->entityUpdateTime.SubscribeStart();
 	this->UpdateEntities(deltaTime);
 	this->entityUpdateTime.SubscribeEnd();
 	
-	this->GetWindow()->GetGUI() << "\n entityUpdateTime: " << this->entityUpdateTime.GetSmoothTime();
-	this->GetWindow()->GetGUI() << "\n entityUpdateTime peak: " << this->entityUpdateTime.GetPeakTime();
-	this->GetWindow()->GetGUI() << "\n entityUpdateTime pit: " << this->entityUpdateTime.GetPitTime();
+	this->GetWindow()->GetGUI() << "\n Entity Update Time: " << this->entityUpdateTime.GetSmoothTime()*1000.0f;
+	this->GetWindow()->GetGUI() << " " << this->entityUpdateTime.GetPeakTime()*1000.0f;
+	this->GetWindow()->GetGUI() << " " << this->entityUpdateTime.GetPitTime()*1000.0f;
 	
-	this->physicsSimulationTime.SubscribeStart();
-	if(!this->pausePhysics)
-		this->world->Tick(deltaTime, this->CalculateNumberOfSimulationsPerFrame(deltaTime));
-	
-	this->physicsSimulationTime.SubscribeEnd();
-	
-	this->GetWindow()->GetGUI() << "\n physicsSimulationTime: " << this->physicsSimulationTime.GetSmoothTime();
-	this->GetWindow()->GetGUI() << "\n physicsSimulationTime peak: " << this->physicsSimulationTime.GetPeakTime();
-	this->GetWindow()->GetGUI() << "\n physicsSimulationTime pit: " << this->physicsSimulationTime.GetPitTime();
+	this->GetWindow()->GetGUI() << "\n Physics Simulation Time: " << this->physicsSimulationTime.GetSmoothTime()*1000.0f;
+	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPeakTime()*1000.0f;
+	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPitTime()*1000.0f;
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const {
@@ -285,8 +282,6 @@ void Engine::Init(EventResponser *eventResponser, const std::string &windowName,
 	}
 	
 	this->RegisterEngineCoreEntityClasses();
-	
-	//this->window->UseParallelThreadToDraw();
 }
 
 void Engine::Destroy() {

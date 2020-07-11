@@ -35,8 +35,6 @@ public:
 	Engine();
 	~Engine();
 	
-	static const int SHADER_TRANSFORMATION_MATRIX_LOCATION = 0;
-	
 	class RayTraceData {
 	public:
 		float distance;
@@ -91,13 +89,22 @@ public:
 	std::shared_ptr<Entity> GetEntity(const std::string &name);
 	
 	int CalculateNumberOfSimulationsPerFrame(const float deltaTime);
-	void Tick(const float deltaTime);
-	void ParallelToDrawTick(const float deltaTime);
+	void SynchronousTick(const float deltaTime);
+	void AsynchronousTick(const float deltaTime);
 	
 	void Init(EventResponser *eventResponser, const std::string &windowName, const std::string &iconFile, int width, int height, bool fullscreen = false);
 	void BeginLoop();
 	
 	void Destroy();
+	
+	friend class EventResponser;
+	
+private:
+	
+	inline void UpdateEntitiesOverlapp();
+	inline void UpdateEntities(const float deltaTime);
+	
+	void RegisterEngineCoreEntityClasses();
 	
 private:
 	
@@ -124,14 +131,6 @@ private:
 	std::shared_ptr<Entity> cameraParent;
 	
 	bool pausePhysics;
-	
-	
-	inline void UpdateEntitiesOverlapp();
-	inline void UpdateEntities(const float deltaTime);
-	
-	void RegisterEngineCoreEntityClasses();
-	
-	friend class EventResponser;
 };
 
 #endif

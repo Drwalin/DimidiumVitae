@@ -120,4 +120,3 @@ MotionControllerTrigger::~MotionControllerTrigger() {
 }
 
 #endif
-

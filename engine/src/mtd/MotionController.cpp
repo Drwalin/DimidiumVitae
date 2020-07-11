@@ -159,7 +159,7 @@ void MotionController::Tick(const float deltaTime) {
 	
 	this->jumpCooldown += deltaTime;
 	this->UpdateSpeed(deltaTime);
-	this->walkingDirection = btVector3(0,0,0);
+	this->walkingDirection = btVector3(0, 0, 0);
 	
 	if(this->triggerHigh->IsBottomCollision() || this->triggerLow->IsBottomCollision())
 		this->character->GetBody<btRigidBody>()->setFriction(0.5);
@@ -179,7 +179,7 @@ void MotionController::Jump() {
 		this->jumpCooldown = 0.0f;
 		std::shared_ptr<btRigidBody> rigidBody = this->character->GetBody<btRigidBody>();
 		if(rigidBody) {
-			rigidBody->applyCentralImpulse(btVector3(0,1,0) *this->GetJumpVelocity() / rigidBody->getInvMass());
+			rigidBody->applyCentralImpulse(btVector3(0, 1, 0)*this->GetJumpVelocity()/rigidBody->getInvMass());
 		}
 	}
 }

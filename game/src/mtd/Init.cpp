@@ -60,11 +60,12 @@ extern "C" int Init(int argc, char ** argv) {
 		player->SetCamera(engine->GetCamera());
 		
 		// create map
-		for(float x = -100; x<=100.1; x+=27) {
-			for(float z = -100; z<=100.1; z+=27) {
+		float mapGridScale = 0.3f;
+		for(float x = -100; x<=100.1; x+=24) {
+			for(float z = -100; z<=100.1; z+=24) {
 				std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap" + std::to_string(x) + "_" + std::to_string(z), engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,0,z)), 100000000.0f);
 				map->SetModel(engine->GetModel("TestMap"));
-				map->SetScale(btVector3(0.3, 0.3, 0.3));
+				map->SetScale(btVector3(1, 1, 1)*mapGridScale);
 			}
 		}
 		std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
@@ -72,7 +73,7 @@ extern "C" int Init(int argc, char ** argv) {
 		map->SetScale(btVector3(3, 3, 3));
 		
 		for(float x = -100; x<=100.1; x+=10) {
-			for(float y = 30; y<=50.1; y+=3.5f) {
+			for(float y = 30; y<=55.1; y+=3.5f) {
 				for(float z = -100; z<=100.1; z+=10) {
 					std::shared_ptr<Entity> box = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", engine->GetCollisionShapeManager()->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
 					box->SetModel(engine->GetModel("Crate01"));
