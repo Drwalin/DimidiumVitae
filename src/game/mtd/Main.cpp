@@ -7,7 +7,7 @@
 #include <Debug.h>
 
 int main(int argc, char **argv) {
-	Dll eventModule("./game-core.dll");
+	Dll eventModule("./game-core");
 	int (*Init)(int argc, char **argv);
 	Init = eventModule.Get<int(*)(int,char**)>("Init");
 	if(Init) {

@@ -14,12 +14,16 @@ void DllRelease(void *handle);
 void *DllGetObject(void *handle, const char *objectName);
 char *DllGetErrorString();
 
+const char *GetDllExtension();
+
 #ifdef __cplusplus
 }
 #endif
 
 
 #ifdef __cplusplus
+
+#include <string>
 
 class Dll {
 public:
@@ -30,13 +34,15 @@ public:
 	~Dll();
 	
 	bool IsValid() const;
-	void *Open(const char *dllFileName);
+	void *Open(const char *dllFileName, bool addAppropriateExtension=true);
 	void Close();
 	
 	template <typename T >
 	T Get(const char *objectName) {
 		return reinterpret_cast<T>(DllGetObject(this->handle, objectName));
 	}
+	
+	static const std::string &GetExtension();
 	
 private:
 	

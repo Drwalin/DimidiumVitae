@@ -3,10 +3,12 @@ S = \\
 EXTSHARED = .dll
 EXTEXECUTABLE = .exe
 
+PLATFORMSPECIFICFLAGS =
+
 PLATFORMSPECIFICLIBS = -lOpenAL32
-PLATFORMSPECIFICSHAREDOBJECTS = libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll 
-DIRLIBS = -LC:\Programs\mingw-w64\lib\bullet -LC:\Programs\mingw-w64\lib
-DIRINCLUDE = -IC:\Programs\mingw-w64\include\bullet -IC:\Programs\mingw-w64\include -Iengine\src\css -Iengine\src\lib
+PLATFORMSPECIFICSHAREDOBJECTS = libgcc_s_seh-1.dll libwinpthread-1.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll libvorbisogg.dll libzlib.dll
+DIRLIBS = -LC:\mingw-w64\lib\bullet -LC:\mingw-w64\lib
+DIRINCLUDE = -IC:\mingw-w64\include\bullet -IC:\mingw-w64\include -Isrc\engine\css -Isrc\engine\lib
 
 DEPENDENCIES = Irrlicht.dll libvorbisogg.dll libzlib.dll libLinearMath.dll libBulletCollision.dll libBulletDynamics.dll $(PLATFORMSPECIFICSHAREDOBJECTS)
 

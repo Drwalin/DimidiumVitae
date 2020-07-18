@@ -103,22 +103,15 @@ char *DllGetErrorString() {
 	DWORD err = GetLastError();
 	if(err == 0)
 		return (msg[0]=0,msg);
-	
-	/*
-	size_t size = FormatMessageA(	FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-									NULL,
-									errorMessageID,
-									MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-									(LPSTR)&msg,
-									msgSize,
-									NULL);
-	*/
-	
 	FormatMessageA(	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 					NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
 					msg, msgSize, NULL);
 	
 	return msg;
+}
+
+const char *GetDllExtension() {
+	return ".dll";
 }
 
 #elif defined __unix__
@@ -137,7 +130,10 @@ void *DllLoad(const char *file) {
 void DllRelease(void *handle) {
 	if(handle) {
 		DllHandleCounterDecrement(handle);
-		dlclose(handle);
+		if(DllHandleCounterGetElement(handle)->counter <= 0) {
+			dlclose(handle);
+			DllHandleCounterGetElement(handle)->counter = 0;
+		}
 	}
 }
 
@@ -152,6 +148,10 @@ char *DllGetErrorString() {
 	return dlerror();
 }
 
+const char *GetDllExtension() {
+	return ".so";
+}
+
 #  warning Not yet tested
 
 #else
@@ -164,22 +164,24 @@ char *DllGetErrorString() {
 
 #if defined __cplusplus
 
-bool Dll::IsValid() const
-{
+bool Dll::IsValid() const {
 	return this->handle != NULL;
 }
 
-void *Dll::Open(const char *dllFileName) {
+void *Dll::Open(const char *dllFileName, bool addAppropriateExtension) {
 	this->Close();
-	this->handle = DllLoad(dllFileName);
+	const int bufferSize = 4096;
+	char fileName[bufferSize];
+	snprintf(fileName, bufferSize, "%s%s", dllFileName, addAppropriateExtension?GetDllExtension():"");
+	this->handle = DllLoad(fileName);
 	if(this->handle == NULL)
-		printf("\n Dll::Open error <%s>: %s", dllFileName, DllGetErrorString());
+		printf("\n Dll::Open error <%s>: %s", fileName, DllGetErrorString());
 	return this->handle;
 }
 
 void Dll::Close() {
-//	if(this->handle)
-//		DllRelease(this->handle);
+	if(this->handle)
+		DllRelease(this->handle);
 	this->handle = NULL;
 }
 
@@ -194,6 +196,11 @@ Dll::Dll(const char *dllFileName) {
 
 Dll::~Dll() {
 	this->Close();
+}
+
+const std::string &Dll::GetExtension() {
+	static const std::string extension(GetDllExtension());
+	return extension;
 }
 
 #endif

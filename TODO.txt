@@ -11,8 +11,19 @@ Features:
 	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from std::iostream
 	MotionController steps on staircase or low objects
 	Particles
-	NavMesh
-	
+	NavMeshf
+	ResourceManager:
+		garbage collector
+		make sound resource
+		make texture resource
+		make graphical model resource
+		make collision shape constructor resource
+		make collision shape resource
+		make mesh resource (connection of graphical model, collision shape constructor, collision shape)
+	Multiplayer:
+		divide code sections for: server side or client side
+		internet connection
+	enable window resizing with fov correction
 
 Pre-alpha features:
 	Light maps

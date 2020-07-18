@@ -27,7 +27,7 @@
 #include "CollisionShapeManager.h"
 #include "SoundEngine.h"
 
-#include "../lib/dll\ClassFactory.h"
+#include <dll/ClassFactory.h>
 
 class Engine {
 public:

@@ -75,7 +75,7 @@ void GUI::Flush() {
 void GUI::Init(Window *window) {
 	this->window = window;
 	
-	this->defaultFont = this->window->GetDevice()->getGUIEnvironment()->getFont("media\\Fonts\\courier.bmp");
+	this->defaultFont = this->window->GetDevice()->getGUIEnvironment()->getFont("./media/Fonts/courier.bmp");
 	this->currentFont = this->defaultFont;
 	
 	this->workSpace = Rectanglei(0, 0, this->GetWindowSize().X, this->GetWindowSize().Y);

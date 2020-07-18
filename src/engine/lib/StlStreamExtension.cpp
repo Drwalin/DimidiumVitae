@@ -48,34 +48,34 @@ __base_istreambuf::~__base_istreambuf() {
 
 std::streamsize ocstreambuf::xsputn(const char *buffer, std::streamsize buffersize) {
 	if(this->filefd)
-		return fwrite(buffer, 1, buffersize, this->filefd);
+		return fwrite(buffer, 1, buffersize, (FILE*)this->filefd);
 	return 0;
 }
 
 ocstreambuf::ocstreambuf(const char *filename) {
-	this->filefd = fopen(filename, "wb");
+	this->filefd = (_iobuf*)fopen(filename, "wb");
 }
 
 ocstreambuf::~ocstreambuf() {
 	if(this->filefd) {
-		fclose(this->filefd);
+		fclose((FILE*)this->filefd);
 		this->filefd = NULL;
 	}
 }
 
 int icstreambuf::__read_to_buffer() {
 	if(this->filefd)
-		return fread(this->buffer, 1, this->buffersize, this->filefd);
+		return fread(this->buffer, 1, this->buffersize, (FILE*)this->filefd);
 	return 0;
 }
 
 icstreambuf::icstreambuf(const char *filename) {
-	this->filefd = fopen(filename, "rb");
+	this->filefd = (_iobuf*)fopen(filename, "rb");
 }
 
 icstreambuf::~icstreambuf() {
 	if(this->filefd) {
-		fclose(this->filefd);
+		fclose((FILE*)this->filefd);
 		this->filefd = NULL;
 	}
 }

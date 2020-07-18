@@ -7,16 +7,16 @@
 
 #include "../css/Engine.h"
 
-#include "../lib/Debug.h"
-#include "../lib/Math.hpp"
+#include <Debug.h>
+#include <Math.hpp>
 
 #include <cassert>
 
 void Engine::RegisterEngineCoreEntityClasses() {
-	this->RegisterType("StaticEntity", "engine", "./engine.dll");
-	this->RegisterType("DynamicEntity", "engine", "./engine.dll");
-	this->RegisterType("Trigger", "engine", "./engine.dll");
-	this->RegisterType("MotionControllerTrigger", "engine", "./engine.dll");
+	this->RegisterType("StaticEntity", "engine", "./engine");
+	this->RegisterType("DynamicEntity", "engine", "./engine");
+	this->RegisterType("Trigger", "engine", "./engine");
+	this->RegisterType("MotionControllerTrigger", "engine", "./engine");
 }
 
 int Engine::GetNumberOfEntities() const {
@@ -355,6 +355,6 @@ Engine::~Engine() {
 	this->Destroy();
 }
 
-#include "../lib/dll\ClassFactory.cpp"
+#include "../lib/dll/ClassFactory.cpp"
 
 #endif

@@ -1,0 +1,17 @@
+
+S = /
+EXTSHARED = .so
+EXTEXECUTABLE = 
+
+PLATFORMSPECIFICFLAGS = -fPIC
+
+PLATFORMSPECIFICLIBS = -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype
+PLATFORMSPECIFICSHAREDOBJECTS =  
+DIRLIBS =
+DIRINCLUDE = -I/usr/include -I/usr/include/irrlich -Isrc/engine/css -Isrc/engine/lib -I/usr/include/bullet
+
+DEPENDENCIES =  $(PLATFORMSPECIFICSHAREDOBJECTS)
+
+MD = mkdir
+CP = cp -r
+RM = rm -f

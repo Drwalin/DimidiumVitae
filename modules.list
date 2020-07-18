@@ -1,6 +1,6 @@
 Character
 game-core
-./game-core.dll
+./game-core
 Player
 game-core
-./game-core.dll
+./game-core
