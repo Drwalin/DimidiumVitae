@@ -43,6 +43,8 @@ public:
 	
 private:
 	
+	btTransform previousTransform;
+	
 	class Engine *engine;
 	std::shared_ptr<Model> model;
 	irr::scene::IAnimatedMeshSceneNode *iSceneNode;

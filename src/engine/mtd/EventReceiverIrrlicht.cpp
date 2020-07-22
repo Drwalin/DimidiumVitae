@@ -82,11 +82,6 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 			break;
 			
 		case irr::EMIE_MOUSE_WHEEL:
-			eventResponser->MouseMoveEvent(event.MouseInput.X, event.MouseInput.Y, this->mouseW + event.MouseInput.Wheel, event.MouseInput.X - this->mouseX, event.MouseInput.Y - this->mouseY, event.MouseInput.Wheel);
-			this->mouseW += event.MouseInput.Wheel;
-			this->mouseX = event.MouseInput.X;
-			this->mouseY = event.MouseInput.Y;
-			break;
 		case irr::EMIE_MOUSE_MOVED:
 			eventResponser->MouseMoveEvent(event.MouseInput.X, event.MouseInput.Y, this->mouseW + event.MouseInput.Wheel, event.MouseInput.X - this->mouseX, event.MouseInput.Y - this->mouseY, event.MouseInput.Wheel);
 			this->mouseW += event.MouseInput.Wheel;

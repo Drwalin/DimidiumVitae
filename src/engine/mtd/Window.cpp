@@ -130,11 +130,11 @@ float Window::GetDeltaTime() {
 }
 
 unsigned Window::GetWidth() {
-	return this->screenResolution.Width;
+	return this->videoDriver->getScreenSize().Width;//getViewPort.getWidth();
 }
 
 unsigned Window::GetHeight() {
-	return this->screenResolution.Height;
+	return this->videoDriver->getScreenSize().Height;//getViewPort.getHeight();
 }
 
 void Window::QueueQuit() {
@@ -175,13 +175,18 @@ float Window::GetSmoothFps() {
 void Window::GenerateEvents() {
 	this->eventsTime.SubscribeStart();
 	this->eventIrrlichtReceiver->GenerateEvents();
+	//this->GetCamera()->SetRenderTargetSize(this->GetWidth(), this->GetHeight());
 	this->eventsTime.SubscribeEnd();
 }
 
 void Window::Tick() {
 	if(this->lockMouse) {
-		this->eventIrrlichtReceiver->SetCursor(this->GetWidth()/2, this->GetHeight()/2);
-		this->device->getCursorControl()->setPosition(0.5f, 0.5f);
+		unsigned W = this->GetWidth();
+		unsigned H = this->GetHeight();
+		float w=W;
+		float h=H;
+		this->eventIrrlichtReceiver->SetCursor(W/2, H/2);
+		this->device->getCursorControl()->setPosition(float(W/2)/w, float(H/2)/h);
 	}
 	
 	this->GenerateEvents();
@@ -224,9 +229,9 @@ void Window::Init(Engine *engine, const std::string &windowName, const std::stri
 	this->eventResponser->SetWindow(this);
 	this->eventIrrlichtReceiver = new EventReceiverIrrlicht(this->eventResponser, this);
 	
-	this->screenResolution = irr::core::dimension2du(width, height);
-	this->device = irr::createDevice(irr::video::EDT_OPENGL, this->screenResolution, 16, fullscreen, true, false, this->eventIrrlichtReceiver);
+	this->device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
 	this->device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
+	this->device->setResizable(true);
 	
 	this->videoDriver = this->device->getVideoDriver();
 	this->sceneManager = this->device->getSceneManager();

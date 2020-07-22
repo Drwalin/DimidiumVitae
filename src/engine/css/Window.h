@@ -92,8 +92,6 @@ private:
 	irr::scene::ISceneManager *sceneManager;
 	irr::gui::IGUIEnvironment *igui;
 	
-	irr::core::dimension2du screenResolution;
-	
 	bool quitWhenPossible;
 	
 	float deltaTime;

@@ -32,68 +32,55 @@ irr::scene::ICameraSceneNode *Camera::GetCameraNode() {
 	return this->sceneNode;
 }
 
-btTransform Camera::GetTransform() const
-{
+btTransform Camera::GetTransform() const {
 	return btTransform(this->GetRotation(), this->GetWorldPosition());
 }
 
-btQuaternion Camera::GetRotation() const
-{
+btQuaternion Camera::GetRotation() const {
 	return this->parentTransformation.getRotation() *Math::MakeQuaternionFromEuler(this->rotation);
 }
 
-btQuaternion Camera::GetFlatRotation() const
-{
+btQuaternion Camera::GetFlatRotation() const {
 	return this->parentTransformation.getRotation() *btQuaternion(btVector3(0, 1, 0), -this->rotation.y());
 }
 
-btVector3 Camera::GetUpVector() const
-{
+btVector3 Camera::GetUpVector() const {
 	return btTransform(this->GetRotation()) *btVector3(0, 1, 0);
 }
 
-btVector3 Camera::GetFlatRightVector() const
-{
+btVector3 Camera::GetFlatRightVector() const {
 	return btTransform(this->GetFlatRotation()) *btVector3(-1, 0, 0);
 }
 
-btVector3 Camera::GetRightVector() const
-{
+btVector3 Camera::GetRightVector() const {
 	return btTransform(this->GetRotation()) *btVector3(-1, 0, 0);
 }
 
-btVector3 Camera::GetFlatLeftVector() const
-{
+btVector3 Camera::GetFlatLeftVector() const {
 	return btTransform(this->GetFlatRotation()) *btVector3(1, 0, 0);
 }
 
-btVector3 Camera::GetLeftVector() const
-{
+btVector3 Camera::GetLeftVector() const {
 	return btTransform(this->GetRotation()) *btVector3(1, 0, 0);
 }
 
-btVector3 Camera::GetFlatForwardVector() const
-{
+btVector3 Camera::GetFlatForwardVector() const {
 	return btTransform(this->GetFlatRotation()) *btVector3(0, 0, 1);
 }
 
-btVector3 Camera::GetForwardVector() const
-{
+btVector3 Camera::GetForwardVector() const {
 	return btTransform(this->GetRotation()) *btVector3(0, 0, 1);
 }
 
-btVector3 Camera::GetPosition() const
-{
+btVector3 Camera::GetPosition() const {
 	return this->position;
 }
 
-btVector3 Camera::GetEulerRotation() const
-{
+btVector3 Camera::GetEulerRotation() const {
 	return this->rotation;
 }
 
-btVector3 Camera::GetWorldPosition() const
-{
+btVector3 Camera::GetWorldPosition() const {
 	return this->parentTransformation *this->position;
 }
 
@@ -167,14 +154,36 @@ void Camera::SetCameraParentTransform(btTransform transform) {
 	this->UpdateCameraView();
 }
 
+void Camera::SetFOV(float fovRadians) {
+	if(this->fov != fovRadians) {
+		this->fov = fovRadians;
+		this->sceneNode->setFOV(this->fov);
+	}
+}
+
+void Camera::SetRenderTargetSize(unsigned width, unsigned height) {
+	if(this->target) {
+		if(this->target->getOriginalSize() == irr::core::dimension2d<unsigned>(width, height)) {
+			return;
+		}
+		this->engine->GetWindow()->GetVideoDriver()->setRenderTarget(0, true, true, 0);
+		this->target->drop();
+		this->engine->GetWindow()->GetVideoDriver()->removeTexture(this->target);
+		this->target = NULL;
+		this->target = this->engine->GetWindow()->GetVideoDriver()->addRenderTargetTexture(irr::core::dimension2d<unsigned>(width, height));//, "RTT1");
+	}
+	this->sceneNode->setAspectRatio(float(width)/float(height));
+}
+
 Camera::Camera(Engine *engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode) {
 	this->engine = engine;
+	this->target = NULL;
+	
+	this->fov = 1.22f;
 	
 	this->sceneNode = cameraNode;
 	if(textured)
-		this->target = this->engine->GetWindow()->GetVideoDriver()->addRenderTargetTexture(irr::core::dimension2d<unsigned>(w, h), "RTT1");
-	else
-		this->target = NULL;
+		SetRenderTargetSize(w, h);
 	
 	this->position = btVector3(0, 0, 0);
 	this->rotation = btVector3(0, 0, 0);

@@ -1,4 +1,5 @@
 
+
 Testing/debugging/bugs:
 	CollisionShapeConstructor::Clone
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
@@ -6,12 +7,23 @@ Testing/debugging/bugs:
 	Sometimes undefined coordinates while starting game (randomly)
 	
 
-Features:
-	Makefile (and binaries?) for linux
-	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from std::iostream
-	MotionController steps on staircase or low objects
+TODO:
+	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from JSON
 	Particles
-	NavMeshf
+	NavMesh
+	Multiplayer:
+		divide code sections for: server side or client side
+		internet connection:
+			TCP - initialization, events, lossless informations
+			UDP - streaming entities transofrmation, movement and animation informations in realtime
+	Add menu
+	
+
+TODO in future:
+	MotionController steps on staircase or low objects
+	
+
+In progress:
 	ResourceManager:
 		garbage collector
 		make sound resource
@@ -19,18 +31,17 @@ Features:
 		make graphical model resource
 		make collision shape constructor resource
 		make collision shape resource
-		make mesh resource (connection of graphical model, collision shape constructor, collision shape)
-	Multiplayer:
-		divide code sections for: server side or client side
-		internet connection
-	enable window resizing with fov correction
+		make mesh resource (combination of graphical model, collision shape constructor, collision shape)
+	
 
 Pre-alpha features:
 	Light maps
 	Dynamic light maps
 	Sound occlusion
+	
 
 Done:
+	Makefile (and binaries?) for linux
 	Using compressed files
 	Decoding ogg sound files
 	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
@@ -43,4 +54,5 @@ Done:
 	Sounds
 	Animations
 	Loading archives from irrlicht file system
+	enable window resizing with fov and aspect correction
 	

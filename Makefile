@@ -13,10 +13,10 @@ GAMEOBJ = $(addprefix .$(S)bin$(S),$(GAMEOBJ_))
 ENGOBJ_ = Camera.o ClassFactoryBase.o CollisionObjectManager.o CollisionShapeConstructor.o CollisionShapeManager.o DllImporter.o DynamicEntity.o Engine.o EngineRayTraceData.o Entity.o EventReceiverIrrlicht.o EventResponser.o GUI.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o SceneNode.o SoundEngine.o StaticEntity.o StlStreamExtension.o StringToEnter.o TimeCounter.o Trigger.o Wav.o World.o Window.o Resource.o ResourceManager.o
 ENGOBJ = $(addprefix .$(S)bin$(S),$(ENGOBJ_))
 	
-SHAREDLIBS = -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lIrrlicht -lm -lpthread
+SHAREDLIBS = -lBulletSoftBody -lIrrlicht -lm -lpthread
 LIBS = $(DIRLIBS) $(SHAREDLIBS) $(PLATFORMSPECIFICLIBS) $(DEPENDENCIES)
 
-
+DIRINCLUDE = $(DIRINCLUDEPC) -Isrc/engine/css -Isrc/engine/lib -Isrc/thirdparty
 
 compile: .$(S)game$(EXTEXECUTABLE) .$(S)engine$(EXTSHARED) .$(S)game-core$(EXTSHARED)
 

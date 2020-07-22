@@ -5,10 +5,10 @@ EXTEXECUTABLE =
 
 PLATFORMSPECIFICFLAGS = -fPIC
 
-PLATFORMSPECIFICLIBS = -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype
+PLATFORMSPECIFICLIBS = -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype -lBulletDynamics -lBulletCollision -lLinearMath
 PLATFORMSPECIFICSHAREDOBJECTS =  
 DIRLIBS =
-DIRINCLUDE = -I/usr/include -I/usr/include/irrlich -Isrc/engine/css -Isrc/engine/lib -I/usr/include/bullet
+DIRINCLUDEPC = -I/usr/include -I/usr/include/irrlich -I/usr/include/bullet
 
 DEPENDENCIES =  $(PLATFORMSPECIFICSHAREDOBJECTS)
 

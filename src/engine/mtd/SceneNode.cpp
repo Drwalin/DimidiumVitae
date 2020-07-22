@@ -35,13 +35,16 @@ irr::scene::IAnimatedMeshSceneNode *SceneNode::GetISceneNode() {
 }
 
 void SceneNode::SetTransform(btTransform transform) {
-	iSceneNode->setPosition(Math::GetIrrVec(transform.getOrigin()));
-	irr::core::vector3d<float> eulerRadians;
-	btQuaternion quat(transform.getRotation().getAxis() *btVector3(1,-1,-1), transform.getRotation().getAngle());
-    irr::core::quaternion q;
-    q.fromAngleAxis(quat.getAngle(), irr::core::vector3d<float>(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z()));
-	q.toEuler(eulerRadians);
-	iSceneNode->setRotation(eulerRadians *irr::core::RADTODEG);
+	if(previousTransform.getRotation()!=transform.getRotation() || previousTransform.getOrigin()!=transform.getOrigin()) {
+		iSceneNode->setPosition(Math::GetIrrVec(transform.getOrigin()));
+		irr::core::vector3d<float> eulerRadians;
+		btQuaternion quat(transform.getRotation().getAxis() *btVector3(1,-1,-1), transform.getRotation().getAngle());
+		irr::core::quaternion q;
+		q.fromAngleAxis(quat.getAngle(), irr::core::vector3d<float>(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z()));
+		q.toEuler(eulerRadians);
+		iSceneNode->setRotation(eulerRadians *irr::core::RADTODEG);
+		previousTransform = transform;
+	}
 }
 
 void SceneNode::SetScale(btVector3 scale) {

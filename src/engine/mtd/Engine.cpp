@@ -278,7 +278,7 @@ void Engine::Init(EventResponser *eventResponser, const std::string &windowName,
 	
 	if(this->GetCamera() == NULL) {
 		this->window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, width, height, this->window->GetSceneManager()->addCameraSceneNode())));
-		this->window->GetCamera()->GetCameraNode()->setFOV(70.0f *Math::PI / 180.0f);
+		this->window->GetCamera()->SetFOV(70.0f *Math::PI / 180.0f);
 	}
 	
 	this->RegisterEngineCoreEntityClasses();

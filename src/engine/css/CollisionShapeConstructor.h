@@ -17,8 +17,7 @@
 class PrimitiveShape {
 public:
 	
-	enum Type
-	{
+	enum Type {
 		NONE = 0,
 		BOX = 1,
 		SPHERE = 2,
@@ -34,28 +33,33 @@ public:
 	static PrimitiveShape::Type GetType(char ch);
 	static char GetChar(PrimitiveShape::Type type);
 	
-	class BoxInfo {public:
+	class BoxInfo {
+	public:
 		btVector3 size;
 		BoxInfo();
 		~BoxInfo();
 	};
-	class SphereInfo {public:
+	class SphereInfo {
+	public:
 		float radius;
 		SphereInfo();
 		~SphereInfo();
 	};
-	class CylindricInfo {public:
+	class CylindricInfo {
+	public:
 		float height;
 		float radius;
 		CylindricInfo();
 		~CylindricInfo();
 	};
-	class ConvexInfo {public:
+	class ConvexInfo {
+	public:
 		std::vector<btVector3> vertices;
 		ConvexInfo();
 		~ConvexInfo();
 	};
-	class TrimeshInfo {public:
+	class TrimeshInfo {
+	public:
 		std::vector<btVector3> vertices;
 		std::vector<int> indices;
 		btTriangleIndexVertexArray *triangleData;
@@ -66,8 +70,7 @@ public:
 	
 	btTransform transform;
 	PrimitiveShape::Type type;
-	union
-	{
+	union {
 		BoxInfo *box;
 		SphereInfo *sphere;
 		CylindricInfo *cylinder;
@@ -99,12 +102,6 @@ public:
 	
 private:
 	
-	std::string name;
-	std::string collisionShapeFileName;
-	
-	std::vector < std::shared_ptr<PrimitiveShape> > primitives;
-	
-	
 	std::shared_ptr<PrimitiveShape> AddPrimitive(PrimitiveShape::Type type);
 	
 	void LoadOBJ(std::istream &stream, std::vector<std::vector<std::vector<btVector3>>> &objects);
@@ -115,6 +112,13 @@ private:
 	void SaveShapeFile(std::ostream &stream);
 	
 	std::shared_ptr<PrimitiveShape> LoadPrimitive(std::istream &stream);
+	
+private:
+	
+	std::string name;
+	std::string collisionShapeFileName;
+	
+	std::vector < std::shared_ptr<PrimitiveShape> > primitives;
 };
 
 #endif
