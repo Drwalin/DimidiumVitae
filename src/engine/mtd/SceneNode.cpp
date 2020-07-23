@@ -21,7 +21,8 @@ irr::scene::IAnimatedMeshSceneNode *SceneNode::New(class Engine *engine, std::sh
 			if(model) {
 				if(model->GetMesh()) {
 					irr::scene::IAnimatedMeshSceneNode *iSceneNode = engine->GetWindow()->GetSceneManager()->addAnimatedMeshSceneNode(model->GetMesh().get());
-					model->SetMaterialsToNode(iSceneNode);
+					if(model->GetDefaultMaterial())
+						model->GetDefaultMaterial()->SetTo(iSceneNode);
 					return iSceneNode;
 				}
 			}
@@ -67,6 +68,12 @@ void SceneNode::DestroyChild(std::shared_ptr<SceneNode> child) {
 	this->iSceneNode->removeChild(child->iSceneNode);
 	child->Destroy();
 	this->children.erase(child);
+}
+
+void SceneNode::SetMaterial(std::shared_ptr<Material> material) {
+	if(material) {
+		material->SetTo(iSceneNode);
+	}
 }
 
 void SceneNode::Init(class Engine *engine, std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode) {

@@ -58,11 +58,8 @@ std::shared_ptr<irr::scene::IAnimatedMesh> Model::GetMesh() {
 	return this->mesh;
 }
 
-void Model::SetMaterialsToNode(irr::scene::ISceneNode *node) const {
-	int merialCount = node->getMaterialCount();
-	for(int i=0; i<merialCount && i<this->materials.size(); ++i)
-		node->getMaterial(i) = this->materials[i];
-	node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+std::shared_ptr<Material> Model::GetDefaultMaterial() const {
+	return defaultMaterial;
 }
 
 Animation Model::GetAnimation(const std::string &animationName) const {
@@ -87,47 +84,14 @@ void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 	this->engine = engine;
 	
 	std::string mtlFileName = GetCoreName(fileName) + ".mtl";
-	this->LoadMaterials(mtlFileName);
+	try {
+		defaultMaterial = engine->GetResourceManager()->GetMaterial(mtlFileName);
+	} catch(...) {
+		defaultMaterial = NULL;
+	}
 	
 	std::string animFileName = GetCoreName(fileName) + ".anim";
 	this->LoadAnimations(animFileName);
-}
-
-void Model::LoadMaterials(const std::string &materialsFileName) {
-	iirrfstream file(this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(materialsFileName.c_str()));
-	if(file && file.good() && !file.eof()) {
-		std::string line;
-		while(file.good() && !file.eof()) {
-			line = "";
-			GetLine(file, line);
-			
-			if(line != "") {
-				if(line.find("newmtl") == 0) {
-					this->materials.resize(this->materials.size() + 1);
-				} else if(line.find("map_K") == 0) {
-					std::string textureFileName = (line.c_str()+7);//GetPathWithoutSlash(materialsFileName) + "/" + (line.c_str()+7);
-					this->materials.back().setTexture(0, this->engine->GetWindow()->GetVideoDriver()->getTexture(textureFileName.c_str()));
-				} else if(line[0] == 'K') {
-					float r, g, b;
-					sscanf(line.c_str()+3, "%f%f%f", &r, &g, &b);
-					switch(line[1]) {
-					case 'a': this->materials.back().AmbientColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 'd': this->materials.back().DiffuseColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 's': this->materials.back().SpecularColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 'e': this->materials.back().EmissiveColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					}
-				} else if(line.find("Ns") == 0) {
-					float s;
-					sscanf(line.c_str()+3, "%f", &s);
-					this->materials.back().Shininess = s;
-				} else if(line.find("illum") == 0) {
-					int il;
-					sscanf(line.c_str()+6, "%i", &il);
-					this->materials.back().Shininess = il;
-				}
-			}
-		}
-	}
 }
 
 void Model::LoadAnimations(const std::string &animationsFileName) {
@@ -151,7 +115,6 @@ void Model::LoadAnimations(const std::string &animationsFileName) {
 }
 
 void Model::Destroy() {
-	this->materials.clear();
 	this->animations.clear();
 	if(this->mesh)
 		this->mesh.reset();

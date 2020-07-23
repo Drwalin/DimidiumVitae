@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "Model.h"
+#include "Material.h"
 
 class SceneNode {
 public:
@@ -40,6 +41,8 @@ public:
 	void DestroyChild(std::shared_ptr<SceneNode> child);
 	
 	void Destroy();
+	
+	void SetMaterial(std::shared_ptr<Material> material);
 	
 private:
 	

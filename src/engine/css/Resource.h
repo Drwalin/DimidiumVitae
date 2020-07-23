@@ -14,7 +14,7 @@ public:
 	enum ResourceType {
 		SOUND,
 		MODEL,
-		TEXTURE,
+		MATERIAL,
 		COLLISIONSHAPE
 	};
 	

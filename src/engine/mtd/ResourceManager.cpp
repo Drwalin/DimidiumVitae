@@ -33,6 +33,10 @@ std::shared_ptr<Model> ResourceManager::GetModel(const std::string &name) {
 	return std::dynamic_pointer_cast<Model>(GetResource(name));
 }
 
+std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) {
+	return std::dynamic_pointer_cast<Material>(GetResource(name));
+}
+
 ResourceManager::ResourceManager(class Engine *engine, float resourcePersistencyTime) :
 	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName(""), engine(engine) {
 }
@@ -81,15 +85,16 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 	Resource *resource = NULL;
 	try {
 		switch(GetResourceTypeByPath(name)) {
-		case Resource::COLLISIONSHAPE:
-			break;
 		case Resource::MODEL:
 			resource = new Model(engine, name);
 			break;
-		case Resource::TEXTURE:
-			break;
 		case Resource::SOUND:
-		resource = new Sound(name);
+			resource = new Sound(name);
+			break;
+		case Resource::MATERIAL:
+			resource = new Material(engine, name);
+			break;
+		case Resource::COLLISIONSHAPE:
 			break;
 		}
 	} catch(...) {
@@ -107,18 +112,18 @@ void ResourceManager::Remove(const std::vector<std::string> &toRemove) {
 
 Resource::ResourceType ResourceManager::GetResourceTypeByPath(const std::string &name) {
 	std::string extension = GetExtension(name);
-	const static std::set<std::string> textureExtensions({"png", "jpg", "tga", "bmp"});
+	const static std::set<std::string> materialExtensions({"mtl"});
 	const static std::set<std::string> graphicMeshExtensions({"x", "dae", "obj"});
 	const static std::set<std::string> collisionMeshExtensions({"shape"});
 	const static std::set<std::string> soundExtensions({"wav", "ogg"});
-	if(collisionMeshExtensions.count(extension) > 0)
-		return Resource::COLLISIONSHAPE;
 	if(graphicMeshExtensions.count(extension) > 0)
 		return Resource::MODEL;
-	if(textureExtensions.count(extension) > 0)
-		return Resource::TEXTURE;
 	if(soundExtensions.count(extension) > 0)
 		return Resource::SOUND;
+	if(materialExtensions.count(extension) > 0)
+		return Resource::MATERIAL;
+	if(collisionMeshExtensions.count(extension) > 0)
+		return Resource::COLLISIONSHAPE;
 	return Resource::MODEL;
 }
 

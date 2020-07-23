@@ -25,6 +25,7 @@
 #include "../lib/AR.hpp"
 
 #include "Resource.h"
+#include "Material.h"
 
 class Animation {
 public:
@@ -53,11 +54,10 @@ public:
 	~Model();
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
-	void SetMaterialsToNode(irr::scene::ISceneNode *node) const;
+	std::shared_ptr<Material> GetDefaultMaterial() const;
 	Animation GetAnimation(const std::string &animationName) const;
 	
 	void LoadMesh(class Engine *engine, const std::string &objFileName);
-	void LoadMaterials(const std::string &materialsFileName);
 	void LoadAnimations(const std::string &animationsFileName);
 	
 	void Destroy();
@@ -67,7 +67,7 @@ public:
 private:
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
-	std::vector < irr::video::SMaterial > materials;
+	std::shared_ptr<Material> defaultMaterial;
 	std::map < std::string, Animation > animations;
 	
 	class Engine *engine;
