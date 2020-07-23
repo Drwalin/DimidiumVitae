@@ -24,6 +24,8 @@
 #include "../lib/Debug.h"
 #include "../lib/AR.hpp"
 
+#include "Resource.h"
+
 class Animation {
 public:
 	
@@ -44,24 +46,23 @@ private:
 	int endFrame;
 };
 
-class Model {
+class Model : public Resource {
 public:
 	
-	Model(Model *other);
-	Model();
+	Model(class Engine* engine, const std::string &name);
 	~Model();
-	
-	void SetName(std::string name);
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
 	void SetMaterialsToNode(irr::scene::ISceneNode *node) const;
 	Animation GetAnimation(const std::string &animationName) const;
 	
-	bool LoadMesh(class Engine *engine, const std::string &objFileName);
-	bool LoadMaterials(const std::string &materialsFileName);
-	bool LoadAnimations(const std::string &animationsFileName);
+	void LoadMesh(class Engine *engine, const std::string &objFileName);
+	void LoadMaterials(const std::string &materialsFileName);
+	void LoadAnimations(const std::string &animationsFileName);
 	
 	void Destroy();
+	
+	virtual Resource::ResourceType GetResourceType() const override;
 	
 private:
 	
@@ -70,9 +71,6 @@ private:
 	std::map < std::string, Animation > animations;
 	
 	class Engine *engine;
-	
-	std::string name;
-	std::string fileName;
 };
 
 #endif

@@ -74,34 +74,26 @@ Animation Model::GetAnimation(const std::string &animationName) const {
 	return Animation(0, 0, 0);
 }
 
-void Model::SetName(std::string name) {
-	this->name = name;
-}
-
-bool Model::LoadMesh(Engine *engine, const std::string &fileName) {
+void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 	this->Destroy();
 	if(engine == NULL)
-		return false;
+		throw (int)1;
 	
 	irr::scene::IAnimatedMesh *newMesh = engine->GetWindow()->GetSceneManager()->getMesh(fileName.c_str());
 	if(newMesh == NULL)
-		return false;
+		throw (int)2;
 	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [engine](irr::scene::IAnimatedMesh*ptr) {engine->GetWindow()->GetSceneManager()->getMeshCache()->removeMesh(ptr);});
 	
-	this->fileName = fileName;
 	this->engine = engine;
 	
-	std::string mtlFileName = GetCoreName(this->fileName) + ".mtl";
+	std::string mtlFileName = GetCoreName(fileName) + ".mtl";
 	this->LoadMaterials(mtlFileName);
 	
-	std::string animFileName = GetCoreName(this->fileName) + ".anim";
-	bool anim = this->LoadAnimations(animFileName);
-	printf(anim ? "\nAnimation loaded: %s" : "\nAimation not loaded: %s", animFileName.c_str());
-	
-	return true;
+	std::string animFileName = GetCoreName(fileName) + ".anim";
+	this->LoadAnimations(animFileName);
 }
 
-bool Model::LoadMaterials(const std::string &materialsFileName) {
+void Model::LoadMaterials(const std::string &materialsFileName) {
 	iirrfstream file(this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(materialsFileName.c_str()));
 	if(file && file.good() && !file.eof()) {
 		std::string line;
@@ -135,12 +127,10 @@ bool Model::LoadMaterials(const std::string &materialsFileName) {
 				}
 			}
 		}
-		return true;
 	}
-	return false;
 }
 
-bool Model::LoadAnimations(const std::string &animationsFileName) {
+void Model::LoadAnimations(const std::string &animationsFileName) {
 	iirrfstream file(this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(animationsFileName.c_str()));
 	if(file && file.good() && !file.eof()) {
 		std::string name;
@@ -154,13 +144,10 @@ bool Model::LoadAnimations(const std::string &animationsFileName) {
 			file >> start;
 			file >> end;
 			file >> duration;
-			printf("\n '%s' '%i' '%i' '%f'", name.c_str(), start, end, duration);
 			if(!(name == "" || start < 0 || end < 0 || duration < 0))
 				this->animations[name] = Animation(start, end, duration);
 		}
-		return true;
 	}
-	return false;
 }
 
 void Model::Destroy() {
@@ -170,29 +157,19 @@ void Model::Destroy() {
 		this->mesh.reset();
 	this->mesh = NULL;
 	this->engine = NULL;
-	this->name = "";
-	this->fileName = "";
 }
 
-Model::Model(Model *other) {
-	if(this->mesh)
-		this->mesh.reset();
-	if(other) {
-		this->mesh = other->mesh;
-		this->materials = other->materials;
-		this->engine = other->engine;
-		this->name = other->name;
-		this->fileName = other->fileName;
-		this->animations = other->animations;
-	}
-}
-
-Model::Model() {
-	this->engine = NULL;
+Model::Model(Engine *engine, const std::string &name) :
+	Resource(name) {
+	LoadMesh(engine, name);
 }
 
 Model::~Model() {
 	this->Destroy();
+}
+
+Resource::ResourceType Model::GetResourceType() const {
+	return Resource::MODEL;
 }
 
 #endif

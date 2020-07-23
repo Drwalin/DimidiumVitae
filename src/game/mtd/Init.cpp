@@ -34,7 +34,6 @@ extern "C" int Init(int argc, char ** argv) {
 	
 	LoadModules(engine, "modules.list");
 	
-	LoadMeshes(engine, "media/models.list");
 	LoadShapes(engine, "media/shapes.list");
 	LoadSounds(engine, "media/sounds.list");
 	
@@ -47,7 +46,7 @@ extern "C" int Init(int argc, char ** argv) {
 	{
 		// create animated bow
 		std::shared_ptr<Entity> animatedBow = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetCollisionShapeManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
-		animatedBow->SetModel(engine->GetModel("AnimatedBow"));
+		animatedBow->SetModel(std::dynamic_pointer_cast<Model>(engine->GetResourceManager()->GetResource("Models/Bow02.x")));
 		animatedBow->GetBody()->setFriction(0.75);
 		animatedBow->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
 		animatedBow->GetSceneNode()->GetISceneNode()->setAnimationSpeed(24.0f);
@@ -64,19 +63,19 @@ extern "C" int Init(int argc, char ** argv) {
 		for(float x = -100; x<=100.1; x+=24) {
 			for(float z = -100; z<=100.1; z+=24) {
 				std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap" + std::to_string(x) + "_" + std::to_string(z), engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,0,z)), 100000000.0f);
-				map->SetModel(engine->GetModel("TestMap"));
+				map->SetModel(std::dynamic_pointer_cast<Model>(engine->GetResourceManager()->GetResource("Models/TechDemoMap.x")));
 				map->SetScale(btVector3(1, 1, 1)*mapGridScale);
 			}
-		}
+		}/*
 		std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
-		map->SetModel(engine->GetModel("TestMap"));
+		map->SetModel(std::dynamic_pointer_cast<Model>(engine->GetResourceManager()->GetResource("Models/TechDemoMap.x")));
 		map->SetScale(btVector3(3, 3, 3));
-		
+		*/
 		for(float x = -10; x<=10.1; x+=10) {
 			for(float y = 30; y<=75.1; y+=3.5f) {
 				for(float z = -10; z<=10.1; z+=10) {
 					std::shared_ptr<Entity> box = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", engine->GetCollisionShapeManager()->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
-					box->SetModel(engine->GetModel("Crate01"));
+					box->SetModel(std::dynamic_pointer_cast<Model>(engine->GetResourceManager()->GetResource("Models/Crate01.obj")));
 					box->SetScale(btVector3(0.8, 2.5, 0.8)*0.5f);
 				}
 			}

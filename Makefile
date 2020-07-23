@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS = $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Og -pg
 CXXFLAGS = $(CFLAGS) -std=c++17
 
-GAMEOBJ_ = Character.o Event.o GetVersion.o MeshLoader.o ModulesLoader.o Init.o Player.o ShapesLoader.o SoundsLoader.o
+GAMEOBJ_ = Character.o Event.o GetVersion.o ModulesLoader.o Init.o Player.o ShapesLoader.o SoundsLoader.o
 GAMEOBJ = $(addprefix .$(S)bin$(S),$(GAMEOBJ_))
 
 ENGOBJ_ = Camera.o ClassFactoryBase.o CollisionObjectManager.o CollisionShapeConstructor.o CollisionShapeManager.o DllImporter.o DynamicEntity.o Engine.o EngineRayTraceData.o Entity.o EventReceiverIrrlicht.o EventResponser.o GUI.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o SceneNode.o SoundEngine.o StaticEntity.o StlStreamExtension.o StringToEnter.o TimeCounter.o Trigger.o Wav.o World.o Window.o Resource.o ResourceManager.o
@@ -45,9 +45,8 @@ run: compile
 
 .PHONY: clean
 clean:
-	@$(RM) .$(S)game$(EXTEXECUTABLE)
-	@$(RM) .$(S)engine$(EXTSHARED)
-	@$(RM) .$(S)game-core$(EXTSHARED)
-	@$(RM) .$(S)dlls$(S)*$(EXTSHARED)
-	@$(RM) .$(S)bin$(S)*.o
-	@$(RM) .$(S)*$(EXTSHARED)
+	$(RM) .$(S)game$(EXTEXECUTABLE)
+	$(RM) .$(S)engine$(EXTSHARED)
+	$(RM) .$(S)game-core$(EXTSHARED)
+	$(RM) .$(S)*$(EXTSHARED)
+	$(RM) .$(S)bin$(S)*.o

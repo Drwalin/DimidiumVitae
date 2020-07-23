@@ -26,6 +26,7 @@
 #include "EventResponser.h"
 #include "CollisionShapeManager.h"
 #include "SoundEngine.h"
+#include "ResourceManager.h"
 
 #include <dll/ClassFactory.h>
 
@@ -82,10 +83,9 @@ public:
 	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
 	
 	void AttachCameraToEntity(const std::string &name, btVector3 location);
-	bool SetCustomModelName(const std::string &name, std::shared_ptr<Model> mdl);
 	
-	std::shared_ptr<Model> LoadModel(const std::string &name);
-	std::shared_ptr<Model> GetModel(const std::string &name);
+	ResourceManager* GetResourceManager();
+	
 	std::shared_ptr<Entity> GetEntity(const std::string &name);
 	
 	int CalculateNumberOfSimulationsPerFrame(const float deltaTime);
@@ -116,6 +116,7 @@ private:
 	CollisionShapeManager *collisionShapeManager;
 	SoundsManager *soundsManager;
 	SoundEngine *soundEngine;
+	ResourceManager *resourceManager;
 	
 	std::map < std::string, std::shared_ptr<Model> > models;
 	std::map < std::string, std::shared_ptr<Entity> > entities;

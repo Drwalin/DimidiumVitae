@@ -187,41 +187,8 @@ void Engine::AttachCameraToEntity(const std::string &name, btVector3 location) {
 	this->GetCamera()->SetRelativePosition(location);
 }
 
-bool Engine::SetCustomModelName(const std::string &name, std::shared_ptr<Model> mdl) {
-	auto it = this->models.find(name);
-	if(it == this->models.end()) {
-		this->models[name] = mdl;
-		return true;
-	}
-	return false;
-}
-
-std::shared_ptr<Model> Engine::LoadModel(const std::string &name) {
-	auto it = this->models.find(name);
-	if(it != this->models.end()) {
-		if(it->second) {
-			return it->second;
-		}
-		else {
-			this->models.erase(it);
-		}
-	}
-	else {
-		std::shared_ptr<Model> mdl(new Model);
-		if(mdl->LoadMesh(this, name) == false) {
-			mdl.reset();
-			return std::shared_ptr<Model>();
-		}
-		else {
-			this->models[name] = mdl;
-			return mdl;
-		}
-	}
-	return std::shared_ptr<Model>();
-}
-
-std::shared_ptr<Model> Engine::GetModel(const std::string &name) {
-	return this->LoadModel(name);
+ResourceManager* Engine::GetResourceManager() {
+	return resourceManager;
 }
 
 std::shared_ptr<Entity> Engine::GetEntity(const std::string &name) {
@@ -270,6 +237,7 @@ void Engine::Init(EventResponser *eventResponser, const std::string &windowName,
 	this->window->Init(this, windowName, iconFile, width, height, this->event, fullscreen);
 	this->soundEngine = new SoundEngine();
 	this->soundsManager = new SoundsManager();
+	this->resourceManager = new ResourceManager(this, 60.0f);
 	
 	this->window->HideMouse();
 	this->window->LockMouse();
@@ -333,6 +301,11 @@ void Engine::Destroy() {
 		this->soundsManager = NULL;
 	}
 	
+	if(this->resourceManager) {
+		delete this->resourceManager;
+		this->resourceManager = NULL;
+	}
+	
 	if(this->soundEngine) {
 		delete this->soundEngine;
 		this->soundEngine = NULL;
@@ -342,6 +315,7 @@ void Engine::Destroy() {
 }
 
 Engine::Engine() {
+	this->resourceManager = NULL;
 	this->event = NULL;
 	this->world = NULL;
 	this->window = NULL;

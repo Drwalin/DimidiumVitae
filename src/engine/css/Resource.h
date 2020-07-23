@@ -5,58 +5,31 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-#include <atomic>
+#include <memory>
+#include <string>
 
 class Resource {
 public:
 	
-	~Resource();
-	
 	enum ResourceType {
 		SOUND,
+		MODEL,
 		TEXTURE,
-		GRAPHICMESH,
 		COLLISIONSHAPE
 	};
 	
-	int IncrementCounter();
-	int DecrementCounter();
-	int GetCounter() const;
+	~Resource();
 	
-	float LastUsedSecondsAgo() const;
-	void UpdateLastUsage();
+	const std::string& GetName() const;
+	virtual ResourceType GetResourceType() const =0;
 	
 protected:
 	
-	Resource(ResourceType type);
+	Resource(const std::string &name);
 	
 private:
 	
-	const ResourceType type;
-	
-private:
-	
-	std::atomic<int> references;
-	int lastTimeUsedStamp;
-};
-
-class ResourceRef {
-public:
-	
-	ResourceRef();
-	ResourceRef(Resource *resource);
-	ResourceRef(ResourceRef &other);
-	ResourceRef(ResourceRef &&other);
-	ResourceRef(const ResourceRef &other);
-	ResourceRef &operator=(ResourceRef &other);
-	
-	Resource *Get();
-	
-	~ResourceRef();
-	
-private:
-	
-	Resource *resource;
+	const std::string name;
 };
 
 #endif

@@ -10,28 +10,31 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 
 class ResourceManager {
 public:
 	
-	ResourceRef GetResource(const std::string &path);
+	ResourceManager(class Engine *engine, float resourcePersistencyTime);
 	
-	ResourceManager(float resourcePersistencyTime);
+	std::shared_ptr<Resource> GetResource(const std::string &name);
 	
-	void ResourceFreeingCycle(int iterations = 1);
+	void ResourceFreeingCycle(int iterations = 16);
 	void FreeAllUnused();
 	
-	static Resource::ResourceType GetResourceTypeByPath(const std::string &path);
+	static Resource::ResourceType GetResourceTypeByPath(const std::string &name);
 	
 private:
 	
+	Resource* LoadResource(const std::string &name);
 	void Remove(const std::vector<std::string> &toRemove);
 	
 private:
 	
+	class Engine *engine;
 	float resourcePersistencyTime;
-	std::string lastIteratedPath;
-	std::map<std::string, ResourceRef> resources;
+	std::string lastIteratedName;
+	std::map<std::string, std::pair<std::shared_ptr<Resource>, float>> resources;
 };
 
 #endif

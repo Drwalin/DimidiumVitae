@@ -5,36 +5,32 @@ Testing/debugging/bugs:
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything)
 	Sometimes undefined coordinates while starting game (randomly)
+	ResourceManager garbage collector
 	
 
-TODO:
+TO DO:
 	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from JSON
 	Particles
-	NavMesh
 	Multiplayer:
-		divide code sections for: server side or client side
+		divide code sections: server side and client side
 		internet connection:
 			TCP - initialization, events, lossless informations
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
 	Add menu
+	LOD system
+	3D sprites
+	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
+	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManagfer instead
+	SoundSampler as resource and integrate it with ResourceManager
+	Texture class resource, integrate it with ResourceManager
+	Add Material resource class
+	Configurations in json files
+	Map loading system from json
 	
 
-TODO in future:
+TO DO in future:
 	MotionController steps on staircase or low objects
-	
-
-In progress:
-	ResourceManager:
-		garbage collector
-		make sound resource
-		make texture resource
-		make graphical model resource
-		make collision shape constructor resource
-		make collision shape resource
-		make mesh resource (combination of graphical model, collision shape constructor, collision shape)
-	
-
-Pre-alpha features:
+	NavMesh
 	Light maps
 	Dynamic light maps
 	Sound occlusion
@@ -55,4 +51,6 @@ Done:
 	Animations
 	Loading archives from irrlicht file system
 	enable window resizing with fov and aspect correction
+	ResourceManager - garbage collecor
+	Model class resource, integrate it with ResourceManager
 	
