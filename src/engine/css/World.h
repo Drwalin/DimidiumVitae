@@ -35,7 +35,7 @@ enum CollisionDefaultGroups {
 };
 
 enum CollisionDefaultMasks {
-	CollisionDefaultMask = -1,
+	CollisionDefaultMaskAll = ~0,
 	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
 	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger,
 	CollisionDefaultMaskTrigger = CollisionGroupDynamic | CollisionGroupStatic,

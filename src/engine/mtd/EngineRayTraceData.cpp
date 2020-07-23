@@ -7,62 +7,41 @@
 
 #include "../css/Engine.h"
 
-bool Engine::RayTraceData::operator < (const RayTraceData &other) const
-{
-	return distance < other.distance;
-}
-
-Engine::RayTraceData::RayTraceData(btCollisionWorld::AllHitsRayResultCallback &hitData, unsigned id) :
-	distance(10000000000.0) {
-	if(hitData.m_collisionObjects.size() > id && hitData.m_hitNormalWorld.size() > id && hitData.m_hitPointWorld.size() > id) {
-		const btCollisionObject *temp = hitData.m_collisionObjects.at(id);
-		if(temp) {
-			Entity *objectT = (Entity*)(temp->getUserPointer());
-			if(objectT) {
-				entity = objectT->GetEngine()->GetEntity(std::string(objectT->GetName()));
-				begin = hitData.m_rayFromWorld;
-				end = hitData.m_rayToWorld;
-				point = hitData.m_hitPointWorld.at(id);
-				normal = hitData.m_hitNormalWorld.at(id);
-				distance = begin.distance2(point);
-			} else
-				entity = NULL;
-		}
-	} else
-		DEBUG("It shouldn't appear");
-}
-
-Engine::RayTraceData::RayTraceData() :
-	distance(10000000000.0) {
-}
-
-std::shared_ptr<Entity> Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector < std::shared_ptr<Entity> > &ignoreEntities) {
+Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities) {
 	point = normal = btVector3(0,0,0);
 	
-	btCollisionWorld::AllHitsRayResultCallback rayTraceResult(begin, end);
-	world->GetDynamicsWorld()->rayTest(begin, end, rayTraceResult);
-	if(rayTraceResult.hasHit()) {
-		std::set < std::shared_ptr<Entity> > ignoreEntitiesSet(ignoreEntities.begin(), ignoreEntities.end());
-		std::set < RayTraceData > entities;
-		
-		for(int i = 0; i < rayTraceResult.m_collisionObjects.size(); ++i) {
-			RayTraceData hitData(rayTraceResult, i);
-			if(hitData.entity && (hitData.entity->GetRayTraceChannel() &channel)) {
-				if(ignoreEntitiesSet.find(hitData.entity) == ignoreEntitiesSet.end()) {
-					entities.insert(hitData);
+	struct EngineRayResultCallback : public btCollisionWorld::ClosestRayResultCallback {
+		std::set<Entity*> ignoreEntities;
+		int channel;
+		EngineRayResultCallback(btVector3 begin, btVector3 end, const std::vector<Entity*> &ignore, int channel) :
+			ignoreEntities(ignore.begin(), ignore.end()), channel(channel), btCollisionWorld::ClosestRayResultCallback(begin, end) {
+			m_collisionFilterGroup = channel;
+			m_collisionFilterMask = channel;
+		}
+		virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace) {
+			Entity* ent = (Entity*)rayResult.m_collisionObject->getUserPointer();
+			if(ent) {
+				if(ent->HasCommon(channel, channel) == 0) {
+					return 1.0f;
 				}
+				if(ignoreEntities.count(ent) > 0) {
+					return 1.0f;
+				}
+				return btCollisionWorld::ClosestRayResultCallback::addSingleResult(rayResult, normalInWorldSpace);
 			}
+			return 1.0f;
 		}
-		
-		if(entities.size() > 0) {
-			point = entities.begin()->point;
-			normal = entities.begin()->normal;
-			
-			return entities.begin()->entity;
-		}
+	};
+	
+	EngineRayResultCallback rayTraceResult(begin, end, ignoreEntities, channel);
+	world->GetDynamicsWorld()->rayTest(begin, end, rayTraceResult);
+	
+	if(rayTraceResult.hasHit()) {
+		point = rayTraceResult.m_hitPointWorld;
+		normal = rayTraceResult.m_hitNormalWorld;
+		return (Entity*)rayTraceResult.m_collisionObject->getUserPointer();
 	}
-	std::shared_ptr<Entity> ret;
-	return ret;
+	return NULL;
 }
 
 #endif

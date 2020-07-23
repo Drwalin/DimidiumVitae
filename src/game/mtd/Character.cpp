@@ -65,7 +65,6 @@ void Character::Spawn(std::shared_ptr<Entity> self, std::string name, std::share
 	rigidBody->setActivationState(DISABLE_DEACTIVATION);
 	rigidBody->setDamping(0.1, 0.1);
 	
-	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
 	this->SetBody(collisionObject, shape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
 	
 	this->motionController = std::shared_ptr<MotionController>(new MotionController());

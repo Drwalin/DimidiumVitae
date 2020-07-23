@@ -53,4 +53,4 @@ Done:
 	enable window resizing with fov and aspect correction
 	ResourceManager - garbage collecor
 	Model class resource, integrate it with ResourceManager
-	
+	Better ray tracing

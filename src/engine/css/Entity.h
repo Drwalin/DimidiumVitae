@@ -52,9 +52,6 @@ public:
 	
 	const std::string &GetName() const;
 	
-	void SetRayTraceChannel(int src);
-	int GetRayTraceChannel();
-	
 	template <typename T = btCollisionObject >
 	inline std::shared_ptr<T> GetBody() { return std::dynamic_pointer_cast<T>(this->body); }
 	
@@ -79,6 +76,8 @@ public:
 	virtual std::shared_ptr<Entity> New() const = 0;					// allocate memory and calls type constructor
 	virtual std::string GetClassName() const = 0;						// returns type name
 	
+	bool HasCommon(int group, int mask) const;
+	
 protected:
 	
 	class Engine *engine;
@@ -93,7 +92,8 @@ protected:
 	
 	btVector3 scale;
 	
-	int rayTraceChannel;
+	int collisionGroup;
+	int collisionMask;
 	
 	float mass;
 	

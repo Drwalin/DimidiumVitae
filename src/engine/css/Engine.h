@@ -36,25 +36,6 @@ public:
 	Engine();
 	~Engine();
 	
-	class RayTraceData {
-	public:
-		float distance;
-		btVector3 begin, end;
-		btVector3 point, normal;
-		std::shared_ptr<Entity> entity;
-		bool operator < (const RayTraceData &other) const;
-		RayTraceData(btCollisionWorld::AllHitsRayResultCallback &hitData, unsigned id);
-		RayTraceData();
-	};
-	friend RayTraceData;
-	
-	enum RayTraceChannel
-	{
-		NONE = 0,
-		COLLIDING = 1,
-		NOT_TRANSPARENT = 2
-	};
-	
 	int GetNumberOfEntities() const;
 	std::shared_ptr<Entity> GetNewEntityOfType(const std::string &name);
 	bool RegisterType(const std::string &className, const std::string &moduleName, const std::string &modulePath);
@@ -63,30 +44,28 @@ public:
 	void QueueEntityToDestroy(const std::string &name);
 	void DeleteEntity(const std::string &name);
 	
-	std::shared_ptr<Entity> RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector < std::shared_ptr<Entity> > &ignoreEntities);
+	std::string GetAvailableEntityName(const std::string &name);
+	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	std::shared_ptr<Entity> GetEntity(const std::string &name);
 	
-	float GetDeltaTime();
+	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
-	World *GetWorld();
-	Window *GetWindow();
-	SoundEngine *GetSoundEngine();
-	SoundsManager *GetSoundsManager();
-	CollisionShapeManager *GetCollisionShapeManager();
-	
-	void PauseSimulation();
-	void ResumeSimulation();
 	
 	std::shared_ptr<Camera> GetCamera() const;
 	std::shared_ptr<Entity> GetCameraParent() const;
-	
-	std::string GetAvailableEntityName(const std::string &name);
-	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
-	
 	void AttachCameraToEntity(const std::string &name, btVector3 location);
 	
+	float GetDeltaTime();
+	
+	World* GetWorld();
+	Window* GetWindow();
+	SoundEngine* GetSoundEngine();
+	SoundsManager* GetSoundsManager();
+	CollisionShapeManager* GetCollisionShapeManager();
 	ResourceManager* GetResourceManager();
 	
-	std::shared_ptr<Entity> GetEntity(const std::string &name);
+	void PauseSimulation();
+	void ResumeSimulation();
 	
 	int CalculateNumberOfSimulationsPerFrame(const float deltaTime);
 	void SynchronousTick(const float deltaTime);
@@ -118,11 +97,11 @@ private:
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	
-	std::map < std::string, std::shared_ptr<Model> > models;
-	std::map < std::string, std::shared_ptr<Entity> > entities;
-	std::map < std::string, std::shared_ptr<Trigger> > triggerEntities;
+	std::map<std::string, std::shared_ptr<Model> > models;
+	std::map<std::string, std::shared_ptr<Entity> > entities;
+	std::map<std::string, std::shared_ptr<Trigger> > triggerEntities;
 	
-	std::queue < std::string > entitiesQueuedToDestroy;
+	std::queue<std::string> entitiesQueuedToDestroy;
 	
 	TimeCounter guiDrawTime;
 	TimeCounter sceneDrawTime;

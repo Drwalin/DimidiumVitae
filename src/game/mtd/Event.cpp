@@ -166,6 +166,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
 	Player *playerPtr = NULL;
+	Entity* ptemp=NULL;
 	if(player) {
 		character = dynamic_cast<Character*>(((Entity*)(player.get())));
 		playerPtr = dynamic_cast<Player*>(((Entity*)(player.get())));
@@ -195,12 +196,12 @@ void Event::KeyHoldedEvent(int keyCode) {
 			begin = btVector3(0,11.2,0);
 			end = btVector3(0,11.2,300);
 		}
-		temp = this->engine->RayTrace(begin, end, Engine::RayTraceChannel::COLLIDING, point, normal, { player });
-		if(temp) {
-			if(temp->GetName() != "TestMap" && temp->GetName() != "Box") {
-				if(temp->GetBody())
-					temp->GetBody()->activate();
-				this->engine->QueueEntityToDestroy(temp->GetName());
+		ptemp = this->engine->RayTrace(begin, end, CollisionDefaultMaskAll, point, normal, {player.get()});
+		if(ptemp) {
+			if(ptemp->GetName() != "TestMap" && ptemp->GetName() != "Box") {
+				if(ptemp->GetBody())
+					ptemp->GetBody()->activate();
+				this->engine->QueueEntityToDestroy(ptemp->GetName());
 			}
 		}
 		break;

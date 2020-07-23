@@ -117,14 +117,6 @@ btVector3 Entity::GetLocation() const {
 	return this->currentTransform.getOrigin();
 }
 
-void Entity::SetRayTraceChannel(int src) {
-	rayTraceChannel = src;
-}
-
-int Entity::GetRayTraceChannel() {
-	return rayTraceChannel;
-}
-
 const std::string &Entity::GetName() const {
 	return name;
 }
@@ -149,6 +141,8 @@ void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<bt
 	this->collisionShape = shape;
 	this->engine->GetWorld()->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
 	this->body->setUserPointer(this);
+	this->collisionGroup = collisionFilterGroup;
+	this->collisionMask = collisionFilterMask;
 }
 
 void Entity::DestroyBody() {
@@ -207,7 +201,6 @@ void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_p
 	this->collisionShape = collisionShape;
 	this->name = name;
 	this->scale = btVector3(1,1,1);
-	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
 	this->currentTransform = transform;
 }
 
@@ -216,12 +209,17 @@ Entity::Entity() {
 	this->engine = NULL;
 	this->name = "";
 	this->scale = btVector3(1,1,1);
-	this->rayTraceChannel = Engine::RayTraceChannel::COLLIDING | Engine::RayTraceChannel::NOT_TRANSPARENT;
 	this->sceneNode = NULL;
+	this->collisionGroup = 0;
+	this->collisionMask = 0;
 }
 
 Entity::~Entity() {
 	this->Destroy();
+}
+
+bool Entity::HasCommon(int group, int mask) const {
+	return (collisionGroup&mask) | (collisionMask&group);
 }
 
 #endif

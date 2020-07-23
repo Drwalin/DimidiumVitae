@@ -37,8 +37,6 @@ void StaticEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::sh
 	collisionObject->setFriction(0.75);
 	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 	
-	this->rayTraceChannel = Engine::RayTraceChannel::NONE;
-	
 	this->SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
 }
 
