@@ -107,10 +107,6 @@ SoundEngine *Engine::GetSoundEngine() {
 	return this->soundEngine;
 }
 
-SoundsManager *Engine::GetSoundsManager() {
-	return this->soundsManager;
-}
-
 void Engine::PauseSimulation() {
 	this->pausePhysics = true;
 }
@@ -236,7 +232,6 @@ void Engine::Init(EventResponser *eventResponser, const std::string &windowName,
 	this->window = new Window;
 	this->window->Init(this, windowName, iconFile, width, height, this->event, fullscreen);
 	this->soundEngine = new SoundEngine();
-	this->soundsManager = new SoundsManager();
 	this->resourceManager = new ResourceManager(this, 60.0f);
 	
 	this->window->HideMouse();
@@ -296,11 +291,6 @@ void Engine::Destroy() {
 		this->collisionShapeManager = NULL;
 	}
 	
-	if(this->soundsManager) {
-		delete this->soundsManager;
-		this->soundsManager = NULL;
-	}
-	
 	if(this->resourceManager) {
 		delete this->resourceManager;
 		this->resourceManager = NULL;
@@ -321,7 +311,6 @@ Engine::Engine() {
 	this->window = NULL;
 	this->pausePhysics = true;
 	this->collisionShapeManager = NULL;
-	this->soundsManager = NULL;
 	this->soundEngine = NULL;
 }
 

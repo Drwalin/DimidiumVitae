@@ -6,6 +6,8 @@
 #define RESOURCE_MANAGER_H
 
 #include "Resource.h"
+#include "Sound.h"
+#include "Model.h"
 
 #include <string>
 #include <map>
@@ -18,6 +20,8 @@ public:
 	ResourceManager(class Engine *engine, float resourcePersistencyTime);
 	
 	std::shared_ptr<Resource> GetResource(const std::string &name);
+	std::shared_ptr<Sound> GetSound(const std::string &name);
+	std::shared_ptr<Model> GetModel(const std::string &name);
 	
 	void ResourceFreeingCycle(int iterations = 16);
 	void FreeAllUnused();

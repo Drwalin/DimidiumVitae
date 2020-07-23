@@ -6,7 +6,6 @@
 #define RESOURCE_MANAGER_CPP
 
 #include "../css/ResourceManager.h"
-#include "../css/Model.h"
 
 #include "../lib/StdUtil.hpp"
 
@@ -24,6 +23,14 @@ std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) 
 	std::shared_ptr<Resource> ref(resource);
 	resources[name] = std::pair(ref, -1);
 	return ref;
+}
+
+std::shared_ptr<Sound> ResourceManager::GetSound(const std::string &name) {
+	return std::dynamic_pointer_cast<Sound>(GetResource(name));
+}
+
+std::shared_ptr<Model> ResourceManager::GetModel(const std::string &name) {
+	return std::dynamic_pointer_cast<Model>(GetResource(name));
 }
 
 ResourceManager::ResourceManager(class Engine *engine, float resourcePersistencyTime) :
@@ -82,6 +89,7 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 		case Resource::TEXTURE:
 			break;
 		case Resource::SOUND:
+		resource = new Sound(name);
 			break;
 		}
 	} catch(...) {

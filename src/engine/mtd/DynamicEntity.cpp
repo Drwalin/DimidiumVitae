@@ -57,7 +57,7 @@ void DynamicEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::s
 	
 	this->SetBody(collisionObject, shape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
 	
-	this->hitSoundSource = new SoundSource(this->engine->GetSoundsManager()->GetSoundSampler("wood1"));
+	this->hitSoundSource = new SoundSource(this->engine->GetResourceManager()->GetSound("./media/Sounds/wood1.wav"));
 }
 
 void DynamicEntity::Despawn() {

@@ -60,7 +60,6 @@ public:
 	World* GetWorld();
 	Window* GetWindow();
 	SoundEngine* GetSoundEngine();
-	SoundsManager* GetSoundsManager();
 	CollisionShapeManager* GetCollisionShapeManager();
 	ResourceManager* GetResourceManager();
 	
@@ -93,7 +92,6 @@ private:
 	Window *window;
 	EventResponser *event;
 	CollisionShapeManager *collisionShapeManager;
-	SoundsManager *soundsManager;
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	
