@@ -50,7 +50,7 @@ public:
 	void Rotate(btVector3 src);
 	void SetCameraParentTransform(btTransform transform);
 	
-	void SetFOV(float fovRadians);
+	void SetFOV(float fovDegrees);
 	void SetRenderTargetSize(unsigned width, unsigned height);
 	
 private:
@@ -68,7 +68,7 @@ private:
 	
 	btVector3 currentLocation;
 	
-	float fov;
+	float fovDegrees;
 	
 	class Engine *engine;
 };

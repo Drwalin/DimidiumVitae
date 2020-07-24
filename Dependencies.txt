@@ -37,7 +37,8 @@ Windows specific:
 	msvcr100.dll
 	msvcr100_clr0400.dll
 
-
+Json:
+	RapidJSON
 
 
 

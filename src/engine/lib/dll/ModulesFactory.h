@@ -17,14 +17,14 @@ public:
 	ModulesFactory();
 	~ModulesFactory();
 	
-	std::shared_ptr<Dll> GetModule(const char *moduleName);
+	std::shared_ptr<Dll> GetModule(const char *name);
 	
-	std::shared_ptr<Dll> AddModule(const char *moduleName, const char *modulePath);
-	void RemoveModule(const char *moduleName);
+	std::shared_ptr<Dll> AddModule(const char *path);
+	void RemoveModule(const char *name);
 	
 protected:
 	
-	std::map < std::string, std::shared_ptr<Dll> > dlls;
+	std::map<std::string, std::shared_ptr<Dll> > dlls;
 	
 };
 

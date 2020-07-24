@@ -7,27 +7,31 @@
 
 #include "ModulesFactory.h"
 
-std::shared_ptr<Dll> ModulesFactory::GetModule(const char *moduleName) {
-	auto it = this->dlls.find(moduleName);
+#include "../StdUtil.hpp"
+
+std::shared_ptr<Dll> ModulesFactory::GetModule(const char *name) {
+	auto it = this->dlls.find(GetCoreName(name));
 	if(it != this->dlls.end())
 		return it->second;
 	return NULL;
 }
 
-void ModulesFactory::RemoveModule(const char *moduleName) {
-	this->dlls.erase(moduleName);
+void ModulesFactory::RemoveModule(const char *name) {
+	this->dlls.erase(GetCoreName(name));
 }
 
-std::shared_ptr<Dll> ModulesFactory::AddModule(const char *moduleName, const char *modulePath) {
-	auto it = this->dlls.find(std::string(moduleName));
+std::shared_ptr<Dll> ModulesFactory::AddModule(const char *path) {
+	std::string name = GetCoreName(path);
+	auto it = this->dlls.find(name);
 	if(it != this->dlls.end()) {
 		return it->second;
 	}
-	std::shared_ptr<Dll> dll(new Dll(modulePath));
+	std::shared_ptr<Dll> dll(new Dll(path));
 	if(dll->IsValid() == false) {
+		fprintf(stderr, "\n Cannot register module \"%s\" as \"%s\"", path, name.c_str());
 		return NULL;
 	}
-	auto pair = std::make_pair(std::string(moduleName), dll);
+	auto pair = std::make_pair(std::string(name), dll);
 	this->dlls.insert(pair);
 	return dll;
 }

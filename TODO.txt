@@ -1,15 +1,8 @@
 
 
-Testing/debugging/bugs:
-	CollisionShapeConstructor::Clone
-	When entering low-roofed place with very short crouch-key press then character behaves like standing still
-	Executable once locked whole system (needed to cut power to do anything)
-	Sometimes undefined coordinates while starting game (randomly)
-	ResourceManager garbage collector
-	
-
 TO DO:
 	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from JSON
+	Map loading system from json
 	Particles
 	Multiplayer:
 		divide code sections: server side and client side
@@ -18,19 +11,9 @@ TO DO:
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
 	Add menu
 	LOD system
-	3D sprites
+	Sprites in world space
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
-	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManagfer instead
-	Configurations in json files
-	Map loading system from json
-	
-
-TO DO in future:
-	MotionController steps on staircase or low objects
-	NavMesh
-	Light maps
-	Dynamic light maps
-	Sound occlusion
+	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
 	
 
 Done:
@@ -53,3 +36,25 @@ Done:
 	Better ray tracing
 	Sound (previously SoundSampler) as resource and integrate it with ResourceManager
 	Material resource class
+	Configurations in json files
+	
+
+TO DO in future:
+	MotionController steps on staircase or low objects
+	NavMesh
+	Light maps
+	Dynamic light maps
+	Sound occlusion
+	
+
+Bugs:
+	When entering low-roofed place with very short crouch-key press then character behaves like standing still
+	Executable once locked whole system (needed to cut power to do anything)
+	Sometimes undefined coordinates while starting game (randomly)
+	
+
+To test:
+	CollisionShapeConstructor::Clone
+	ResourceManager garbage collector
+	JSON wrapper
+	

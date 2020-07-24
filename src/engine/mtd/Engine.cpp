@@ -7,17 +7,12 @@
 
 #include "../css/Engine.h"
 
+#include <JSON.h>
+
 #include <Debug.h>
 #include <Math.hpp>
 
 #include <cassert>
-
-void Engine::RegisterEngineCoreEntityClasses() {
-	this->RegisterType("StaticEntity", "engine", "./engine");
-	this->RegisterType("DynamicEntity", "engine", "./engine");
-	this->RegisterType("Trigger", "engine", "./engine");
-	this->RegisterType("MotionControllerTrigger", "engine", "./engine");
-}
 
 int Engine::GetNumberOfEntities() const {
 	return this->entities.size();
@@ -29,9 +24,20 @@ std::shared_ptr<Entity> Engine::GetNewEntityOfType(const std::string &name) {
 	return entity;
 }
 
-bool Engine::RegisterType(const std::string &className, const std::string &moduleName, const std::string &modulePath) {
-	this->classFactory.AddModule(moduleName.c_str(), modulePath.c_str());
-	return (bool)this->classFactory.AddClass(className.c_str(), moduleName.c_str());
+bool Engine::RegisterType(const std::string &className, const std::string &moduleName) {
+	if((bool)this->classFactory.AddClass(className.c_str(), moduleName.c_str())) {
+		return true;
+	}
+	MESSAGE(std::string("Cannot register type: ")+className+" from module: "+moduleName);
+	return false;
+}
+
+bool Engine::RegisterModule(const std::string &modulePath) {
+	if((bool)this->classFactory.AddModule(modulePath.c_str())) {
+		return true;
+	}
+	MESSAGE(std::string("Cannot register module: ")+modulePath);
+	return false;
 }
 
 std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
@@ -223,28 +229,56 @@ void Engine::BeginLoop() {
 	this->window->BeginLoop();
 }
 
-void Engine::Init(EventResponser *eventResponser, const std::string &windowName, const std::string &iconFile, int width, int height, bool fullscreen) {
+void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	this->Destroy();
-	this->event = eventResponser;
-	this->event->SetEngine(this);
-	this->world = new World;
-	this->world->Init();
-	this->window = new Window;
-	this->window->Init(this, windowName, iconFile, width, height, this->event, fullscreen);
-	this->soundEngine = new SoundEngine();
-	this->resourceManager = new ResourceManager(this, 60.0f);
-	
-	this->window->HideMouse();
-	this->window->LockMouse();
-	
-	this->collisionShapeManager = new CollisionShapeManager(this);
-	
-	if(this->GetCamera() == NULL) {
-		this->window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, width, height, this->window->GetSceneManager()->addCameraSceneNode())));
-		this->window->GetCamera()->SetFOV(70.0f *Math::PI / 180.0f);
+	try {
+		std::ifstream configfFile(jsonConfigFile ? jsonConfigFile : "defaultEngineConfig.json");
+		JSON json(configfFile);
+		
+		event = eventResponser;
+		event->SetEngine(this);
+		world = new World;
+		world->Init();
+		soundEngine = new SoundEngine();
+		window = new Window;
+		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"]:"", json["width"], json["height"], this->event, json.HasKey("fullscreen")?json["fullscreen"]:false);
+		resourceManager = new ResourceManager(this, json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
+		
+		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
+			window->HideMouse();
+			window->LockMouse();
+		}
+		
+		collisionShapeManager = new CollisionShapeManager(this);
+		
+		if(GetCamera() == NULL) {
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], this->window->GetSceneManager()->addCameraSceneNode())));
+			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
+		}
+		
+		for(auto entry : json["modules"]) {
+			RegisterModule(entry.Value().GetString());
+		}
+		for(auto entry : json["types"]) {
+			RegisterType(entry.Value()["name"], entry.Value()["module"]);
+		}
+		
+		if(json.HasKey("fileArchives")) {
+			irr::io::IFileSystem *fileSystem = window->GetDevice()->getFileSystem();
+			for(auto entry : json["fileArchives"]) {
+				fileSystem->addFileArchive(entry.Value().GetString().c_str(), false, false);
+			}
+		}
+		
+	} catch(const std::string &e) {
+		MESSAGE("Exception while initialising engine: " + e);
+	} catch(const std::exception &e) {
+		MESSAGE(std::string("Exception while initialising engine: ") + e.what());
+	} catch(int e) {
+		MESSAGE(std::string("Exception while initialising engine: ") + std::to_string(e));
+	} catch(...) {
+		MESSAGE("Unknown exception while initialising engine");
 	}
-	
-	this->RegisterEngineCoreEntityClasses();
 }
 
 void Engine::Destroy() {
@@ -316,6 +350,43 @@ Engine::Engine() {
 
 Engine::~Engine() {
 	this->Destroy();
+}
+
+Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities) {
+	point = normal = btVector3(0,0,0);
+	
+	struct EngineRayResultCallback : public btCollisionWorld::ClosestRayResultCallback {
+		std::set<Entity*> ignoreEntities;
+		int channel;
+		EngineRayResultCallback(btVector3 begin, btVector3 end, const std::vector<Entity*> &ignore, int channel) :
+			ignoreEntities(ignore.begin(), ignore.end()), channel(channel), btCollisionWorld::ClosestRayResultCallback(begin, end) {
+			m_collisionFilterGroup = channel;
+			m_collisionFilterMask = channel;
+		}
+		virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace) {
+			Entity* ent = (Entity*)rayResult.m_collisionObject->getUserPointer();
+			if(ent) {
+				if(ent->HasCommon(channel, channel) == 0) {
+					return 1.0f;
+				}
+				if(ignoreEntities.count(ent) > 0) {
+					return 1.0f;
+				}
+				return btCollisionWorld::ClosestRayResultCallback::addSingleResult(rayResult, normalInWorldSpace);
+			}
+			return 1.0f;
+		}
+	};
+	
+	EngineRayResultCallback rayTraceResult(begin, end, ignoreEntities, channel);
+	world->GetDynamicsWorld()->rayTest(begin, end, rayTraceResult);
+	
+	if(rayTraceResult.hasHit()) {
+		point = rayTraceResult.m_hitPointWorld;
+		normal = rayTraceResult.m_hitNormalWorld;
+		return (Entity*)rayTraceResult.m_collisionObject->getUserPointer();
+	}
+	return NULL;
 }
 
 #include "../lib/dll/ClassFactory.cpp"

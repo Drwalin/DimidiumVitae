@@ -83,14 +83,14 @@ void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 	
 	this->engine = engine;
 	
-	std::string mtlFileName = GetCoreName(fileName) + ".mtl";
+	std::string mtlFileName = GetFileWithPathWithoutExtension(fileName) + ".mtl";
 	try {
 		defaultMaterial = engine->GetResourceManager()->GetMaterial(mtlFileName);
 	} catch(...) {
 		defaultMaterial = NULL;
 	}
 	
-	std::string animFileName = GetCoreName(fileName) + ".anim";
+	std::string animFileName = GetFileWithPathWithoutExtension(fileName) + ".anim";
 	this->LoadAnimations(animFileName);
 }
 

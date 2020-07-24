@@ -25,14 +25,7 @@ extern "C" int Init(int argc, char ** argv) {
 	srand(time(NULL));
 	
 	Engine *engine = new Engine;
-	engine->Init(new Event(), "Engine "+GetVersionString(), "", 800, 600, false);
-	
-	irr::io::IFileSystem *fileSystem = engine->GetWindow()->GetDevice()->getFileSystem();
-	fileSystem->addFileArchive("media/Textures.zip", false, false);
-	fileSystem->addFileArchive("media/Models.zip", false, false);
-	fileSystem->addFileArchive("media/Shapes.zip", false, false);
-	
-	LoadModules(engine, "modules.list");
+	engine->Init(new Event(), argc>1 ? argv[1] : NULL);
 	
 	LoadShapes(engine, "media/shapes.list");
 	
@@ -65,11 +58,10 @@ extern "C" int Init(int argc, char ** argv) {
 				map->SetModel(engine->GetResourceManager()->GetModel("Models/TechDemoMap.x"));
 				map->SetScale(btVector3(1, 1, 1)*mapGridScale);
 			}
-		}/*
+		}
 		std::shared_ptr<Entity> map = engine->AddEntity(engine->GetNewEntityOfType("StaticEntity"), "TestMap", engine->GetCollisionShapeManager()->GetCustomShape("TechDemoMap"), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
 		map->SetModel(engine->GetResourceManager()->GetModel("Models/TechDemoMap.x"));
 		map->SetScale(btVector3(3, 3, 3));
-		*/
 		for(float x = -10; x<=10.1; x+=10) {
 			for(float y = 30; y<=75.1; y+=3.5f) {
 				for(float z = -10; z<=10.1; z+=10) {

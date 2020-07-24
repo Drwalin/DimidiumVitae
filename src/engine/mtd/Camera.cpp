@@ -154,10 +154,10 @@ void Camera::SetCameraParentTransform(btTransform transform) {
 	this->UpdateCameraView();
 }
 
-void Camera::SetFOV(float fovRadians) {
-	if(this->fov != fovRadians) {
-		this->fov = fovRadians;
-		this->sceneNode->setFOV(this->fov);
+void Camera::SetFOV(float fovDegrees) {
+	if(this->fovDegrees != fovDegrees) {
+		this->fovDegrees = fovDegrees;
+		this->sceneNode->setFOV(this->fovDegrees*Math::PI/180.0f);
 	}
 }
 
@@ -179,7 +179,7 @@ Camera::Camera(Engine *engine, bool textured, unsigned w, unsigned h, irr::scene
 	this->engine = engine;
 	this->target = NULL;
 	
-	this->fov = 1.22f;
+	this->fovDegrees = 70.0f;
 	
 	this->sceneNode = cameraNode;
 	if(textured)

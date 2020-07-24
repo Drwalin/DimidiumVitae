@@ -1,0 +1,28 @@
+
+{
+	"windowName": "Dimidium Vitae",
+	"iconFile": "",
+	"width": 800,
+	"height": 600,
+	"fullscreen": false,
+	"resourcePersistencyTime": 60,
+	"lockMouse": true,
+	"fov": 70.0,
+	"modules": [
+		"./engine",
+		"./game-core"
+	],
+	"types": [
+		{"module":"engine", "name":"StaticEntity"},
+		{"module":"engine", "name":"DynamicEntity"},
+		{"module":"engine", "name":"Trigger"},
+		{"module":"engine", "name":"MotionControllerTrigger"},
+		{"module":"game-core", "name":"Character"},
+		{"module":"game-core", "name":"Player"}
+	],
+	"fileArchives": [
+		"media/Textures.zip",
+		"media/Models.zip",
+		"media/Shapes.zip"
+	]
+}
