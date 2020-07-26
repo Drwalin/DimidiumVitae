@@ -54,7 +54,7 @@ void Character::Save(std::ostream &stream) const
 	Entity::Save(stream);
 }
 
-void Character::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) {
+void Character::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Entity::Spawn(self, name, shape, transform);
 	
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 15.0f, btVector3(0,0,0));

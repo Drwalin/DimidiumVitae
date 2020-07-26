@@ -24,7 +24,7 @@ run: compile
 	.$(S)game$(EXTEXECUTABLE)
 
 tools: $(ENGOBJ)
-	$(CXX) -o ObjToPhmeshConverter$(EXTEXECUTABLE) $(CXXFLAGS) $(ENGOBJ) $(LIBS) .$(S)engine$(EXTSHARED) $(DIRINCLUDE) .$(S)src$(S)tools$(S)ObjToPhmeshConverter.cpp
+	$(CXX) -o ObjToShapeConverter$(EXTEXECUTABLE) $(CXXFLAGS) $(ENGOBJ) $(LIBS) .$(S)engine$(EXTSHARED) $(DIRINCLUDE) .$(S)src$(S)tools$(S)ObjToShapeConverter.cpp
 
 
 

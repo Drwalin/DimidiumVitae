@@ -33,7 +33,7 @@ public:
 	
 	virtual void Load(std::istream &stream) override;
 	virtual void Save(std::ostream &stream) const override;
-	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) override;
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;

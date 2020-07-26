@@ -28,7 +28,6 @@ void Trigger::NextOverlappingFrame() {
 			}
 		}
 	}
-	this->engine->GetWindow()->GetGUI() << "\n Trigger overlapps: " << ghostObject->getNumOverlappingObjects();
 }
 
 void Trigger::Tick(const float deltaTime) {
@@ -47,7 +46,7 @@ void Trigger::Save(std::ostream &stream) const
 	Entity::Save(stream);
 }
 
-void Trigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) {
+void Trigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Entity::Spawn(self, name, shape, transform);
 	
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateGhostObject(shape, transform);

@@ -72,7 +72,7 @@ void MotionControllerTrigger::NextOverlappingFrame() {
 	this->bottomCollision = false;
 	
 	btVector3 min, max;
-	collisionShape->getAabb(body->getWorldTransform(), min, max);
+	GetBtCollisionShape()->getAabb(body->getWorldTransform(), min, max);
 	this->bottom = min.y();
 	this->top = max.y();
 	float mid = (this->bottom + this->top)*0.5f;
@@ -93,7 +93,7 @@ void MotionControllerTrigger::Save(std::ostream &stream) const
 	Trigger::Save(stream);
 }
 
-void MotionControllerTrigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) {
+void MotionControllerTrigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Trigger::Spawn(self, name, shape, transform);
 }
 

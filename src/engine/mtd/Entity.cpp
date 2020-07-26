@@ -24,8 +24,14 @@ std::shared_ptr<SceneNode> Entity::GetSceneNode() {
 	return this->sceneNode;
 }
 
-std::shared_ptr<btCollisionShape> Entity::GetCollisionShape() {
+std::shared_ptr<CollisionShape> Entity::GetCollisionShape() {
 	return this->collisionShape;
+}
+
+btCollisionShape* Entity::GetBtCollisionShape() const {
+	if(body)
+		return body->getCollisionShape();
+	return NULL;
 }
 
 void Entity::SetTransform(const btTransform &transform) {
@@ -135,7 +141,7 @@ void Entity::SetModel(std::shared_ptr<Model> model) {
 	}
 }
 
-void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
+void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
 	this->DestroyBody();
 	this->body = body;
 	this->collisionShape = shape;
@@ -146,7 +152,9 @@ void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<bt
 }
 
 void Entity::DestroyBody() {
+	btCollisionShape *btCollisionShape = NULL;
 	if(this->body) {
+		btCollisionShape = this->body->getCollisionShape();
 		this->engine->GetWorld()->RemoveBody(this->GetBody<btCollisionObject>());
 		
 		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
@@ -166,10 +174,10 @@ void Entity::DestroyBody() {
 		this->body = NULL;
 	}
 	
-	if(this->collisionShape) {
-		CollisionShape::DestroyBtCollisionShape(collisionShape.get());
-		this->collisionShape.reset();
+	if(btCollisionShape) {
+		CollisionShape::DestroyBtCollisionShape(btCollisionShape);
 	}
+	this->collisionShape = NULL;
 }
 
 void Entity::Destroy() {
@@ -196,7 +204,7 @@ void Entity::Init(Engine *engine) {
 	this->engine = engine;
 }
 
-void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) {
+void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	this->mass = 0.0f;
 	this->collisionShape = collisionShape;
 	this->name = name;

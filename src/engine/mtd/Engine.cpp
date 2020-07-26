@@ -40,7 +40,7 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
+std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
 	if(emptyEntity) {
 		auto it = this->entities.find(name);
 		if(it == this->entities.end()) {

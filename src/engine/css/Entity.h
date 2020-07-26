@@ -22,6 +22,7 @@
 
 #include "Camera.h"
 #include "SceneNode.h"
+#include "CollisionShape.h"
 
 class Entity {
 public:
@@ -44,7 +45,8 @@ public:
 	virtual void SetScale(btVector3 scale);
 	btVector3 GetScale();
 	
-	std::shared_ptr<btCollisionShape> GetCollisionShape();
+	std::shared_ptr<CollisionShape> GetCollisionShape();
+	btCollisionShape* GetBtCollisionShape() const;
 	
 	void SetMass(float mass);
 	
@@ -59,13 +61,13 @@ public:
 	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal);
 	
 	void SetModel(std::shared_ptr<Model> model);
-	void SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<btCollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	void SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
 	
 	void Init(class Engine *engine);
 	
 	virtual void Load(std::istream &stream);
 	virtual void Save(std::ostream &stream) const;
-	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform);
+	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual void Despawn();
 	
 	virtual void Destroy();
@@ -87,7 +89,7 @@ protected:
 	btTransform currentTransform;
 	
 	std::shared_ptr<SceneNode> sceneNode;
-	std::shared_ptr<btCollisionShape> collisionShape;
+	std::shared_ptr<CollisionShape> collisionShape;
 	std::shared_ptr<btCollisionObject> body;
 	
 	btVector3 scale;

@@ -45,7 +45,7 @@ public:
 	void DeleteEntity(const std::string &name);
 	
 	std::string GetAvailableEntityName(const std::string &name);
-	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<btCollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
 	std::shared_ptr<Entity> GetEntity(const std::string &name);
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());

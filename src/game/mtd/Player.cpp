@@ -26,7 +26,7 @@ void Player::Save(std::ostream &stream) const
 	Character::Save(stream);
 }
 
-void Player::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<btCollisionShape> shape, btTransform transform) {
+void Player::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Character::Spawn(self, name, shape, transform);
 }
 
