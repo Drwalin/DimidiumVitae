@@ -9,6 +9,7 @@
 #include "Sound.h"
 #include "Model.h"
 #include "Material.h"
+#include "CollisionShape.h"
 
 #include <string>
 #include <map>
@@ -25,6 +26,12 @@ public:
 	std::shared_ptr<Model> GetModel(const std::string &name);
 	std::shared_ptr<Material> GetMaterial(const std::string &name);
 	
+	std::shared_ptr<CollisionShape> GetCollisionShape(const std::string &name);
+	std::shared_ptr<CollisionShape> GetSphere(float radius);
+	std::shared_ptr<CollisionShape> GetBox(const btVector3 &size);
+	std::shared_ptr<CollisionShape> GetCapsule(float radius, float height);
+	std::shared_ptr<CollisionShape> GetCylinder(float radius, float height);
+	
 	void ResourceFreeingCycle(int iterations = 16);
 	void FreeAllUnused();
 	
@@ -33,6 +40,7 @@ public:
 private:
 	
 	Resource* LoadResource(const std::string &name);
+	Resource* LoadCollisionShape(const std::string &name);
 	void Remove(const std::vector<std::string> &toRemove);
 	
 private:

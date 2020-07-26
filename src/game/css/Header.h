@@ -12,8 +12,6 @@
 
 #include <string>
 
-void LoadShapes(Engine *engine, const std::string &shapesListFileName);
-
 std::string GetVersionString();
 std::string GetVersionReleaseDateString();
 

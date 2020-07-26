@@ -97,10 +97,6 @@ float Engine::GetDeltaTime() {
 	return 1.0f/60.0f;
 }
 
-CollisionShapeManager *Engine::GetCollisionShapeManager() {
-	return this->collisionShapeManager;
-}
-
 World *Engine::GetWorld() {
 	return this->world;
 }
@@ -241,15 +237,13 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		world->Init();
 		soundEngine = new SoundEngine();
 		window = new Window;
-		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"]:"", json["width"], json["height"], this->event, json.HasKey("fullscreen")?json["fullscreen"]:false);
+		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], this->event, json.HasKey("fullscreen")?json["fullscreen"]:false);
 		resourceManager = new ResourceManager(this, json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
 		
 		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
 			window->HideMouse();
 			window->LockMouse();
 		}
-		
-		collisionShapeManager = new CollisionShapeManager(this);
 		
 		if(GetCamera() == NULL) {
 			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], this->window->GetSceneManager()->addCameraSceneNode())));
@@ -319,12 +313,6 @@ void Engine::Destroy() {
 		this->event = NULL;
 	}
 	
-	if(this->collisionShapeManager) {
-		this->collisionShapeManager->Destroy();
-		delete this->collisionShapeManager;
-		this->collisionShapeManager = NULL;
-	}
-	
 	if(this->resourceManager) {
 		delete this->resourceManager;
 		this->resourceManager = NULL;
@@ -344,7 +332,6 @@ Engine::Engine() {
 	this->world = NULL;
 	this->window = NULL;
 	this->pausePhysics = true;
-	this->collisionShapeManager = NULL;
 	this->soundEngine = NULL;
 }
 

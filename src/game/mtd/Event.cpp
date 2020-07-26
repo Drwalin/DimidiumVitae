@@ -108,7 +108,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		
 	case irr::KEY_LBUTTON:
 		euler = this->engine->GetCamera()->GetEulerRotation();
-		temp = this->engine->AddEntity(this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), this->engine->GetCollisionShapeManager()->GetBox(btVector3(1,1,1)), btTransform(this->engine->GetCamera()->GetRotation()/*btQuaternion(-euler.y(),euler.x(),euler.z())*/, this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector()), 20.0f);
+		temp = this->engine->AddEntity(this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Crate"), std::shared_ptr<btCollisionShape>(this->engine->GetResourceManager()->GetBox(btVector3(1,1,1))->GetNewBtCollisionShape()), btTransform(this->engine->GetCamera()->GetRotation(), this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
 			temp->SetModel(engine->GetResourceManager()->GetModel("Models/Crate01.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));
@@ -121,7 +121,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = this->engine->AddEntity(this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), this->engine->GetCollisionShapeManager()->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector()), 20.0f);
+		temp = this->engine->AddEntity(this->engine->GetNewEntityOfType("DynamicEntity"), this->engine->GetAvailableEntityName("Ball"), std::shared_ptr<btCollisionShape>(this->engine->GetResourceManager()->GetSphere(1)->GetNewBtCollisionShape()), btTransform(btQuaternion(btVector3(1,1,1),0), this->engine->GetCamera()->GetWorldPosition() + this->engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
 			temp->SetModel(engine->GetResourceManager()->GetModel("Models/Sphere.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));

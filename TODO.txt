@@ -4,16 +4,16 @@ TO DO:
 	Saving and loading Entities, SceneNodes, btCollisionObjects, btCollisionShapes from JSON
 	Map loading system from json
 	Particles
+	LOD system
+	Sprites in world space
 	Multiplayer:
 		divide code sections: server side and client side
 		internet connection:
 			TCP - initialization, events, lossless informations
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
-	Add menu
-	LOD system
-	Sprites in world space
+	Add main menu, pause menu, menu system, comfortable GUI system
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
-	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
+	Add TryBox and TryCylinder to ObjToShapeConverter
 	
 
 Done:
@@ -37,6 +37,7 @@ Done:
 	Sound (previously SoundSampler) as resource and integrate it with ResourceManager
 	Material resource class
 	Configurations in json files
+	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
 	
 
 TO DO in future:

@@ -24,7 +24,6 @@
 #include "World.h"
 #include "Window.h"
 #include "EventResponser.h"
-#include "CollisionShapeManager.h"
 #include "SoundEngine.h"
 #include "ResourceManager.h"
 
@@ -61,7 +60,6 @@ public:
 	World* GetWorld();
 	Window* GetWindow();
 	SoundEngine* GetSoundEngine();
-	CollisionShapeManager* GetCollisionShapeManager();
 	ResourceManager* GetResourceManager();
 	
 	void PauseSimulation();
@@ -92,7 +90,6 @@ private:
 	World *world;
 	Window *window;
 	EventResponser *event;
-	CollisionShapeManager *collisionShapeManager;
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	

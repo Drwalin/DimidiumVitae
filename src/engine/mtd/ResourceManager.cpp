@@ -7,7 +7,8 @@
 
 #include "../css/ResourceManager.h"
 
-#include "../lib/StdUtil.hpp"
+#include <StdUtil.hpp>
+#include <Math.hpp>
 
 #include <set>
 
@@ -21,7 +22,8 @@ std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) 
 	if(resource==NULL)
 		return std::shared_ptr<Resource>(NULL);
 	std::shared_ptr<Resource> ref(resource);
-	resources[name] = std::pair(ref, -1);
+	if(ref->GetName() != "")
+		resources[name] = std::pair(ref, -1);
 	return ref;
 }
 
@@ -36,6 +38,49 @@ std::shared_ptr<Model> ResourceManager::GetModel(const std::string &name) {
 std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) {
 	return std::dynamic_pointer_cast<Material>(GetResource(name));
 }
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::string &name) {
+	return std::dynamic_pointer_cast<CollisionShape>(GetResource(name));
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetSphere(float radius) {
+	JSON json;
+	json.InitObject();
+	json["type"] = "sphere";
+	json["transform"] <<= Math::EmptyTransform;
+	json["radius"] = radius;
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetBox(const btVector3 &size) {
+	JSON json;
+	json.InitObject();
+	json["type"] = "box";
+	json["transform"] <<= Math::EmptyTransform;
+	json["size"] <<= size;
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius, float height) {
+	JSON json;
+	json.InitObject();
+	json["type"] = "capsule";
+	json["transform"] <<= Math::EmptyTransform;
+	json["radius"] = radius;
+	json["height"] = height;
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float height) {
+	JSON json;
+	json.InitObject();
+	json["type"] = "cylinder";
+	json["transform"] <<= Math::EmptyTransform;
+	json["radius"] = radius;
+	json["height"] = height;
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
+}
+
 
 ResourceManager::ResourceManager(class Engine *engine, float resourcePersistencyTime) :
 	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName(""), engine(engine) {
@@ -95,13 +140,29 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 			resource = new Material(engine, name);
 			break;
 		case Resource::COLLISIONSHAPE:
+			resource = LoadCollisionShape(name);
 			break;
 		}
+		return resource;
+	} catch(std::string e) {
+		MESSAGE("\n Excepion while creating Collision shape:" + e);
+	} catch(std::exception e) {
+		MESSAGE("\n Excepion while creating Collision shape:" + std::string(e.what()));
+	} catch(char *e) {
+		MESSAGE("\n Excepion while creating Collision shape:" + std::string(e));
 	} catch(...) {
-		delete resource;
-		return NULL;
+		MESSAGE("\n Unknown exception while creating Collision shape");
 	}
-	return resource;
+	if(resource)
+		delete resource;
+	return NULL;
+}
+
+Resource* ResourceManager::LoadCollisionShape(const std::string &name) {
+	JSON json;
+	std::ifstream file(name);
+	json.Parse(file);
+	return new CollisionShape(name, json);
 }
 
 void ResourceManager::Remove(const std::vector<std::string> &toRemove) {

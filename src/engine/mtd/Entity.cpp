@@ -167,7 +167,7 @@ void Entity::DestroyBody() {
 	}
 	
 	if(this->collisionShape) {
-		this->engine->GetCollisionShapeManager()->DestroyShape(this->collisionShape);
+		CollisionShape::DestroyBtCollisionShape(collisionShape.get());
 		this->collisionShape.reset();
 	}
 }

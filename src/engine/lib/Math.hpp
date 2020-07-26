@@ -20,9 +20,11 @@
 #include <ostream>
 
 #include "../css/GUI.h"
+#include "JSON.h"
 
 namespace Math {
 	const float PI = 3.14159265359f;
+	const btTransform EmptyTransform(btQuaternion(0,0,0,1),btVector3(0,0,0));
 	
 	inline irr::core::vector3d<float> GetIrrVec(const btVector3 &vec) {
 		return irr::core::vector3d<float>(-vec.x(), vec.y(), vec.z());
@@ -46,6 +48,62 @@ namespace Math {
 };
 
 
+inline JSON operator<<=(JSON json, const btVector3 &point) {
+	json.InitArray();
+	if(point.x()!=0.0 || point.y()!=0.0 || point.z()!=0.0) {
+		json[0] = point.x();
+		json[1] = point.y();
+		json[2] = point.z();
+	}
+	return json;
+}
+inline JSON operator<<=(JSON json, const btQuaternion &rotation) {
+	json.InitArray();
+	if(rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
+		json[0] = rotation.x();
+		json[1] = rotation.y();
+		json[2] = rotation.z();
+		json[3] = rotation.w();
+	}
+	return json;
+}
+inline JSON operator<<=(JSON json, const btTransform &transform) {
+	json.InitArray();
+	btVector3 point = transform.getOrigin();
+	btQuaternion rotation = transform.getRotation();
+	if(point.x()!=0.0 || point.y()!=0.0 || point.z()!=0.0 || rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
+		json[0] <<= point;
+		json[1] <<= rotation;
+	}
+	return json;
+}
+
+inline btVector3& operator<<=(btVector3 &point, const JSON json) {
+	if(json.Size() != 0) {
+		point = btVector3(json[0], json[1], json[2]);
+	} else {
+		point = btVector3(0, 0, 0);
+	}
+	return point;
+}
+inline btQuaternion& operator<<=(btQuaternion &rotation, const JSON json) {
+	if(json.Size() != 0) {
+		rotation = btQuaternion(json[0], json[1], json[2], json[3]);
+	} else {
+		rotation = btQuaternion(0, 0, 0, 1);
+	}
+	return rotation;
+}
+inline btTransform& operator<<=(btTransform &transform, const JSON json) {
+	if(json.Size() != 2) {
+		transform = Math::EmptyTransform;
+	} else {
+		btVector3 point; point <<= json[0];
+		btQuaternion rotation; rotation <<= json[1];
+		transform = btTransform(rotation, point);
+	}
+	return transform;
+}
 
 inline std::istream& operator >> (std::istream &stream, btVector3 &point) {
 	float x, y, z;

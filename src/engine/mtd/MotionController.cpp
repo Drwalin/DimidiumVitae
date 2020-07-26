@@ -29,12 +29,12 @@ void MotionController::Init(class Engine *engine, std::shared_ptr<Entity> charac
 			this->triggerHigh = std::dynamic_pointer_cast<MotionControllerTrigger>(
 					this->engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
-					engine->GetCollisionShapeManager()->GetCapsule(this->characterRadius, this->characterStandingHeight),
+					std::shared_ptr<btCollisionShape>(engine->GetResourceManager()->GetCapsule(this->characterRadius, this->characterStandingHeight)->GetNewBtCollisionShape()),
 					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
 			this->triggerLow = std::dynamic_pointer_cast<MotionControllerTrigger>(
 					this->engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
-					engine->GetCollisionShapeManager()->GetCapsule(this->characterRadius, this->characterCrouchingHeight),
+					std::shared_ptr<btCollisionShape>(engine->GetResourceManager()->GetCapsule(this->characterRadius, this->characterStandingHeight)->GetNewBtCollisionShape()),
 					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
 			this->triggerHigh->Init(characterEntity, this->triggerLow, this->stepHeight);
 			this->triggerLow->Init(characterEntity, this->triggerHigh, this->stepHeight);

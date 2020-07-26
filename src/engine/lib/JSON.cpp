@@ -11,6 +11,8 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
 
+#include <cmath>
+
 using namespace rapidjson;
 
 #include "JSON.h"
@@ -27,9 +29,9 @@ CrtAllocator& __GetJSONStackAllocator() {
 
 
 template<>
-JSON::Iterator<JSON>::Iterator(JSON json) : id(0), json(json) {}
+JSON::Iterator<JSON>::Iterator(JSON &json) : id(0), json(json) {}
 template<>
-JSON::Iterator<JSON>::Iterator(JSON json, uint64_t id) : id(id), json(json) {}
+JSON::Iterator<JSON>::Iterator(JSON &json, uint64_t id) : id(id), json(json) {}
 template<>
 JSON::Iterator<JSON>::~Iterator() {}
 
@@ -65,25 +67,84 @@ std::string JSON::Iterator<JSON>::Name() const {
 }
 template<>
 JSON::Iterator<JSON> JSON::Iterator<JSON>::operator*() {
-	return *this;/*
+	return *this;
+}
+
+
+
+
+
+
+
+
+
+
+
+template<>
+JSON::ConstIterator<JSON>::ConstIterator(const JSON &json) : id(0), json(json) {}
+template<>
+JSON::ConstIterator<JSON>::ConstIterator(const JSON &json, uint64_t id) : id(id), json(json) {}
+template<>
+JSON::ConstIterator<JSON>::~ConstIterator() {}
+
+template<>
+void JSON::ConstIterator<JSON>::operator++(void) {++id;}
+template<>
+void JSON::ConstIterator<JSON>::operator++(int) {id++;}
+
+template<>
+bool JSON::ConstIterator<JSON>::operator==(const ConstIterator &other) const {return id==other.id && json.ref==other.json.ref;}
+template<>
+bool JSON::ConstIterator<JSON>::operator!=(const ConstIterator &other) const {return id!=other.id || json.ref!=other.json.ref;}
+
+template<>
+const JSON JSON::ConstIterator<JSON>::Value() const {
 	if(json.IsArray()) {
 		return JSON(&(*(json.ref->Begin()+id)), REFERENCE);
+	} else if(json.IsObject()) {
+		return JSON(&((json.ref->MemberBegin()+id)->value), REFERENCE);
 	} else {
-		throw std::string(std::string("JSON is not an array " __FILE__ ":")+std::to_string(__LINE__));
+		throw std::string(std::string("JSON is not an array or object " __FILE__ ":")+std::to_string(__LINE__));
 	}
-	return JSON();*/
+	return JSON();
 }
+template<>
+std::string JSON::ConstIterator<JSON>::Name() const {
+	if(json.IsObject()) {
+		return (json.ref->MemberBegin()+id)->name.GetString();
+	} else {
+		throw std::string(std::string("JSON is not an object " __FILE__ ":")+std::to_string(__LINE__));
+	}
+	return "";
+}
+template<>
+JSON::ConstIterator<JSON> JSON::ConstIterator<JSON>::operator*() {
+	return *this;
+}
+
+
+
+
+
+
+
+
+
 
 
 
 JSON::Iterator<JSON> JSON::begin() {
 	return JSON::Iterator<JSON>(*this, 0);
 }
-
 JSON::Iterator<JSON> JSON::end() {
 	return JSON::Iterator<JSON>(*this, Size());
 }
-
+JSON::ConstIterator<JSON> JSON::begin() const {
+	return JSON::ConstIterator<JSON>(*this, 0);
+}
+JSON::ConstIterator<JSON> JSON::end() const {
+	return JSON::ConstIterator<JSON>(*this, Size());
+}
 
 
 JSON::JSON() {
@@ -92,13 +153,26 @@ JSON::JSON() {
 }
 
 JSON::JSON(const JSON &other) {
-	type = REFERENCE;
 	ref = other.ref;
+	if(ref)
+		type = REFERENCE;
+	else
+		type = NONE;
+}
+
+JSON::JSON(JSON &&other) {
+	ref = other.ref;
+	type = other.type;
+	other.ref = NULL;
+	other.type = NONE;
 }
 
 JSON::JSON(void *ptr, ReferenceType referenceType) {
 	ref = (RAPIDJSON_TYPE*)ptr;
-	type = referenceType;
+	if(ref)
+		type = referenceType;
+	else
+		type = NONE;
 }
 
 JSON::JSON(const char *jsonString) {
@@ -159,47 +233,55 @@ JSON& JSON::operator=(const std::string &value) {
 	SetString(value);
 	return *this;
 }
-JSON& JSON::operator=(const JSON &value) {
-	Destroy();
-	if(value.ref) {
-		type = REFERENCE;
-		ref = value.ref;
+JSON& JSON::operator=(const JSON &value) {	// copy value to current pointer, or make PRIMARY pointer
+	if(ref == NULL) {
+		ref = new RAPIDJSON_TYPE(*value.ref, __GetJSONPoolAllocator());
+		type = PRIMARY;
+	} else {
+		ref->CopyFrom(*value.ref, __GetJSONPoolAllocator());
 	}
+	return *this;
+}
+JSON& JSON::operator<<=(const JSON &value) {	// make reference to value.ref
+	Destroy();
+	if(ref = value.ref)
+		type = REFERENCE;
+	else
+		type = NONE;
 	return *this;
 }
 
 void JSON::Parse(const char *jsonString) {
-	Destroy();
-	type = PRIMARY;
-	Document *document = new Document(kNullType, &(__GetJSONPoolAllocator()), 256, &(__GetJSONStackAllocator()));
-	ref = document;
-	document->Parse(jsonString);
+	if(ref == NULL) {
+		type = PRIMARY;
+		ref = new RAPIDJSON_TYPE();
+	}
+	Document document(kNullType, &(__GetJSONPoolAllocator()), 256, &(__GetJSONStackAllocator()));
+	document.Parse(jsonString);
+	ref->Swap(document);
 }
 void JSON::Parse(const std::string &jsonString) {
-	Destroy();
-	type = PRIMARY;
-	Document *document = new Document(kNullType, &(__GetJSONPoolAllocator()), 256, &(__GetJSONStackAllocator()));
-	ref = document;
-	document->Parse(jsonString.c_str());
+	Parse(jsonString.c_str());
 }
 
 void JSON::Parse(std::istream &input) {
-	Destroy();
-	type = PRIMARY;
-	Document *document = new Document(kNullType, &(__GetJSONPoolAllocator()), 256, &(__GetJSONStackAllocator()));
-	ref = document;
+	if(ref == NULL) {
+		type = PRIMARY;
+		ref = new RAPIDJSON_TYPE();
+	}
+	Document document(kNullType, &(__GetJSONPoolAllocator()), 256, &(__GetJSONStackAllocator()));
 	BasicIStreamWrapper istream(input);
-	document->ParseStream(istream);
+	document.ParseStream(istream);
+	ref->Swap(document);
 }
 
 std::string JSON::Write() const {
 	if(ref) {
 		StringBuffer ostream;
 		Writer writer(ostream);
+		writer.SetMaxDecimalPlaces(3);
 		ref->Accept(writer);
 		return std::string(ostream.GetString());
-	} else {
-		std::cerr << "\n Should correct code: " << __FILE__ << ":" << __LINE__ << "\n";
 	}
 	return "";
 }
@@ -208,9 +290,8 @@ void JSON::Write(std::ostream &output) const {
 	if(ref) {
 		BasicOStreamWrapper ostream(output);
 		Writer writer(ostream);
+		writer.SetMaxDecimalPlaces(3);
 		ref->Accept(writer);
-	} else {
-		std::cerr << "\n Should correct code: " << __FILE__ << ":" << __LINE__ << "\n";
 	}
 }
 /*
@@ -221,7 +302,6 @@ std::string JSON::PrettyWrite() const {
 		ref->Accept(writer);
 		return std::string(ostream.GetString());
 	}
-	std::cerr << "\n Should correct code: " << __FILE__ << ":" << __LINE__ << "\n";
 	return "";
 }
 
@@ -231,7 +311,6 @@ void JSON::PrettyWrite(std::ostream &output) const {
 		PrettyWriter writer(ostream);
 		ref->Accept(writer);
 	}
-	std::cerr << "\n Should correct code: " << __FILE__ << ":" << __LINE__ << "\n";
 }
 */
 
@@ -239,6 +318,15 @@ JSON JSON::operator[](uint64_t id) {
 	if(IsArray()) {
 		if(ref->Size() <= id) {
 			Resize(id+1);
+		}
+		return JSON(&(ref->operator[](id)), REFERENCE);
+	}
+	throw std::string(std::string("JSON is not an array " __FILE__ ":")+std::to_string(__LINE__));
+}
+const JSON JSON::operator[](uint64_t id) const {
+	if(IsArray()) {
+		if(ref->Size() <= id) {
+			throw std::string(std::string("JSON trying to access const ARRAY index over it's size. " __FILE__ ":")+std::to_string(__LINE__));
 		}
 		return JSON(&(ref->operator[](id)), REFERENCE);
 	}
@@ -272,7 +360,7 @@ JSON JSON::Back() {
 	}
 	return JSON();
 }
-JSON JSON::Back() const {
+const JSON JSON::Back() const {
 	if(IsArray()) {
 		if(ref->Size()>0) {
 			return JSON(&ref->operator[](ref->Size()-1), REFERENCE);
@@ -292,7 +380,7 @@ JSON JSON::Front() {
 	}
 	return JSON();
 }
-JSON JSON::Front() const {
+const JSON JSON::Front() const {
 	if(IsArray()) {
 		if(ref->Size()>0) {
 			return JSON(&ref->operator[](0), REFERENCE);
@@ -323,10 +411,16 @@ void JSON::Erase(uint64_t id) {
 	}
 }
 void JSON::InitArray() {
-	Destroy();
-	type = PRIMARY;
-	ref = new RAPIDJSON_TYPE(kNullType);
-	ref->SetArray();
+	if(ref == NULL) {
+		ref = new RAPIDJSON_TYPE();
+		type = PRIMARY;
+	}
+	if(ref->IsArray()) {
+		ref->Clear();
+	} else {
+		ref->SetArray();
+	}
+	ref->Reserve(32, __GetJSONPoolAllocator());
 }
 
 uint64_t JSON::Size() const {
@@ -347,27 +441,40 @@ void JSON::Clear() {
 		throw std::string(std::string("JSON is not an array or object " __FILE__ ":")+std::to_string(__LINE__));
 	}
 }
-JSON JSON::operator[](const char*name) {
+
+JSON JSON::operator[](const char *name) {
 	if(IsObject()) {
-		if(ref->HasMember(name)) {
-			return JSON(&ref->operator[](name), REFERENCE);
-		} else {
-			return JSON(&ref->AddMember(RAPIDJSON_TYPE(name, __GetJSONPoolAllocator()), RAPIDJSON_TYPE(kNullType), __GetJSONPoolAllocator()), REFERENCE);
+		if(!ref->HasMember(name)) {
+			ref->AddMember(RAPIDJSON_TYPE(name, __GetJSONPoolAllocator()), RAPIDJSON_TYPE(kNullType), __GetJSONPoolAllocator());
 		}
+		JSON ret(&((*ref)[name]), REFERENCE);
+		return ret;
 	}
 	throw std::string(std::string("JSON is not an object " __FILE__ ":")+std::to_string(__LINE__));
 }
-
 JSON JSON::operator[](const std::string &name) {
 	return this->operator[](name.c_str());
 }
-bool JSON::HasKey(const char *name) {
+const JSON JSON::operator[](const char *name) const {
+	if(IsObject()) {
+		if(!ref->HasMember(name)) {
+			throw std::string(std::string("JSON trying to access const OBJECT key which does not exist. " __FILE__ ":")+std::to_string(__LINE__));
+		}
+		JSON ret(&((*ref)[name]), REFERENCE);
+		return ret;
+	}
+	throw std::string(std::string("JSON is not an object " __FILE__ ":")+std::to_string(__LINE__));
+}
+const JSON JSON::operator[](const std::string &name) const {
+	return this->operator[](name.c_str());
+}
+bool JSON::HasKey(const char *name) const {
 	if(IsObject()) {
 		return ref->HasMember(name);
 	}
 	throw std::string(std::string("JSON is not an object " __FILE__ ":")+std::to_string(__LINE__));
 }
-bool JSON::HasKey(const std::string &name) {
+bool JSON::HasKey(const std::string &name) const {
 	return HasKey(name.c_str());
 }
 void JSON::Erase(const char *name) {
@@ -381,10 +488,15 @@ void JSON::Erase(const std::string &name) {
 	Erase(name.c_str());
 }
 void JSON::InitObject() {
-	Destroy();
-	type = PRIMARY;
-	ref = new RAPIDJSON_TYPE(kNullType);
-	ref->SetObject();
+	if(ref == NULL) {
+		ref = new RAPIDJSON_TYPE();
+		type = PRIMARY;
+	}
+	if(ref->IsObject()) {
+		ref->RemoveAllMembers();
+	} else {
+		ref->SetObject();
+	}
 }
 
 
@@ -424,7 +536,7 @@ JSON::operator bool() const {
 int64_t JSON::GetInt() const {
 	if(IsNumber()) {
 		if(!ref->IsInt64())
-			return (int64_t)ref->GetDouble();
+			return (int64_t)ref->GetFloat();
 		else
 			return ref->GetInt64();
 	} else {
@@ -434,7 +546,7 @@ int64_t JSON::GetInt() const {
 uint64_t JSON::GetUint() const {
 	if(IsNumber()) {
 		if(!ref->IsUint64())
-			return (uint64_t)ref->GetDouble();
+			return (uint64_t)ref->GetFloat();
 		else
 			return ref->GetInt64();
 	} else {
@@ -443,7 +555,7 @@ uint64_t JSON::GetUint() const {
 }
 double JSON::GetFloat() const {
 	if(IsNumber()) {
-		return ref->GetDouble();
+		return ref->GetFloat();
 	} else {
 		throw std::string(std::string("JSON is not a boolean " __FILE__ ":")+std::to_string(__LINE__));
 	}
@@ -482,7 +594,22 @@ void JSON::SetFloat(double value) {
 		type = PRIMARY;
 		ref = new RAPIDJSON_TYPE(kNullType);
 	}
-	ref->SetDouble(value);
+	const double quant = 0.001;
+	const double maxval = 1e21;
+	if(value < -maxval)
+		value = -maxval;
+	else if(value > maxval)
+		value = maxval;
+	else if(fabs(value) < quant)
+		value = 0.0;
+	else {
+		value = round(value/quant)*quant;
+	}
+	
+	if(fabs(round(value)-value)<quant && fabs(value)<1000000)
+		ref->SetInt64(round(value));
+	else
+		ref->SetDouble(value);
 }
 void JSON::SetString(const char *value) {
 	if(!ref) {
@@ -548,7 +675,7 @@ bool JSON::IsFalse() const {
 bool JSON::IsNull() const {
 	if(ref)
 		return ref->IsNull();
-	return false;
+	return true;
 }
 bool JSON::IsArray() const {
 	if(ref)

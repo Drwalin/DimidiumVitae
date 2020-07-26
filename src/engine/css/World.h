@@ -22,7 +22,7 @@ enum CollisionGroups {
 	CollisionGroupIgnore = 1<<8,
 	CollisionGroupVisible = 1<<9,
 	CollisionGroupLiquid = 1<<10,
-	CollisionGroupTrigger = 1<<10
+	CollisionGroupTrigger = 1<<11
 };
 
 enum CollisionDefaultGroups {
