@@ -26,6 +26,7 @@
 #include "EventResponser.h"
 #include "SoundEngine.h"
 #include "ResourceManager.h"
+#include "FileSystem.h"
 
 #include <dll/ClassFactory.h>
 
@@ -59,6 +60,7 @@ public:
 	
 	World* GetWorld();
 	Window* GetWindow();
+	FileSystem* GetFileSystem();
 	SoundEngine* GetSoundEngine();
 	ResourceManager* GetResourceManager();
 	
@@ -70,8 +72,6 @@ public:
 	void AsynchronousTick(const float deltaTime);
 	
 	void Init(EventResponser *eventResponser, const char *jsonConfigFile);
-	
-	//void Init(EventResponser *eventResponser, const std::string &windowName, const std::string &iconFile, int width, int height, bool fullscreen = false);
 	void BeginLoop();
 	
 	void Destroy();
@@ -90,6 +90,7 @@ private:
 	World *world;
 	Window *window;
 	EventResponser *event;
+	FileSystem *fileSystem;
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	

@@ -5,7 +5,8 @@
 #ifndef RESOURCE_MANAGER_CPP
 #define RESOURCE_MANAGER_CPP
 
-#include "../css/ResourceManager.h"
+#include <ResourceManager.h>
+#include <Engine.h>
 
 #include <StdUtil.hpp>
 #include <Math.hpp>
@@ -147,7 +148,7 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 			resource = new Material(engine, name);
 			break;
 		case Resource::COLLISIONSHAPE:
-			resource = LoadCollisionShape(name);
+			resource = new CollisionShape(name, engine->GetFileSystem()->ReadJSON(name));
 			break;
 		}
 		return resource;
@@ -163,13 +164,6 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 	if(resource)
 		delete resource;
 	return NULL;
-}
-
-Resource* ResourceManager::LoadCollisionShape(const std::string &name) {
-	JSON json;
-	std::ifstream file(name);
-	json.Parse(file);
-	return new CollisionShape(name, json);
 }
 
 void ResourceManager::Remove(const std::vector<std::string> &toRemove) {

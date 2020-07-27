@@ -95,21 +95,10 @@ void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 }
 
 void Model::LoadAnimations(const std::string &animationsFileName) {
-	iirrfstream file(this->engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(animationsFileName.c_str()));
-	if(file && file.good() && !file.eof()) {
-		std::string name;
-		int start, end;
-		float duration;
-		while(file.good() && !file.eof()) {
-			name = "";
-			start = end = -1;
-			duration = -1.0f;
-			file >> name;
-			file >> start;
-			file >> end;
-			file >> duration;
-			if(!(name == "" || start < 0 || end < 0 || duration < 0))
-				this->animations[name] = Animation(start, end, duration);
+	JSON json = engine->GetFileSystem()->ReadJSON(animationsFileName);
+	if(json.IsObject()) {
+		for(auto it : json) {
+			animations[it.Name()] = Animation(it.Value()["start"], it.Value()["end"], it.Value()["duration"]);
 		}
 	}
 }

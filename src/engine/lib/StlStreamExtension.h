@@ -36,6 +36,8 @@ public:
 	ocstreambuf(const char *filename);
 	~ocstreambuf();
 	
+	void flush() const;
+	
 private:
 	
 	struct _iobuf *filefd;
@@ -59,6 +61,8 @@ public:
 	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
 	ogzstreambuf(const char *filename);
 	~ogzstreambuf();
+	
+	void flush() const;
 	
 private:
 	
@@ -91,6 +95,8 @@ public:
 	oirrstreambuf(irr::io::IWriteFile *file);
 	~oirrstreambuf();
 	
+	void flush() const;
+	
 private:
 	
 	irr::io::IWriteFile *file;
@@ -103,11 +109,13 @@ public:
 	iirrstreambuf(irr::io::IReadFile *file);
 	~iirrstreambuf();
 	
+	bool good() const;
+	
 private:
 	
 	irr::io::IReadFile *file;
 };
-
+#include <cstdio>
 template <typename T, typename Tstream, typename... Args >
 class __t_iostream : public Tstream {
 public:

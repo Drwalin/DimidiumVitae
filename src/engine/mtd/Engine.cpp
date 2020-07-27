@@ -105,6 +105,10 @@ Window *Engine::GetWindow() {
 	return this->window;
 }
 
+FileSystem* Engine::GetFileSystem() {
+	return fileSystem;
+}
+
 SoundEngine *Engine::GetSoundEngine() {
 	return this->soundEngine;
 }
@@ -228,8 +232,9 @@ void Engine::BeginLoop() {
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	this->Destroy();
 	try {
-		std::ifstream configfFile(jsonConfigFile ? jsonConfigFile : "defaultEngineConfig.json");
-		JSON json(configfFile);
+		fileSystem = new FileSystem(this);
+		
+		JSON json = fileSystem->ReadJSON(jsonConfigFile ? jsonConfigFile : "defaultEngineConfig.json");
 		
 		event = eventResponser;
 		event->SetEngine(this);
@@ -263,7 +268,6 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 				fileSystem->addFileArchive(entry.Value().GetString().c_str(), false, false);
 			}
 		}
-		
 	} catch(const std::string &e) {
 		MESSAGE("Exception while initialising engine: " + e);
 	} catch(const std::exception &e) {
@@ -317,6 +321,11 @@ void Engine::Destroy() {
 	}
 	
 	this->pausePhysics = false;
+	
+	if(fileSystem) {
+		delete fileSystem;
+		fileSystem = NULL;
+	}
 }
 
 Engine::Engine() {
@@ -324,6 +333,7 @@ Engine::Engine() {
 	this->event = NULL;
 	this->world = NULL;
 	this->window = NULL;
+	fileSystem = NULL;
 	this->pausePhysics = true;
 	this->soundEngine = NULL;
 }

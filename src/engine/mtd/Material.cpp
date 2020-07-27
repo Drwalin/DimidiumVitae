@@ -18,7 +18,7 @@
 
 Material::Material(Engine *engine, const std::string &name) :
 	Resource(name) {
-	iirrfstream file(engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(name.c_str()));
+	IFile file = engine->GetFileSystem()->ReadFile(name);
 	if(file && file.good() && !file.eof()) {
 		std::string line;
 		while(file.good() && !file.eof()) {

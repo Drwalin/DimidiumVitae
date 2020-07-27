@@ -12,7 +12,6 @@ TO DO:
 	Optimise setting transformation to ISceneNode in SceneNode code
 	Optimise loading  and creating Entities, btCollisionShape and CollisionShape - find a way of using the same pointer to btCollisionShape for different btCollisionObjects
 	Lights
-	FileSystem class and File clss for unified file access
 	Particles
 	LOD system
 	Sprites in world space
@@ -20,6 +19,8 @@ TO DO:
 	Saving and loading Entities, SceneNodes from JSON
 	Add: main menu, pause menu, menu system, comfortable(and faster?) GUI system, loading screen
 		- add video player (maybe from *.png image sequence and *.ogg sound file)
+	High resolution clock for frame delta time
+	Code refactor
 	
 
 Done:
@@ -45,6 +46,7 @@ Done:
 	Configurations in json files
 	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
 	Texture resource class, and use it while loading material
+	FileSystem class and IFile and OFile class for unified file access
 	
 
 TO DO in future:

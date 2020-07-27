@@ -42,7 +42,6 @@ public:
 private:
 	
 	Resource* LoadResource(const std::string &name);
-	Resource* LoadCollisionShape(const std::string &name);
 	void Remove(const std::vector<std::string> &toRemove);
 	
 private:
