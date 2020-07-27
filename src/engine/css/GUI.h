@@ -5,10 +5,13 @@
 #ifndef GUI_H
 #define GUI_H
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <irrlicht/irrlicht.h>
+
+#include "Texture.h"
 
 typedef irr::video::SColor Color;
 typedef irr::core::rect<irr::s32> Rectanglei;
@@ -16,7 +19,7 @@ typedef irr::core::rect<irr::f32> Rectanglef;
 typedef irr::core::vector2d<irr::s32> Vectori;
 typedef irr::core::vector2d<irr::f32> Vectorf;
 typedef irr::gui::IGUIFont Font;
-typedef irr::video::ITexture Texture;
+//typedef irr::video::ITexture Texture;
 
 
 class GUIDrawEvent {
@@ -37,11 +40,11 @@ public:
 	};
 	struct Image
 	{
-		irr::video::ITexture *texture;
 		Rectanglei source;
 		Rectanglei destiny;
 		Color color;
 	};
+	std::shared_ptr<Texture> texture;
 	union
 	{
 		Text text;
@@ -50,7 +53,7 @@ public:
 	GUIDrawEvent &operator=(const GUIDrawEvent &other);
 	void Draw(irr::video::IVideoDriver *videoDriver);
 	GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *str);
-	GUIDrawEvent(Texture *texture, Rectanglei source, Rectanglei destiny, Color color);
+	GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color);
 	GUIDrawEvent();
 	GUIDrawEvent(const GUIDrawEvent &other);
 };
@@ -89,7 +92,7 @@ public:
 	GUI &operator << (const Vectori newPosition);
 	GUI &operator << (const Rectanglef newWorkspace);
 	
-	GUI &DrawTexture(Texture *texture, Rectanglei source, Rectanglei destiny, Color color);
+	GUI &DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color);
 	
 private:
 	

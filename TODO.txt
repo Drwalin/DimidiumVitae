@@ -1,9 +1,6 @@
 
 
 TO DO:
-	Particles
-	LOD system
-	Sprites in world space
 	Multiplayer:
 		divide code sections: server side and client side
 		internet connection:
@@ -12,9 +9,17 @@ TO DO:
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
 	Add TryBox and TryCylinder to ObjToShapeConverter
 	Optimize crouching/standing up in MotionController
+	Optimise setting transformation to ISceneNode in SceneNode code
+	Optimise loading  and creating Entities, btCollisionShape and CollisionShape - find a way of using the same pointer to btCollisionShape for different btCollisionObjects
+	Lights
+	FileSystem class and File clss for unified file access
+	Particles
+	LOD system
+	Sprites in world space
 	Map loading system from json
 	Saving and loading Entities, SceneNodes from JSON
-	Add: main menu, pause menu, menu system, comfortable GUI system, loading screen
+	Add: main menu, pause menu, menu system, comfortable(and faster?) GUI system, loading screen
+		- add video player (maybe from *.png image sequence and *.ogg sound file)
 	
 
 Done:
@@ -39,6 +44,7 @@ Done:
 	Material resource class
 	Configurations in json files
 	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
+	Texture resource class, and use it while loading material
 	
 
 TO DO in future:
@@ -47,6 +53,8 @@ TO DO in future:
 	Light maps
 	Dynamic light maps
 	Sound occlusion
+	Mesh occlusion
+	Optimise rendering?
 	
 
 Bugs:

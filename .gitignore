@@ -5,3 +5,4 @@ media
 release
 dep
 /gmon.out
+*.swp

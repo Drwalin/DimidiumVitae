@@ -39,6 +39,10 @@ std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) 
 	return std::dynamic_pointer_cast<Material>(GetResource(name));
 }
 
+std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string &name) {
+	return std::dynamic_pointer_cast<Texture>(GetResource(name));
+}
+
 std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::string &name) {
 	return std::dynamic_pointer_cast<CollisionShape>(GetResource(name));
 }
@@ -136,6 +140,9 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 		case Resource::SOUND:
 			resource = new Sound(name);
 			break;
+		case Resource::TEXTURE:
+			resource = new Texture(engine, name);
+			break;
 		case Resource::MATERIAL:
 			resource = new Material(engine, name);
 			break;
@@ -173,18 +180,21 @@ void ResourceManager::Remove(const std::vector<std::string> &toRemove) {
 
 Resource::ResourceType ResourceManager::GetResourceTypeByPath(const std::string &name) {
 	std::string extension = GetExtension(name);
-	const static std::set<std::string> materialExtensions({"mtl"});
+	const static std::set<std::string> textureExtensions({"png", "jpg", "tga", "bmp"});
 	const static std::set<std::string> graphicMeshExtensions({"x", "dae", "obj"});
 	const static std::set<std::string> collisionMeshExtensions({"shape"});
 	const static std::set<std::string> soundExtensions({"wav", "ogg"});
-	if(graphicMeshExtensions.count(extension) > 0)
-		return Resource::MODEL;
-	if(soundExtensions.count(extension) > 0)
-		return Resource::SOUND;
-	if(materialExtensions.count(extension) > 0)
-		return Resource::MATERIAL;
+	const static std::set<std::string> materialExtensions({"mtl"});
 	if(collisionMeshExtensions.count(extension) > 0)
 		return Resource::COLLISIONSHAPE;
+	if(graphicMeshExtensions.count(extension) > 0)
+		return Resource::MODEL;
+	if(materialExtensions.count(extension) > 0)
+		return Resource::MATERIAL;
+	if(textureExtensions.count(extension) > 0)
+		return Resource::TEXTURE;
+	if(soundExtensions.count(extension) > 0)
+		return Resource::SOUND;
 	return Resource::MODEL;
 }
 

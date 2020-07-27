@@ -278,6 +278,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 void Engine::Destroy() {
 	this->cameraParent = NULL;
 	
+	triggerEntities.clear();
 	for(auto it = this->entities.begin(); it != this->entities.end(); ++it) {
 		if(it->second) {
 			it->second->Destroy();
@@ -287,14 +288,6 @@ void Engine::Destroy() {
 			DEBUG("It shouldn't appear");
 	}
 	this->entities.clear();
-	
-	for(auto it = this->models.begin(); it != this->models.end(); ++it) {
-		if(it->second)
-			it->second.reset();
-		else
-			DEBUG("It shouldn't appear");
-	}
-	this->models.clear();
 	
 	if(this->window) {
 		this->window->Destroy();

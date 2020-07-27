@@ -93,7 +93,6 @@ private:
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	
-	std::map<std::string, std::shared_ptr<Model> > models;
 	std::map<std::string, std::shared_ptr<Entity> > entities;
 	std::map<std::string, std::shared_ptr<Trigger> > triggerEntities;
 	

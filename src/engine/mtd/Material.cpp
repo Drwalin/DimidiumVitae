@@ -30,7 +30,8 @@ Material::Material(Engine *engine, const std::string &name) :
 					materials.resize(materials.size() + 1);
 				} else if(line.find("map_K") == 0) {
 					std::string textureFileName = (line.c_str()+7);
-					materials.back().setTexture(0, engine->GetWindow()->GetVideoDriver()->getTexture(textureFileName.c_str()));
+					textures.emplace_back(engine->GetResourceManager()->GetTexture(textureFileName));
+					materials.back().setTexture(0, textures.back()->GetITexture());
 				} else if(line[0] == 'K') {
 					float r, g, b;
 					sscanf(line.c_str()+3, "%f%f%f", &r, &g, &b);
@@ -55,11 +56,21 @@ Material::Material(Engine *engine, const std::string &name) :
 		throw std::string(std::string("Cannot load material from file: ")+name);
 }
 
-void Material::SetTo(irr::scene::ISceneNode *iSceneNode) const {
-	int materialCount = std::min<int>(iSceneNode->getMaterialCount(), materials.size());
-	for(int i=0; i<materialCount; ++i)
-		iSceneNode->getMaterial(i) = materials[i];
-	iSceneNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+void Material::SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode) {
+	if(iSceneNode) {
+		if(material && material->materials.size()>0) {
+			int i=0;
+			int materialCount = std::min<int>(iSceneNode->getMaterialCount(), material->materials.size());
+			for(i=0; i<materialCount; ++i)
+				iSceneNode->getMaterial(i) = material->materials[i];
+			for(; i<iSceneNode->getMaterialCount(); ++i)
+				iSceneNode->getMaterial(i) = material->materials.back();
+		} else {
+			for(int i=0; i<iSceneNode->getMaterialCount(); ++i)
+				iSceneNode->getMaterial(i) = irr::video::SMaterial();
+		}
+		iSceneNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	}
 }
 
 Material::~Material() {

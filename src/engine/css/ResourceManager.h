@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Material.h"
 #include "CollisionShape.h"
+#include "Texture.h"
 
 #include <string>
 #include <map>
@@ -24,6 +25,7 @@ public:
 	std::shared_ptr<Resource> GetResource(const std::string &name);
 	std::shared_ptr<Sound> GetSound(const std::string &name);
 	std::shared_ptr<Model> GetModel(const std::string &name);
+	std::shared_ptr<Texture> GetTexture(const std::string &name);
 	std::shared_ptr<Material> GetMaterial(const std::string &name);
 	
 	std::shared_ptr<CollisionShape> GetCollisionShape(const std::string &name);

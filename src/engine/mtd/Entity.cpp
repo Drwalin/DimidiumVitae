@@ -181,8 +181,6 @@ void Entity::DestroyBody() {
 }
 
 void Entity::Destroy() {
-	if(this->sceneNode)
-		this->sceneNode->Destroy();
 	this->sceneNode = NULL;
 	this->DestroyBody();
 	this->name = "";

@@ -8,8 +8,10 @@
 #include <irrlicht/irrlicht.h>
 
 #include <vector>
+#include <memory>
 
 #include "Resource.h"
+#include "Texture.h"
 
 class Material : public Resource {
 public:
@@ -17,13 +19,14 @@ public:
 	Material(class Engine *engine, const std::string &name);
 	~Material();
 	
-	void SetTo(irr::scene::ISceneNode *iSceneNode) const;
+	static void SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode);
 	
 	virtual Resource::ResourceType GetResourceType() const override;
 	
 private:
 	
 	std::vector<irr::video::SMaterial> materials;
+	std::vector<std::shared_ptr<Texture>> textures;
 };
 
 #endif
