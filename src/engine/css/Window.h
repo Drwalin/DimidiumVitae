@@ -8,6 +8,7 @@
 #include "TimeCounter.h"
 #include "Camera.h"
 #include "GUI.h"
+#include "Menu.h"
 
 #include "../lib/Debug.h"
 
@@ -42,6 +43,14 @@ public:
 	
 	void SetCamera(std::shared_ptr<Camera> camera);
 	std::shared_ptr<Camera> GetCamera();
+	template<typename Menu_t, typename... Args>
+	Menu_t* StartMenu(Args... args) {
+		Menu_t *menu = new Menu_t(engine, args...);
+		nextMenu = std::shared_ptr<Menu>(menu);
+		return menu;
+	}
+	void StopMenu();
+	std::shared_ptr<Menu> GetCurrentMenu();
 	
 	const TimeCounter& GetEventGenerationTime() const;
 	const TimeCounter& GetWholeDrawTime() const;
@@ -78,7 +87,7 @@ private:
 	void Tick();
 	void UpdateDeltaTime();
 	
-	void Draw();
+	void Draw(bool drawEnvironment);
 	void DrawGUI();
 	
 	
@@ -112,6 +121,8 @@ private:
 	std::atomic<bool> useParallelThreadToDraw;
 	
 	std::shared_ptr<Camera> camera;
+	std::shared_ptr<Menu> currentMenu;
+	std::shared_ptr<Menu> nextMenu;
 	
 	class EventReceiverIrrlicht *eventIrrlichtReceiver;
 	class EventResponser *eventResponser;

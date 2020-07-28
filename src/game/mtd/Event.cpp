@@ -12,6 +12,7 @@
 #include "../css/Character.h"
 #include "../css/Player.h"
 #include "../css/MotionController.h"
+#include "../css/MainMenu.h"
 
 #include <irrlicht/irrlicht.h>
 
@@ -42,17 +43,11 @@ void Event::KeyPressedEvent(int keyCode) {
 	static Animation bowFull = bow->GetSceneNode()->GetAnimation("full");
 	
 	switch(keyCode) {
-	case irr::KEY_ESCAPE:
-		this->window->QueueQuit();
-		break;
-		
 	case irr::KEY_KEY_F:
 		if(!lightSceneNode) {
 			lightSceneNode = this->engine->GetWindow()->GetSceneManager()->addLightSceneNode(0, Math::GetIrrVec(this->engine->GetCamera()->GetWorldPosition()), irr::video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 60.0f);
 			lightSceneNode->setPosition(Math::GetIrrVec(this->engine->GetCamera()->GetWorldPosition()));
-		}
-		else
-		{
+		} else {
 			lightSceneNode->remove();
 			lightSceneNode = 0;
 		}
@@ -88,9 +83,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		if(this->engine->GetWindow()->IsMouseLocked()) {
 			this->engine->GetWindow()->UnlockMouse();
 			this->engine->GetWindow()->ShowMouse();
-		}
-		else
-		{
+		} else {
 			this->engine->GetWindow()->LockMouse();
 			this->engine->GetWindow()->HideMouse();
 		}
@@ -115,8 +108,7 @@ void Event::KeyPressedEvent(int keyCode) {
 			temp->GetBody()->setFriction(0.75);
 			temp->GetBody<btRigidBody>()->setLinearVelocity(this->engine->GetCamera()->GetForwardVector()*16.0);
 			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
-		}
-		else
+		} else
 			MESSAGE("Couldn't spawn new object");
 		break;
 		
@@ -128,8 +120,7 @@ void Event::KeyPressedEvent(int keyCode) {
 			temp->GetBody()->setFriction(0.75);
 			temp->GetBody<btRigidBody>()->setLinearVelocity(this->engine->GetCamera()->GetForwardVector()*16.0);
 			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
-		}
-		else
+		} else
 			MESSAGE("Couldn't spawn new object");
 		break;
 	}
@@ -144,7 +135,7 @@ void Event::KeyReleasedEvent(int keyCode) {
 	
 	switch(keyCode) {
 	case irr::KEY_ESCAPE:
-		this->window->QueueQuit();
+		window->StartMenu<MainMenu>();
 		break;
 		
 	case irr::KEY_LSHIFT:
@@ -181,18 +172,12 @@ void Event::KeyHoldedEvent(int keyCode) {
 		this->engine->GetCamera()->RotateCameraToLookAtPoint(btVector3(0,0,0), true);
 		break;
 		
-	case irr::KEY_ESCAPE:
-		this->window->QueueQuit();
-		break;
-		
 	case irr::KEY_BACK:
 	case irr::KEY_DELETE:
 		if(keyCode == irr::KEY_DELETE) {
 			begin = this->engine->GetCamera()->GetWorldPosition();
 			end = begin + (this->engine->GetCamera()->GetForwardVector()*10000.0);
-		}
-		else
-		{
+		} else {
 			begin = btVector3(0,11.2,0);
 			end = btVector3(0,11.2,300);
 		}

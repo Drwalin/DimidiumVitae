@@ -62,6 +62,14 @@ std::shared_ptr<Camera> Window::GetCamera() {
 	return this->camera;
 }
 
+void Window::StopMenu() {
+	nextMenu = NULL;
+}
+
+std::shared_ptr<Menu> Window::GetCurrentMenu() {
+	return currentMenu;
+}
+
 const TimeCounter& Window::GetEventGenerationTime() const {
 	return this->eventsTime;
 }
@@ -214,28 +222,35 @@ void Window::Tick() {
 	}
 	
 	this->GenerateEvents();
+	currentMenu = nextMenu;
 	
-	engineTickTime.SubscribeStart();
-	if(this->engine)
-		this->engine->SynchronousTick(this->deltaTime);
-	engineTickTime.SubscribeEnd();
-	
-	this->asynchronousTickTime.SubscribeStart();
-	if(this->IsParallelToDrawTickInUse())
-		this->parallelThreadToDrawContinue.store(true);
-	this->Draw();
-	if(this->IsParallelToDrawTickInUse()) {
-		while(this->parallelThreadToDrawContinue.load())
-			std::this_thread::yield();
+	if(currentMenu == NULL) {
+		engineTickTime.SubscribeStart();
+		if(this->engine)
+			this->engine->SynchronousTick(this->deltaTime);
+		engineTickTime.SubscribeEnd();
+		
+		this->asynchronousTickTime.SubscribeStart();
+		if(this->IsParallelToDrawTickInUse())
+			this->parallelThreadToDrawContinue.store(true);
+		this->Draw(true);
+		if(this->IsParallelToDrawTickInUse()) {
+			while(this->parallelThreadToDrawContinue.load())
+				TimeCounter::Sleep(0.0003);
+		}
+		this->asynchronousTickTime.SubscribeEnd();
+	} else {
+		Draw(false);
 	}
-	this->asynchronousTickTime.SubscribeEnd();
 }
 
-void Window::Draw() {
+void Window::Draw(bool drawEnvironment) {
 	this->wholeDrawTime.SubscribeStart();
 	this->videoDriver->beginScene(true, true, irr::video::SColor(255,16,32,64));
 	this->GetCamera()->UseTarget();
-	this->sceneManager->drawAll();
+	if(drawEnvironment) {
+		this->sceneManager->drawAll();
+	}
 	this->igui->drawAll();
 	this->DrawGUI();
 	this->videoDriver->endScene();
@@ -267,6 +282,8 @@ void Window::Init(Engine *engine, const std::string &windowName, const std::stri
 	if(!this->videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET))
 		MESSAGE("videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET) failed");
 	
+	igui->getSkin()->setFont(device->getGUIEnvironment()->getFont("./media/Fonts/courier.bmp"));
+	
 	this->engine = engine;
 	
 	this->gui.Init(this);
@@ -281,6 +298,8 @@ void Window::BeginLoop() {
 }
 
 void Window::Destroy() {
+	nextMenu = NULL;
+	currentMenu = NULL;
 	this->ShutDownParallelThreadToDraw();
 	if(this->device) {
 		this->device->closeDevice();

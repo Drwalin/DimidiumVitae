@@ -7,10 +7,10 @@ CC = gcc
 CFLAGS = $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Og -pg
 CXXFLAGS = $(CFLAGS) -std=c++17
 
-GAMEOBJ_ = Character.o Event.o GetVersion.o Init.o Player.o
+GAMEOBJ_ = Character.o Event.o GetVersion.o Init.o Player.o MainMenu.o
 GAMEOBJ = $(addprefix .$(S)bin$(S),$(GAMEOBJ_))
 
-ENGOBJ_ = Camera.o ClassFactoryBase.o CollisionObjectManager.o CollisionShape.o DllImporter.o DynamicEntity.o Engine.o Entity.o EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o JSON.o Material.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o ResourceManager.o SceneNode.o Sound.o SoundEngine.o SoundSource.o StaticEntity.o StlStreamExtension.o StringToEnter.o Texture.o TimeCounter.o Trigger.o Wav.o World.o Window.o
+ENGOBJ_ = Camera.o ClassFactoryBase.o CollisionObjectManager.o CollisionShape.o DllImporter.o DynamicEntity.o Engine.o Entity.o EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o JSON.o Material.o Menu.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o ResourceManager.o SceneNode.o Sound.o SoundEngine.o SoundSource.o StaticEntity.o StlStreamExtension.o StringToEnter.o Texture.o TimeCounter.o Trigger.o Wav.o World.o Window.o
 ENGOBJ = $(addprefix .$(S)bin$(S),$(ENGOBJ_))
 	
 SHAREDLIBS = -lBulletSoftBody -lIrrlicht -lm -lpthread

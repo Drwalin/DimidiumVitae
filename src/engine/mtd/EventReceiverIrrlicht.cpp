@@ -25,21 +25,27 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 	this->eventQueue.resize(this->eventQueue.size() + 1);
 	this->eventQueue.back() = event;
 	this->queueMutex.unlock();
-	return true;
+	if(event.EventType == irr:: EET_LOG_TEXT_EVENT)
+		return true;
+	return false;
 }
 
 void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
+	EventResponser *currentEventResponser = eventResponser;
+	if(window->GetCurrentMenu()) {
+		currentEventResponser = window->GetCurrentMenu().get();
+	}
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {
 			if(this->keyHolded.find(event.KeyInput.Key) == this->keyHolded.end()) {
 				if(event.KeyInput.Char)
 					this->window->GetStringToEnterObject()->PressKey(event.KeyInput);
-				this->eventResponser->KeyPressedEvent(event.KeyInput.Key);
+				currentEventResponser->KeyPressedEvent(event.KeyInput.Key);
 				this->keyPressed.insert(event.KeyInput.Key);
 			}
 		} else {
-			this->eventResponser->KeyReleasedEvent(event.KeyInput.Key);
+			currentEventResponser->KeyReleasedEvent(event.KeyInput.Key);
 			this->keyHolded.erase(event.KeyInput.Key);
 			this->keyPressed.erase(event.KeyInput.Key);
 		}
@@ -48,47 +54,50 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 		switch(event.MouseInput.Event) {
 		case irr::EMIE_LMOUSE_PRESSED_DOWN:
 			if(this->keyHolded.find(irr::KEY_LBUTTON) == this->keyHolded.end()) {
-				this->eventResponser->KeyPressedEvent(irr::KEY_LBUTTON);
+				currentEventResponser->KeyPressedEvent(irr::KEY_LBUTTON);
 				this->keyPressed.insert(irr::KEY_LBUTTON);
 			}
 			break;
 		case irr::EMIE_RMOUSE_PRESSED_DOWN:
 			if(this->keyHolded.find(irr::KEY_RBUTTON) == this->keyHolded.end()) {
-				this->eventResponser->KeyPressedEvent(irr::KEY_RBUTTON);
+				currentEventResponser->KeyPressedEvent(irr::KEY_RBUTTON);
 				this->keyPressed.insert(irr::KEY_RBUTTON);
 			}
 			break;
 		case irr::EMIE_MMOUSE_PRESSED_DOWN:
 			if(this->keyHolded.find(irr::KEY_MBUTTON) == this->keyHolded.end()) {
-				this->eventResponser->KeyPressedEvent(irr::KEY_MBUTTON);
+				currentEventResponser->KeyPressedEvent(irr::KEY_MBUTTON);
 				this->keyPressed.insert(irr::KEY_MBUTTON);
 			}
 			break;
 			
 		case irr::EMIE_LMOUSE_LEFT_UP:
-			this->eventResponser->KeyReleasedEvent(irr::KEY_LBUTTON);
+			currentEventResponser->KeyReleasedEvent(irr::KEY_LBUTTON);
 			this->keyHolded.erase(irr::KEY_LBUTTON);
 			this->keyPressed.erase(irr::KEY_LBUTTON);
 			break;
 		case irr::EMIE_RMOUSE_LEFT_UP:
-			this->eventResponser->KeyReleasedEvent(irr::KEY_RBUTTON);
+			currentEventResponser->KeyReleasedEvent(irr::KEY_RBUTTON);
 			this->keyHolded.erase(irr::KEY_RBUTTON);
 			this->keyPressed.erase(irr::KEY_RBUTTON);
 			break;
 		case irr::EMIE_MMOUSE_LEFT_UP:
-			this->eventResponser->KeyReleasedEvent(irr::KEY_MBUTTON);
+			currentEventResponser->KeyReleasedEvent(irr::KEY_MBUTTON);
 			this->keyHolded.erase(irr::KEY_MBUTTON);
 			this->keyPressed.erase(irr::KEY_MBUTTON);
 			break;
 			
 		case irr::EMIE_MOUSE_WHEEL:
 		case irr::EMIE_MOUSE_MOVED:
-			eventResponser->MouseMoveEvent(event.MouseInput.X, event.MouseInput.Y, this->mouseW + event.MouseInput.Wheel, event.MouseInput.X - this->mouseX, event.MouseInput.Y - this->mouseY, event.MouseInput.Wheel);
+			currentEventResponser->MouseMoveEvent(event.MouseInput.X, event.MouseInput.Y, this->mouseW + event.MouseInput.Wheel, event.MouseInput.X - this->mouseX, event.MouseInput.Y - this->mouseY, event.MouseInput.Wheel);
 			this->mouseW += event.MouseInput.Wheel;
 			this->mouseX = event.MouseInput.X;
 			this->mouseY = event.MouseInput.Y;
 			break;
 		}
+		break;
+	case irr::EET_GUI_EVENT:
+		window->GetCurrentMenu()->OnEvent(event.GUIEvent);
 		break;
 	}
 }

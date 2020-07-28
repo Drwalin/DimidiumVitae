@@ -5,6 +5,16 @@
 #include <string>
 #include <iostream>
 
+namespace std {
+	inline std::wstring to_wstring(const std::string &string) {
+		return std::wstring(string.begin(), string.end());
+	}
+	
+	inline std::string to_string(const std::wstring &string) {
+		return std::string(string.begin(), string.end());
+	}
+}
+
 inline std::istream &GetLine(std::istream &stream, std::string &line) {
 	std::getline(stream, line);
 	if(line.size() && line[line.size()-1] == 13)

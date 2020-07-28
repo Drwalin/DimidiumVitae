@@ -19,7 +19,6 @@ typedef irr::core::rect<irr::f32> Rectanglef;
 typedef irr::core::vector2d<irr::s32> Vectori;
 typedef irr::core::vector2d<irr::f32> Vectorf;
 typedef irr::gui::IGUIFont Font;
-//typedef irr::video::ITexture Texture;
 
 
 class GUIDrawEvent {

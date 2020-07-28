@@ -51,7 +51,6 @@ public:
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
-	
 	std::shared_ptr<Camera> GetCamera() const;
 	std::shared_ptr<Entity> GetCameraParent() const;
 	void AttachCameraToEntity(const std::string &name, btVector3 location);
