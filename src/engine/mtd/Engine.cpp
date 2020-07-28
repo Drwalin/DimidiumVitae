@@ -250,23 +250,23 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 			window->LockMouse();
 		}
 		
+		if(json.HasKey("fpsLimit")) {
+			window->SetFpsLimit(json["fpsLimit"]);
+		}
+		
 		if(GetCamera() == NULL) {
 			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], this->window->GetSceneManager()->addCameraSceneNode())));
 			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
 		}
 		
-		for(auto entry : json["modules"]) {
+		for(auto entry : json["modules"])
 			RegisterModule(entry.Value().GetString());
-		}
-		for(auto entry : json["types"]) {
+		for(auto entry : json["types"])
 			RegisterType(entry.Value()["name"], entry.Value()["module"]);
-		}
-		
 		if(json.HasKey("fileArchives")) {
 			irr::io::IFileSystem *fileSystem = window->GetDevice()->getFileSystem();
-			for(auto entry : json["fileArchives"]) {
+			for(auto entry : json["fileArchives"])
 				fileSystem->addFileArchive(entry.Value().GetString().c_str(), false, false);
-			}
 		}
 	} catch(const std::string &e) {
 		MESSAGE("Exception while initialising engine: " + e);

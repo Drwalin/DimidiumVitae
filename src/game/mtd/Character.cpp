@@ -31,13 +31,19 @@ void Character::Tick(const float deltaTime) {
 	this->engine->GetWindow()->GetGUI() << "\n Entities count: " << engine->GetNumberOfEntities();
 	this->engine->GetWindow()->GetGUI() << "\nFPS: " << 1.0f/fpsCounter.GetSmoothTime();
 	this->engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPeakTime();
-	this->engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPitTime();
+	this->engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPitTime();/*
+	this->engine->GetWindow()->GetGUI() << "\nDelta Time: " << fpsCounter.GetSmoothTime()*1000.0f;
+	this->engine->GetWindow()->GetGUI() << " " << fpsCounter.GetPeakTime()*1000.0f;
+	this->engine->GetWindow()->GetGUI() << " " << fpsCounter.GetPitTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << "\n Draw Time: " << engine->GetWindow()->GetWholeDrawTime().GetSmoothTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetWholeDrawTime().GetPeakTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetWholeDrawTime().GetPitTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << "\n Engine Tick Time: " << engine->GetWindow()->GetEngineTickTime().GetSmoothTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetEngineTickTime().GetPeakTime()*1000.0f;
 	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetEngineTickTime().GetPitTime()*1000.0f;
+	this->engine->GetWindow()->GetGUI() << "\n Skipped Time: " << engine->GetWindow()->GetSkippedTime().GetSmoothTime()*1000.0f;
+	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetSkippedTime().GetPeakTime()*1000.0f;
+	this->engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetSkippedTime().GetPitTime()*1000.0f;*/
 	fpsCounter.SubscribeStart();
 }
 

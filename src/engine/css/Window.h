@@ -43,11 +43,11 @@ public:
 	void SetCamera(std::shared_ptr<Camera> camera);
 	std::shared_ptr<Camera> GetCamera();
 	
-	TimeCounter GetEventGenerationTime() const;
-	TimeCounter GetWholeDrawTime() const;
-	TimeCounter GetSkippedTime() const;
-	TimeCounter GetEngineTickTime() const;
-	TimeCounter GetAsynchronousTickTime() const;
+	const TimeCounter& GetEventGenerationTime() const;
+	const TimeCounter& GetWholeDrawTime() const;
+	const TimeCounter& GetSkippedTime() const;
+	const TimeCounter& GetEngineTickTime() const;
+	const TimeCounter& GetAsynchronousTickTime() const;
 	
 	class StringToEnter *GetStringToEnterObject();
 	class EventResponser *GetEventResponser();
@@ -59,25 +59,28 @@ public:
 	void ShowMouse();
 	
 	float GetDeltaTime();
+	void SetFpsLimit(float fps);
 	
 	unsigned GetWidth();
 	unsigned GetHeight();
 	
 	void QueueQuit();
 	
-	void OneLoopFullTick();
-	float GetSmoothFps();
-	void GenerateEvents();
-	void Tick();
-	
-	void Draw();
-	void DrawGUI();
-	
 	void Destroy();
 	
 	void ParallelToDrawTick();
 	
 private:
+	
+	void OneLoopFullTick();
+	float GetSmoothFps();
+	void GenerateEvents();
+	void Tick();
+	void UpdateDeltaTime();
+	
+	void Draw();
+	void DrawGUI();
+	
 	
 	void UseParallelThreadToDraw();
 	void ShutDownParallelThreadToDraw();
@@ -100,6 +103,7 @@ private:
 	TimeCounter wholeDrawTime;
 	TimeCounter engineTickTime;
 	TimeCounter asynchronousTickTime;
+	TimeCounter skippedTime;
 	
 	bool lockMouse;
 	
@@ -113,6 +117,10 @@ private:
 	class EventResponser *eventResponser;
 	class StringToEnter *stringToEnter;
 	GUI gui;
+	
+	float fpsLimit;
+	
+	TimePoint beginTime;
 };
 
 #endif

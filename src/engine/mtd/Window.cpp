@@ -62,20 +62,24 @@ std::shared_ptr<Camera> Window::GetCamera() {
 	return this->camera;
 }
 
-TimeCounter Window::GetEventGenerationTime() const {
+const TimeCounter& Window::GetEventGenerationTime() const {
 	return this->eventsTime;
 }
 
-TimeCounter Window::GetWholeDrawTime() const {
+const TimeCounter& Window::GetWholeDrawTime() const {
 	return this->wholeDrawTime;
 }
 
-TimeCounter Window::GetEngineTickTime() const {
+const TimeCounter& Window::GetEngineTickTime() const {
 	return this->engineTickTime;
 }
 
-TimeCounter Window::GetAsynchronousTickTime() const {
+const TimeCounter& Window::GetAsynchronousTickTime() const {
 	return this->asynchronousTickTime;
+}
+
+const TimeCounter& Window::GetSkippedTime() const {
+	return this->skippedTime;
 }
 
 void Window::UseParallelThreadToDraw() {
@@ -129,12 +133,21 @@ float Window::GetDeltaTime() {
 	return this->deltaTime;
 }
 
+void Window::SetFpsLimit(float fps) {
+	if(fps >= 2048.0f)
+		fpsLimit = 2048.0f;
+	else if(fps <= 24.0f)
+		fpsLimit = 24.0f;
+	else
+		fpsLimit = fps;
+}
+
 unsigned Window::GetWidth() {
-	return this->videoDriver->getScreenSize().Width;//getViewPort.getWidth();
+	return this->videoDriver->getScreenSize().Width;
 }
 
 unsigned Window::GetHeight() {
-	return this->videoDriver->getScreenSize().Height;//getViewPort.getHeight();
+	return this->videoDriver->getScreenSize().Height;
 }
 
 void Window::QueueQuit() {
@@ -142,17 +155,28 @@ void Window::QueueQuit() {
 }
 
 void Window::OneLoopFullTick() {
-	static float beginTime = (float(clock())/1000.0f);
-	
-	deltaTime = (float(clock())/1000.0f) - beginTime;
-	beginTime = (float(clock())/1000.0f);
-	
-	if(deltaTime < 0.001)
-		deltaTime = 0.001;
-	else if(deltaTime > 0.3)
-		deltaTime = 0.3;
+	this->skippedTime.SubscribeStart();
+	UpdateDeltaTime();
+	this->skippedTime.SubscribeEnd();
 	
 	this->Tick();
+}
+
+void Window::UpdateDeltaTime() {
+	float prevDeltaTime = deltaTime;
+	while(true) {
+		TimePoint currentTime = TimeCounter::GetCurrentTime();
+		deltaTime = TimeCounter::GetDurationSeconds(beginTime, currentTime);
+		if(deltaTime+prevDeltaTime >= 1.96f/fpsLimit) {
+			beginTime = currentTime;
+			break;
+		} else {
+			TimeCounter::Sleep((1.96f/fpsLimit) - deltaTime - prevDeltaTime);
+		}
+	}
+	
+	if(deltaTime > 0.3f)
+		deltaTime = 0.3f;
 }
 
 float Window::GetSmoothFps() {
@@ -175,7 +199,7 @@ float Window::GetSmoothFps() {
 void Window::GenerateEvents() {
 	this->eventsTime.SubscribeStart();
 	this->eventIrrlichtReceiver->GenerateEvents();
-	//this->GetCamera()->SetRenderTargetSize(this->GetWidth(), this->GetHeight());
+	this->GetCamera()->SetRenderTargetSize(this->GetWidth(), this->GetHeight());
 	this->eventsTime.SubscribeEnd();
 }
 
@@ -273,6 +297,7 @@ void Window::Destroy() {
 Window::Window() :
 	useParallelThreadToDraw(false)
 {
+	beginTime = TimeCounter::GetCurrentTime();
 	this->device = NULL;
 	this->videoDriver = NULL;
 	this->sceneManager = NULL;
@@ -289,6 +314,7 @@ Window::Window() :
 	
 	this->useParallelThreadToDraw = false;
 	this->engine = NULL;
+	fpsLimit = 60.0f;
 }
 
 Window::~Window() {
@@ -297,7 +323,6 @@ Window::~Window() {
 	this->stringToEnter = NULL;
 	this->camera.reset();
 	this->camera = NULL;
-	
 }
 
 #endif

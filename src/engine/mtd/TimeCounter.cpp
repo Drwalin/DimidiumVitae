@@ -5,9 +5,15 @@
 #ifndef TIME_COUNTER_CPP
 #define TIME_COUNTER_CPP
 
+#include <thread>
+
 #include "../css/TimeCounter.h"
 
 #include "../lib/Debug.h"
+
+void TimeCounter::Sleep(float seconds) {
+	std::this_thread::sleep_for(TimeDuration(seconds));
+}
 
 TimePoint TimeCounter::GetCurrentTime() {
 	return std::chrono::high_resolution_clock::now();

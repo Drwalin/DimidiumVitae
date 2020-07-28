@@ -23,6 +23,7 @@ public:
 	static TimePoint GetCurrentTime();
 	static TimeDuration GetDuration(TimePoint begin, TimePoint end);
 	static float GetDurationSeconds(TimePoint begin, TimePoint end);
+	static void Sleep(float seconds);
 	
 	void SetTimeSpan(float time);
 	
