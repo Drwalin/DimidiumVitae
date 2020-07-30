@@ -24,9 +24,13 @@ Dimidium Vitae v0.3.3
   All you need is to install OpenAL:
 	https://www.openal.org/downloads/
 
-  Then type in console (/release directory):
-    game.exe
-  or double-click /release/game.exe executable
+  On windows:
+    Type in console:
+      game 
+    or double-click game.exe executable
+  On llinux:
+    Type in console:
+      ./game
 
 ============================================================================
 3. Controls
@@ -51,7 +55,7 @@ Dimidium Vitae v0.3.3
 3. Requirements
 ============================================================================
 
-  Currently compiled only on windows 7 64bit
+  Currently compiled only on windows 7 64bit and arch linux
   Processor, Graphics card, memory and disk space requirements are not
   specified yet.
 
@@ -59,19 +63,15 @@ Dimidium Vitae v0.3.3
 4. Directory Structure Overview
 ============================================================================
 
-  /dep      Contain dependencies (list in: /Dependencies.txt).
-  /dependency-licenses Contain all copying/license/readme/... of all
-            dependencies.
-  /engine   Source code (and compiled binaries) of The Drwalin Engine
-            synchronized with game.
-  /game     Source code (and compiled binaries) of Dimidium Vitae core.
-  /release  Release binaries (engine, game and dependecies) with all the
-            media.
-
-  /release/dependency-licenses same as /dependency-licenses
-  /release/dlls   game modules (and optional mods if exists)
-  /release/media  contains all the media for game (fonts,textures,models,
-                  maps,animations,materials,sounds,etc.)
+  /dep         Contain dependencies (list in: /Dependencies.txt).
+  /dependency-licenses  Contain all copying/license/readme/... of all
+               dependencies.
+  /src         Source code
+  /src/engine  Engine source code
+  /src/game    Game source code
+  /media       All the media for game (fonts,textures,models,maps,
+               animations,materials,sounds,etc.)
+  /            All executables and dlls
 
 ============================================================================
 5. How To Compile
@@ -89,7 +89,7 @@ Dimidium Vitae v0.3.3
 		Install OpenAL (https://www.openal.org/downloads/), then copy dll
 		from installation directory into /dep directory
     #4.:
-	    Cmpile zlib (https://zlib.net/) then copy libzlib.dll into /dep
+	    Compile zlib (https://zlib.net/) then copy libzlib.dll into /dep
 		directory
 	#5.:
 		Cmpile OggVorbis with my Makefile
@@ -98,11 +98,20 @@ Dimidium Vitae v0.3.3
 	#6.:
 		Copy specified *.dll's (in /Dependencies.txt file) from your mingw
 		installation directory or from C:/Windows/System32
-    
-    To compile Dimidium Vitae source code type in console (when in main
-	directory with Makefile):
-	    make
-    when compilation complete - enter /release and run game.exe
+    #7.:
+	    Edit Makefile and change modify second line to:
+		  include Makefile.win
+	    Type in console:
+	      make
+
+  On Linux:
+    #1.:
+        Install all dependecies listed in /Dependencies.txt
+    #2.:
+	    Edit Makefile and change modify second line to:
+		  include Makefile.lin
+	    Type in console:
+	      make
 
 ============================================================================
 6. Release Notes

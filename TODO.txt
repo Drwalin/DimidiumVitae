@@ -14,6 +14,10 @@ TO DO:
 	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape
 		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe, get by scale
 		- add CollisionShape::SetScale(btCollisionShape, newScale); // if current btCollisionShape is unique, change it's scale; else if it's not unique, call CollisionShape::GetNewBtCollisionShape(newScale);
+	Update ChangeLog.txt
+	Update Readme.txt linux compilation section
+	Update Dependencies.txt for linux
+	Choose a license
 	Lights
 	Particles
 	LOD system
@@ -29,6 +33,7 @@ TO DO (?):
 	Code refactor - Remove "this->" where possible
 	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*"
 	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
+	Remove GetVersion.cpp
 	
 
 Done:
@@ -69,6 +74,7 @@ TO DO in future:
 	Mesh occlusion
 	Optimise rendering?
 	Limit number of active OpenAL sound sources
+	Create documentation
 	
 
 Bugs:
