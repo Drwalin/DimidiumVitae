@@ -33,7 +33,7 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 	EventResponser *currentEventResponser = eventResponser;
 	if(window->GetCurrentMenu()) {
-		currentEventResponser = window->GetCurrentMenu().get();
+		currentEventResponser = window->GetCurrentMenu();
 	}
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
@@ -97,7 +97,8 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 		}
 		break;
 	case irr::EET_GUI_EVENT:
-		window->GetCurrentMenu()->OnEvent(event.GUIEvent);
+		if(window->GetCurrentMenu())
+			window->GetCurrentMenu()->OnEvent(event.GUIEvent);
 		break;
 	}
 }

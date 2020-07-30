@@ -16,10 +16,16 @@ MainMenu::MainMenu(Engine *engine) :
 	exitGame = AddButton({100,220,300,250}, "Exit Game");
 	window->UnlockMouse();
 	window->ShowMouse();
+	engine->PauseSimulation();
 }
 MainMenu::~MainMenu() {
 	window->LockMouse();
 	window->HideMouse();
+	engine->ResumeSimulation();
+}
+
+bool MainMenu::RenderSceneInBackground() const {
+	return false;
 }
 
 void MainMenu::KeyReleasedEvent(int keyCode) {
@@ -40,7 +46,7 @@ void MainMenu::OnButtonClicked(Menu::Button *button, Menu::Element *element) {
 	} else if(button == exitGame) {
 		window->QueueQuit();
 	} else if(button == options) {
-		window->StartMenu<OptionsMenu>();
+		//window->StartMenu<OptionsMenu>();
 	}
 }
 

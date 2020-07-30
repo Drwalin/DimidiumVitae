@@ -6,6 +6,7 @@
 #define MENU_H
 
 #include <EventResponser.h>
+#include <Texture.h>
 
 #include <irrlicht/irrlicht.h>
 
@@ -16,9 +17,12 @@ public:
 	
 	typedef irr::gui::IGUIElement Element;
 	typedef irr::gui::IGUIButton Button;
+	typedef irr::gui::IGUIImage Image;
 	
 	Menu(class Engine *engine);
-	~Menu();
+	virtual ~Menu();
+	
+	virtual bool RenderSceneInBackground() const =0;
 	
 	void OnEvent(const irr::SEvent::SGUIEvent &event);
 	
@@ -34,6 +38,7 @@ protected:
 	virtual void OnButtonClicked(Button *button, Element *element) =0;
 	
 	Button* AddButton(irr::core::rect<int> rect, const std::string &text, std::string toolTipText="");
+	Image* AddImage(std::shared_ptr<Texture> texture, int x, int y);
 	
 protected:
 	

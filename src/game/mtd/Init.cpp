@@ -15,6 +15,7 @@
 #include "../css/Player.h"
 #include "../css/Event.h"
 #include "../css/MainMenu.h"
+#include "../css/LoadingScreen.h"
 
 #include <iostream>
 #include <memory>
@@ -28,8 +29,8 @@ extern "C" int Init(int argc, char ** argv) {
 	Engine *engine = new Engine;
 	engine->Init(new Event(), argc>1 ? argv[1] : NULL);
 	
-	engine->GetWindow()->StartMenu<MainMenu>();
-	
+	engine->GetWindow()->StartMenu<LoadingScreen>();
+	engine->GetWindow()->Draw(false);
 	/*
 	SoundSource musicSource(engine->GetResourceManager()->GetSound("./media/Sounds/track01.ogg"));
 	musicSource.Set2D();
@@ -37,7 +38,6 @@ extern "C" int Init(int argc, char ** argv) {
 	musicSource.Loop(true);
 	musicSource.Play();
 	*/
-	
 	// create animated bow
 	std::shared_ptr<Entity> animatedBow = engine->AddEntity(engine->GetNewEntityOfType("DynamicEntity"), engine->GetAvailableEntityName("Bow"), engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
 	animatedBow->SetModel(engine->GetResourceManager()->GetModel("Models/Bow02.x"));
@@ -54,7 +54,6 @@ extern "C" int Init(int argc, char ** argv) {
 	
 	// create map
 	auto mapShape = engine->GetResourceManager()->GetCollisionShape("./media/Shapes/TechDemoMap_NoStairs.shape");
-	//auto mapShape = engine->GetResourceManager()->GetCollisionShape("./media/Shapes/TechDemoMap.shape");
 	float mapGridScale = 0.3f;
 	for(float x = -100; x<=100.1; x+=24) {
 		for(float z = -100; z<=100.1; z+=24) {
@@ -77,6 +76,7 @@ extern "C" int Init(int argc, char ** argv) {
 		}
 	}
 	
+	engine->GetWindow()->StartMenu<MainMenu>();
 	engine->BeginLoop();
 	
 	engine->Destroy();

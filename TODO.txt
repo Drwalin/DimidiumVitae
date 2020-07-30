@@ -12,17 +12,23 @@ TO DO:
 	Optimise setting transformation to ISceneNode in SceneNode code
 	Optimise loading  and creating Entities
 	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape
-		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe
+		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe, get by scale
 		- add CollisionShape::SetScale(btCollisionShape, newScale); // if current btCollisionShape is unique, change it's scale; else if it's not unique, call CollisionShape::GetNewBtCollisionShape(newScale);
 	Lights
 	Particles
 	LOD system
+	Font resource class
 	Sprites in world space
-	Map loading system from json
+	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
 	Code refactor
-	Add: main menu, pause menu, menu system, comfortable(and faster?) GUI system, loading screen
-		- add video player (maybe from *.png image sequence and *.ogg sound file)
+	Add video player (maybe from *.png image sequence and *.ogg sound file)
+	
+
+TO DO (?):
+	Code refactor - Remove "this->" where possible
+	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*"
+	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
 	
 
 Done:
@@ -51,6 +57,7 @@ Done:
 	FileSystem class and IFile and OFile class for unified file access
 	High resolution clock for frame delta time
 	Limit frame rate
+	Menu system
 	
 
 TO DO in future:
@@ -61,17 +68,26 @@ TO DO in future:
 	Sound occlusion
 	Mesh occlusion
 	Optimise rendering?
+	Limit number of active OpenAL sound sources
 	
 
 Bugs:
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
-	Executable once locked whole system (needed to cut power to do anything)
-	Sometimes undefined coordinates while starting game (randomly)
-	Unstable fps
+	Executable once locked whole system (needed to cut power to do anything) (in v0.3.1a)
+	Sometimes undefined coordinates while starting game (randomly) (didn't met since v0.4.1)
+	Very unstable fps (since v0.4.0)
+	When starting MainMenu at beginig, simulation is not paused
+	
+
+Removed bugs:
+	Removing entity does not remove a ISceneNode
+	When resource manager removes a Resource -> destructor is not called
 	
 
 To test:
-	CollisionShapeConstructor::Clone
+	
+
+Done tests:
 	ResourceManager garbage collector
 	JSON wrapper
 	

@@ -13,6 +13,8 @@ public:
 	MainMenu(class Engine *engine);
 	~MainMenu();
 	
+	virtual bool RenderSceneInBackground() const override;
+	
 	virtual void KeyReleasedEvent(int keyCode) override;
 	
 protected:

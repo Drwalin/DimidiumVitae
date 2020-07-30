@@ -147,6 +147,7 @@ void Engine::AsynchronousTick(const float deltaTime) {
 void Engine::SynchronousTick(const float deltaTime) {
 	this->entityUpdateTime.SubscribeStart();
 	this->UpdateEntities(deltaTime);
+	resourceManager->ResourceFreeingCycle(16);
 	this->entityUpdateTime.SubscribeEnd();
 	
 	this->GetWindow()->GetGUI() << "\n Entity Update Time: " << this->entityUpdateTime.GetSmoothTime()*1000.0f;
@@ -156,6 +157,7 @@ void Engine::SynchronousTick(const float deltaTime) {
 	this->GetWindow()->GetGUI() << "\n Physics Simulation Time: " << this->physicsSimulationTime.GetSmoothTime()*1000.0f;
 	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPeakTime()*1000.0f;
 	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPitTime()*1000.0f;
+	this->GetWindow()->GetGUI() << "\n findTexture: " << (window->GetVideoDriver()->findTexture("Textures/PoweredBy-inverted.png")? "found" : "not found");
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const {
@@ -293,12 +295,6 @@ void Engine::Destroy() {
 	}
 	this->entities.clear();
 	
-	if(this->window) {
-		this->window->Destroy();
-		delete this->window;
-		this->window = NULL;
-	}
-	
 	if(this->world) {
 		this->world->Destroy();
 		delete this->world;
@@ -318,6 +314,12 @@ void Engine::Destroy() {
 	if(this->soundEngine) {
 		delete this->soundEngine;
 		this->soundEngine = NULL;
+	}
+	
+	if(this->window) {
+		this->window->Destroy();
+		delete this->window;
+		this->window = NULL;
 	}
 	
 	this->pausePhysics = false;

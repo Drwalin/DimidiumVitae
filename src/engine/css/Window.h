@@ -45,12 +45,13 @@ public:
 	std::shared_ptr<Camera> GetCamera();
 	template<typename Menu_t, typename... Args>
 	Menu_t* StartMenu(Args... args) {
+		StopMenu();
 		Menu_t *menu = new Menu_t(engine, args...);
-		nextMenu = std::shared_ptr<Menu>(menu);
+		currentMenu = menu;
 		return menu;
 	}
 	void StopMenu();
-	std::shared_ptr<Menu> GetCurrentMenu();
+	Menu* GetCurrentMenu();
 	
 	const TimeCounter& GetEventGenerationTime() const;
 	const TimeCounter& GetWholeDrawTime() const;
@@ -79,6 +80,8 @@ public:
 	
 	void ParallelToDrawTick();
 	
+	void Draw(bool drawEnvironment);
+	
 private:
 	
 	void OneLoopFullTick();
@@ -87,7 +90,6 @@ private:
 	void Tick();
 	void UpdateDeltaTime();
 	
-	void Draw(bool drawEnvironment);
 	void DrawGUI();
 	
 	
@@ -121,8 +123,7 @@ private:
 	std::atomic<bool> useParallelThreadToDraw;
 	
 	std::shared_ptr<Camera> camera;
-	std::shared_ptr<Menu> currentMenu;
-	std::shared_ptr<Menu> nextMenu;
+	Menu* currentMenu;
 	
 	class EventReceiverIrrlicht *eventIrrlichtReceiver;
 	class EventResponser *eventResponser;

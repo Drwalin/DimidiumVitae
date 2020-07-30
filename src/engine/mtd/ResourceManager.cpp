@@ -123,7 +123,7 @@ void ResourceManager::ResourceFreeingCycle(int iterations) {
 
 void ResourceManager::FreeAllUnused() {
 	std::vector<std::string> toRemove;
-	for(auto resource : resources) {
+	for(auto  &resource : resources) {
 		if(resource.second.first.unique()) {
 			toRemove.emplace_back(resource.first);
 		}
@@ -168,6 +168,7 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 
 void ResourceManager::Remove(const std::vector<std::string> &toRemove) {
 	for(const std::string &path : toRemove) {
+		resources[path].first.reset();
 		resources.erase(path);
 	}
 }

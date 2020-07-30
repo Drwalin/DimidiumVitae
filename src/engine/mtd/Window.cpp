@@ -63,10 +63,13 @@ std::shared_ptr<Camera> Window::GetCamera() {
 }
 
 void Window::StopMenu() {
-	nextMenu = NULL;
+	if(currentMenu) {
+		delete currentMenu;
+		currentMenu = NULL;
+	}
 }
 
-std::shared_ptr<Menu> Window::GetCurrentMenu() {
+Menu* Window::GetCurrentMenu() {
 	return currentMenu;
 }
 
@@ -222,26 +225,21 @@ void Window::Tick() {
 	}
 	
 	this->GenerateEvents();
-	currentMenu = nextMenu;
 	
-	if(currentMenu == NULL) {
-		engineTickTime.SubscribeStart();
-		if(this->engine)
-			this->engine->SynchronousTick(this->deltaTime);
-		engineTickTime.SubscribeEnd();
-		
-		this->asynchronousTickTime.SubscribeStart();
-		if(this->IsParallelToDrawTickInUse())
-			this->parallelThreadToDrawContinue.store(true);
-		this->Draw(true);
-		if(this->IsParallelToDrawTickInUse()) {
-			while(this->parallelThreadToDrawContinue.load())
-				TimeCounter::Sleep(0.0003);
-		}
-		this->asynchronousTickTime.SubscribeEnd();
-	} else {
-		Draw(false);
+	engineTickTime.SubscribeStart();
+	if(this->engine)
+		this->engine->SynchronousTick(this->deltaTime);
+	engineTickTime.SubscribeEnd();
+	
+	this->asynchronousTickTime.SubscribeStart();
+	if(this->IsParallelToDrawTickInUse())
+		this->parallelThreadToDrawContinue.store(true);
+	this->Draw(currentMenu==NULL || (currentMenu&&currentMenu->RenderSceneInBackground()));
+	if(this->IsParallelToDrawTickInUse()) {
+		while(this->parallelThreadToDrawContinue.load())
+			TimeCounter::Sleep(0.0003);
 	}
+	this->asynchronousTickTime.SubscribeEnd();
 }
 
 void Window::Draw(bool drawEnvironment) {
@@ -298,8 +296,9 @@ void Window::BeginLoop() {
 }
 
 void Window::Destroy() {
-	nextMenu = NULL;
-	currentMenu = NULL;
+	StopMenu();
+	this->camera.reset();
+	this->camera = NULL;
 	this->ShutDownParallelThreadToDraw();
 	if(this->device) {
 		this->device->closeDevice();
@@ -330,6 +329,7 @@ Window::Window() :
 	
 	this->eventResponser = NULL;
 	this->stringToEnter = new StringToEnter;
+	currentMenu = NULL;
 	
 	this->useParallelThreadToDraw = false;
 	this->engine = NULL;
@@ -340,8 +340,6 @@ Window::~Window() {
 	this->Destroy();
 	delete this->stringToEnter;
 	this->stringToEnter = NULL;
-	this->camera.reset();
-	this->camera = NULL;
 }
 
 #endif

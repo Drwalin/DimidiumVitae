@@ -110,6 +110,7 @@ SceneNode::SceneNode() {
 }
 
 SceneNode::~SceneNode() {
+	Destroy();
 }
 
 #endif

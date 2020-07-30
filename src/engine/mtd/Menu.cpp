@@ -47,4 +47,11 @@ Menu::Button* Menu::AddButton(irr::core::rect<int> rect, const std::string &text
 	return button;
 }
 
+Menu::Image* Menu::AddImage(std::shared_ptr<Texture> texture, int x, int y) {
+	Menu::Image *image = igui->addImage(texture->GetITexture(), {x, y}, true);
+	image->setEnabled(true);
+	elements.emplace_back(image);
+	return image;
+}
+
 #endif

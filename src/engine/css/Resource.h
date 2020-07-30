@@ -19,7 +19,7 @@ public:
 		COLLISIONSHAPE
 	};
 	
-	~Resource();
+	virtual ~Resource();
 	
 	const std::string& GetName() const;
 	virtual ResourceType GetResourceType() const =0;
@@ -28,7 +28,7 @@ protected:
 	
 	Resource(const std::string &name);
 	
-private:
+protected:
 	
 	const std::string name;
 };
