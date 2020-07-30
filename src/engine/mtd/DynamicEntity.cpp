@@ -16,21 +16,21 @@
 
 void DynamicEntity::Tick(const float deltaTime) {
 	Entity::Tick(deltaTime);
-	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
 	if(rigidBody) {
 		btVector3 currentLinearVelocity = rigidBody->getLinearVelocity();
 		btVector3 currentAngularVelocity = rigidBody->getAngularVelocity();
-		float dv = (this->previousLinearVelocity-currentLinearVelocity).length() + (this->previousAngularVelocity-currentAngularVelocity).length();
+		float dv = (previousLinearVelocity-currentLinearVelocity).length() + (previousAngularVelocity-currentAngularVelocity).length();
 		if(dv > 15.0f) {
 			float volume = (dv-1/.0f)*0.1f;
-			if(this->hitSoundSource->IsPlaying() == false) {
-				this->hitSoundSource->SetLocation(this->GetLocation());
-				this->hitSoundSource->Play();
-				this->hitSoundSource->SetVolume(volume);
+			if(hitSoundSource->IsPlaying() == false) {
+				hitSoundSource->SetLocation(GetLocation());
+				hitSoundSource->Play();
+				hitSoundSource->SetVolume(volume);
 			}
 		}
-		this->previousLinearVelocity = currentLinearVelocity;
-		this->previousAngularVelocity = currentAngularVelocity;
+		previousLinearVelocity = currentLinearVelocity;
+		previousAngularVelocity = currentAngularVelocity;
 	}
 }
 
@@ -55,22 +55,22 @@ void DynamicEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::s
 	rigidBody->setDamping(0.2, 0.2);
 	rigidBody->setFriction(0.75);
 	
-	this->SetBody(collisionObject, shape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
+	SetBody(collisionObject, shape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
 	
-	this->hitSoundSource = new SoundSource(this->engine->GetResourceManager()->GetSound("./media/Sounds/wood1.wav"));
+	hitSoundSource = new SoundSource(engine->GetResourceManager()->GetSound("./media/Sounds/wood1.wav"));
 }
 
 void DynamicEntity::Despawn() {
-	if(this->hitSoundSource)
-		delete this->hitSoundSource;
-	this->hitSoundSource = NULL;
+	if(hitSoundSource)
+		delete hitSoundSource;
+	hitSoundSource = NULL;
 	Entity::Despawn();
 }
 
 void DynamicEntity::Destroy() {
-	if(this->hitSoundSource)
-		delete this->hitSoundSource;
-	this->hitSoundSource = NULL;
+	if(hitSoundSource)
+		delete hitSoundSource;
+	hitSoundSource = NULL;
 	Entity::Destroy();
 }
 
@@ -82,11 +82,11 @@ std::string DynamicEntity::GetClassName() const{ return "DynamicEntity"; }
 
 DynamicEntity::DynamicEntity() :
 	Entity() {
-	this->hitSoundSource = NULL;
+	hitSoundSource = NULL;
 }
 
 DynamicEntity::~DynamicEntity() {
-	this->Destroy();
+	Destroy();
 }
 
 #endif

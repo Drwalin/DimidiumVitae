@@ -28,22 +28,22 @@ GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
 }
 
 void GUIDrawEvent::Draw(irr::video::IVideoDriver *videoDriver) {
-	switch(this->type) {
+	switch(type) {
 	case GUIDrawEvent::Type::TEXT:
-		this->text.font->draw(this->text.str, this->text.destiny, this->text.color);
+		text.font->draw(text.str, text.destiny, text.color);
 		break;
 	case GUIDrawEvent::Type::IMAGE:
-		videoDriver->draw2DImage(this->texture->GetITexture(), this->image.destiny, this->image.source, NULL, &(this->image.color), true);
+		videoDriver->draw2DImage(texture->GetITexture(), image.destiny, image.source, NULL, &(image.color), true);
 		break;
 	}
 }
 
 GUIDrawEvent::GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *str) {
-	this->type = GUIDrawEvent::Type::TEXT;
-	this->text.font = font;
-	snprintf(this->text.str, sizeof(text.str)-1, "%s", str);
-	this->text.destiny = destiny;
-	this->text.color = color;
+	type = GUIDrawEvent::Type::TEXT;
+	text.font = font;
+	snprintf(text.str, sizeof(text.str)-1, "%s", str);
+	text.destiny = destiny;
+	text.color = color;
 }
 
 GUIDrawEvent::GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color) {
@@ -160,7 +160,7 @@ void GUI::PrintOneText(char *str, int length) {
 			if(height < size.Height)
 				height = size.Height;
 		}
-		this->PrintOneLine(str, i, width, height);
+		PrintOneLine(str, i, width, height);
 		str += i;
 		length -= i;
 		if(length <= 0)

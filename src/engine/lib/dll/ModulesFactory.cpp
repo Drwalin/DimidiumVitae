@@ -10,20 +10,20 @@
 #include "../StdUtil.hpp"
 
 std::shared_ptr<Dll> ModulesFactory::GetModule(const char *name) {
-	auto it = this->dlls.find(GetCoreName(name));
-	if(it != this->dlls.end())
+	auto it = dlls.find(GetCoreName(name));
+	if(it != dlls.end())
 		return it->second;
 	return NULL;
 }
 
 void ModulesFactory::RemoveModule(const char *name) {
-	this->dlls.erase(GetCoreName(name));
+	dlls.erase(GetCoreName(name));
 }
 
 std::shared_ptr<Dll> ModulesFactory::AddModule(const char *path) {
 	std::string name = GetCoreName(path);
-	auto it = this->dlls.find(name);
-	if(it != this->dlls.end()) {
+	auto it = dlls.find(name);
+	if(it != dlls.end()) {
 		return it->second;
 	}
 	std::shared_ptr<Dll> dll(new Dll(path));
@@ -32,13 +32,13 @@ std::shared_ptr<Dll> ModulesFactory::AddModule(const char *path) {
 		return NULL;
 	}
 	auto pair = std::make_pair(std::string(name), dll);
-	this->dlls.insert(pair);
+	dlls.insert(pair);
 	return dll;
 }
 
 ModulesFactory::ModulesFactory() {}
 ModulesFactory::~ModulesFactory() {
-	this->dlls.clear();
+	dlls.clear();
 }
 
 #endif

@@ -16,11 +16,11 @@
 #include <AL/alc.h>
 
 SoundEngine::operator bool() const {
-	return (this->device) && (this->context);
+	return (device) && (context);
 }
 
 int SoundEngine::PrintError() {
-	int error = alcGetError((ALCdevice*)(this->device));
+	int error = alcGetError((ALCdevice*)(device));
 	fprintf(stderr, "\n OpenAL error: %i", error);
 	return error;
 }
@@ -49,29 +49,29 @@ void SoundEngine::SetListenerTransform(const btTransform &transform) {
 }
 
 SoundEngine::SoundEngine() {
-	this->device = NULL;
-	this->context = NULL;
-    this->device = (ALCdevice*)alcOpenDevice(NULL);
-    if(this->device == NULL) {
-    	MESSAGE("OpenAL error: " + std::to_string(this->PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds");
+	device = NULL;
+	context = NULL;
+    device = (ALCdevice*)alcOpenDevice(NULL);
+    if(device == NULL) {
+    	MESSAGE("OpenAL error: " + std::to_string(PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds");
         return;
     }
-    this->context = (ALCcontext*)alcCreateContext((ALCdevice*)(this->device), NULL);
-    if(this->context == NULL) {
-    	MESSAGE("OpenAL error: " + std::to_string(this->PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds");
+    context = (ALCcontext*)alcCreateContext((ALCdevice*)(device), NULL);
+    if(context == NULL) {
+    	MESSAGE("OpenAL error: " + std::to_string(PrintError()) + " - You need to install OpenAL11 core sdk to enable sounds");
     	return;
     }
-    alcMakeContextCurrent((ALCcontext*)(this->context));
+    alcMakeContextCurrent((ALCcontext*)(context));
 }
 
 SoundEngine::~SoundEngine() {
-	if(this->device) {
-		if(this->context)
-	    	alcDestroyContext((ALCcontext*)(this->context));
-	    alcCloseDevice((ALCdevice*)(this->device));
+	if(device) {
+		if(context)
+	    	alcDestroyContext((ALCcontext*)(context));
+	    alcCloseDevice((ALCdevice*)(device));
 	}
-	this->context = NULL;
-	this->device = NULL;
+	context = NULL;
+	device = NULL;
 }
 
 #endif

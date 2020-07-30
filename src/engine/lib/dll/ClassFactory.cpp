@@ -11,27 +11,27 @@
 
 template < typename T >
 std::shared_ptr<T> ClassFactory<T>::GetNewOf(const char *className) {
-	auto it = this->uniqueObjects.find(className);
-	if(it == this->uniqueObjects.end())
+	auto it = uniqueObjects.find(className);
+	if(it == uniqueObjects.end())
 		return NULL;
 	return it->second->New();
 }
 
 template < typename T >
 std::shared_ptr<T> ClassFactory<T>::GetClassInstantiator(const char *className) {
-	auto it = this->uniqueObjects.find(className);
-	if(it == this->uniqueObjects.end())
+	auto it = uniqueObjects.find(className);
+	if(it == uniqueObjects.end())
 		return NULL;
 	return it->second;
 }
 
 template < typename T >
 std::shared_ptr<T> ClassFactory<T>::AddClass(const char *className, const char *moduleName) {
-	auto it = this->uniqueObjects.find(className);
-	if(it != this->uniqueObjects.end())
+	auto it = uniqueObjects.find(className);
+	if(it != uniqueObjects.end())
 		return it->second;
 	
-	std::shared_ptr<Dll> dll = this->GetModule(moduleName);
+	std::shared_ptr<Dll> dll = GetModule(moduleName);
 	if(dll == NULL) {
 		fprintf(stderr, "\n Module: \"%s\" is not registered while getting %s class instantiator", moduleName, className);
 		return NULL;
@@ -50,18 +50,18 @@ std::shared_ptr<T> ClassFactory<T>::AddClass(const char *className, const char *
 	std::shared_ptr<T> instantiator = GetClassInstantiator();
 	if(instantiator == NULL) {
 		fprintf(stderr, "\n Cannot get instantiator from: %s::%s", moduleName, className);
-		this->RemoveModule(moduleName);
+		RemoveModule(moduleName);
 		return NULL;
 	}
 	
-	this->uniqueObjects.insert(std::pair(std::string(className),instantiator));
+	uniqueObjects.insert(std::pair(std::string(className),instantiator));
 	return instantiator;
 }
 
 template < typename T >
 void ClassFactory<T>::RemoveClass(const char *moduleName) {
-	this->uniqueObjects.erase(moduleName);
-	this->RemoveModule(moduleName);
+	uniqueObjects.erase(moduleName);
+	RemoveModule(moduleName);
 }
 
 template < typename T >
@@ -69,7 +69,7 @@ ClassFactory<T>::ClassFactory() {}
 
 template < typename T >
 ClassFactory<T>::~ClassFactory() {
-	this->uniqueObjects.clear();
+	uniqueObjects.clear();
 }
 
 #endif

@@ -22,36 +22,36 @@ void ParallelThreadFunctionToDraw(Window *window) {
 }
 
 void Window::ParallelToDrawTick() {
-	while(this->IsParallelToDrawTickInUse()) {
-		while(this->parallelThreadToDrawContinue.load() == false) {
-			if(this->IsParallelToDrawTickInUse() == false)
+	while(IsParallelToDrawTickInUse()) {
+		while(parallelThreadToDrawContinue.load() == false) {
+			if(IsParallelToDrawTickInUse() == false)
 				return;
 			std::this_thread::yield();
 		}
-		if(this->engine)
-			this->engine->AsynchronousTick(this->GetDeltaTime());
-		this->parallelThreadToDrawContinue.store(false);
+		if(engine)
+			engine->AsynchronousTick(GetDeltaTime());
+		parallelThreadToDrawContinue.store(false);
 	}
 }
 
 irr::IrrlichtDevice *Window::GetDevice() {
-	return this->device;
+	return device;
 }
 
 irr::video::IVideoDriver *Window::GetVideoDriver() {
-	return this->videoDriver;
+	return videoDriver;
 }
 
 irr::scene::ISceneManager *Window::GetSceneManager() {
-	return this->sceneManager;
+	return sceneManager;
 }
 
 irr::gui::IGUIEnvironment *Window::GetIgui() {
-	return this->igui;
+	return igui;
 }
 
 GUI &Window::GetGUI() {
-	return this->gui;
+	return gui;
 }
 
 void Window::SetCamera(std::shared_ptr<Camera> camera) {
@@ -59,7 +59,7 @@ void Window::SetCamera(std::shared_ptr<Camera> camera) {
 }
 
 std::shared_ptr<Camera> Window::GetCamera() {
-	return this->camera;
+	return camera;
 }
 
 void Window::StopMenu() {
@@ -74,74 +74,74 @@ Menu* Window::GetCurrentMenu() {
 }
 
 const TimeCounter& Window::GetEventGenerationTime() const {
-	return this->eventsTime;
+	return eventsTime;
 }
 
 const TimeCounter& Window::GetWholeDrawTime() const {
-	return this->wholeDrawTime;
+	return wholeDrawTime;
 }
 
 const TimeCounter& Window::GetEngineTickTime() const {
-	return this->engineTickTime;
+	return engineTickTime;
 }
 
 const TimeCounter& Window::GetAsynchronousTickTime() const {
-	return this->asynchronousTickTime;
+	return asynchronousTickTime;
 }
 
 const TimeCounter& Window::GetSkippedTime() const {
-	return this->skippedTime;
+	return skippedTime;
 }
 
 void Window::UseParallelThreadToDraw() {
-	if(this->useParallelThreadToDraw.load() == false) {
-		this->parallelThreadToDrawContinue.store(false);
-		this->useParallelThreadToDraw.store(true);
-		this->parallelThreadToDraw = std::thread(ParallelThreadFunctionToDraw, this);
+	if(useParallelThreadToDraw.load() == false) {
+		parallelThreadToDrawContinue.store(false);
+		useParallelThreadToDraw.store(true);
+		parallelThreadToDraw = std::thread(ParallelThreadFunctionToDraw, this);
 	}
 }
 
 void Window::ShutDownParallelThreadToDraw() {
-	if(this->useParallelThreadToDraw.load() == true) {
-		this->useParallelThreadToDraw.store(false);
-		this->parallelThreadToDraw.join();
+	if(useParallelThreadToDraw.load() == true) {
+		useParallelThreadToDraw.store(false);
+		parallelThreadToDraw.join();
 	}
 }
 
 bool Window::IsParallelToDrawTickInUse() {
-	return this->useParallelThreadToDraw.load();
+	return useParallelThreadToDraw.load();
 }
 
 StringToEnter *Window::GetStringToEnterObject() {
-	return this->stringToEnter;
+	return stringToEnter;
 }
 
 EventResponser *Window::GetEventResponser() {
-	return this->eventResponser;
+	return eventResponser;
 }
 
 bool Window::IsMouseLocked() {
-	return this->lockMouse;
+	return lockMouse;
 }
 
 void Window::LockMouse() {
-	this->lockMouse = true;
+	lockMouse = true;
 }
 
 void Window::UnlockMouse() {
-	this->lockMouse = false;
+	lockMouse = false;
 }
 
 void Window::HideMouse() {
-	this->device->getCursorControl()->setVisible(false);
+	device->getCursorControl()->setVisible(false);
 }
 
 void Window::ShowMouse() {
-	this->device->getCursorControl()->setVisible(true);
+	device->getCursorControl()->setVisible(true);
 }
 
 float Window::GetDeltaTime() {
-	return this->deltaTime;
+	return deltaTime;
 }
 
 void Window::SetFpsLimit(float fps) {
@@ -154,23 +154,23 @@ void Window::SetFpsLimit(float fps) {
 }
 
 unsigned Window::GetWidth() {
-	return this->videoDriver->getScreenSize().Width;
+	return videoDriver->getScreenSize().Width;
 }
 
 unsigned Window::GetHeight() {
-	return this->videoDriver->getScreenSize().Height;
+	return videoDriver->getScreenSize().Height;
 }
 
 void Window::QueueQuit() {
-	this->quitWhenPossible = true;
+	quitWhenPossible = true;
 }
 
 void Window::OneLoopFullTick() {
-	this->skippedTime.SubscribeStart();
+	skippedTime.SubscribeStart();
 	UpdateDeltaTime();
-	this->skippedTime.SubscribeEnd();
+	skippedTime.SubscribeEnd();
 	
-	this->Tick();
+	Tick();
 }
 
 void Window::UpdateDeltaTime() {
@@ -201,66 +201,66 @@ float Window::GetSmoothFps() {
 		fps = 0;
 	}
 	
-	fps += 1.0 / this->GetDeltaTime();
+	fps += 1.0 / GetDeltaTime();
 	++n;
 	
 	return last_fps;
 }
 
 void Window::GenerateEvents() {
-	this->eventsTime.SubscribeStart();
-	this->eventIrrlichtReceiver->GenerateEvents();
-	this->GetCamera()->SetRenderTargetSize(this->GetWidth(), this->GetHeight());
-	this->eventsTime.SubscribeEnd();
+	eventsTime.SubscribeStart();
+	eventIrrlichtReceiver->GenerateEvents();
+	GetCamera()->SetRenderTargetSize(GetWidth(), GetHeight());
+	eventsTime.SubscribeEnd();
 }
 
 void Window::Tick() {
-	if(this->lockMouse) {
-		unsigned W = this->GetWidth();
-		unsigned H = this->GetHeight();
+	if(lockMouse) {
+		unsigned W = GetWidth();
+		unsigned H = GetHeight();
 		float w=W;
 		float h=H;
-		this->eventIrrlichtReceiver->SetCursor(W/2, H/2);
-		this->device->getCursorControl()->setPosition(float(W/2)/w, float(H/2)/h);
+		eventIrrlichtReceiver->SetCursor(W/2, H/2);
+		device->getCursorControl()->setPosition(float(W/2)/w, float(H/2)/h);
 	}
 	
-	this->GenerateEvents();
+	GenerateEvents();
 	
 	engineTickTime.SubscribeStart();
-	if(this->engine)
-		this->engine->SynchronousTick(this->deltaTime);
+	if(engine)
+		engine->SynchronousTick(deltaTime);
 	engineTickTime.SubscribeEnd();
 	
-	this->asynchronousTickTime.SubscribeStart();
-	if(this->IsParallelToDrawTickInUse())
-		this->parallelThreadToDrawContinue.store(true);
-	this->Draw(currentMenu==NULL || (currentMenu&&currentMenu->RenderSceneInBackground()));
-	if(this->IsParallelToDrawTickInUse()) {
-		while(this->parallelThreadToDrawContinue.load())
+	asynchronousTickTime.SubscribeStart();
+	if(IsParallelToDrawTickInUse())
+		parallelThreadToDrawContinue.store(true);
+	Draw(currentMenu==NULL || (currentMenu&&currentMenu->RenderSceneInBackground()));
+	if(IsParallelToDrawTickInUse()) {
+		while(parallelThreadToDrawContinue.load())
 			TimeCounter::Sleep(0.0003);
 	}
-	this->asynchronousTickTime.SubscribeEnd();
+	asynchronousTickTime.SubscribeEnd();
 }
 
 void Window::Draw(bool drawEnvironment) {
-	this->wholeDrawTime.SubscribeStart();
-	this->videoDriver->beginScene(true, true, irr::video::SColor(255,16,32,64));
-	this->GetCamera()->UseTarget();
+	wholeDrawTime.SubscribeStart();
+	videoDriver->beginScene(true, true, irr::video::SColor(255,16,32,64));
+	GetCamera()->UseTarget();
 	if(drawEnvironment) {
-		this->sceneManager->drawAll();
+		sceneManager->drawAll();
 	}
-	this->igui->drawAll();
-	this->DrawGUI();
-	this->videoDriver->endScene();
-	this->wholeDrawTime.SubscribeEnd();
+	igui->drawAll();
+	DrawGUI();
+	videoDriver->endScene();
+	wholeDrawTime.SubscribeEnd();
 }
 
 void Window::DrawGUI() {
-	this->gui.Flush();
+	gui.Flush();
 }
 
 void Window::Init(Engine *engine, const std::string &windowName, const std::string &iconFile, int width, int height, EventResponser *eventResponser, bool fullscreen) {
-	this->Destroy();
+	Destroy();
 	
 	this->eventResponser = eventResponser;
 	this->eventResponser->SetWindow(this);
@@ -290,56 +290,56 @@ void Window::Init(Engine *engine, const std::string &windowName, const std::stri
 }
 
 void Window::BeginLoop() {
-	this->quitWhenPossible = false;
-	while(!this->quitWhenPossible && this->device->run())
-		this->OneLoopFullTick();	
+	quitWhenPossible = false;
+	while(!quitWhenPossible && device->run())
+		OneLoopFullTick();	
 }
 
 void Window::Destroy() {
 	StopMenu();
-	this->camera.reset();
-	this->camera = NULL;
-	this->ShutDownParallelThreadToDraw();
-	if(this->device) {
-		this->device->closeDevice();
-		this->device->drop();
-		this->device = NULL;
+	camera.reset();
+	camera = NULL;
+	ShutDownParallelThreadToDraw();
+	if(device) {
+		device->closeDevice();
+		device->drop();
+		device = NULL;
 	}
-	this->quitWhenPossible = false;
-	this->deltaTime = 0.0;
-	this->lockMouse = false;
-	this->eventResponser = NULL;
-	this->engine = NULL;
+	quitWhenPossible = false;
+	deltaTime = 0.0;
+	lockMouse = false;
+	eventResponser = NULL;
+	engine = NULL;
 }
 
 Window::Window() :
 	useParallelThreadToDraw(false)
 {
 	beginTime = TimeCounter::GetCurrentTime();
-	this->device = NULL;
-	this->videoDriver = NULL;
-	this->sceneManager = NULL;
-	this->igui = NULL;
+	device = NULL;
+	videoDriver = NULL;
+	sceneManager = NULL;
+	igui = NULL;
 	
-	this->quitWhenPossible = false;
+	quitWhenPossible = false;
 	
-	this->deltaTime = 0.01;
+	deltaTime = 0.01;
 	
-	this->lockMouse = false;
+	lockMouse = false;
 	
-	this->eventResponser = NULL;
-	this->stringToEnter = new StringToEnter;
+	eventResponser = NULL;
+	stringToEnter = new StringToEnter;
 	currentMenu = NULL;
 	
-	this->useParallelThreadToDraw = false;
-	this->engine = NULL;
+	useParallelThreadToDraw = false;
+	engine = NULL;
 	fpsLimit = 60.0f;
 }
 
 Window::~Window() {
-	this->Destroy();
-	delete this->stringToEnter;
-	this->stringToEnter = NULL;
+	Destroy();
+	delete stringToEnter;
+	stringToEnter = NULL;
 }
 
 #endif

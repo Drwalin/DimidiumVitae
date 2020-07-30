@@ -17,15 +17,15 @@ void Entity::SetCamera(std::shared_ptr<Camera> camera) {
 }
 
 std::shared_ptr<Camera> Entity::GetCamera() {
-	return this->camera;
+	return camera;
 }
 
 std::shared_ptr<SceneNode> Entity::GetSceneNode() {
-	return this->sceneNode;
+	return sceneNode;
 }
 
 std::shared_ptr<CollisionShape> Entity::GetCollisionShape() {
-	return this->collisionShape;
+	return collisionShape;
 }
 
 btCollisionShape* Entity::GetBtCollisionShape() const {
@@ -35,52 +35,52 @@ btCollisionShape* Entity::GetBtCollisionShape() const {
 }
 
 void Entity::SetTransform(const btTransform &transform) {
-	this->currentTransform = transform;
-	if(this->body) {
-		this->body->activate(true);
+	currentTransform = transform;
+	if(body) {
+		body->activate(true);
 		
-		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
 		if(rigidBody)
-			rigidBody->getMotionState()->setWorldTransform(this->currentTransform);
+			rigidBody->getMotionState()->setWorldTransform(currentTransform);
 		else
-			this->body->setWorldTransform(this->currentTransform);
+			body->setWorldTransform(currentTransform);
 		
-		this->engine->GetWorld()->UpdateColliderForObject(this->body);
-		this->body->activate(true);
+		engine->GetWorld()->UpdateColliderForObject(body);
+		body->activate(true);
 	}
 }
 
 void Entity::SetLocation(const btVector3 &loc) {
-	this->SetTransform(btTransform(this->currentTransform.getRotation(), loc));
+	SetTransform(btTransform(currentTransform.getRotation(), loc));
 }
 
 void Entity::SetRotation(const btQuaternion &quat) {
-	this->SetTransform(btTransform(quat, this->currentTransform.getOrigin()));
+	SetTransform(btTransform(quat, currentTransform.getOrigin()));
 }
 
 void Entity::Move(const btVector3 &move) {
-	this->SetLocation(this->currentTransform.getOrigin() + move);
+	SetLocation(currentTransform.getOrigin() + move);
 }
 
 void Entity::Rotate(const btQuaternion &quat) {
-	this->SetRotation(this->currentTransform.getRotation() *quat);
+	SetRotation(currentTransform.getRotation() *quat);
 }
 
 void Entity::Tick(const float deltaTime) {
-	if(this->body) {
-		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
-		if(rigidBody) rigidBody->getMotionState()->getWorldTransform(this->currentTransform);
-		else this->currentTransform = this->GetBody<btCollisionObject>()->getWorldTransform();
+	if(body) {
+		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+		if(rigidBody) rigidBody->getMotionState()->getWorldTransform(currentTransform);
+		else currentTransform = GetBody<btCollisionObject>()->getWorldTransform();
 	}
 	
-	if(this->sceneNode)
-		this->sceneNode->SetTransform(this->currentTransform);
+	if(sceneNode)
+		sceneNode->SetTransform(currentTransform);
 }
 
 void Entity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
 
 void Entity::SetMass(float mass) {
-	std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+	std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
 	if(rigidBody) {
 		this->mass = mass;
 		btCollisionShape *shape = rigidBody->getCollisionShape();
@@ -101,14 +101,14 @@ Engine *Entity::GetEngine() {
 
 void Entity::SetScale(btVector3 scale) {
 	this->scale = scale;
-	if(this->body) {
-		this->body->activate(true);
-		this->body->getCollisionShape()->setLocalScaling(this->scale);
-		this->engine->GetWorld()->UpdateColliderForObject(this->body);
-		this->body->activate(true);
+	if(body) {
+		body->activate(true);
+		body->getCollisionShape()->setLocalScaling(this->scale);
+		engine->GetWorld()->UpdateColliderForObject(body);
+		body->activate(true);
 	}
-	if(this->sceneNode)
-		this->sceneNode->SetScale(this->scale);
+	if(sceneNode)
+		sceneNode->SetScale(this->scale);
 }
 
 btVector3 Entity::GetScale() {
@@ -116,11 +116,11 @@ btVector3 Entity::GetScale() {
 }
 
 btTransform Entity::GetTransform() {
-	return this->currentTransform;
+	return currentTransform;
 }
 
 btVector3 Entity::GetLocation() const {
-	return this->currentTransform.getOrigin();
+	return currentTransform.getOrigin();
 }
 
 const std::string &Entity::GetName() const {
@@ -128,36 +128,36 @@ const std::string &Entity::GetName() const {
 }
 
 void Entity::SetModel(std::shared_ptr<Model> model) {
-	if(this->engine) {
-		if(this->engine->GetWindow()) {
-			if(this->sceneNode) {
-				this->sceneNode->Destroy();
-				this->sceneNode = NULL;
+	if(engine) {
+		if(engine->GetWindow()) {
+			if(sceneNode) {
+				sceneNode->Destroy();
+				sceneNode = NULL;
 			}
 			
-			this->sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
-			this->sceneNode->Init(this->engine, model);
+			sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
+			sceneNode->Init(engine, model);
 		}
 	}
 }
 
 void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
-	this->DestroyBody();
+	DestroyBody();
 	this->body = body;
-	this->collisionShape = shape;
-	this->engine->GetWorld()->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
+	collisionShape = shape;
+	engine->GetWorld()->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
 	this->body->setUserPointer(this);
-	this->collisionGroup = collisionFilterGroup;
-	this->collisionMask = collisionFilterMask;
+	collisionGroup = collisionFilterGroup;
+	collisionMask = collisionFilterMask;
 }
 
 void Entity::DestroyBody() {
 	btCollisionShape *btCollisionShape = NULL;
-	if(this->body) {
-		btCollisionShape = this->body->getCollisionShape();
-		this->engine->GetWorld()->RemoveBody(this->GetBody<btCollisionObject>());
+	if(body) {
+		btCollisionShape = body->getCollisionShape();
+		engine->GetWorld()->RemoveBody(GetBody<btCollisionObject>());
 		
-		std::shared_ptr<btRigidBody> rigidBody = this->GetBody<btRigidBody>();
+		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
 		if(rigidBody) {
 			auto motionState = rigidBody->getMotionState();
 			if(motionState) {
@@ -166,30 +166,30 @@ void Entity::DestroyBody() {
 			}
 		}
 		
-		this->body->setCollisionShape(NULL);
+		body->setCollisionShape(NULL);
 		
-		assert(this->body);
-		this->body.reset();
+		assert(body);
+		body.reset();
 		
-		this->body = NULL;
+		body = NULL;
 	}
 	
 	if(btCollisionShape) {
 		CollisionShape::DestroyBtCollisionShape(btCollisionShape);
 	}
-	this->collisionShape = NULL;
+	collisionShape = NULL;
 }
 
 void Entity::Destroy() {
-	this->sceneNode = NULL;
-	this->DestroyBody();
-	this->name = "";
-	this->scale = btVector3(0,0,0);
-	this->mass = 0.0f;
+	sceneNode = NULL;
+	DestroyBody();
+	name = "";
+	scale = btVector3(0,0,0);
+	mass = 0.0f;
 }
 
 void Entity::Despawn() {
-	this->Destroy();
+	Destroy();
 }
 
 void Entity::Load(std::istream &stream) {
@@ -203,25 +203,25 @@ void Entity::Init(Engine *engine) {
 }
 
 void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	this->mass = 0.0f;
-	this->collisionShape = collisionShape;
+	mass = 0.0f;
+	collisionShape = shape;
 	this->name = name;
-	this->scale = btVector3(1,1,1);
-	this->currentTransform = transform;
+	scale = btVector3(1,1,1);
+	currentTransform = transform;
 }
 
 Entity::Entity() {
-	this->mass = 1.0f;
-	this->engine = NULL;
-	this->name = "";
-	this->scale = btVector3(1,1,1);
-	this->sceneNode = NULL;
-	this->collisionGroup = 0;
-	this->collisionMask = 0;
+	mass = 1.0f;
+	engine = NULL;
+	name = "";
+	scale = btVector3(1,1,1);
+	sceneNode = NULL;
+	collisionGroup = 0;
+	collisionMask = 0;
 }
 
 Entity::~Entity() {
-	this->Destroy();
+	Destroy();
 }
 
 bool Entity::HasCommon(int group, int mask) const {

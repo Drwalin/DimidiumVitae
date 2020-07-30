@@ -11,105 +11,105 @@
 #include "../lib/Math.hpp"
 
 void Camera::UseTarget() {
-	if(this->target) {
-		this->engine->GetWindow()->GetVideoDriver()->setRenderTarget(this->target, true, true, 0);
+	if(target) {
+		engine->GetWindow()->GetVideoDriver()->setRenderTarget(target, true, true, 0);
 	} else {
-		this->engine->GetWindow()->GetVideoDriver()->setRenderTarget(0, true, true, 0);
+		engine->GetWindow()->GetVideoDriver()->setRenderTarget(0, true, true, 0);
 	}
 }
 
 irr::video::ITexture *Camera::GetTexture() {
-	return this->target;
+	return target;
 }
 
 bool Camera::IsMainTarget() {
-	if(this->target)
+	if(target)
 		return false;
 	return true;
 }
 
 irr::scene::ICameraSceneNode *Camera::GetCameraNode() {
-	return this->sceneNode;
+	return sceneNode;
 }
 
 btTransform Camera::GetTransform() const {
-	return btTransform(this->GetRotation(), this->GetWorldPosition());
+	return btTransform(GetRotation(), GetWorldPosition());
 }
 
 btQuaternion Camera::GetRotation() const {
-	return this->parentTransformation.getRotation() *Math::MakeQuaternionFromEuler(this->rotation);
+	return parentTransformation.getRotation() *Math::MakeQuaternionFromEuler(rotation);
 }
 
 btQuaternion Camera::GetFlatRotation() const {
-	return this->parentTransformation.getRotation() *btQuaternion(btVector3(0, 1, 0), -this->rotation.y());
+	return parentTransformation.getRotation() *btQuaternion(btVector3(0, 1, 0), -rotation.y());
 }
 
 btVector3 Camera::GetUpVector() const {
-	return btTransform(this->GetRotation()) *btVector3(0, 1, 0);
+	return btTransform(GetRotation()) *btVector3(0, 1, 0);
 }
 
 btVector3 Camera::GetFlatRightVector() const {
-	return btTransform(this->GetFlatRotation()) *btVector3(-1, 0, 0);
+	return btTransform(GetFlatRotation()) *btVector3(-1, 0, 0);
 }
 
 btVector3 Camera::GetRightVector() const {
-	return btTransform(this->GetRotation()) *btVector3(-1, 0, 0);
+	return btTransform(GetRotation()) *btVector3(-1, 0, 0);
 }
 
 btVector3 Camera::GetFlatLeftVector() const {
-	return btTransform(this->GetFlatRotation()) *btVector3(1, 0, 0);
+	return btTransform(GetFlatRotation()) *btVector3(1, 0, 0);
 }
 
 btVector3 Camera::GetLeftVector() const {
-	return btTransform(this->GetRotation()) *btVector3(1, 0, 0);
+	return btTransform(GetRotation()) *btVector3(1, 0, 0);
 }
 
 btVector3 Camera::GetFlatForwardVector() const {
-	return btTransform(this->GetFlatRotation()) *btVector3(0, 0, 1);
+	return btTransform(GetFlatRotation()) *btVector3(0, 0, 1);
 }
 
 btVector3 Camera::GetForwardVector() const {
-	return btTransform(this->GetRotation()) *btVector3(0, 0, 1);
+	return btTransform(GetRotation()) *btVector3(0, 0, 1);
 }
 
 btVector3 Camera::GetPosition() const {
-	return this->position;
+	return position;
 }
 
 btVector3 Camera::GetEulerRotation() const {
-	return this->rotation;
+	return rotation;
 }
 
 btVector3 Camera::GetWorldPosition() const {
-	return this->parentTransformation *this->position;
+	return parentTransformation * position;
 }
 
 void Camera::UpdateCameraView() {
-	if(this->rotation.m_floats[0] > Math::PI/2.0)
-		this->rotation.m_floats[0] = Math::PI/2.0;
-	else if(this->rotation.m_floats[0] < -Math::PI/2.0)
-		this->rotation.m_floats[0] = -Math::PI/2.0;
+	if(rotation.m_floats[0] > Math::PI/2.0)
+		rotation.m_floats[0] = Math::PI/2.0;
+	else if(rotation.m_floats[0] < -Math::PI/2.0)
+		rotation.m_floats[0] = -Math::PI/2.0;
 	
-	if(this->rotation.m_floats[1] > Math::PI*2.0)
-		this->rotation.m_floats[1] -= Math::PI*2.0;
-	else if(this->rotation.m_floats[1] < -Math::PI*2.0)
-		this->rotation.m_floats[1] += Math::PI*2.0;
+	if(rotation.m_floats[1] > Math::PI*2.0)
+		rotation.m_floats[1] -= Math::PI*2.0;
+	else if(rotation.m_floats[1] < -Math::PI*2.0)
+		rotation.m_floats[1] += Math::PI*2.0;
 	
-	if(this->rotation.m_floats[2] > Math::PI*2.0)
-		this->rotation.m_floats[2] -= Math::PI*2.0;
-	else if(this->rotation.m_floats[2] < -Math::PI*2.0)
-		this->rotation.m_floats[2] += Math::PI*2.0;
+	if(rotation.m_floats[2] > Math::PI*2.0)
+		rotation.m_floats[2] -= Math::PI*2.0;
+	else if(rotation.m_floats[2] < -Math::PI*2.0)
+		rotation.m_floats[2] += Math::PI*2.0;
 	
-	this->sceneNode->setTarget(Math::GetIrrVec(this->GetWorldPosition() + this->GetForwardVector()));
-	this->sceneNode->setUpVector(Math::GetIrrVec(this->GetUpVector()));
-	this->sceneNode->setPosition(Math::GetIrrVec(this->GetWorldPosition()));
+	sceneNode->setTarget(Math::GetIrrVec(GetWorldPosition() + GetForwardVector()));
+	sceneNode->setUpVector(Math::GetIrrVec(GetUpVector()));
+	sceneNode->setPosition(Math::GetIrrVec(GetWorldPosition()));
 }
 
 void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth) {
 	btVector3 dstCameraRotation(0,0,0);
 	{
-		btVector3 dstLookingDirection = (worldPoint - this->GetWorldPosition()).normalized();
-		btVector3 forwardVector = this->GetForwardVector().normalized();
+		btVector3 dstLookingDirection = (worldPoint - GetWorldPosition()).normalized();
+		btVector3 forwardVector = GetForwardVector().normalized();
 		btVector3 flatForward = forwardVector;
 		flatForward.m_floats[1] = 0.0f;
 		flatForward.normalize();
@@ -118,25 +118,25 @@ void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth)
 		flatDstLookingDirection.normalize();
 		
 		float dot = flatForward.normalized().dot(flatDstLookingDirection.normalized());
-		dstCameraRotation.m_floats[1] = ((dot<=-1 || dot>=1) ? 0.001f : acos(dot))*(flatDstLookingDirection.dot(this->GetFlatLeftVector()) > 0.0f ? -1.0f : 1.0f);
+		dstCameraRotation.m_floats[1] = ((dot<=-1 || dot>=1) ? 0.001f : acos(dot))*(flatDstLookingDirection.dot(GetFlatLeftVector()) > 0.0f ? -1.0f : 1.0f);
 		dot = forwardVector.normalized().dot((Math::MakeTransformFromEuler(btVector3(0, -dstCameraRotation.y(), 0))*dstLookingDirection).normalized());
 		dstCameraRotation.m_floats[0] = ((dot<=-1 || dot>=1) ? 0.001f : acos(dot))*(dstLookingDirection.y() > forwardVector.y() ? -1.0f : 1.0f);
 	}
 	
 	if(smooth)
-		this->Rotate(dstCameraRotation*this->engine->GetDeltaTime()*3.11f*Math::PI);
+		Rotate(dstCameraRotation*engine->GetDeltaTime()*3.11f*Math::PI);
 	else
-		this->Rotate(dstCameraRotation);
+		Rotate(dstCameraRotation);
 }
 
 void Camera::SetRelativePosition(btVector3 src) {
-	this->position = src;
-	this->UpdateCameraView();
+	position = src;
+	UpdateCameraView();
 }
 
 void Camera::SetRotation(btVector3 src) {
-	this->rotation = src;
-	this->UpdateCameraView();
+	rotation = src;
+	UpdateCameraView();
 }
 
 void Camera::Move(btVector3 src) {

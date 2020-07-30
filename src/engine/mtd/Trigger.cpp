@@ -24,7 +24,7 @@ void Trigger::NextOverlappingFrame() {
 		if(body) {
 			Entity *objectT = (Entity*)(body->getUserPointer());
 			if(objectT) {
-				this->ProcessOverlappingEntity(objectT, body);
+				ProcessOverlappingEntity(objectT, body);
 			}
 		}
 	}
@@ -52,7 +52,7 @@ void Trigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_
 	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateGhostObject(shape, transform);
 	collisionObject->setCollisionFlags(collisionObject->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT);
 	
-	this->SetBody(collisionObject, shape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
+	SetBody(collisionObject, shape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
 }
 
 void Trigger::Despawn() {

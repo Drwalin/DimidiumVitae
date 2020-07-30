@@ -165,37 +165,37 @@ const char *GetDllExtension() {
 #if defined __cplusplus
 
 bool Dll::IsValid() const {
-	return this->handle != NULL;
+	return handle != NULL;
 }
 
 void *Dll::Open(const char *dllFileName, bool addAppropriateExtension) {
-	this->Close();
+	Close();
 	const int bufferSize = 4096;
 	char fileName[bufferSize];
 	snprintf(fileName, bufferSize, "%s%s", dllFileName, addAppropriateExtension?GetDllExtension():"");
-	this->handle = DllLoad(fileName);
-	if(this->handle == NULL)
+	handle = DllLoad(fileName);
+	if(handle == NULL)
 		printf("\n Dll::Open error <%s>: %s", fileName, DllGetErrorString());
-	return this->handle;
+	return handle;
 }
 
 void Dll::Close() {
-	if(this->handle)
-		DllRelease(this->handle);
-	this->handle = NULL;
+	if(handle)
+		DllRelease(handle);
+	handle = NULL;
 }
 
 Dll::Dll() {
-	this->handle = NULL;
+	handle = NULL;
 }
 
 Dll::Dll(const char *dllFileName) {
-	this->handle = NULL;
-	this->Open(dllFileName);
+	handle = NULL;
+	Open(dllFileName);
 }
 
 Dll::~Dll() {
-	this->Close();
+	Close();
 }
 
 const std::string &Dll::GetExtension() {

@@ -15,17 +15,17 @@
 #include <cassert>
 
 int Engine::GetNumberOfEntities() const {
-	return this->entities.size();
+	return entities.size();
 }
 
 std::shared_ptr<Entity> Engine::GetNewEntityOfType(const std::string &name) {
-	std::shared_ptr<Entity> entity = this->classFactory.GetClassInstantiator(name.c_str())->New();
+	std::shared_ptr<Entity> entity = classFactory.GetClassInstantiator(name.c_str())->New();
 	entity->Init(this);
 	return entity;
 }
 
 bool Engine::RegisterType(const std::string &className, const std::string &moduleName) {
-	if((bool)this->classFactory.AddClass(className.c_str(), moduleName.c_str())) {
+	if((bool)classFactory.AddClass(className.c_str(), moduleName.c_str())) {
 		return true;
 	}
 	MESSAGE(std::string("Cannot register type: ")+className+" from module: "+moduleName);
@@ -33,7 +33,7 @@ bool Engine::RegisterType(const std::string &className, const std::string &modul
 }
 
 bool Engine::RegisterModule(const std::string &modulePath) {
-	if((bool)this->classFactory.AddModule(modulePath.c_str())) {
+	if((bool)classFactory.AddModule(modulePath.c_str())) {
 		return true;
 	}
 	MESSAGE(std::string("Cannot register module: ")+modulePath);
@@ -42,16 +42,16 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 
 std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
 	if(emptyEntity) {
-		auto it = this->entities.find(name);
-		if(it == this->entities.end()) {
+		auto it = entities.find(name);
+		if(it == entities.end()) {
 			emptyEntity->Init(this);
 			emptyEntity->Spawn(emptyEntity, name, shape, transform);
 			emptyEntity->SetMass(mass);
-			this->entities[name] = emptyEntity;
+			entities[name] = emptyEntity;
 			{
 				std::shared_ptr<Trigger> trigger = std::dynamic_pointer_cast<Trigger>(emptyEntity);
 				if(trigger.get())
-					this->triggerEntities[name] = trigger;
+					triggerEntities[name] = trigger;
 			}
 			return emptyEntity;
 		}
@@ -60,49 +60,49 @@ std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, c
 }
 
 inline void Engine::UpdateEntitiesOverlapp() {
-	for(auto it = this->triggerEntities.begin(); it != this->triggerEntities.end(); ++it) {
+	for(auto it = triggerEntities.begin(); it != triggerEntities.end(); ++it) {
 		it->second->NextOverlappingFrame();
 	}
 }
 
 inline void Engine::UpdateEntities(const float deltaTime) {
-	while(!this->entitiesQueuedToDestroy.empty()) {
-		this->DeleteEntity(this->entitiesQueuedToDestroy.front());
-		this->entitiesQueuedToDestroy.pop();
+	while(!entitiesQueuedToDestroy.empty()) {
+		DeleteEntity(entitiesQueuedToDestroy.front());
+		entitiesQueuedToDestroy.pop();
 	}
 	
-	this->UpdateEntitiesOverlapp();
+	UpdateEntitiesOverlapp();
 	
-	for(auto it = this->entities.begin(); it != this->entities.end(); ++it)
+	for(auto it = entities.begin(); it != entities.end(); ++it)
 		it->second->Tick(deltaTime);
 	
-	if(this->cameraParent) {
-		this->GetCamera()->SetCameraParentTransform(this->cameraParent->GetTransform());
-		SoundEngine::SetListenerTransform(this->GetCamera()->GetTransform());
+	if(cameraParent) {
+		GetCamera()->SetCameraParentTransform(cameraParent->GetTransform());
+		SoundEngine::SetListenerTransform(GetCamera()->GetTransform());
 	}
 }
 
 void Engine::QueueEntityToDestroy(std::shared_ptr<Entity> ptr) {
 	if(ptr)
-		this->entitiesQueuedToDestroy.push(ptr->GetName());
+		entitiesQueuedToDestroy.push(ptr->GetName());
 }
 
 void Engine::QueueEntityToDestroy(const std::string &name) {
-	this->entitiesQueuedToDestroy.push(name);
+	entitiesQueuedToDestroy.push(name);
 }
 
 float Engine::GetDeltaTime() {
-	if(this->window)
-		return this->window->GetDeltaTime();
+	if(window)
+		return window->GetDeltaTime();
 	return 1.0f/60.0f;
 }
 
 World *Engine::GetWorld() {
-	return this->world;
+	return world;
 }
 
 Window *Engine::GetWindow() {
-	return this->window;
+	return window;
 }
 
 FileSystem* Engine::GetFileSystem() {
@@ -110,15 +110,15 @@ FileSystem* Engine::GetFileSystem() {
 }
 
 SoundEngine *Engine::GetSoundEngine() {
-	return this->soundEngine;
+	return soundEngine;
 }
 
 void Engine::PauseSimulation() {
-	this->pausePhysics = true;
+	pausePhysics = true;
 }
 
 void Engine::ResumeSimulation() {
-	this->pausePhysics = false;
+	pausePhysics = false;
 }
 
 int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
@@ -138,43 +138,42 @@ int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
 }
 
 void Engine::AsynchronousTick(const float deltaTime) {
-	this->physicsSimulationTime.SubscribeStart();
-	if(!this->pausePhysics)
-		this->world->Tick(deltaTime, this->CalculateNumberOfSimulationsPerFrame(deltaTime));
-	this->physicsSimulationTime.SubscribeEnd();
+	physicsSimulationTime.SubscribeStart();
+	if(!pausePhysics)
+		world->Tick(deltaTime, CalculateNumberOfSimulationsPerFrame(deltaTime));
+	physicsSimulationTime.SubscribeEnd();
 }
 
 void Engine::SynchronousTick(const float deltaTime) {
-	this->entityUpdateTime.SubscribeStart();
-	this->UpdateEntities(deltaTime);
+	entityUpdateTime.SubscribeStart();
+	UpdateEntities(deltaTime);
 	resourceManager->ResourceFreeingCycle(16);
-	this->entityUpdateTime.SubscribeEnd();
+	entityUpdateTime.SubscribeEnd();
 	
-	this->GetWindow()->GetGUI() << "\n Entity Update Time: " << this->entityUpdateTime.GetSmoothTime()*1000.0f;
-	this->GetWindow()->GetGUI() << " " << this->entityUpdateTime.GetPeakTime()*1000.0f;
-	this->GetWindow()->GetGUI() << " " << this->entityUpdateTime.GetPitTime()*1000.0f;
+	window->GetGUI() << "\n Entity Update Time: " << entityUpdateTime.GetSmoothTime()*1000.0f;
+	window->GetGUI() << " " << entityUpdateTime.GetPeakTime()*1000.0f;
+	window->GetGUI() << " " << entityUpdateTime.GetPitTime()*1000.0f;
 	
-	this->GetWindow()->GetGUI() << "\n Physics Simulation Time: " << this->physicsSimulationTime.GetSmoothTime()*1000.0f;
-	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPeakTime()*1000.0f;
-	this->GetWindow()->GetGUI() << " " << this->physicsSimulationTime.GetPitTime()*1000.0f;
-	this->GetWindow()->GetGUI() << "\n findTexture: " << (window->GetVideoDriver()->findTexture("Textures/PoweredBy-inverted.png")? "found" : "not found");
+	window->GetGUI() << "\n Physics Simulation Time: " << physicsSimulationTime.GetSmoothTime()*1000.0f;
+	window->GetGUI() << " " << physicsSimulationTime.GetPeakTime()*1000.0f;
+	window->GetGUI() << " " << physicsSimulationTime.GetPitTime()*1000.0f;
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const {
-	return this->window->GetCamera();
+	return window->GetCamera();
 }
 
 std::shared_ptr<Entity> Engine::GetCameraParent() const {
-	return this->cameraParent;
+	return cameraParent;
 }
 
 std::string Engine::GetAvailableEntityName(const std::string &name) {
-	if(this->entities.find(name) == this->entities.end()) {
+	if(entities.find(name) == entities.end()) {
 		return name;
 	}
 	for(int i = 0;; ++i) {
 		int id = i^rand();
-		if(this->entities.find(name+std::to_string(id)) == this->entities.end()) {
+		if(entities.find(name+std::to_string(id)) == entities.end()) {
 			return name+std::to_string(id);
 		}
 	}
@@ -182,13 +181,13 @@ std::string Engine::GetAvailableEntityName(const std::string &name) {
 }
 
 void Engine::AttachCameraToEntity(const std::string &name, btVector3 location) {
-	auto it = this->entities.find(name);
-	if(it != this->entities.end()) {
-		this->cameraParent = it->second;
+	auto it = entities.find(name);
+	if(it != entities.end()) {
+		cameraParent = it->second;
 	}
 	else
-		this->cameraParent = NULL;
-	this->GetCamera()->SetRelativePosition(location);
+		cameraParent = NULL;
+	GetCamera()->SetRelativePosition(location);
 }
 
 ResourceManager* Engine::GetResourceManager() {
@@ -196,43 +195,42 @@ ResourceManager* Engine::GetResourceManager() {
 }
 
 std::shared_ptr<Entity> Engine::GetEntity(const std::string &name) {
-	auto it = this->entities.find(name);
-	if(it != this->entities.end()) {
+	auto it = entities.find(name);
+	if(it != entities.end()) {
 		if(it->second)
 			return it->second;
 		else
-			this->entities.erase(it);
+			entities.erase(it);
 	}
 	std::shared_ptr<Entity> ret;
 	return ret;
 }
 
 void Engine::DeleteEntity(const std::string &name) {
-	auto it = this->entities.find(name);
-	if(it != this->entities.end()) {
+	auto it = entities.find(name);
+	if(it != entities.end()) {
 		if(it->second) {
 			if(dynamic_cast<Trigger*>(it->second.get())) {
-				this->triggerEntities.erase(name);
+				triggerEntities.erase(name);
 			}
 			
-			if(it->second == this->cameraParent)
-				this->cameraParent = NULL;
+			if(it->second == cameraParent)
+				cameraParent = NULL;
 			
 			it->second->Destroy();
 			it->second.reset();
 		}
 		
-		this->entities.erase(it);
+		entities.erase(it);
 	}
 }
 
 void Engine::BeginLoop() {
-	this->pausePhysics = false;
-	this->window->BeginLoop();
+	window->BeginLoop();
 }
 
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
-	this->Destroy();
+	Destroy();
 	try {
 		fileSystem = new FileSystem(this);
 		
@@ -244,7 +242,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		world->Init();
 		soundEngine = new SoundEngine();
 		window = new Window;
-		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], this->event, json.HasKey("fullscreen")?json["fullscreen"]:false);
+		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], event, json.HasKey("fullscreen")?json["fullscreen"]:false);
 		resourceManager = new ResourceManager(this, json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
 		
 		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
@@ -257,7 +255,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		if(GetCamera() == NULL) {
-			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], this->window->GetSceneManager()->addCameraSceneNode())));
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], window->GetSceneManager()->addCameraSceneNode())));
 			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
 		}
 		
@@ -282,10 +280,10 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 }
 
 void Engine::Destroy() {
-	this->cameraParent = NULL;
+	cameraParent = NULL;
 	
 	triggerEntities.clear();
-	for(auto it = this->entities.begin(); it != this->entities.end(); ++it) {
+	for(auto it = entities.begin(); it != entities.end(); ++it) {
 		if(it->second) {
 			it->second->Destroy();
 			it->second.reset();
@@ -293,36 +291,36 @@ void Engine::Destroy() {
 		else
 			DEBUG("It shouldn't appear");
 	}
-	this->entities.clear();
+	entities.clear();
 	
-	if(this->world) {
-		this->world->Destroy();
-		delete this->world;
-		this->world = NULL;
+	if(world) {
+		world->Destroy();
+		delete world;
+		world = NULL;
 	}
 	
-	if(this->event) {
-		delete this->event;
-		this->event = NULL;
+	if(event) {
+		delete event;
+		event = NULL;
 	}
 	
-	if(this->resourceManager) {
-		delete this->resourceManager;
-		this->resourceManager = NULL;
+	if(resourceManager) {
+		delete resourceManager;
+		resourceManager = NULL;
 	}
 	
-	if(this->soundEngine) {
-		delete this->soundEngine;
-		this->soundEngine = NULL;
+	if(soundEngine) {
+		delete soundEngine;
+		soundEngine = NULL;
 	}
 	
-	if(this->window) {
-		this->window->Destroy();
-		delete this->window;
-		this->window = NULL;
+	if(window) {
+		window->Destroy();
+		delete window;
+		window = NULL;
 	}
 	
-	this->pausePhysics = false;
+	pausePhysics = false;
 	
 	if(fileSystem) {
 		delete fileSystem;
@@ -331,17 +329,17 @@ void Engine::Destroy() {
 }
 
 Engine::Engine() {
-	this->resourceManager = NULL;
-	this->event = NULL;
-	this->world = NULL;
-	this->window = NULL;
+	resourceManager = NULL;
+	event = NULL;
+	world = NULL;
+	window = NULL;
 	fileSystem = NULL;
-	this->pausePhysics = true;
-	this->soundEngine = NULL;
+	pausePhysics = true;
+	soundEngine = NULL;
 }
 
 Engine::~Engine() {
-	this->Destroy();
+	Destroy();
 }
 
 Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities) {

@@ -109,11 +109,11 @@ SoundSource::SoundSource(std::shared_ptr<Sound> sampler) {
 	alSource3f(sourceID, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
 	alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 	alSourcei(sourceID, AL_SOURCE_RELATIVE, AL_FALSE);
-	this->SetSampler(sampler);
+	SetSampler(sampler);
 }
 
 SoundSource::SoundSource() {
-	alGenSources(1, &(this->sourceID));
+	alGenSources(1, &(sourceID));
 	alSourcef(sourceID, AL_PITCH, 1.0f);
 	alSourcef(sourceID, AL_GAIN, 1.0f);
 	alSource3f(sourceID, AL_POSITION, 0.0f, 0.0f, 0.0f);

@@ -2,38 +2,39 @@
 
 TO DO:
 	Multiplayer:
-		divide code sections: server side and client side
-		internet connection:
+		- divide code sections: server side and client side
+		- internet connection:
 			TCP - initialization, events, lossless informations
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
-	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
 	Add TryBox and TryCylinder to ObjToShapeConverter
 	Optimize crouching/standing up in MotionController
 	Optimise setting transformation to ISceneNode in SceneNode code
-	Optimise loading  and creating Entities
+	Optimise loading and creating Entities
 	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape
 		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe, get by scale
 		- add CollisionShape::SetScale(btCollisionShape, newScale); // if current btCollisionShape is unique, change it's scale; else if it's not unique, call CollisionShape::GetNewBtCollisionShape(newScale);
-	Update ChangeLog.txt
-	Update Readme.txt linux compilation section
-	Update Dependencies.txt for linux
-	Choose a license
-	Lights
-	Particles
-	LOD system
-	Font resource class
-	Sprites in world space
+	Official cases:
+		- create documentation (for v1.0.0)
+		- update ChangeLog.txt
+		- update Readme.txt linux compilation section
+		- choose a license
+		- update Dependencies.txt for linux
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
 	Code refactor
-	Add video player (maybe from *.png image sequence and *.ogg sound file)
+	Video player (maybe from *.png image sequence and *.ogg sound file)
+	Use Semantic Versioning 2.0.0 (https://semver.org/) consistently
 	
 
-TO DO (?):
-	Code refactor - Remove "this->" where possible
+TO DO (to think):
+	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
 	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*"
 	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
+	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
+	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
 	Remove GetVersion.cpp
+	Font resource class
+	Replace (std::string)Entity::name by (int/uint64_T)Entity::id
 	
 
 Done:
@@ -63,6 +64,7 @@ Done:
 	High resolution clock for frame delta time
 	Limit frame rate
 	Menu system
+	Code refactor - Remove "this->" where possible
 	
 
 TO DO in future:
@@ -72,9 +74,12 @@ TO DO in future:
 	Dynamic light maps
 	Sound occlusion
 	Mesh occlusion
+	Lights
+	Particles
+	LOD system
+	Sprites in world space
 	Optimise rendering?
-	Limit number of active OpenAL sound sources
-	Create documentation
+	Limit number of active OpenAL sound sources (choose closest and loudest sources - eg. order and enable by distance/volume)
 	
 
 Bugs:

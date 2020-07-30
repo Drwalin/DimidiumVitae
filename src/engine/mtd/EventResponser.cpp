@@ -8,7 +8,7 @@
 #include "../css/EventResponser.h"
 
 class Window *EventResponser::GetWindow() {
-	return this->window;
+	return window;
 }
 
 void EventResponser::SetEngine(class Engine *engine) {
@@ -20,11 +20,11 @@ void EventResponser::SetWindow(Window *window) {
 }
 
 EventResponser::EventResponser() {
-	this->window = NULL;
+	window = NULL;
 }
 
 EventResponser::~EventResponser() {
-	this->window = NULL;
+	window = NULL;
 }
 
 #endif

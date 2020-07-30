@@ -40,7 +40,7 @@ void CollisionShapeInfo::Box::MakeFromJSON(const JSON json) {
 }
 
 CollisionShapeInfo::Box::Box() {
-	this->size = btVector3(1,1,1);
+	size = btVector3(1,1,1);
 }
 
 CollisionShapeInfo::Box::~Box() {

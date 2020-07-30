@@ -38,44 +38,44 @@ btScalar SimulationContactResultCallback::addSingleResult(btManifoldPoint& manif
 }
 
 bool MotionControllerTrigger::IsTopCollision() const {
-	return this->topCollision;
+	return topCollision;
 }
 
 bool MotionControllerTrigger::IsSideCollision() const {
-	return this->sideCollision;
+	return sideCollision;
 }
 
 bool MotionControllerTrigger::IsBottomCollision() const {
-	return this->bottomCollision;
+	return bottomCollision;
 }
 
 void MotionControllerTrigger::Init(std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight) {
 	this->character = character;
 	this->otherTrigger = otherTrigger;
 	this->stepHeight = stepHeight;
-	this->bottom = 0.0f;
-	this->top = 1.75f;
+	bottom = 0.0f;
+	top = 1.75f;
 }
 
 void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) {
-	if(entity != this->character.get() && entity != this && entity != this->otherTrigger.get()) {
-		float mid = (this->bottom + this->top)*0.5f;
+	if(entity != character.get() && entity != this && entity != otherTrigger.get()) {
+		float mid = (bottom + top)*0.5f;
 		
 		SimulationContactResultCallback resultCallback(this, mid);
-		engine->GetWorld()->GetDynamicsWorld()->contactPairTest(collisionObject, this->body.get(), resultCallback);
+		engine->GetWorld()->GetDynamicsWorld()->contactPairTest(collisionObject, body.get(), resultCallback);
 	}
 }
 
 void MotionControllerTrigger::NextOverlappingFrame() {
-	this->topCollision = false;
-	this->sideCollision = false;
-	this->bottomCollision = false;
+	topCollision = false;
+	sideCollision = false;
+	bottomCollision = false;
 	
 	btVector3 min, max;
 	GetBtCollisionShape()->getAabb(body->getWorldTransform(), min, max);
-	this->bottom = min.y();
-	this->top = max.y();
-	float mid = (this->bottom + this->top)*0.5f;
+	bottom = min.y();
+	top = max.y();
+	float mid = (bottom + top)*0.5f;
 	
 	Trigger::NextOverlappingFrame();
 }
@@ -102,8 +102,8 @@ void MotionControllerTrigger::Despawn() {
 }
 
 void MotionControllerTrigger::Destroy() {
-	this->character = NULL;
-	this->otherTrigger = NULL;
+	character = NULL;
+	otherTrigger = NULL;
 	Trigger::Destroy();
 }
 

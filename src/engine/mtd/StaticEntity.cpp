@@ -37,7 +37,7 @@ void StaticEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::sh
 	collisionObject->setFriction(0.75);
 	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 	
-	this->SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
+	SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
 }
 
 void StaticEntity::Despawn() {
@@ -59,7 +59,7 @@ StaticEntity::StaticEntity() :
 }
 
 StaticEntity::~StaticEntity() {
-	this->Destroy();
+	Destroy();
 }
 
 #endif

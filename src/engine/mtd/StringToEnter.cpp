@@ -14,85 +14,85 @@ void StringToEnter::SetWindow(Window *window) {
 }
 
 std::string StringToEnter::GetCurrent() {
-	return this->str;
+	return str;
 }
 
 void StringToEnter::Clear() {
-	this->str.clear();
-	this->currentPosition = 0;
+	str.clear();
+	currentPosition = 0;
 }
 
 void StringToEnter::InsertCharacter(char character) {
-	if(this->str.size() < this->charactersLimit) {
-		this->str.insert(this->currentPosition, 1, character);
-		++(this->currentPosition);
+	if(str.size() < charactersLimit) {
+		str.insert(currentPosition, 1, character);
+		++(currentPosition);
 	}
 }
 
 void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 	switch(key.Key) {
 	case irr::KEY_LEFT:
-		--this->currentPosition;
-		if(this->currentPosition < 0)
-			this->currentPosition = this->str.size();
+		--currentPosition;
+		if(currentPosition < 0)
+			currentPosition = str.size();
 		break;
 	case irr::KEY_RIGHT:
-		++this->currentPosition;
-		if(this->currentPosition > this->str.size())
-			this->currentPosition = 0;
+		++currentPosition;
+		if(currentPosition > str.size())
+			currentPosition = 0;
 		break;
 	case irr::KEY_DELETE:
-		if(this->currentPosition < this->str.size()) {
-			this->str.erase(this->str.begin() + this->currentPosition);
+		if(currentPosition < str.size()) {
+			str.erase(str.begin() + currentPosition);
 		}
 		break;
 	case irr::KEY_BACK:			// backspace
-		if(this->currentPosition > 0) {
-			--(this->currentPosition);
-			this->str.erase(this->str.begin() + this->currentPosition);
+		if(currentPosition > 0) {
+			--(currentPosition);
+			str.erase(str.begin() + currentPosition);
 		}
 		break;
 	case irr::KEY_RETURN:		// enter
-		if(this->window->GetEventResponser()) {
-			this->window->GetEventResponser()->StringToEnterEvent(this->str);
+		if(window->GetEventResponser()) {
+			window->GetEventResponser()->StringToEnterEvent(str);
 		}
-		this->Clear();
+		Clear();
 		break;
 	case irr::KEY_ESCAPE:
-		this->Clear();
+		Clear();
 		break;
 	case irr::KEY_HOME:
-		this->currentPosition = 0;
+		currentPosition = 0;
 		break;
 	case irr::KEY_END:
-		this->currentPosition = str.size();
+		currentPosition = str.size();
 		break;
 	default:
 		if(key.Char != 0) {
-			this->InsertCharacter(key.Char);
+			InsertCharacter(key.Char);
 		}
 	}
 }
 
 void StringToEnter::SetCharactersLimit(unsigned value) {
-	this->charactersLimit = value;
-	if(this->charactersLimit < 1024*4)
-		this->charactersLimit = 1024*4;
+	charactersLimit = value;
+	if(charactersLimit < 1024*4)
+		charactersLimit = 1024*4;
 }
 
 StringToEnter::StringToEnter() {
-	this->charactersLimit = 1024*4;
-	this->window = NULL;
-	this->str = "";
-	this->currentPosition = 0;
+	charactersLimit = 1024*4;
+	window = NULL;
+	str = "";
+	currentPosition = 0;
 }
 
 StringToEnter::~StringToEnter() {
-	this->charactersLimit = 0;
-	this->window = NULL;
-	this->str = "";
-	this->currentPosition = 0;
-	this->cooldownToUseKey.clear();
+	charactersLimit = 0;
+	window = NULL;
+	str = "";
+	currentPosition = 0;
+	cooldownToUseKey.clear();
 }
 
 #endif

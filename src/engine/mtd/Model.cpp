@@ -12,13 +12,13 @@
 #include "../lib/StlStreamExtension.h"
 
 void Animation::Play(bool loop) {
-	if(this->iSceneNode) {
-		if(this->endFrame >= this->startFrame && this->duration > 0)
-			this->iSceneNode->setAnimationSpeed(float(this->endFrame - this->startFrame) / this->duration);
+	if(iSceneNode) {
+		if(endFrame >= startFrame && duration > 0)
+			iSceneNode->setAnimationSpeed(float(endFrame - startFrame) / duration);
 		else
-			this->iSceneNode->setAnimationSpeed(24.0f);
-		this->iSceneNode->setFrameLoop(this->startFrame, this->endFrame);
-		this->iSceneNode->setLoopMode(loop);
+			iSceneNode->setAnimationSpeed(24.0f);
+		iSceneNode->setFrameLoop(startFrame, endFrame);
+		iSceneNode->setLoopMode(loop);
 	}
 }
 
@@ -27,35 +27,35 @@ void Animation::SetSceneNode(irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
 }
 
 Animation::Animation() {
-	this->duration = 1.0f;
-	this->iSceneNode = NULL;
-	this->startFrame = 0;
-	this->endFrame = 0;
+	duration = 1.0f;
+	iSceneNode = NULL;
+	startFrame = 0;
+	endFrame = 0;
 }
 
 Animation::Animation(const Animation &other) {
-	this->duration = other.duration;
-	this->iSceneNode = other.iSceneNode;
-	this->startFrame = other.startFrame;
-	this->endFrame = other.endFrame;
+	duration = other.duration;
+	iSceneNode = other.iSceneNode;
+	startFrame = other.startFrame;
+	endFrame = other.endFrame;
 }
 
 Animation::Animation(int startFrame, int endFrame, float duration) {
 	this->startFrame = startFrame;
 	this->endFrame = endFrame;
 	this->duration = duration;
-	this->iSceneNode = NULL;
+	iSceneNode = NULL;
 }
 
 Animation::Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
-	this->duration = other.duration;
+	duration = other.duration;
 	this->iSceneNode = iSceneNode;
-	this->startFrame = other.startFrame;
-	this->endFrame = other.endFrame;
+	startFrame = other.startFrame;
+	endFrame = other.endFrame;
 }
 
 std::shared_ptr<irr::scene::IAnimatedMesh> Model::GetMesh() {
-	return this->mesh;
+	return mesh;
 }
 
 std::shared_ptr<Material> Model::GetDefaultMaterial() const {
@@ -63,23 +63,23 @@ std::shared_ptr<Material> Model::GetDefaultMaterial() const {
 }
 
 Animation Model::GetAnimation(const std::string &animationName) const {
-	auto it = this->animations.find(animationName);
-	if(it != this->animations.end())
+	auto it = animations.find(animationName);
+	if(it != animations.end())
 		return it->second;
-	if(this->mesh)
-		return Animation(0, this->mesh->getFrameCount()-1, 1.0f);
+	if(mesh)
+		return Animation(0, mesh->getFrameCount()-1, 1.0f);
 	return Animation(0, 0, 0);
 }
 
 void Model::LoadMesh(Engine *engine, const std::string &fileName) {
-	this->Destroy();
+	Destroy();
 	if(engine == NULL)
 		throw (int)1;
 	
 	irr::scene::IAnimatedMesh *newMesh = engine->GetWindow()->GetSceneManager()->getMesh(fileName.c_str());
 	if(newMesh == NULL)
 		throw (int)2;
-	this->mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [engine](irr::scene::IAnimatedMesh*ptr) {engine->GetWindow()->GetSceneManager()->getMeshCache()->removeMesh(ptr);});
+	mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [engine](irr::scene::IAnimatedMesh*ptr) {engine->GetWindow()->GetSceneManager()->getMeshCache()->removeMesh(ptr);});
 	
 	this->engine = engine;
 	
@@ -91,7 +91,7 @@ void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 	}
 	
 	std::string animFileName = GetFileWithPathWithoutExtension(fileName) + ".anim";
-	this->LoadAnimations(animFileName);
+	LoadAnimations(animFileName);
 }
 
 void Model::LoadAnimations(const std::string &animationsFileName) {
@@ -104,11 +104,11 @@ void Model::LoadAnimations(const std::string &animationsFileName) {
 }
 
 void Model::Destroy() {
-	this->animations.clear();
-	if(this->mesh)
-		this->mesh.reset();
-	this->mesh = NULL;
-	this->engine = NULL;
+	animations.clear();
+	if(mesh)
+		mesh.reset();
+	mesh = NULL;
+	engine = NULL;
 }
 
 Model::Model(Engine *engine, const std::string &name) :
@@ -117,7 +117,7 @@ Model::Model(Engine *engine, const std::string &name) :
 }
 
 Model::~Model() {
-	this->Destroy();
+	Destroy();
 }
 
 Resource::ResourceType Model::GetResourceType() const {
