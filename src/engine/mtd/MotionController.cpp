@@ -11,7 +11,7 @@
 
 #include <algorithm>
 
-void MotionController::Init(class Engine *engine, std::shared_ptr<Entity> characterEntity, float stepHeight) {
+void MotionController::Init(class Engine *engine, Entity *characterEntity, float stepHeight) {
 	this->engine = engine;
 	if(characterEntity) {
 		this->engine = characterEntity->GetEngine();
@@ -26,12 +26,12 @@ void MotionController::Init(class Engine *engine, std::shared_ptr<Entity> charac
 			characterCrouchingHeight = characterStandingHeight *crouchingScale;
 			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
 			
-			triggerHigh = std::dynamic_pointer_cast<MotionControllerTrigger>(
+			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
 					engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
 					engine->GetResourceManager()->GetCapsule(characterRadius, characterStandingHeight),
 					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
-			triggerLow = std::dynamic_pointer_cast<MotionControllerTrigger>(
+			triggerLow = dynamic_cast<MotionControllerTrigger*>(
 					engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
 					engine->GetAvailableEntityName("Trigger"),
 					engine->GetResourceManager()->GetCapsule(characterRadius, characterStandingHeight),
@@ -58,7 +58,7 @@ void MotionController::Init(class Engine *engine, std::shared_ptr<Entity> charac
 }
 
 void MotionController::UpdateSpeed(const float deltaTime) {
-	std::shared_ptr<btRigidBody> rigidBody = character->GetBody<btRigidBody>();
+	btRigidBody *rigidBody = character->GetBody<btRigidBody>();
 	if(rigidBody && GetCurrentSpeed() > 0.0f) {
 		btVector3 currentVelocity = rigidBody->getLinearVelocity();
 		float currentSpeed = currentVelocity.length();
@@ -177,7 +177,7 @@ void MotionController::MoveInDirection(btVector3 direction) {
 void MotionController::Jump() {
 	if(jumpCooldown >= jumpCooldownLimit && triggerHigh->IsBottomCollision()) {
 		jumpCooldown = 0.0f;
-		std::shared_ptr<btRigidBody> rigidBody = character->GetBody<btRigidBody>();
+		btRigidBody *rigidBody = character->GetBody<btRigidBody>();
 		if(rigidBody) {
 			rigidBody->applyCentralImpulse(btVector3(0, 1, 0)*GetJumpVelocity()/rigidBody->getInvMass());
 		}

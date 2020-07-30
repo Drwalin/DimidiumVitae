@@ -49,8 +49,8 @@ void World::Tick(btScalar deltaTime, int count) {
 		dynamicsWorld->stepSimulation(deltaTime);
 }
 
-void World::UpdateColliderForObject(std::shared_ptr<btCollisionObject> body) {
-	dynamicsWorld->getCollisionWorld()->updateSingleAabb(body.get());
+void World::UpdateColliderForObject(btCollisionObject* body) {
+	dynamicsWorld->getCollisionWorld()->updateSingleAabb(body);
 	body->activate();
 }
 
@@ -70,14 +70,14 @@ void World::Init() {
 	dynamicsWorld->setForceUpdateAllAabbs(false);
 }
 
-bool World::AddBody(std::shared_ptr<btCollisionObject> body, int collisionFilterGroup, int collisionFilterMask) {
+bool World::AddBody(btCollisionObject *body, int collisionFilterGroup, int collisionFilterMask) {
 	if(body) {
 		if(object.find(body) == object.end()) {
-			std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>(body);
+			btRigidBody *rigid = dynamic_cast<btRigidBody*>(body);
 			if(rigid)
-				dynamicsWorld->addRigidBody(rigid.get(), collisionFilterGroup, collisionFilterMask);
+				dynamicsWorld->addRigidBody(rigid, collisionFilterGroup, collisionFilterMask);
 			else
-				dynamicsWorld->addCollisionObject(body.get(), collisionFilterGroup, collisionFilterMask);
+				dynamicsWorld->addCollisionObject(body, collisionFilterGroup, collisionFilterMask);
 			object.insert(body);
 			body->activate();
 		}
@@ -86,15 +86,15 @@ bool World::AddBody(std::shared_ptr<btCollisionObject> body, int collisionFilter
 	return false;
 }
 
-bool World::RemoveBody(std::shared_ptr<btCollisionObject> body) {
+bool World::RemoveBody(btCollisionObject *body) {
 	auto it = object.find(body);
 	if(it != object.end()) {
 		(*it)->activate();
-		std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>(*it);
+		btRigidBody *rigid = dynamic_cast<btRigidBody*>(*it);
 		if(rigid)
-			dynamicsWorld->removeRigidBody(rigid.get());
+			dynamicsWorld->removeRigidBody(rigid);
 		else
-			dynamicsWorld->removeCollisionObject(it->get());
+			dynamicsWorld->removeCollisionObject(*it);
 		object.erase(it);
 	}
 	return false;
@@ -102,11 +102,11 @@ bool World::RemoveBody(std::shared_ptr<btCollisionObject> body) {
 
 void World::RemoveBodys() {
 	for(auto it = object.begin(); it != object.end(); ++it) {
-		std::shared_ptr<btRigidBody> rigid = std::dynamic_pointer_cast<btRigidBody>(*it);
+		btRigidBody *rigid = dynamic_cast<btRigidBody*>(*it);
 		if(rigid)
-			dynamicsWorld->removeRigidBody(rigid.get());
+			dynamicsWorld->removeRigidBody(rigid);
 		else
-			dynamicsWorld->removeCollisionObject(it->get());
+			dynamicsWorld->removeCollisionObject(*it);
 	}
 	object.clear();
 }

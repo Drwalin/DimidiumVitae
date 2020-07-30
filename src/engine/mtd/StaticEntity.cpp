@@ -29,10 +29,10 @@ void StaticEntity::Save(std::ostream &stream) const {
 	Entity::Save(stream);
 }
 
-void StaticEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(self, name, shape, transform);
+void StaticEntity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Entity::Spawn(name, shape, transform);
 	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateCollisionObject(shape, transform);
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(shape, transform);
 	
 	collisionObject->setFriction(0.75);
 	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
@@ -51,7 +51,7 @@ void StaticEntity::Destroy() {
 extern "C" std::shared_ptr<Entity> GetStaticEntityInstantiator() { static std::shared_ptr<Entity> instantiator(new StaticEntity(), [](Entity *ptr) {delete ptr;}); return instantiator; }
 int StaticEntity::GetTypeSize() const{ return sizeof(StaticEntity); }
 void StaticEntity::Free() { delete this; }
-std::shared_ptr<Entity> StaticEntity::New() const{ return std::dynamic_pointer_cast<Entity>(std::shared_ptr<StaticEntity>(new StaticEntity(), [](Entity *ptr) {delete ptr;})); }
+Entity* StaticEntity::New() const { return new StaticEntity(); }
 std::string StaticEntity::GetClassName() const{ return "StaticEntity"; }
 
 StaticEntity::StaticEntity() :

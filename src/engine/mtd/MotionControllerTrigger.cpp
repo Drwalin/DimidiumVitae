@@ -49,7 +49,7 @@ bool MotionControllerTrigger::IsBottomCollision() const {
 	return bottomCollision;
 }
 
-void MotionControllerTrigger::Init(std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight) {
+void MotionControllerTrigger::Init(Entity *character, Entity *otherTrigger, float stepHeight) {
 	this->character = character;
 	this->otherTrigger = otherTrigger;
 	this->stepHeight = stepHeight;
@@ -58,11 +58,11 @@ void MotionControllerTrigger::Init(std::shared_ptr<Entity> character, std::share
 }
 
 void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) {
-	if(entity != character.get() && entity != this && entity != otherTrigger.get()) {
+	if(entity != character && entity != this && entity != otherTrigger) {
 		float mid = (bottom + top)*0.5f;
 		
 		SimulationContactResultCallback resultCallback(this, mid);
-		engine->GetWorld()->GetDynamicsWorld()->contactPairTest(collisionObject, body.get(), resultCallback);
+		engine->GetWorld()->GetDynamicsWorld()->contactPairTest(collisionObject, body, resultCallback);
 	}
 }
 
@@ -93,8 +93,8 @@ void MotionControllerTrigger::Save(std::ostream &stream) const
 	Trigger::Save(stream);
 }
 
-void MotionControllerTrigger::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Trigger::Spawn(self, name, shape, transform);
+void MotionControllerTrigger::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Trigger::Spawn(name, shape, transform);
 }
 
 void MotionControllerTrigger::Despawn() {
@@ -110,7 +110,7 @@ void MotionControllerTrigger::Destroy() {
 extern "C" std::shared_ptr<Entity> GetMotionControllerTriggerInstantiator() { static std::shared_ptr<Entity> instantiator(new MotionControllerTrigger(), [](Entity *ptr) {delete ptr;}); return instantiator; }
 int MotionControllerTrigger::GetTypeSize() const{ return sizeof(MotionControllerTrigger); }
 void MotionControllerTrigger::Free() { delete this; }
-std::shared_ptr<Entity> MotionControllerTrigger::New() const{ return std::dynamic_pointer_cast<Entity>(std::shared_ptr<MotionControllerTrigger>(new MotionControllerTrigger(), [](Entity *ptr) {delete ptr;})); }
+Entity* MotionControllerTrigger::New() const{ return new MotionControllerTrigger(); }
 std::string MotionControllerTrigger::GetClassName() const{ return "MotionControllerTrigger"; }
 
 MotionControllerTrigger::MotionControllerTrigger() {

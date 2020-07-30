@@ -26,18 +26,18 @@ void Event::MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) {
 irr::scene::ISceneNode *lightSceneNode = 0;
 
 void Event::KeyPressedEvent(int keyCode) {
-	std::shared_ptr<Entity> player = engine->GetEntity(std::string("Player"));
-	std::shared_ptr<Entity> temp;
+	Entity *player = engine->GetEntity(std::string("Player"));
+	Entity *temp = NULL;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
 	Player *playerPtr = NULL;
 	if(player) {
-		character = dynamic_cast<Character*>(((Entity*)(player.get())));
-		playerPtr = dynamic_cast<Player*>(((Entity*)(player.get())));
+		character = dynamic_cast<Character*>(player);
+		playerPtr = dynamic_cast<Player*>(player);
 	}
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
-	std::shared_ptr<Entity> bow = engine->GetEntity("Bow");
+	Entity *bow = engine->GetEntity("Bow");
 	static Animation bowDraw = bow->GetSceneNode()->GetAnimation("draw");
 	static Animation bowRelease = bow->GetSceneNode()->GetAnimation("release");
 	static Animation bowFull = bow->GetSceneNode()->GetAnimation("full");
@@ -127,10 +127,10 @@ void Event::KeyPressedEvent(int keyCode) {
 }
 
 void Event::KeyReleasedEvent(int keyCode) {
-	std::shared_ptr<Entity> player = engine->GetEntity(std::string("Player"));
+	Entity *player = engine->GetEntity(std::string("Player"));
 	Character *character = NULL;
 	if(player)
-		character = dynamic_cast<Character*>((Entity*)(player.get()));
+		character = dynamic_cast<Character*>(player);
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
 	switch(keyCode) {
@@ -151,16 +151,15 @@ void Event::KeyReleasedEvent(int keyCode) {
 }
 
 void Event::KeyHoldedEvent(int keyCode) {
-	
-	std::shared_ptr<Entity> player = engine->GetEntity(std::string("Player"));
-	std::shared_ptr<Entity> temp;
+	Entity *player = engine->GetEntity(std::string("Player"));
+	Entity *temp;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
 	Player *playerPtr = NULL;
 	Entity* ptemp=NULL;
 	if(player) {
-		character = dynamic_cast<Character*>(((Entity*)(player.get())));
-		playerPtr = dynamic_cast<Player*>(((Entity*)(player.get())));
+		character = dynamic_cast<Character*>(player);
+		playerPtr = dynamic_cast<Player*>(player);
 	}
 	
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
@@ -181,7 +180,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 			begin = btVector3(0,11.2,0);
 			end = btVector3(0,11.2,300);
 		}
-		ptemp = engine->RayTrace(begin, end, CollisionDefaultMaskAll, point, normal, {player.get()});
+		ptemp = engine->RayTrace(begin, end, CollisionDefaultMaskAll, point, normal, {player});
 		if(ptemp) {
 			if(ptemp->GetName() != "TestMap" && ptemp->GetName() != "Box") {
 				if(ptemp->GetBody())
@@ -231,12 +230,12 @@ void Event::KeyHoldedEvent(int keyCode) {
 void Event::StringToEnterEvent(std::string str) {
 	fprintf(stderr, "\n Input string: \"%s\"", str.c_str());
 	
-	std::shared_ptr<Entity> player = engine->GetEntity(std::string("Player"));
-	std::shared_ptr<Entity> temp;
+	Entity *player = engine->GetEntity(std::string("Player"));
+	Entity *temp;
 	btVector3 begin, end, point, normal;
 	Character *character = NULL;
 	if(player)
-		character = dynamic_cast<Character*>((Entity*)(player.get()));
+		character = dynamic_cast<Character*>(player);
 	
 	if(str == "Rel") {
 		fprintf(stderr, "\n StringToEnterEvent(%s); ", str.c_str());
@@ -251,4 +250,3 @@ Event::~Event() {
 }
 
 #endif
-

@@ -39,7 +39,7 @@ void Entity::SetTransform(const btTransform &transform) {
 	if(body) {
 		body->activate(true);
 		
-		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+		btRigidBody *rigidBody = GetBody<btRigidBody>();
 		if(rigidBody)
 			rigidBody->getMotionState()->setWorldTransform(currentTransform);
 		else
@@ -68,7 +68,7 @@ void Entity::Rotate(const btQuaternion &quat) {
 
 void Entity::Tick(const float deltaTime) {
 	if(body) {
-		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+		btRigidBody *rigidBody = GetBody<btRigidBody>();
 		if(rigidBody) rigidBody->getMotionState()->getWorldTransform(currentTransform);
 		else currentTransform = GetBody<btCollisionObject>()->getWorldTransform();
 	}
@@ -80,7 +80,7 @@ void Entity::Tick(const float deltaTime) {
 void Entity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
 
 void Entity::SetMass(float mass) {
-	std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+	btRigidBody *rigidBody = GetBody<btRigidBody>();
 	if(rigidBody) {
 		this->mass = mass;
 		btCollisionShape *shape = rigidBody->getCollisionShape();
@@ -141,7 +141,7 @@ void Entity::SetModel(std::shared_ptr<Model> model) {
 	}
 }
 
-void Entity::SetBody(std::shared_ptr<btCollisionObject> body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
+void Entity::SetBody(btCollisionObject* body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
 	DestroyBody();
 	this->body = body;
 	collisionShape = shape;
@@ -155,9 +155,9 @@ void Entity::DestroyBody() {
 	btCollisionShape *btCollisionShape = NULL;
 	if(body) {
 		btCollisionShape = body->getCollisionShape();
-		engine->GetWorld()->RemoveBody(GetBody<btCollisionObject>());
+		engine->GetWorld()->RemoveBody(GetBody());
 		
-		std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+		btRigidBody *rigidBody = GetBody<btRigidBody>();
 		if(rigidBody) {
 			auto motionState = rigidBody->getMotionState();
 			if(motionState) {
@@ -168,8 +168,7 @@ void Entity::DestroyBody() {
 		
 		body->setCollisionShape(NULL);
 		
-		assert(body);
-		body.reset();
+		delete body;
 		
 		body = NULL;
 	}
@@ -202,7 +201,7 @@ void Entity::Init(Engine *engine) {
 	this->engine = engine;
 }
 
-void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;
 	this->name = name;
@@ -211,6 +210,7 @@ void Entity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_p
 }
 
 Entity::Entity() {
+	body = NULL;
 	mass = 1.0f;
 	engine = NULL;
 	name = "";

@@ -19,16 +19,15 @@ TO DO:
 		- update Readme.txt linux compilation section
 		- choose a license
 		- update Dependencies.txt for linux
+	Overall test
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
-	Code refactor
 	Video player (maybe from *.png image sequence and *.ogg sound file)
 	Use Semantic Versioning 2.0.0 (https://semver.org/) consistently
 	
 
 TO DO (to think):
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
-	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*"
 	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
 	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
@@ -65,6 +64,7 @@ Done:
 	Limit frame rate
 	Menu system
 	Code refactor - Remove "this->" where possible
+	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*" and "std::shared_ptr<btCollisionObject>" with "btCollisionObject*"
 	
 
 TO DO in future:

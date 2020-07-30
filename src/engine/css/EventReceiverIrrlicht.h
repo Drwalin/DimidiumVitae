@@ -30,7 +30,7 @@ public:
 	
 private:
 	
-	std::vector < irr::SEvent > eventQueue;
+	std::vector<irr::SEvent> eventQueue;
 	std::mutex queueMutex;
 	
 	EventResponser *eventResponser;
@@ -38,8 +38,8 @@ private:
 	
 	int mouseX, mouseY, mouseW;
 	
-	std::set < unsigned > keyHolded;
-	std::set < unsigned > keyPressed;
+	std::set<unsigned> keyHolded;
+	std::set<unsigned> keyPressed;
 	
 	void GenerateOneEvent(const irr::SEvent& event);
 };

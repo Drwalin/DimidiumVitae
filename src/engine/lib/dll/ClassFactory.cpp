@@ -10,7 +10,7 @@
 #include <cstdio>
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::GetNewOf(const char *className) {
+T* ClassFactory<T>::GetNewOf(const char *className) {
 	auto it = uniqueObjects.find(className);
 	if(it == uniqueObjects.end())
 		return NULL;
@@ -18,18 +18,18 @@ std::shared_ptr<T> ClassFactory<T>::GetNewOf(const char *className) {
 }
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::GetClassInstantiator(const char *className) {
+T* ClassFactory<T>::GetClassInstantiator(const char *className) {
 	auto it = uniqueObjects.find(className);
 	if(it == uniqueObjects.end())
 		return NULL;
-	return it->second;
+	return it->second.get();
 }
 
 template < typename T >
-std::shared_ptr<T> ClassFactory<T>::AddClass(const char *className, const char *moduleName) {
+T* ClassFactory<T>::AddClass(const char *className, const char *moduleName) {
 	auto it = uniqueObjects.find(className);
 	if(it != uniqueObjects.end())
-		return it->second;
+		return it->second.get();
 	
 	std::shared_ptr<Dll> dll = GetModule(moduleName);
 	if(dll == NULL) {
@@ -55,7 +55,7 @@ std::shared_ptr<T> ClassFactory<T>::AddClass(const char *className, const char *
 	}
 	
 	uniqueObjects.insert(std::pair(std::string(className),instantiator));
-	return instantiator;
+	return instantiator.get();
 }
 
 template < typename T >

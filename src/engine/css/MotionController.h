@@ -23,10 +23,23 @@
 class MotionController {
 public:
 	
+	enum class State {
+		WALKING,
+		CROUCHING,
+		RUNNING,
+		SNEAKING
+	};
+	
+	enum class CrouchingState {
+		CROUCHING,
+		STANDING,
+		STANDING_UP
+	};
+	
 	MotionController();
 	~MotionController();
 	
-	void Init(class Engine *engine, std::shared_ptr<Entity> characterEntity, float stepHeight = 0.3f);
+	void Init(class Engine *engine, Entity *characterEntity, float stepHeight = 0.3f);
 	
 	float GetCurrentSpeed();
 	float GetJumpVelocity();
@@ -50,15 +63,25 @@ public:
 	
 protected:
 	
+	MotionController::State GetCurrentState() const;
+	
+	void UpdateSpeed(const float deltaTime);
+	void AddState(State state);
+	void RemoveState(State state);
+	
+	void UpdateTriggersTransform();
+	
+protected:
+	
 	class Engine *engine;
-	std::shared_ptr<Entity> character;
+	Entity *character;
 	
 	btVector3 triggerLowOffsetCrouching;
 	btVector3 triggerLowOffsetStanding;
 	btVector3 triggerHighOffsetCrouching;
 	btVector3 triggerHighOffsetStanding;
-	std::shared_ptr<MotionControllerTrigger> triggerLow;
-	std::shared_ptr<MotionControllerTrigger> triggerHigh;
+	MotionControllerTrigger *triggerLow;
+	MotionControllerTrigger *triggerHigh;
 	float stepHeight;
 	float jumpCooldownLimit;
 	float jumpCooldown;
@@ -68,28 +91,10 @@ protected:
 	
 	float crouchingScale;
 	
-	enum class State {
-		WALKING,
-		CROUCHING,
-		RUNNING,
-		SNEAKING
-	};
 	std::vector<State> states;
 	btVector3 walkingDirection;
 	
-	enum class CrouchingState {
-		CROUCHING,
-		STANDING,
-		STANDING_UP
-	} crouchingState;
-	
-	MotionController::State GetCurrentState() const;
-	
-	void UpdateSpeed(const float deltaTime);
-	void AddState(State state);
-	void RemoveState(State state);
-	
-	void UpdateTriggersTransform();
+	CrouchingState crouchingState;
 };
 
 #endif

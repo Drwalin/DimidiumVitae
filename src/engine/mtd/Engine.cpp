@@ -18,8 +18,8 @@ int Engine::GetNumberOfEntities() const {
 	return entities.size();
 }
 
-std::shared_ptr<Entity> Engine::GetNewEntityOfType(const std::string &name) {
-	std::shared_ptr<Entity> entity = classFactory.GetClassInstantiator(name.c_str())->New();
+Entity* Engine::GetNewEntityOfType(const std::string &name) {
+	Entity* entity = classFactory.GetClassInstantiator(name.c_str())->New();
 	entity->Init(this);
 	return entity;
 }
@@ -40,17 +40,17 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-std::shared_ptr<Entity> Engine::AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
+Entity* Engine::AddEntity(Entity *emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
 	if(emptyEntity) {
 		auto it = entities.find(name);
 		if(it == entities.end()) {
 			emptyEntity->Init(this);
-			emptyEntity->Spawn(emptyEntity, name, shape, transform);
+			emptyEntity->Spawn(name, shape, transform);
 			emptyEntity->SetMass(mass);
 			entities[name] = emptyEntity;
 			{
-				std::shared_ptr<Trigger> trigger = std::dynamic_pointer_cast<Trigger>(emptyEntity);
-				if(trigger.get())
+				Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
+				if(trigger)
 					triggerEntities[name] = trigger;
 			}
 			return emptyEntity;
@@ -82,7 +82,7 @@ inline void Engine::UpdateEntities(const float deltaTime) {
 	}
 }
 
-void Engine::QueueEntityToDestroy(std::shared_ptr<Entity> ptr) {
+void Engine::QueueEntityToDestroy(Entity *ptr) {
 	if(ptr)
 		entitiesQueuedToDestroy.push(ptr->GetName());
 }
@@ -163,7 +163,7 @@ std::shared_ptr<Camera> Engine::GetCamera() const {
 	return window->GetCamera();
 }
 
-std::shared_ptr<Entity> Engine::GetCameraParent() const {
+Entity* Engine::GetCameraParent() const {
 	return cameraParent;
 }
 
@@ -194,7 +194,7 @@ ResourceManager* Engine::GetResourceManager() {
 	return resourceManager;
 }
 
-std::shared_ptr<Entity> Engine::GetEntity(const std::string &name) {
+Entity* Engine::GetEntity(const std::string &name) {
 	auto it = entities.find(name);
 	if(it != entities.end()) {
 		if(it->second)
@@ -202,15 +202,14 @@ std::shared_ptr<Entity> Engine::GetEntity(const std::string &name) {
 		else
 			entities.erase(it);
 	}
-	std::shared_ptr<Entity> ret;
-	return ret;
+	return NULL;
 }
 
 void Engine::DeleteEntity(const std::string &name) {
 	auto it = entities.find(name);
 	if(it != entities.end()) {
 		if(it->second) {
-			if(dynamic_cast<Trigger*>(it->second.get())) {
+			if(dynamic_cast<Trigger*>(it->second)) {
 				triggerEntities.erase(name);
 			}
 			
@@ -218,7 +217,7 @@ void Engine::DeleteEntity(const std::string &name) {
 				cameraParent = NULL;
 			
 			it->second->Destroy();
-			it->second.reset();
+			it->second->Free();
 		}
 		
 		entities.erase(it);
@@ -286,7 +285,7 @@ void Engine::Destroy() {
 	for(auto it = entities.begin(); it != entities.end(); ++it) {
 		if(it->second) {
 			it->second->Destroy();
-			it->second.reset();
+			it->second->Free();
 		}
 		else
 			DEBUG("It shouldn't appear");

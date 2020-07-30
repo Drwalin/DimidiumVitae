@@ -37,22 +37,22 @@ public:
 	~Engine();
 	
 	int GetNumberOfEntities() const;
-	std::shared_ptr<Entity> GetNewEntityOfType(const std::string &name);
+	Entity* GetNewEntityOfType(const std::string &name);
 	bool RegisterType(const std::string &className, const std::string &moduleName);
 	bool RegisterModule(const std::string &moduleName);
 	
-	void QueueEntityToDestroy(std::shared_ptr<Entity> ptr);
+	void QueueEntityToDestroy(Entity *ptr);
 	void QueueEntityToDestroy(const std::string &name);
 	void DeleteEntity(const std::string &name);
 	
 	std::string GetAvailableEntityName(const std::string &name);
-	std::shared_ptr<Entity> AddEntity(std::shared_ptr<Entity> emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
-	std::shared_ptr<Entity> GetEntity(const std::string &name);
+	Entity* AddEntity(Entity *emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	Entity* GetEntity(const std::string &name);
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
 	std::shared_ptr<Camera> GetCamera() const;
-	std::shared_ptr<Entity> GetCameraParent() const;
+	Entity* GetCameraParent() const;
 	void AttachCameraToEntity(const std::string &name, btVector3 location);
 	
 	float GetDeltaTime();
@@ -93,8 +93,8 @@ private:
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	
-	std::map<std::string, std::shared_ptr<Entity> > entities;
-	std::map<std::string, std::shared_ptr<Trigger> > triggerEntities;
+	std::map<std::string, Entity*> entities;
+	std::map<std::string, Trigger*> triggerEntities;
 	
 	std::queue<std::string> entitiesQueuedToDestroy;
 	
@@ -103,7 +103,7 @@ private:
 	TimeCounter physicsSimulationTime;
 	TimeCounter entityUpdateTime;
 	
-	std::shared_ptr<Entity> cameraParent;
+	Entity *cameraParent;
 	
 	bool pausePhysics;
 };

@@ -27,7 +27,7 @@ void Character::Tick(const float deltaTime) {
 	static TimeCounter fpsCounter = ({TimeCounter cnt; cnt.SetTimeSpan(2.0f); fpsCounter.SubscribeStart(); cnt;});
 	fpsCounter.SubscribeEnd();
 	engine->GetWindow()->GetGUI() << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << GetTransform().getOrigin();
-	std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+	btRigidBody *rigidBody = GetBody<btRigidBody>();
 	engine->GetWindow()->GetGUI() << "\n Entities count: " << engine->GetNumberOfEntities();
 	engine->GetWindow()->GetGUI() << "\nFPS: " << 1.0f/fpsCounter.GetSmoothTime();
 	engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPeakTime();
@@ -60,11 +60,11 @@ void Character::Save(std::ostream &stream) const
 	Entity::Save(stream);
 }
 
-void Character::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(self, name, shape, transform);
+void Character::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Entity::Spawn(name, shape, transform);
 	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 15.0f, btVector3(0,0,0));
-	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>(collisionObject);
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 15.0f, btVector3(0,0,0));
+	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);
 	
 	rigidBody->setFriction(0.2);
 	rigidBody->setAngularFactor(btVector3(0, 0, 0));
@@ -74,7 +74,7 @@ void Character::Spawn(std::shared_ptr<Entity> self, std::string name, std::share
 	SetBody(collisionObject, shape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
 	
 	motionController = std::shared_ptr<MotionController>(new MotionController());
-	motionController->Init(engine, self, 0.3f);
+	motionController->Init(engine, this, 0.3f);
 }
 
 void Character::Despawn() {
@@ -94,7 +94,7 @@ void Character::Destroy() {
 extern "C" std::shared_ptr<Entity> GetCharacterInstantiator() { static std::shared_ptr<Entity> instantiator(new Character(), [](Entity *ptr) {delete ptr;}); return instantiator; }
 int Character::GetTypeSize() const{ return sizeof(Character); }
 void Character::Free() { delete this; }
-std::shared_ptr<Entity> Character::New() const{ return std::dynamic_pointer_cast<Entity>(std::shared_ptr<Character>(new Character(), [](Entity *ptr) {delete ptr;})); }
+Entity* Character::New() const{ return new Character(); }
 std::string Character::GetClassName() const{ return "Character"; }
 
 Character::Character() :

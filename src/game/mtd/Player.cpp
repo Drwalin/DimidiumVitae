@@ -26,8 +26,8 @@ void Player::Save(std::ostream &stream) const
 	Character::Save(stream);
 }
 
-void Player::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Character::Spawn(self, name, shape, transform);
+void Player::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Character::Spawn(name, shape, transform);
 }
 
 void Player::Despawn() {
@@ -41,7 +41,7 @@ void Player::Destroy() {
 extern "C" std::shared_ptr<Entity> GetPlayerInstantiator() { static std::shared_ptr<Entity> instantiator(new Player(), [](Entity *ptr) {delete ptr;}); return instantiator; }
 int Player::GetTypeSize() const{ return sizeof(Player); }
 void Player::Free() { delete this; }
-std::shared_ptr<Entity> Player::New() const{ return std::dynamic_pointer_cast<Entity>(std::shared_ptr<Player>(new Player(), [](Entity *ptr) {delete ptr;})); }
+Entity* Player::New() const{ return new Player(); }
 std::string Player::GetClassName() const{ return "Player"; }
 
 Player::Player() : Character() {

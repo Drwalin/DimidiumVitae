@@ -16,7 +16,7 @@
 
 void DynamicEntity::Tick(const float deltaTime) {
 	Entity::Tick(deltaTime);
-	std::shared_ptr<btRigidBody> rigidBody = GetBody<btRigidBody>();
+	btRigidBody *rigidBody = GetBody<btRigidBody>();
 	if(rigidBody) {
 		btVector3 currentLinearVelocity = rigidBody->getLinearVelocity();
 		btVector3 currentAngularVelocity = rigidBody->getAngularVelocity();
@@ -46,11 +46,11 @@ void DynamicEntity::Save(std::ostream &stream) const {
 	Entity::Save(stream);
 }
 
-void DynamicEntity::Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(self, name, shape, transform);
+void DynamicEntity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Entity::Spawn(name, shape, transform);
 	
-	std::shared_ptr<btCollisionObject> collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 1.0f);
-	std::shared_ptr<btRigidBody> rigidBody = std::dynamic_pointer_cast<btRigidBody>(collisionObject);
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 1.0f);
+	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);
 	
 	rigidBody->setDamping(0.2, 0.2);
 	rigidBody->setFriction(0.75);
@@ -77,7 +77,7 @@ void DynamicEntity::Destroy() {
 extern "C" std::shared_ptr<Entity> GetDynamicEntityInstantiator() { static std::shared_ptr<Entity> instantiator(new DynamicEntity(), [](Entity *ptr) {delete ptr;}); return instantiator; }
 int DynamicEntity::GetTypeSize() const{ return sizeof(DynamicEntity); }
 void DynamicEntity::Free() { delete this; }
-std::shared_ptr<Entity> DynamicEntity::New() const{ return std::dynamic_pointer_cast<Entity>(std::shared_ptr<DynamicEntity>(new DynamicEntity(), [](Entity *ptr) {delete ptr;})); }
+Entity* DynamicEntity::New() const { return new DynamicEntity(); }
 std::string DynamicEntity::GetClassName() const{ return "DynamicEntity"; }
 
 DynamicEntity::DynamicEntity() :

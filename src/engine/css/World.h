@@ -14,7 +14,6 @@
 #include <cstdio>
 
 #include <set>
-#include <memory>
 
 enum CollisionGroups {
 	CollisionGroupStatic = 1<<6,
@@ -56,14 +55,14 @@ public:
 	
 	btDiscreteDynamicsWorld *GetDynamicsWorld();
 	
-	void UpdateColliderForObject(std::shared_ptr<btCollisionObject> body);
+	void UpdateColliderForObject(btCollisionObject* body);
 	
 	btVector3 GetGravity();
 	
 	void Tick(btScalar deltaTime, int count = 0);
 	
-	bool AddBody(std::shared_ptr<btCollisionObject> body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
-	bool RemoveBody(std::shared_ptr<btCollisionObject> body);
+	bool AddBody(btCollisionObject* body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	bool RemoveBody(btCollisionObject* body);
 	void RemoveBodys();
 	
 	void Destroy();
@@ -80,9 +79,9 @@ private:
 	btSequentialImpulseConstraintSolver *solver;
 	btDiscreteDynamicsWorld *dynamicsWorld;
 	
-	std::set < std::shared_ptr<btCollisionObject> > object;
+	std::set<btCollisionObject*> object;
 	
-	std::shared_ptr<btCollisionObject> currentActivator;
+	btCollisionObject *currentActivator;
 	int activateAll;
 };
 

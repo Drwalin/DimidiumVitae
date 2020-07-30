@@ -9,8 +9,7 @@
 
 #include <cmath>
 
-struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback
-{
+struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback {
 	class MotionControllerTrigger *trigger;
 	float mid;
 	SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid);
@@ -36,20 +35,20 @@ public:
 	
 	virtual void NextOverlappingFrame() override;
 	
-	void Init(std::shared_ptr<Entity> character, std::shared_ptr<Entity> otherTrigger, float stepHeight);
+	void Init(Entity *character, Entity *otherTrigger, float stepHeight);
 	
 	virtual void Tick(const float deltaTime) override;
 	
 	virtual void Load(std::istream &stream) override;
 	virtual void Save(std::ostream &stream) const override;
-	virtual void Spawn(std::shared_ptr<Entity> self, std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
+	virtual void Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;
 	
 	virtual int GetTypeSize() const override;
 	virtual void Free() override;
-	virtual std::shared_ptr<Entity> New() const override;
+	virtual Entity* New() const override;
 	virtual std::string GetClassName() const override;
 	
 	friend struct SimulationContactResultCallback;
@@ -60,7 +59,7 @@ protected:
 	
 protected:
 	
-	std::shared_ptr<Entity> character, otherTrigger;
+	Entity *character, *otherTrigger;
 	bool topCollision;
 	bool sideCollision;
 	bool bottomCollision;

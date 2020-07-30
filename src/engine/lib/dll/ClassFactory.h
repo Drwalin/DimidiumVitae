@@ -14,15 +14,15 @@ public:
 	ClassFactory();
 	~ClassFactory();
 	
-	std::shared_ptr<T> GetNewOf(const char *className);
+	T* GetNewOf(const char *className);
 	
-	std::shared_ptr<T> GetClassInstantiator(const char *className);
-	std::shared_ptr<T> AddClass(const char *className, const char *moduleName);
+	T* GetClassInstantiator(const char *className);
+	T* AddClass(const char *className, const char *moduleName);
 	void RemoveClass(const char *moduleName);
 	
 protected:
 	
-	std::map < std::string, std::shared_ptr<T> > uniqueObjects;
+	std::map<std::string, std::shared_ptr<T>> uniqueObjects;
 };
 
 #endif
