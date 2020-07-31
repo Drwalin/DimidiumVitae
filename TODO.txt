@@ -24,13 +24,11 @@ TO DO:
 	Saving and loading Entities, SceneNodes from JSON
 	Video player (maybe from *.png image sequence and *.ogg sound file)
 	Use Semantic Versioning (https://semver.org/) consistently
-	Make WAVLoadFromFile to use sing::fileSystem
 	
 
 TO DO (to think):
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
 	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
-	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
 	Remove GetVersion.cpp
 	Font resource class
@@ -66,6 +64,8 @@ Done:
 	Menu system
 	Code refactor - Remove "this->" where possible
 	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*" and "std::shared_ptr<btCollisionObject>" with "btCollisionObject*"
+	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
+	Make WAVLoadFromFile to use sing::fileSystem
 	
 
 TO DO in future:
@@ -81,6 +81,7 @@ TO DO in future:
 	Sprites in world space
 	Optimise rendering?
 	Limit number of active OpenAL sound sources (choose closest and loudest sources - eg. order and enable by distance/volume)
+	Make Ogg to use sing::fileSystem
 	
 
 Bugs:

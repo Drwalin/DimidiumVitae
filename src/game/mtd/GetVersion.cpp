@@ -8,11 +8,11 @@
 #include "../css/Header.h"
 
 std::string GetVersionString() {
-	return std::string("0.5.0-c");
+	return std::string("0.5.0-d");
 }
 
 std::string GetVersionReleaseDateString() {
-	return std::string("2020-07-30");
+	return std::string("2020-07-31");
 }
 
 #endif

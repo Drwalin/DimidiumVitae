@@ -5,49 +5,47 @@
 #ifndef WAV_CPP
 #define WAV_CPP
 
+#include "Debug.h"
 #include "Wav.h"
 
-#include <cstdio>
+#include <Singleton.h>
+#include <FileSystem.h>
+
 #include <cstdlib>
 
-extern "C" float WAVGetDuration(const WavHeader *wavHeader) {
+float WAVGetDuration(const WavHeader *wavHeader) {
 	return ((float)(wavHeader->Subchunk2Size)) / ((float)((wavHeader->SampleRate)*(wavHeader->SampleRate)));
 }
 
-extern "C" void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName) {
+void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName) {
 	if(wavHeader) {
-		FILE *file = fopen(fileName, "rb");
+		IFile file = sing::fileSystem->ReadFile(fileName);
 		if(file) {
-			int readed = 0;
-			readed = fread((char*)wavHeader, 1, sizeof(WavHeader), file);
-			if(readed != sizeof(WavHeader)) {
-				fclose(file);
-				fprintf(stderr, "\n Error while reading file: %s - couldn't read all the WavHeader", fileName);
+			file.read((char*)wavHeader,  sizeof(WavHeader));
+			if(file.fail()) {
+				fprintf(stderr, "\n Error while reading Wav file: \"%s\" - couldn't read all the WavHeader", fileName);
 				return NULL;
 			}
 			char *buffer = (char*)malloc(wavHeader->Subchunk2Size);
 			if(buffer == NULL) {
-				fclose(file);
-				fprintf(stderr, "\n Error while allocating memory (%i bytes) for Wav buffer while reading Wav file: %s", wavHeader->Subchunk2Size, fileName);
+				fprintf(stderr, "\n Error while allocating memory (%i bytes) for Wav buffer while reading Wav file: \"%s\"", wavHeader->Subchunk2Size, fileName);
 				return NULL;
 			}
-			readed = fread(buffer, 1, wavHeader->Subchunk2Size, file);
-			if(readed != wavHeader->Subchunk2Size) {
-				fclose(file);
+			file.read(buffer, wavHeader->Subchunk2Size);
+			int c = file.gcount();
+			if(c != wavHeader->Subchunk2Size) {
 				free(buffer);
-				fprintf(stderr, "\n Error while reading from file (%s) to Wav buffer", fileName);
+				fprintf(stderr, "\n Error while reading from file \"%s\" to Wav buffer; readed: %i / %i", fileName, c, wavHeader->Subchunk2Size);
 				return NULL;
 			}
-			fclose(file);
 			return (void*)buffer;
 		}
 	}
 	return NULL;
 }
 
-extern "C" void WAVFree(void *buffer) {
+void WAVFree(void *buffer) {
 	free(buffer);
 }
 
 #endif
-

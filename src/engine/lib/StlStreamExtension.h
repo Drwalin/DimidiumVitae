@@ -142,4 +142,3 @@ typedef __t_iostream<iirrstreambuf,std::istream,class irr::io::IReadFile*> iirrf
 typedef __t_iostream<oirrstreambuf,std::ostream,class irr::io::IWriteFile*> oirrfstream;
 
 #endif
-

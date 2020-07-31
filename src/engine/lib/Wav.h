@@ -23,13 +23,12 @@ typedef struct
 	uint16_t BitsPerSample;	// 8, 16
 
 	uint32_t Subchunk2Id;	// "data"
-	uint32_t Subchunk2Size;
+	uint32_t Subchunk2Size; // Size of data in bytes
 	// buffer data...
 } WavHeader;
 
-extern "C" float WAVGetDuration(const WavHeader *wavHeader);
-extern "C" void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName);
-extern "C" void WAVFree(void *buffer);
+float WAVGetDuration(const WavHeader *wavHeader);
+void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName);
+void WAVFree(void *buffer);
 
 #endif
-
