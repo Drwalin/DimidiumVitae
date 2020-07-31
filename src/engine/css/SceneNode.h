@@ -40,8 +40,6 @@ public:
 	std::shared_ptr<SceneNode> AddChild(std::shared_ptr<Model> model);
 	void DestroyChild(std::shared_ptr<SceneNode> child);
 	
-	void Destroy();
-	
 	void SetMaterial(std::shared_ptr<Material> material);
 	
 private:
@@ -57,4 +55,3 @@ private:
 };
 
 #endif
-

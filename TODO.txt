@@ -7,7 +7,7 @@ TO DO:
 			TCP - initialization, events, lossless informations
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
 	Add TryBox and TryCylinder to ObjToShapeConverter
-	Optimize crouching/standing up in MotionController
+	Optimise crouching/standing up in MotionController
 	Optimise setting transformation to ISceneNode in SceneNode code
 	Optimise loading and creating Entities
 	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape
@@ -19,7 +19,6 @@ TO DO:
 		- update Readme.txt linux compilation section
 		- choose a license
 		- update Dependencies.txt for linux
-	Overall test
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
 	Video player (maybe from *.png image sequence and *.ogg sound file)
@@ -28,7 +27,7 @@ TO DO:
 
 TO DO (to think):
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
-	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor
+	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor - rethink ClassFactory structer
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
 	Remove GetVersion.cpp
 	Font resource class
@@ -88,16 +87,18 @@ Bugs:
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything) (in v0.3.1a)
 	Sometimes undefined coordinates while starting game (randomly) (didn't met since v0.4.1)
-	Very unstable fps (since v0.4.0)
-	When starting MainMenu at beginig, simulation is not paused
 	
 
 Removed bugs:
 	Removing entity does not remove a ISceneNode
 	When resource manager removes a Resource -> destructor is not called
+	When starting MainMenu at beginig, simulation is not paused
+	Crashed when raytesting for destroying Entities, randomly (v0.5.0-e)
+	Very unstable fps (since v0.4.0) - only feeling of game is unstable, but actual frame times are good - corrected in v0.5.0-e by removing smoothing frametime between two frames
 	
 
 To test:
+	Overall test
 	
 
 Done tests:

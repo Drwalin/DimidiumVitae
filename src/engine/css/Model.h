@@ -26,31 +26,13 @@
 
 #include "Resource.h"
 #include "Material.h"
-
-class Animation {
-public:
-	
-	Animation();
-	Animation(const Animation &other);
-	Animation(int startFrame, int endFrame, float duration);
-	Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode);
-	
-	void Play(bool loop);
-	
-	void SetSceneNode(irr::scene::IAnimatedMeshSceneNode *iSceneNode);
-	
-private:
-	
-	irr::scene::IAnimatedMeshSceneNode *iSceneNode;
-	float duration;
-	int startFrame;
-	int endFrame;
-};
+#include "Animation.h"
 
 class Model : public Resource {
 public:
 	
 	Model(const std::string &name);
+	Model(JSON json);
 	~Model();
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
@@ -64,12 +46,13 @@ public:
 	
 	virtual Resource::ResourceType GetResourceType() const override;
 	
+	void GetJSON(JSON json) const;
+	
 private:
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
 	std::shared_ptr<Material> defaultMaterial;
-	std::map < std::string, Animation > animations;
+	std::map<std::string, Animation> animations;
 };
 
 #endif
-

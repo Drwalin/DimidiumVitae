@@ -35,6 +35,9 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 	if(sing::window->GetCurrentMenu()) {
 		currentEventResponser = sing::window->GetCurrentMenu();
 	}
+	if(eventResponser == NULL) {
+		MESSAGE("Event responser does not exists");
+	}
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {

@@ -171,15 +171,14 @@ void Window::OneLoopFullTick() {
 }
 
 void Window::UpdateDeltaTime() {
-	float prevDeltaTime = deltaTime;
 	while(true) {
 		TimePoint currentTime = TimeCounter::GetCurrentTime();
 		deltaTime = TimeCounter::GetDurationSeconds(beginTime, currentTime);
-		if(deltaTime+prevDeltaTime >= 1.96f/fpsLimit) {
+		if(deltaTime >= 1.0f/fpsLimit) {
 			beginTime = currentTime;
 			break;
 		} else {
-			TimeCounter::Sleep((1.96f/fpsLimit) - deltaTime - prevDeltaTime);
+			TimeCounter::Sleep((1.0f/fpsLimit) - deltaTime);
 		}
 	}
 	

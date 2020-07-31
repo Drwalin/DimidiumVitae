@@ -8,7 +8,7 @@
 #include "../css/Header.h"
 
 std::string GetVersionString() {
-	return std::string("0.5.0-d");
+	return std::string("0.5.0-e");
 }
 
 std::string GetVersionReleaseDateString() {

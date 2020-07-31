@@ -11,49 +11,6 @@
 #include "../lib/StdUtil.hpp"
 #include "../lib/StlStreamExtension.h"
 
-void Animation::Play(bool loop) {
-	if(iSceneNode) {
-		if(endFrame >= startFrame && duration > 0)
-			iSceneNode->setAnimationSpeed(float(endFrame - startFrame) / duration);
-		else
-			iSceneNode->setAnimationSpeed(24.0f);
-		iSceneNode->setFrameLoop(startFrame, endFrame);
-		iSceneNode->setLoopMode(loop);
-	}
-}
-
-void Animation::SetSceneNode(irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
-	this->iSceneNode = iSceneNode;
-}
-
-Animation::Animation() {
-	duration = 1.0f;
-	iSceneNode = NULL;
-	startFrame = 0;
-	endFrame = 0;
-}
-
-Animation::Animation(const Animation &other) {
-	duration = other.duration;
-	iSceneNode = other.iSceneNode;
-	startFrame = other.startFrame;
-	endFrame = other.endFrame;
-}
-
-Animation::Animation(int startFrame, int endFrame, float duration) {
-	this->startFrame = startFrame;
-	this->endFrame = endFrame;
-	this->duration = duration;
-	iSceneNode = NULL;
-}
-
-Animation::Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
-	duration = other.duration;
-	this->iSceneNode = iSceneNode;
-	startFrame = other.startFrame;
-	endFrame = other.endFrame;
-}
-
 std::shared_ptr<irr::scene::IAnimatedMesh> Model::GetMesh() {
 	return mesh;
 }
@@ -94,7 +51,7 @@ void Model::LoadAnimations(const std::string &animationsFileName) {
 	JSON json = sing::fileSystem->ReadJSON(animationsFileName);
 	if(json.IsObject()) {
 		for(auto it : json) {
-			animations[it.Name()] = Animation(it.Value()["start"], it.Value()["end"], it.Value()["duration"]);
+			animations[it.Name()] = Animation(it.Value());
 		}
 	}
 }
@@ -111,6 +68,11 @@ Model::Model(const std::string &name) :
 	LoadMesh(name);
 }
 
+Model::Model(JSON json) :
+	Resource(json["name"]) {
+	LoadMesh(name);
+}
+
 Model::~Model() {
 	Destroy();
 }
@@ -119,5 +81,9 @@ Resource::ResourceType Model::GetResourceType() const {
 	return Resource::MODEL;
 }
 
-#endif
+void Model::GetJSON(JSON json) const {
+	json.InitObject();
+	json["name"] = name;
+}
 
+#endif

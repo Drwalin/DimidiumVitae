@@ -39,6 +39,7 @@ extern "C" int Init(int argc, char ** argv) {
 	musicSource.Play();
 	*/
 	// create animated bow
+	
 	Entity *animatedBow = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("DynamicEntity"), sing::engine->GetAvailableEntityName("Bow"), sing::engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
 	animatedBow->SetModel(sing::resourceManager->GetModel("Models/Bow02.x"));
 	animatedBow->GetBody()->setFriction(0.75);

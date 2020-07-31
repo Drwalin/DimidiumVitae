@@ -226,7 +226,6 @@ void Engine::BeginLoop() {
 
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	sing::engine = this;
-	Destroy();
 	try {
 		sing::fileSystem = fileSystem = new FileSystem();
 		
@@ -240,8 +239,6 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		window->Init(json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], event, json.HasKey("fullscreen")?json["fullscreen"]:false);
 		sing::resourceManager = resourceManager = new ResourceManager(json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
 		
-		
-		
 		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
 			window->HideMouse();
 			window->LockMouse();
@@ -252,7 +249,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		if(GetCamera() == NULL) {
-			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"], json["height"], window->GetSceneManager()->addCameraSceneNode())));
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"], json["height"], sing::sceneManager->addCameraSceneNode())));
 			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
 		}
 		

@@ -21,7 +21,8 @@ enum CollisionGroups {
 	CollisionGroupIgnore = 1<<8,
 	CollisionGroupVisible = 1<<9,
 	CollisionGroupLiquid = 1<<10,
-	CollisionGroupTrigger = 1<<11
+	CollisionGroupTrigger = 1<<11,
+	CollisionGroupSight = 1<<12
 };
 
 enum CollisionDefaultGroups {
@@ -35,10 +36,10 @@ enum CollisionDefaultGroups {
 
 enum CollisionDefaultMasks {
 	CollisionDefaultMaskAll = ~0,
-	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
-	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger,
+	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
+	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger | CollisionGroupSight,
 	CollisionDefaultMaskTrigger = CollisionGroupDynamic | CollisionGroupStatic,
-	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger,
+	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
 	CollisionDefaultMaskLiquid = CollisionGroupDynamic | CollisionGroupTrigger,
 	CollisionDefaultMaskDynamicNotinteractive = CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger
 };

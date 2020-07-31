@@ -124,11 +124,7 @@ const std::string &Entity::GetName() const {
 }
 
 void Entity::SetModel(std::shared_ptr<Model> model) {
-	if(sceneNode) {
-		sceneNode->Destroy();
-		sceneNode = NULL;
-	}
-	
+	sceneNode = NULL;
 	sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
 	sceneNode->Init(model);
 }
@@ -144,9 +140,8 @@ void Entity::SetBody(btCollisionObject* body, std::shared_ptr<CollisionShape> sh
 }
 
 void Entity::DestroyBody() {
-	btCollisionShape *btCollisionShape = NULL;
 	if(body) {
-		btCollisionShape = body->getCollisionShape();
+		btCollisionShape *_btCollisionShape = body->getCollisionShape();
 		sing::world->RemoveBody(GetBody());
 		
 		btRigidBody *rigidBody = GetBody<btRigidBody>();
@@ -159,15 +154,14 @@ void Entity::DestroyBody() {
 		}
 		
 		body->setCollisionShape(NULL);
-		
 		delete body;
-		
 		body = NULL;
+		
+		if(_btCollisionShape) {
+			CollisionShape::DestroyBtCollisionShape(_btCollisionShape);
+		}
 	}
 	
-	if(btCollisionShape) {
-		CollisionShape::DestroyBtCollisionShape(btCollisionShape);
-	}
 	collisionShape = NULL;
 }
 
@@ -202,7 +196,6 @@ Entity::Entity() {
 	mass = 1.0f;
 	name = "";
 	scale = btVector3(1,1,1);
-	sceneNode = NULL;
 	collisionGroup = 0;
 	collisionMask = 0;
 }

@@ -180,7 +180,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 			begin = btVector3(0,11.2,0);
 			end = btVector3(0,11.2,300);
 		}
-		ptemp = sing::engine->RayTrace(begin, end, CollisionDefaultMaskAll, point, normal, {player});
+		ptemp = sing::engine->RayTrace(begin, end, CollisionGroupVisible | CollisionGroupSight, point, normal, {player});
 		if(ptemp) {
 			if(ptemp->GetName() != "TestMap" && ptemp->GetName() != "Box") {
 				if(ptemp->GetBody())

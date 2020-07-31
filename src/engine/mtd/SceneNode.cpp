@@ -62,7 +62,6 @@ std::shared_ptr<SceneNode> SceneNode::AddChild(std::shared_ptr<Model> model) {
 
 void SceneNode::DestroyChild(std::shared_ptr<SceneNode> child) {
 	iSceneNode->removeChild(child->iSceneNode);
-	child->Destroy();
 	children.erase(child);
 }
 
@@ -79,14 +78,16 @@ void SceneNode::Init(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshScen
 		this->iParentSceneNode->addChild(this->iSceneNode);
 }
 
-void SceneNode::Destroy() {
+SceneNode::SceneNode() {
+	iSceneNode = NULL;
+}
+
+SceneNode::~SceneNode() {
 	if(iParentSceneNode) {
 		iParentSceneNode->removeChild(iSceneNode);
 		iParentSceneNode = NULL;
 	}
 	
-	for(auto &child : children)
-		child->Destroy();
 	children.clear();
 	
 	SetMaterial(NULL);
@@ -96,14 +97,6 @@ void SceneNode::Destroy() {
 	}
 	
 	model = NULL;
-}
-
-SceneNode::SceneNode() {
-	iSceneNode = NULL;
-}
-
-SceneNode::~SceneNode() {
-	Destroy();
 }
 
 #endif
