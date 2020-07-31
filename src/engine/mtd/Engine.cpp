@@ -20,7 +20,6 @@ int Engine::GetNumberOfEntities() const {
 
 Entity* Engine::GetNewEntityOfType(const std::string &name) {
 	Entity* entity = classFactory.GetClassInstantiator(name.c_str())->New();
-	entity->Init(this);
 	return entity;
 }
 
@@ -44,7 +43,6 @@ Entity* Engine::AddEntity(Entity *emptyEntity, const std::string &name, std::sha
 	if(emptyEntity) {
 		auto it = entities.find(name);
 		if(it == entities.end()) {
-			emptyEntity->Init(this);
 			emptyEntity->Spawn(name, shape, transform);
 			emptyEntity->SetMass(mass);
 			entities[name] = emptyEntity;
@@ -92,9 +90,7 @@ void Engine::QueueEntityToDestroy(const std::string &name) {
 }
 
 float Engine::GetDeltaTime() {
-	if(window)
 		return window->GetDeltaTime();
-	return 1.0f/60.0f;
 }
 
 World *Engine::GetWorld() {
@@ -150,13 +146,13 @@ void Engine::SynchronousTick(const float deltaTime) {
 	resourceManager->ResourceFreeingCycle(16);
 	entityUpdateTime.SubscribeEnd();
 	
-	window->GetGUI() << "\n Entity Update Time: " << entityUpdateTime.GetSmoothTime()*1000.0f;
-	window->GetGUI() << " " << entityUpdateTime.GetPeakTime()*1000.0f;
-	window->GetGUI() << " " << entityUpdateTime.GetPitTime()*1000.0f;
+	sing::gui << "\n Entity Update Time: " << entityUpdateTime.GetSmoothTime()*1000.0f;
+	sing::gui << " " << entityUpdateTime.GetPeakTime()*1000.0f;
+	sing::gui << " " << entityUpdateTime.GetPitTime()*1000.0f;
 	
-	window->GetGUI() << "\n Physics Simulation Time: " << physicsSimulationTime.GetSmoothTime()*1000.0f;
-	window->GetGUI() << " " << physicsSimulationTime.GetPeakTime()*1000.0f;
-	window->GetGUI() << " " << physicsSimulationTime.GetPitTime()*1000.0f;
+	sing::gui << "\n Physics Simulation Time: " << physicsSimulationTime.GetSmoothTime()*1000.0f;
+	sing::gui << " " << physicsSimulationTime.GetPeakTime()*1000.0f;
+	sing::gui << " " << physicsSimulationTime.GetPitTime()*1000.0f;
 }
 
 std::shared_ptr<Camera> Engine::GetCamera() const {
@@ -229,20 +225,22 @@ void Engine::BeginLoop() {
 }
 
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
+	sing::engine = this;
 	Destroy();
 	try {
-		fileSystem = new FileSystem(this);
+		sing::fileSystem = fileSystem = new FileSystem();
 		
 		JSON json = fileSystem->ReadJSON(jsonConfigFile ? jsonConfigFile : "defaultEngineConfig.json");
 		
 		event = eventResponser;
-		event->SetEngine(this);
-		world = new World;
+		sing::world = world = new World;
 		world->Init();
-		soundEngine = new SoundEngine();
-		window = new Window;
-		window->Init(this, json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], event, json.HasKey("fullscreen")?json["fullscreen"]:false);
-		resourceManager = new ResourceManager(this, json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
+		sing::soundEngine = soundEngine = new SoundEngine();
+		sing::window = window = new Window;
+		window->Init(json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], event, json.HasKey("fullscreen")?json["fullscreen"]:false);
+		sing::resourceManager = resourceManager = new ResourceManager(json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
+		
+		
 		
 		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
 			window->HideMouse();
@@ -254,7 +252,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		if(GetCamera() == NULL) {
-			window->SetCamera(std::shared_ptr<Camera>(new Camera(this, false, json["width"], json["height"], window->GetSceneManager()->addCameraSceneNode())));
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"], json["height"], window->GetSceneManager()->addCameraSceneNode())));
 			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
 		}
 		
@@ -295,7 +293,7 @@ void Engine::Destroy() {
 	if(world) {
 		world->Destroy();
 		delete world;
-		world = NULL;
+		sing::world = world = NULL;
 	}
 	
 	if(event) {
@@ -305,25 +303,25 @@ void Engine::Destroy() {
 	
 	if(resourceManager) {
 		delete resourceManager;
-		resourceManager = NULL;
+		sing::resourceManager = resourceManager = NULL;
 	}
 	
 	if(soundEngine) {
 		delete soundEngine;
-		soundEngine = NULL;
+		sing::soundEngine = soundEngine = NULL;
 	}
 	
 	if(window) {
 		window->Destroy();
 		delete window;
-		window = NULL;
+		sing::window = window = NULL;
 	}
 	
 	pausePhysics = false;
 	
 	if(fileSystem) {
 		delete fileSystem;
-		fileSystem = NULL;
+		sing::fileSystem = fileSystem = NULL;
 	}
 }
 

@@ -35,7 +35,7 @@ private:
 	
 	std::string str;
 	int currentPosition;
-	std::map < int, float > cooldownToUseKey;
+	std::map<int, float> cooldownToUseKey;
 	
 	unsigned charactersLimit;
 };

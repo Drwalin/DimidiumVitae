@@ -18,7 +18,7 @@
 class EventReceiverIrrlicht : public irr::IEventReceiver {
 public:
 	
-	EventReceiverIrrlicht(EventResponser *event, Window *window);
+	EventReceiverIrrlicht(EventResponser *event);
 	~EventReceiverIrrlicht();
 	
 	void SetCursor(int x, int y);
@@ -34,7 +34,6 @@ private:
 	std::mutex queueMutex;
 	
 	EventResponser *eventResponser;
-	Window *window;
 	
 	int mouseX, mouseY, mouseW;
 	

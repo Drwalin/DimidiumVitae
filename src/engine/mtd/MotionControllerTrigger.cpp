@@ -62,7 +62,7 @@ void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity, btCollisi
 		float mid = (bottom + top)*0.5f;
 		
 		SimulationContactResultCallback resultCallback(this, mid);
-		engine->GetWorld()->GetDynamicsWorld()->contactPairTest(collisionObject, body, resultCallback);
+		sing::world->GetDynamicsWorld()->contactPairTest(collisionObject, body, resultCallback);
 	}
 }
 

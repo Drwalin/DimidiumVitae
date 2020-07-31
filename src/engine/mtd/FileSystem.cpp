@@ -41,11 +41,9 @@ void OFile::flush() const {
 }
 
 
-FileSystem::FileSystem(class Engine *engine) {
-	this->engine = engine;
+FileSystem::FileSystem() {
 }
 FileSystem::~FileSystem() {
-	engine = NULL;
 }
 IFile FileSystem::ReadFile(std::string name) {
 	if(GetExtension(name) == ".gz") {
@@ -58,7 +56,7 @@ IFile FileSystem::ReadFile(std::string name) {
 		if(file->good() && !file->eof())
 			return IFile(file);
 	}
-	std::shared_ptr<iirrfstream> file(new iirrfstream(engine->GetWindow()->GetDevice()->getFileSystem()->createAndOpenFile(name.c_str())));
+	std::shared_ptr<iirrfstream> file(new iirrfstream(sing::device->getFileSystem()->createAndOpenFile(name.c_str())));
 	if(file)
 		if(file->good() && !file->eof())
 			return IFile(file);
@@ -75,7 +73,7 @@ OFile FileSystem::WriteFile(std::string name) {
 		if(file->good())
 			return OFile(file);
 	}
-	std::shared_ptr<oirrfstream> file(new oirrfstream(engine->GetWindow()->GetDevice()->getFileSystem()->createAndWriteFile(name.c_str())));
+	std::shared_ptr<oirrfstream> file(new oirrfstream(sing::device->getFileSystem()->createAndWriteFile(name.c_str())));
 	if(file)
 		if(file->good())
 			return OFile(file);

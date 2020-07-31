@@ -15,17 +15,13 @@ Animation SceneNode::GetAnimation(const std::string &name) const {
 	return Animation(0, 0, 1);
 }
 
-irr::scene::IAnimatedMeshSceneNode *SceneNode::New(class Engine *engine, std::shared_ptr<Model> model) {
-	if(engine) {
-		if(engine->GetWindow()) {
-			if(model) {
-				if(model->GetMesh()) {
-					irr::scene::IAnimatedMeshSceneNode *iSceneNode = engine->GetWindow()->GetSceneManager()->addAnimatedMeshSceneNode(model->GetMesh().get());
-					if(model->GetDefaultMaterial())
-						Material::SetTo(model->GetDefaultMaterial(), iSceneNode);
-					return iSceneNode;
-				}
-			}
+irr::scene::IAnimatedMeshSceneNode *SceneNode::New(std::shared_ptr<Model> model) {
+	if(model) {
+		if(model->GetMesh()) {
+			irr::scene::IAnimatedMeshSceneNode *iSceneNode = sing::sceneManager->addAnimatedMeshSceneNode(model->GetMesh().get());
+			if(model->GetDefaultMaterial())
+				Material::SetTo(model->GetDefaultMaterial(), iSceneNode);
+			return iSceneNode;
 		}
 	}
 	return NULL;
@@ -54,7 +50,7 @@ void SceneNode::SetScale(btVector3 scale) {
 
 std::shared_ptr<SceneNode> SceneNode::AddChild(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
 	std::shared_ptr<SceneNode> child(new SceneNode);
-	child->Init(engine, model);
+	child->Init(model);
 	iSceneNode->addChild(child->iSceneNode);
 	children.insert(child);
 	return child;
@@ -75,10 +71,9 @@ void SceneNode::SetMaterial(std::shared_ptr<Material> material) {
 	this->material = material;
 }
 
-void SceneNode::Init(class Engine *engine, std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode) {
-	this->engine = engine;
+void SceneNode::Init(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode) {
 	this->model = model;
-	this->iSceneNode = SceneNode::New(this->engine, this->model);
+	this->iSceneNode = SceneNode::New(this->model);
 	this->iParentSceneNode = iParentSceneNode;
 	if(this->iParentSceneNode)
 		this->iParentSceneNode->addChild(this->iSceneNode);
@@ -101,11 +96,9 @@ void SceneNode::Destroy() {
 	}
 	
 	model = NULL;
-	engine = NULL;
 }
 
 SceneNode::SceneNode() {
-	engine = NULL;
 	iSceneNode = NULL;
 }
 

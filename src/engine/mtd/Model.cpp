@@ -71,21 +71,17 @@ Animation Model::GetAnimation(const std::string &animationName) const {
 	return Animation(0, 0, 0);
 }
 
-void Model::LoadMesh(Engine *engine, const std::string &fileName) {
+void Model::LoadMesh(const std::string &fileName) {
 	Destroy();
-	if(engine == NULL)
-		throw (int)1;
 	
-	irr::scene::IAnimatedMesh *newMesh = engine->GetWindow()->GetSceneManager()->getMesh(fileName.c_str());
+	irr::scene::IAnimatedMesh *newMesh = sing::sceneManager->getMesh(fileName.c_str());
 	if(newMesh == NULL)
 		throw (int)2;
-	mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [engine](irr::scene::IAnimatedMesh*ptr) {engine->GetWindow()->GetSceneManager()->getMeshCache()->removeMesh(ptr);});
-	
-	this->engine = engine;
+	mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [](irr::scene::IAnimatedMesh*ptr) {sing::sceneManager->getMeshCache()->removeMesh(ptr);});
 	
 	std::string mtlFileName = GetFileWithPathWithoutExtension(fileName) + ".mtl";
 	try {
-		defaultMaterial = engine->GetResourceManager()->GetMaterial(mtlFileName);
+		defaultMaterial = sing::resourceManager->GetMaterial(mtlFileName);
 	} catch(...) {
 		defaultMaterial = NULL;
 	}
@@ -95,7 +91,7 @@ void Model::LoadMesh(Engine *engine, const std::string &fileName) {
 }
 
 void Model::LoadAnimations(const std::string &animationsFileName) {
-	JSON json = engine->GetFileSystem()->ReadJSON(animationsFileName);
+	JSON json = sing::fileSystem->ReadJSON(animationsFileName);
 	if(json.IsObject()) {
 		for(auto it : json) {
 			animations[it.Name()] = Animation(it.Value()["start"], it.Value()["end"], it.Value()["duration"]);
@@ -108,12 +104,11 @@ void Model::Destroy() {
 	if(mesh)
 		mesh.reset();
 	mesh = NULL;
-	engine = NULL;
 }
 
-Model::Model(Engine *engine, const std::string &name) :
+Model::Model(const std::string &name) :
 	Resource(name) {
-	LoadMesh(engine, name);
+	LoadMesh(name);
 }
 
 Model::~Model() {

@@ -9,10 +9,6 @@
 #include "../css/StringToEnter.h"
 #include "../css/Window.h"
 
-void StringToEnter::SetWindow(Window *window) {
-	this->window = window;
-}
-
 std::string StringToEnter::GetCurrent() {
 	return str;
 }
@@ -53,8 +49,8 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		}
 		break;
 	case irr::KEY_RETURN:		// enter
-		if(window->GetEventResponser()) {
-			window->GetEventResponser()->StringToEnterEvent(str);
+		if(sing::window->GetEventResponser()) {
+			sing::window->GetEventResponser()->StringToEnterEvent(str);
 		}
 		Clear();
 		break;
@@ -82,14 +78,12 @@ void StringToEnter::SetCharactersLimit(unsigned value) {
 
 StringToEnter::StringToEnter() {
 	charactersLimit = 1024*4;
-	window = NULL;
 	str = "";
 	currentPosition = 0;
 }
 
 StringToEnter::~StringToEnter() {
 	charactersLimit = 0;
-	window = NULL;
 	str = "";
 	currentPosition = 0;
 	cooldownToUseKey.clear();

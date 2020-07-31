@@ -33,7 +33,7 @@ void Trigger::NextOverlappingFrame() {
 void Trigger::Tick(const float deltaTime) {
 	if(body) {
 		body->setWorldTransform(currentTransform);
-		engine->GetWorld()->UpdateColliderForObject(body);
+		sing::world->UpdateColliderForObject(body);
 	}
 }
 

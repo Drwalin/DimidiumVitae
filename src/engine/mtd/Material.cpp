@@ -16,9 +16,9 @@
 #include "../css/Material.h"
 #include "../css/Engine.h"
 
-Material::Material(Engine *engine, const std::string &name) :
+Material::Material(const std::string &name) :
 	Resource(name) {
-	IFile file = engine->GetFileSystem()->ReadFile(name);
+	IFile file = sing::fileSystem->ReadFile(name);
 	if(file && file.good() && !file.eof()) {
 		std::string line;
 		while(file.good() && !file.eof()) {
@@ -30,7 +30,7 @@ Material::Material(Engine *engine, const std::string &name) :
 					materials.resize(materials.size() + 1);
 				} else if(line.find("map_K") == 0) {
 					std::string textureFileName = (line.c_str()+7);
-					textures.emplace_back(engine->GetResourceManager()->GetTexture(textureFileName));
+					textures.emplace_back(sing::resourceManager->GetTexture(textureFileName));
 					materials.back().setTexture(0, textures.back()->GetITexture());
 				} else if(line[0] == 'K') {
 					float r, g, b;

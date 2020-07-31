@@ -10,7 +10,7 @@
 class MainMenu : public Menu {
 public:
 	
-	MainMenu(class Engine *engine);
+	MainMenu();
 	~MainMenu();
 	
 	virtual bool RenderSceneInBackground() const override;

@@ -20,7 +20,7 @@
 class ResourceManager {
 public:
 	
-	ResourceManager(class Engine *engine, float resourcePersistencyTime);
+	ResourceManager(float resourcePersistencyTime);
 	
 	std::shared_ptr<Resource> GetResource(const std::string &name);
 	std::shared_ptr<Sound> GetSound(const std::string &name);
@@ -46,7 +46,6 @@ private:
 	
 private:
 	
-	class Engine *engine;
 	float resourcePersistencyTime;
 	std::string lastIteratedName;
 	std::map<std::string, std::pair<std::shared_ptr<Resource>, float>> resources;

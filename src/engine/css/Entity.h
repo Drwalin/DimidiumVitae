@@ -50,8 +50,6 @@ public:
 	
 	void SetMass(float mass);
 	
-	class Engine *GetEngine();
-	
 	const std::string &GetName() const;
 	
 	template <typename T = btCollisionObject >
@@ -62,8 +60,6 @@ public:
 	
 	void SetModel(std::shared_ptr<Model> model);
 	void SetBody(btCollisionObject *body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
-	
-	void Init(class Engine *engine);
 	
 	virtual void Load(std::istream &stream);
 	virtual void Save(std::ostream &stream) const;
@@ -81,8 +77,6 @@ public:
 	bool HasCommon(int group, int mask) const;
 	
 protected:
-	
-	class Engine *engine;
 	
 	std::string name;
 	

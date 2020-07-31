@@ -45,7 +45,7 @@ void Entity::SetTransform(const btTransform &transform) {
 		else
 			body->setWorldTransform(currentTransform);
 		
-		engine->GetWorld()->UpdateColliderForObject(body);
+		sing::world->UpdateColliderForObject(body);
 		body->activate(true);
 	}
 }
@@ -95,16 +95,12 @@ void Entity::SetMass(float mass) {
 	}
 }
 
-Engine *Entity::GetEngine() {
-	return engine;
-}
-
 void Entity::SetScale(btVector3 scale) {
 	this->scale = scale;
 	if(body) {
 		body->activate(true);
 		body->getCollisionShape()->setLocalScaling(this->scale);
-		engine->GetWorld()->UpdateColliderForObject(body);
+		sing::world->UpdateColliderForObject(body);
 		body->activate(true);
 	}
 	if(sceneNode)
@@ -128,24 +124,20 @@ const std::string &Entity::GetName() const {
 }
 
 void Entity::SetModel(std::shared_ptr<Model> model) {
-	if(engine) {
-		if(engine->GetWindow()) {
-			if(sceneNode) {
-				sceneNode->Destroy();
-				sceneNode = NULL;
-			}
-			
-			sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
-			sceneNode->Init(engine, model);
-		}
+	if(sceneNode) {
+		sceneNode->Destroy();
+		sceneNode = NULL;
 	}
+	
+	sceneNode = std::shared_ptr<SceneNode>(new SceneNode);
+	sceneNode->Init(model);
 }
 
 void Entity::SetBody(btCollisionObject* body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
 	DestroyBody();
 	this->body = body;
 	collisionShape = shape;
-	engine->GetWorld()->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
+	sing::world->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
 	this->body->setUserPointer(this);
 	collisionGroup = collisionFilterGroup;
 	collisionMask = collisionFilterMask;
@@ -155,7 +147,7 @@ void Entity::DestroyBody() {
 	btCollisionShape *btCollisionShape = NULL;
 	if(body) {
 		btCollisionShape = body->getCollisionShape();
-		engine->GetWorld()->RemoveBody(GetBody());
+		sing::world->RemoveBody(GetBody());
 		
 		btRigidBody *rigidBody = GetBody<btRigidBody>();
 		if(rigidBody) {
@@ -197,10 +189,6 @@ void Entity::Load(std::istream &stream) {
 void Entity::Save(std::ostream &stream) const {
 }
 
-void Entity::Init(Engine *engine) {
-	this->engine = engine;
-}
-
 void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;
@@ -212,7 +200,6 @@ void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTr
 Entity::Entity() {
 	body = NULL;
 	mass = 1.0f;
-	engine = NULL;
 	name = "";
 	scale = btVector3(1,1,1);
 	sceneNode = NULL;

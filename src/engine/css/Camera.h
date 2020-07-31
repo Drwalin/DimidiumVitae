@@ -11,13 +11,15 @@
 
 #include <irrlicht/irrlicht.h>
 
+#include "Singleton.h"
+
 #include "../lib/Debug.h"
 #include <memory>
 
 class Camera {
 public:
 	
-	Camera(class Engine *engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode);
+	Camera(bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode);
 	~Camera();
 	
 	void UseTarget();
@@ -69,8 +71,6 @@ private:
 	btVector3 currentLocation;
 	
 	float fovDegrees;
-	
-	class Engine *engine;
 };
 
 #endif

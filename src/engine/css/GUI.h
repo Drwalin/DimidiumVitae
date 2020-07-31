@@ -20,7 +20,6 @@ typedef irr::core::vector2d<irr::s32> Vectori;
 typedef irr::core::vector2d<irr::f32> Vectorf;
 typedef irr::gui::IGUIFont Font;
 
-
 class GUIDrawEvent {
 public:
 	enum Type
@@ -50,7 +49,7 @@ public:
 		Image image;
 	};
 	GUIDrawEvent &operator=(const GUIDrawEvent &other);
-	void Draw(irr::video::IVideoDriver *videoDriver);
+	void Draw();
 	GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *str);
 	GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color);
 	GUIDrawEvent();
@@ -66,7 +65,7 @@ public:
 	Font *GetDefaultFont();
 	
 	void Flush();
-	void Init(class Window *window);
+	void Init();
 	
 	Vectori GetWindowSize() const;
 	Vectori GetWorkspaceSize() const;
@@ -110,7 +109,6 @@ private:
 	Color currentColor;
 	Vectori cursorPosition;
 	Rectanglei workSpace;
-	class Window *window;
 	
 	std::vector<GUIDrawEvent> toDraw;
 };

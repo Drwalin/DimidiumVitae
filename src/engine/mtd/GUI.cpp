@@ -27,13 +27,13 @@ GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
 	return (*this);
 }
 
-void GUIDrawEvent::Draw(irr::video::IVideoDriver *videoDriver) {
+void GUIDrawEvent::Draw() {
 	switch(type) {
 	case GUIDrawEvent::Type::TEXT:
 		text.font->draw(text.str, text.destiny, text.color);
 		break;
 	case GUIDrawEvent::Type::IMAGE:
-		videoDriver->draw2DImage(texture->GetITexture(), image.destiny, image.source, NULL, &(image.color), true);
+		sing::videoDriver->draw2DImage(texture->GetITexture(), image.destiny, image.source, NULL, &(image.color), true);
 		break;
 	}
 }
@@ -67,16 +67,13 @@ Font *GUI::GetDefaultFont() {
 }
 
 void GUI::Flush() {
-	irr::video::IVideoDriver *videoDriver = window->GetVideoDriver();
 	for(auto it=toDraw.begin(); it!=toDraw.end(); ++it)
-		it->Draw(videoDriver);
+		it->Draw();
 	toDraw.clear();
 }
 
-void GUI::Init(Window *window) {
-	this->window = window;
-	
-	defaultFont = window->GetDevice()->getGUIEnvironment()->getFont("./media/Fonts/courier.bmp");
+void GUI::Init() {
+	defaultFont = sing::igui->getFont("./media/Fonts/courier.bmp");
 	currentFont = defaultFont;
 	
 	workSpace = Rectanglei(0, 0, GetWindowSize().X, GetWindowSize().Y);
@@ -87,8 +84,8 @@ void GUI::Init(Window *window) {
 
 Vectori GUI::GetWindowSize() const {
 	Vectori ret;
-	ret.X = window->GetVideoDriver()->getScreenSize().Width;
-	ret.Y = window->GetVideoDriver()->getScreenSize().Height;
+	ret.X = sing::videoDriver->getScreenSize().Width;
+	ret.Y = sing::videoDriver->getScreenSize().Height;
 	return ret;
 }
 
@@ -293,13 +290,11 @@ GUI &GUI::DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source, Recta
 GUI::GUI() {
 	defaultFont = NULL;
 	currentFont = NULL;
-	window = NULL;
 }
 
 GUI::~GUI() {
 	defaultFont = NULL;
 	currentFont = NULL;
-	window = NULL;
 }
 
 #endif

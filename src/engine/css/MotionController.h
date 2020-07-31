@@ -39,7 +39,7 @@ public:
 	MotionController();
 	~MotionController();
 	
-	void Init(class Engine *engine, Entity *characterEntity, float stepHeight = 0.3f);
+	void Init(Entity *characterEntity, float stepHeight = 0.3f);
 	
 	float GetCurrentSpeed();
 	float GetJumpVelocity();
@@ -73,7 +73,6 @@ protected:
 	
 protected:
 	
-	class Engine *engine;
 	Entity *character;
 	
 	btVector3 triggerLowOffsetCrouching;

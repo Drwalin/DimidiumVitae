@@ -17,7 +17,7 @@ public:
 
 	Texture() = delete;
 	Texture(const Texture &other) = delete;
-	Texture(class Engine *engine, const std::string &name);
+	Texture(const std::string &name);
 	~Texture();
 	Texture &operator = (const Texture &other) = delete;
 	
@@ -31,7 +31,6 @@ public:
 private:
 	
 	irr::video::ITexture* texture;
-	class Engine* engine;
 };
 
 #endif

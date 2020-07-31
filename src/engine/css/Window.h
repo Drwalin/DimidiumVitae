@@ -5,6 +5,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "Singleton.h"
+
 #include "TimeCounter.h"
 #include "Camera.h"
 #include "GUI.h"
@@ -23,7 +25,7 @@
 #include <thread>
 #include <memory>
 
-void ParallelThreadFunctionToDraw(class Window *window);
+void ParallelThreadFunctionToDraw();
 
 class Window {
 public:
@@ -31,7 +33,7 @@ public:
 	Window();
 	~Window();
 	
-	void Init(class Engine *engine, const std::string &windowName, const std::string &iconFile, int width, int height, class EventResponser *eventResponser, bool fullscreen = false);
+	void Init(const std::string &windowName, const std::string &iconFile, int width, int height, class EventResponser *eventResponser, bool fullscreen = false);
 	void BeginLoop();
 	
 	irr::IrrlichtDevice *GetDevice();
@@ -46,7 +48,7 @@ public:
 	template<typename Menu_t, typename... Args>
 	Menu_t* StartMenu(Args... args) {
 		StopMenu();
-		Menu_t *menu = new Menu_t(engine, args...);
+		Menu_t *menu = new Menu_t(args...);
 		currentMenu = menu;
 		return menu;
 	}
@@ -92,14 +94,11 @@ private:
 	
 	void DrawGUI();
 	
-	
 	void UseParallelThreadToDraw();
 	void ShutDownParallelThreadToDraw();
 	bool IsParallelToDrawTickInUse();
 	
 private:
-
-	class Engine *engine;
 	
 	irr::IrrlichtDevice *device;
 	irr::video::IVideoDriver *videoDriver;
@@ -128,7 +127,7 @@ private:
 	class EventReceiverIrrlicht *eventIrrlichtReceiver;
 	class EventResponser *eventResponser;
 	class StringToEnter *stringToEnter;
-	GUI gui;
+	GUI &gui;
 	
 	float fpsLimit;
 	

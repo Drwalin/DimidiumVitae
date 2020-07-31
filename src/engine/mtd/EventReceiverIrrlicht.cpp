@@ -32,15 +32,15 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 
 void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 	EventResponser *currentEventResponser = eventResponser;
-	if(window->GetCurrentMenu()) {
-		currentEventResponser = window->GetCurrentMenu();
+	if(sing::window->GetCurrentMenu()) {
+		currentEventResponser = sing::window->GetCurrentMenu();
 	}
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {
 			if(keyHolded.find(event.KeyInput.Key) == keyHolded.end()) {
 				if(event.KeyInput.Char)
-					window->GetStringToEnterObject()->PressKey(event.KeyInput);
+					sing::window->GetStringToEnterObject()->PressKey(event.KeyInput);
 				currentEventResponser->KeyPressedEvent(event.KeyInput.Key);
 				keyPressed.insert(event.KeyInput.Key);
 			}
@@ -97,8 +97,8 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 		}
 		break;
 	case irr::EET_GUI_EVENT:
-		if(window->GetCurrentMenu())
-			window->GetCurrentMenu()->OnEvent(event.GUIEvent);
+		if(sing::window->GetCurrentMenu())
+			sing::window->GetCurrentMenu()->OnEvent(event.GUIEvent);
 		break;
 	}
 }
@@ -126,12 +126,11 @@ void EventReceiverIrrlicht::GenerateEvents() {
 	keyHolded.insert(keyPressed.begin(), keyPressed.end());		// ????????????????
 }
 
-EventReceiverIrrlicht::EventReceiverIrrlicht(EventResponser *event, Window *window) {
+EventReceiverIrrlicht::EventReceiverIrrlicht(EventResponser *event) {
 	mouseW = 0;
 	mouseX = 0;
 	mouseY = 0;
 	this->eventResponser = event;
-	this->window = window;
 }
 
 EventReceiverIrrlicht::~EventReceiverIrrlicht() {
@@ -141,7 +140,6 @@ EventReceiverIrrlicht::~EventReceiverIrrlicht() {
 	eventQueue.clear();
 	eventQueue.shrink_to_fit();
 	eventResponser = NULL;
-	window = NULL;
 }
 
 #endif

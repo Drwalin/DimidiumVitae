@@ -14,21 +14,11 @@ public:
 	EventResponser();
 	~EventResponser();
 	
-	class Window *GetWindow();
-	void SetWindow(class Window *window);
-	
-	void SetEngine(class Engine *engine);
-	
 	virtual void MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) = 0;
 	virtual void KeyPressedEvent(int keyCode) = 0;
 	virtual void KeyReleasedEvent(int keyCode) = 0;
 	virtual void KeyHoldedEvent(int keyCode) = 0;
 	virtual void StringToEnterEvent(std::string str) = 0;
-	
-protected:
-	
-	class Window *window;
-	class Engine *engine;
 };
 
 #endif

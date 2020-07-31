@@ -8,9 +8,9 @@
 #include "../css/LoadingScreen.h"
 #include <Engine.h>
 
-LoadingScreen::LoadingScreen(Engine *engine) :
-	Menu(engine) {
-	loadingTexture = engine->GetResourceManager()->GetTexture("Textures/PoweredBy-inverted.png");
+LoadingScreen::LoadingScreen() :
+	Menu() {
+	loadingTexture = sing::resourceManager->GetTexture("Textures/PoweredBy-inverted.png");
 	AddImage(loadingTexture, 0, 0);
 }
 LoadingScreen::~LoadingScreen() {

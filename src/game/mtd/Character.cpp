@@ -26,24 +26,24 @@ void Character::Tick(const float deltaTime) {
 	
 	static TimeCounter fpsCounter = ({TimeCounter cnt; cnt.SetTimeSpan(2.0f); fpsCounter.SubscribeStart(); cnt;});
 	fpsCounter.SubscribeEnd();
-	engine->GetWindow()->GetGUI() << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << GetTransform().getOrigin();
+	sing::gui << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << GetTransform().getOrigin();
 	btRigidBody *rigidBody = GetBody<btRigidBody>();
-	engine->GetWindow()->GetGUI() << "\n Entities count: " << engine->GetNumberOfEntities();
-	engine->GetWindow()->GetGUI() << "\nFPS: " << 1.0f/fpsCounter.GetSmoothTime();
-	engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPeakTime();
-	engine->GetWindow()->GetGUI() << " " << 1.0f/fpsCounter.GetPitTime();
-	engine->GetWindow()->GetGUI() << "\nDelta Time: " << fpsCounter.GetSmoothTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << fpsCounter.GetPeakTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << fpsCounter.GetPitTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << "\n Draw Time: " << engine->GetWindow()->GetWholeDrawTime().GetSmoothTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetWholeDrawTime().GetPeakTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetWholeDrawTime().GetPitTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << "\n Engine Tick Time: " << engine->GetWindow()->GetEngineTickTime().GetSmoothTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetEngineTickTime().GetPeakTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetEngineTickTime().GetPitTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << "\n Skipped Time: " << engine->GetWindow()->GetSkippedTime().GetSmoothTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetSkippedTime().GetPeakTime()*1000.0f;
-	engine->GetWindow()->GetGUI() << " " << engine->GetWindow()->GetSkippedTime().GetPitTime()*1000.0f;
+	sing::gui << "\n Entities count: " << sing::engine->GetNumberOfEntities();
+	sing::gui << "\nFPS: " << 1.0f/fpsCounter.GetSmoothTime();
+	sing::gui << " " << 1.0f/fpsCounter.GetPeakTime();
+	sing::gui << " " << 1.0f/fpsCounter.GetPitTime();
+	sing::gui << "\nDelta Time: " << fpsCounter.GetSmoothTime()*1000.0f;
+	sing::gui << " " << fpsCounter.GetPeakTime()*1000.0f;
+	sing::gui << " " << fpsCounter.GetPitTime()*1000.0f;
+	sing::gui << "\n Draw Time: " << sing::window->GetWholeDrawTime().GetSmoothTime()*1000.0f;
+	sing::gui << " " << sing::window->GetWholeDrawTime().GetPeakTime()*1000.0f;
+	sing::gui << " " << sing::window->GetWholeDrawTime().GetPitTime()*1000.0f;
+	sing::gui << "\n Engine Tick Time: " << sing::window->GetEngineTickTime().GetSmoothTime()*1000.0f;
+	sing::gui << " " << sing::window->GetEngineTickTime().GetPeakTime()*1000.0f;
+	sing::gui << " " << sing::window->GetEngineTickTime().GetPitTime()*1000.0f;
+	sing::gui << "\n Skipped Time: " << sing::window->GetSkippedTime().GetSmoothTime()*1000.0f;
+	sing::gui << " " << sing::window->GetSkippedTime().GetPeakTime()*1000.0f;
+	sing::gui << " " << sing::window->GetSkippedTime().GetPitTime()*1000.0f;
 	fpsCounter.SubscribeStart();
 }
 
@@ -74,7 +74,7 @@ void Character::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, b
 	SetBody(collisionObject, shape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
 	
 	motionController = std::shared_ptr<MotionController>(new MotionController());
-	motionController->Init(engine, this, 0.3f);
+	motionController->Init(this, 0.3f);
 }
 
 void Character::Despawn() {

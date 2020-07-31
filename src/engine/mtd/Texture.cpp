@@ -8,14 +8,13 @@
 #include <Texture.h>
 #include <Engine.h>
 
-Texture::Texture(class Engine *engine, const std::string &name) :
+Texture::Texture(const std::string &name) :
 	Resource(name) {
-	this->engine = engine;
-	texture = engine->GetWindow()->GetVideoDriver()->getTexture(name.c_str());
+	texture = sing::videoDriver->getTexture(name.c_str());
 }
 
 Texture::~Texture() {
-	engine->GetWindow()->GetVideoDriver()->removeTexture(texture);
+	sing::videoDriver->removeTexture(texture);
 	texture = NULL;
 }
 

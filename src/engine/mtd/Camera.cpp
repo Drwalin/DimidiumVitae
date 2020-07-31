@@ -12,9 +12,9 @@
 
 void Camera::UseTarget() {
 	if(target) {
-		engine->GetWindow()->GetVideoDriver()->setRenderTarget(target, true, true, 0);
+		sing::videoDriver->setRenderTarget(target, true, true, 0);
 	} else {
-		engine->GetWindow()->GetVideoDriver()->setRenderTarget(0, true, true, 0);
+		sing::videoDriver->setRenderTarget(0, true, true, 0);
 	}
 }
 
@@ -124,7 +124,7 @@ void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth)
 	}
 	
 	if(smooth)
-		Rotate(dstCameraRotation*engine->GetDeltaTime()*3.11f*Math::PI);
+		Rotate(dstCameraRotation*(sing::engine->GetDeltaTime())*3.11f*Math::PI);
 	else
 		Rotate(dstCameraRotation);
 }
@@ -140,60 +140,59 @@ void Camera::SetRotation(btVector3 src) {
 }
 
 void Camera::Move(btVector3 src) {
-	this->position += src;
-	this->UpdateCameraView();
+	position += src;
+	UpdateCameraView();
 }
 
 void Camera::Rotate(btVector3 src) {
-	this->rotation += src;
-	this->UpdateCameraView();
+	rotation += src;
+	UpdateCameraView();
 }
 
 void Camera::SetCameraParentTransform(btTransform transform) {
-	this->parentTransformation = transform;
-	this->UpdateCameraView();
+	parentTransformation = transform;
+	UpdateCameraView();
 }
 
 void Camera::SetFOV(float fovDegrees) {
-	if(this->fovDegrees != fovDegrees) {
-		this->fovDegrees = fovDegrees;
-		this->sceneNode->setFOV(this->fovDegrees*Math::PI/180.0f);
+	if(fovDegrees != fovDegrees) {
+		fovDegrees = fovDegrees;
+		sceneNode->setFOV(fovDegrees*Math::PI/180.0f);
 	}
 }
 
 void Camera::SetRenderTargetSize(unsigned width, unsigned height) {
-	if(this->target) {
-		if(this->target->getOriginalSize() == irr::core::dimension2d<unsigned>(width, height)) {
+	if(target) {
+		if(target->getOriginalSize() == irr::core::dimension2d<unsigned>(width, height)) {
 			return;
 		}
-		this->engine->GetWindow()->GetVideoDriver()->setRenderTarget(0, true, true, 0);
-		this->target->drop();
-		this->engine->GetWindow()->GetVideoDriver()->removeTexture(this->target);
-		this->target = NULL;
-		this->target = this->engine->GetWindow()->GetVideoDriver()->addRenderTargetTexture(irr::core::dimension2d<unsigned>(width, height));//, "RTT1");
+		sing::videoDriver->setRenderTarget(0, true, true, 0);
+		target->drop();
+		sing::videoDriver->removeTexture(target);
+		target = NULL;
+		target = sing::videoDriver->addRenderTargetTexture(irr::core::dimension2d<unsigned>(width, height));//, "RTT1");
 	}
-	this->sceneNode->setAspectRatio(float(width)/float(height));
+	sceneNode->setAspectRatio(float(width)/float(height));
 }
 
-Camera::Camera(Engine *engine, bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode) {
-	this->engine = engine;
-	this->target = NULL;
+Camera::Camera(bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode) {
+	target = NULL;
 	
-	this->fovDegrees = 70.0f;
+	fovDegrees = 70.0f;
 	
-	this->sceneNode = cameraNode;
+	sceneNode = cameraNode;
 	if(textured)
 		SetRenderTargetSize(w, h);
 	
-	this->position = btVector3(0, 0, 0);
-	this->rotation = btVector3(0, 0, 0);
-	this->parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
+	position = btVector3(0, 0, 0);
+	rotation = btVector3(0, 0, 0);
+	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
 }
 
 Camera::~Camera() {
-	this->position = btVector3(0, 0, 0);
-	this->rotation = btVector3(0, 0, 0);
-	this->parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
+	position = btVector3(0, 0, 0);
+	rotation = btVector3(0, 0, 0);
+	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
 }
 
 #endif

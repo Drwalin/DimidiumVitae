@@ -10,7 +10,7 @@
 class LoadingScreen : public Menu {
 public:
 	
-	LoadingScreen(class Engine *engine);
+	LoadingScreen();
 	~LoadingScreen();
 	
 	virtual bool RenderSceneInBackground() const override;

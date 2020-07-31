@@ -25,11 +25,11 @@ public:
 	SceneNode();
 	~SceneNode();
 	
-	void Init(class Engine *engine, std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode = NULL);
+	void Init(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode = NULL);
 	
 	Animation GetAnimation(const std::string &name) const;
 	
-	static irr::scene::IAnimatedMeshSceneNode *New(class Engine *engine, std::shared_ptr<Model> model);
+	static irr::scene::IAnimatedMeshSceneNode *New(std::shared_ptr<Model> model);
 	
 	irr::scene::IAnimatedMeshSceneNode *GetISceneNode();
 	
@@ -49,7 +49,6 @@ private:
 	btTransform previousTransform;
 	
 	std::shared_ptr<Material> material;
-	class Engine *engine;
 	std::shared_ptr<Model> model;
 	irr::scene::IAnimatedMeshSceneNode *iSceneNode;
 	irr::scene::IAnimatedMeshSceneNode *iParentSceneNode;

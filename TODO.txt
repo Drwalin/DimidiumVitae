@@ -23,7 +23,8 @@ TO DO:
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
 	Video player (maybe from *.png image sequence and *.ogg sound file)
-	Use Semantic Versioning 2.0.0 (https://semver.org/) consistently
+	Use Semantic Versioning (https://semver.org/) consistently
+	Make WAVLoadFromFile to use sing::fileSystem
 	
 
 TO DO (to think):

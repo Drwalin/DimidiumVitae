@@ -16,7 +16,7 @@
 class Material : public Resource {
 public:
 	
-	Material(class Engine *engine, const std::string &name);
+	Material(const std::string &name);
 	~Material();
 	
 	static void SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode);

@@ -19,7 +19,7 @@ public:
 	typedef irr::gui::IGUIButton Button;
 	typedef irr::gui::IGUIImage Image;
 	
-	Menu(class Engine *engine);
+	Menu();
 	virtual ~Menu();
 	
 	virtual bool RenderSceneInBackground() const =0;

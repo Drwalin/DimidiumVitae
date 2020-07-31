@@ -87,8 +87,8 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float
 }
 
 
-ResourceManager::ResourceManager(class Engine *engine, float resourcePersistencyTime) :
-	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName(""), engine(engine) {
+ResourceManager::ResourceManager(float resourcePersistencyTime) :
+	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName("") {
 }
 
 void ResourceManager::ResourceFreeingCycle(int iterations) {
@@ -136,19 +136,19 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 	try {
 		switch(GetResourceTypeByPath(name)) {
 		case Resource::MODEL:
-			resource = new Model(engine, name);
+			resource = new Model(name);
 			break;
 		case Resource::SOUND:
 			resource = new Sound(name);
 			break;
 		case Resource::TEXTURE:
-			resource = new Texture(engine, name);
+			resource = new Texture(name);
 			break;
 		case Resource::MATERIAL:
-			resource = new Material(engine, name);
+			resource = new Material(name);
 			break;
 		case Resource::COLLISIONSHAPE:
-			resource = new CollisionShape(name, engine->GetFileSystem()->ReadJSON(name));
+			resource = new CollisionShape(name, sing::fileSystem->ReadJSON(name));
 			break;
 		}
 		return resource;

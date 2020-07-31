@@ -45,17 +45,13 @@ private:
 class FileSystem {
 public:
 	
-	FileSystem(class Engine *engine);
+	FileSystem();
 	~FileSystem();
 	
 	IFile ReadFile(std::string name);
 	OFile WriteFile(std::string name);
 	JSON ReadJSON(std::string name);
 	void WriteJSON(JSON json, std::string name);
-	
-private:
-	
-	class Engine* engine;
 };
 
 #endif

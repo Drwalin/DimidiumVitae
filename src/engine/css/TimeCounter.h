@@ -36,13 +36,12 @@ public:
 	
 private:
 	
-	struct TimePair
-	{
+	struct TimePair {
 		TimePoint begin;
 		TimePoint end;
 	};
 	
-	std::vector < TimePair > array;
+	std::vector<TimePair> array;
 	
 	float timeSpan;
 };

@@ -15,10 +15,8 @@
 
 #include <cstring>
 
-void ParallelThreadFunctionToDraw(Window *window) {
-	if(window) {
-		window->ParallelToDrawTick();
-	}
+void ParallelThreadFunctionToDraw() {
+	sing::window->ParallelToDrawTick();
 }
 
 void Window::ParallelToDrawTick() {
@@ -28,8 +26,7 @@ void Window::ParallelToDrawTick() {
 				return;
 			std::this_thread::yield();
 		}
-		if(engine)
-			engine->AsynchronousTick(GetDeltaTime());
+		sing::engine->AsynchronousTick(GetDeltaTime());
 		parallelThreadToDrawContinue.store(false);
 	}
 }
@@ -97,7 +94,7 @@ void Window::UseParallelThreadToDraw() {
 	if(useParallelThreadToDraw.load() == false) {
 		parallelThreadToDrawContinue.store(false);
 		useParallelThreadToDraw.store(true);
-		parallelThreadToDraw = std::thread(ParallelThreadFunctionToDraw, this);
+		parallelThreadToDraw = std::thread(ParallelThreadFunctionToDraw);
 	}
 }
 
@@ -227,8 +224,7 @@ void Window::Tick() {
 	GenerateEvents();
 	
 	engineTickTime.SubscribeStart();
-	if(engine)
-		engine->SynchronousTick(deltaTime);
+	sing::engine->SynchronousTick(deltaTime);
 	engineTickTime.SubscribeEnd();
 	
 	asynchronousTickTime.SubscribeStart();
@@ -259,34 +255,30 @@ void Window::DrawGUI() {
 	gui.Flush();
 }
 
-void Window::Init(Engine *engine, const std::string &windowName, const std::string &iconFile, int width, int height, EventResponser *eventResponser, bool fullscreen) {
+void Window::Init(const std::string &windowName, const std::string &iconFile, int width, int height, EventResponser *eventResponser, bool fullscreen) {
 	Destroy();
 	
 	this->eventResponser = eventResponser;
-	this->eventResponser->SetWindow(this);
-	this->eventIrrlichtReceiver = new EventReceiverIrrlicht(this->eventResponser, this);
+	eventIrrlichtReceiver = new EventReceiverIrrlicht(eventResponser);
 	
-	this->device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
-	this->device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
-	this->device->setResizable(true);
+	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
+	device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
+	device->setResizable(true);
 	
-	this->videoDriver = this->device->getVideoDriver();
-	this->sceneManager = this->device->getSceneManager();
-	this->igui = this->device->getGUIEnvironment();
+	sing::videoDriver = videoDriver = device->getVideoDriver();
+	sing::sceneManager = sceneManager = device->getSceneManager();
+	sing::igui = igui = device->getGUIEnvironment();
 	
-	this->sceneManager->setShadowColor(irr::video::SColor(220,32,32,32));
-	this->stringToEnter->SetWindow(this);
+	sceneManager->setShadowColor(irr::video::SColor(220,32,32,32));
 	
-	if(!this->videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET))
+	if(!videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET))
 		MESSAGE("videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET) failed");
 	
 	igui->getSkin()->setFont(device->getGUIEnvironment()->getFont("./media/Fonts/courier.bmp"));
 	
-	this->engine = engine;
+	gui.Init();
 	
-	this->gui.Init(this);
-	
-	this->UseParallelThreadToDraw();
+	UseParallelThreadToDraw();
 }
 
 void Window::BeginLoop() {
@@ -309,11 +301,14 @@ void Window::Destroy() {
 	deltaTime = 0.0;
 	lockMouse = false;
 	eventResponser = NULL;
-	engine = NULL;
+	sing::device = NULL;
+	sing::videoDriver = NULL;
+	sing::sceneManager = NULL;
+	sing::igui = NULL;
 }
 
 Window::Window() :
-	useParallelThreadToDraw(false)
+	useParallelThreadToDraw(false), gui(sing::gui)
 {
 	beginTime = TimeCounter::GetCurrentTime();
 	device = NULL;
@@ -332,7 +327,6 @@ Window::Window() :
 	currentMenu = NULL;
 	
 	useParallelThreadToDraw = false;
-	engine = NULL;
 	fpsLimit = 60.0f;
 }
 

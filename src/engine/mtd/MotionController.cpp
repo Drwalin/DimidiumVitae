@@ -11,10 +11,8 @@
 
 #include <algorithm>
 
-void MotionController::Init(class Engine *engine, Entity *characterEntity, float stepHeight) {
-	this->engine = engine;
+void MotionController::Init( Entity *characterEntity, float stepHeight) {
 	if(characterEntity) {
-		this->engine = characterEntity->GetEngine();
 		if(characterEntity->GetCollisionShape()) {
 			crouchingScale = 0.6f;
 			this->stepHeight = stepHeight;
@@ -27,14 +25,14 @@ void MotionController::Init(class Engine *engine, Entity *characterEntity, float
 			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
 			
 			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
-					engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
-					engine->GetAvailableEntityName("Trigger"),
-					engine->GetResourceManager()->GetCapsule(characterRadius, characterStandingHeight),
+					sing::engine->AddEntity(sing::engine->GetNewEntityOfType("MotionControllerTrigger"),
+					sing::engine->GetAvailableEntityName("Trigger"),
+					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
 					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
 			triggerLow = dynamic_cast<MotionControllerTrigger*>(
-					engine->AddEntity(engine->GetNewEntityOfType("MotionControllerTrigger"),
-					engine->GetAvailableEntityName("Trigger"),
-					engine->GetResourceManager()->GetCapsule(characterRadius, characterStandingHeight),
+					sing::engine->AddEntity(sing::engine->GetNewEntityOfType("MotionControllerTrigger"),
+					sing::engine->GetAvailableEntityName("Trigger"),
+					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
 					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
 			triggerHigh->Init(characterEntity, triggerLow, stepHeight);
 			triggerLow->Init(characterEntity, triggerHigh, stepHeight);
@@ -153,7 +151,7 @@ float MotionController::GetJumpVelocity() {
 void MotionController::Tick(const float deltaTime) {
 	if(crouchingState == MotionController::CrouchingState::STANDING_UP && !triggerHigh->IsTopCollision()) {
 		character->GetBody()->setCollisionShape(triggerHigh->GetBtCollisionShape());
-		engine->GetWorld()->UpdateColliderForObject(character->GetBody());
+		sing::world->UpdateColliderForObject(character->GetBody());
 		crouchingState = MotionController::CrouchingState::STANDING;
 	}
 	
@@ -206,7 +204,7 @@ bool MotionController::IsCrouching() {
 void MotionController::StartCrouching() {
 	if(!IsCrouching()) {
 		character->GetBody()->setCollisionShape(triggerLow->GetBtCollisionShape());
-		engine->GetWorld()->UpdateColliderForObject(character->GetBody());
+		sing::world->UpdateColliderForObject(character->GetBody());
 	}
 	AddState(State::CROUCHING);
 	crouchingState = MotionController::CrouchingState::CROUCHING;
@@ -234,20 +232,16 @@ void MotionController::StopRunning() {
 }
 
 void MotionController::Destroy() {
-	if(engine) {
-		states.clear();
-		engine->QueueEntityToDestroy(triggerLow);
-		engine->QueueEntityToDestroy(triggerHigh);
-		
-		engine = NULL;
-		character = NULL;
-		triggerLow = NULL;
-		triggerHigh = NULL;
-	}
+	states.clear();
+	sing::engine->QueueEntityToDestroy(triggerLow);
+	sing::engine->QueueEntityToDestroy(triggerHigh);
+	
+	character = NULL;
+	triggerLow = NULL;
+	triggerHigh = NULL;
 }
 
 MotionController::MotionController() {
-	engine = NULL;
 }
 
 MotionController::~MotionController() {

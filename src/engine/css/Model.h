@@ -50,14 +50,14 @@ private:
 class Model : public Resource {
 public:
 	
-	Model(class Engine* engine, const std::string &name);
+	Model(const std::string &name);
 	~Model();
 	
 	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
 	std::shared_ptr<Material> GetDefaultMaterial() const;
 	Animation GetAnimation(const std::string &animationName) const;
 	
-	void LoadMesh(class Engine *engine, const std::string &objFileName);
+	void LoadMesh(const std::string &objFileName);
 	void LoadAnimations(const std::string &animationsFileName);
 	
 	void Destroy();
@@ -69,8 +69,6 @@ private:
 	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
 	std::shared_ptr<Material> defaultMaterial;
 	std::map < std::string, Animation > animations;
-	
-	class Engine *engine;
 };
 
 #endif
