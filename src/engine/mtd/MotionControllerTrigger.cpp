@@ -88,16 +88,6 @@ void MotionControllerTrigger::Spawn(size_t id, std::shared_ptr<CollisionShape> s
 	Trigger::Spawn(id, shape, transform);
 }
 
-void MotionControllerTrigger::Despawn() {
-	Trigger::Despawn();
-}
-
-void MotionControllerTrigger::Destroy() {
-	character = NULL;
-	otherTrigger = NULL;
-	Trigger::Destroy();
-}
-
 MotionControllerTrigger::MotionControllerTrigger() {
 }
 

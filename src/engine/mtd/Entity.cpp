@@ -165,18 +165,6 @@ void Entity::DestroyBody() {
 	collisionShape = NULL;
 }
 
-void Entity::Destroy() {
-	sceneNode = NULL;
-	DestroyBody();
-	id = 0;
-	scale = btVector3(0,0,0);
-	mass = 0.0f;
-}
-
-void Entity::Despawn() {
-	Destroy();
-}
-
 void Entity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;
@@ -195,7 +183,11 @@ Entity::Entity() {
 }
 
 Entity::~Entity() {
-	Destroy();
+	sceneNode = NULL;
+	DestroyBody();
+	id = 0;
+	scale = btVector3(0,0,0);
+	mass = 0.0f;
 }
 
 bool Entity::HasCommon(int group, int mask) const {

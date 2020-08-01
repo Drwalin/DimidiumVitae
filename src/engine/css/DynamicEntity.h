@@ -19,9 +19,6 @@ public:
 	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
 	
 	virtual void Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
-	virtual void Despawn() override;
-	
-	virtual void Destroy() override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(DynamicEntity);
 	

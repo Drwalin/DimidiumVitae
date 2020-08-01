@@ -229,7 +229,12 @@ void MotionController::StopRunning() {
 	RemoveState(State::RUNNING);
 }
 
-void MotionController::Destroy() {
+MotionController::MotionController() {
+	character = NULL;
+	triggerLow = NULL;
+}
+
+MotionController::~MotionController() {
 	states.clear();
 	sing::engine->QueueEntityToDestroy(triggerLow);
 	sing::engine->QueueEntityToDestroy(triggerHigh);
@@ -237,13 +242,6 @@ void MotionController::Destroy() {
 	character = NULL;
 	triggerLow = NULL;
 	triggerHigh = NULL;
-}
-
-MotionController::MotionController() {
-}
-
-MotionController::~MotionController() {
-	Destroy();
 }
 
 #endif

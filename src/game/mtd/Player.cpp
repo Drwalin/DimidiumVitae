@@ -21,14 +21,6 @@ void Player::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform
 	Character::Spawn(id, shape, transform);
 }
 
-void Player::Despawn() {
-	Character::Despawn();
-}
-
-void Player::Destroy() {
-	Character::Destroy();
-}
-
 Player::Player() : Character() {
 }
 

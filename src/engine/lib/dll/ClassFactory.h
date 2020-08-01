@@ -9,11 +9,11 @@
 
 #include <string>
 
-template <typename T>
+template <typename T, typename... Args>
 class ClassFactory : public ModulesFactory {
 public:
 	
-	typedef T* (*ClassFactoryConstructorType)();
+	typedef T* (*ClassFactoryConstructorType)(Args...);
 	
 	ClassFactory(const std::string &constructorFunctionNamePattern) : pattern(constructorFunctionNamePattern) {}
 	~ClassFactory() {}
@@ -69,7 +69,7 @@ public:
 	
 protected:
 	
-	std::map<std::string, ClassFactory<T>::ClassFactoryConstructorType> constructors;
+	std::map<std::string, ClassFactoryConstructorType> constructors;
 	const std::string pattern;
 };
 

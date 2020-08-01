@@ -32,20 +32,10 @@ void StaticEntity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTra
 	SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
 }
 
-void StaticEntity::Despawn() {
-	Entity::Despawn();
-}
-
-void StaticEntity::Destroy() {
-	Entity::Destroy();
-}
-
-StaticEntity::StaticEntity() :
-	Entity() {
+StaticEntity::StaticEntity() {
 }
 
 StaticEntity::~StaticEntity() {
-	Destroy();
 }
 
 __ENTITY_DERIVED_CODE_FACTORY__(StaticEntity)

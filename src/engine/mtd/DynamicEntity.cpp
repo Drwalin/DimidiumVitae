@@ -52,27 +52,14 @@ void DynamicEntity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTr
 	hitSoundSource = new SoundSource(sing::resourceManager->GetSound("./media/Sounds/wood1.wav"));
 }
 
-void DynamicEntity::Despawn() {
-	if(hitSoundSource)
-		delete hitSoundSource;
-	hitSoundSource = NULL;
-	Entity::Despawn();
-}
-
-void DynamicEntity::Destroy() {
-	if(hitSoundSource)
-		delete hitSoundSource;
-	hitSoundSource = NULL;
-	Entity::Destroy();
-}
-
 DynamicEntity::DynamicEntity() :
 	Entity() {
 	hitSoundSource = NULL;
 }
 
 DynamicEntity::~DynamicEntity() {
-	Destroy();
+	if(hitSoundSource)
+		delete hitSoundSource;
 }
 
 __ENTITY_DERIVED_CODE_FACTORY__(DynamicEntity)

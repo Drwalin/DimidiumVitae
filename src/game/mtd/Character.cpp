@@ -16,7 +16,7 @@
 
 #include <ctime>
 
-std::shared_ptr<MotionController> Character::GetMotionController() {
+MotionController* Character::GetMotionController() {
 	return motionController;
 }
 
@@ -64,22 +64,8 @@ void Character::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransf
 	
 	SetBody(collisionObject, shape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
 	
-	motionController = std::shared_ptr<MotionController>(new MotionController());
+	motionController = new MotionController();
 	motionController->Init(this, 0.3f);
-}
-
-void Character::Despawn() {
-	Entity::Despawn();
-	if(motionController)
-		motionController->Destroy();
-	motionController = NULL;
-}
-
-void Character::Destroy() {
-	Entity::Destroy();
-	if(motionController)
-		motionController->Destroy();
-	motionController = NULL;
 }
 
 Character::Character() :
@@ -87,7 +73,8 @@ Character::Character() :
 }
 
 Character::~Character() {
-	Destroy();
+	if(motionController)
+		delete motionController;
 }
 
 __ENTITY_DERIVED_CODE_FACTORY__(Character)

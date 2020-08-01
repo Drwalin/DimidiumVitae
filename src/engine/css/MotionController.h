@@ -59,8 +59,6 @@ public:
 	void StartRunning();
 	void StopRunning();
 	
-	void Destroy();
-	
 protected:
 	
 	MotionController::State GetCurrentState() const;

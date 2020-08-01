@@ -46,14 +46,6 @@ void Trigger::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransfor
 	SetBody(collisionObject, shape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
 }
 
-void Trigger::Despawn() {
-	Entity::Despawn();
-}
-
-void Trigger::Destroy() {
-	Entity::Destroy();
-}
-
 Trigger::Trigger() {
 }
 

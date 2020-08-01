@@ -201,14 +201,12 @@ void Engine::DeleteEntity(uint64_t id) {
 	auto it = entities.find(id);
 	if(it != entities.end()) {
 		if(it->second) {
-			if(dynamic_cast<Trigger*>(it->second)) {
+			if(dynamic_cast<Trigger*>(it->second))
 				triggerEntities.erase(id);
-			}
 			
 			if(it->second == cameraParent)
 				cameraParent = NULL;
 			
-			it->second->Destroy();
 			delete it->second;
 		}
 		
@@ -274,10 +272,8 @@ void Engine::Destroy() {
 	
 	triggerEntities.clear();
 	for(auto it = entities.begin(); it != entities.end(); ++it) {
-		if(it->second) {
-			it->second->Destroy();
+		if(it->second)
 			delete it->second;
-		}
 		else
 			DEBUG("It shouldn't appear");
 	}

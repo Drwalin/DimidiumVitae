@@ -35,7 +35,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		character = dynamic_cast<Character*>(player);
 		playerPtr = dynamic_cast<Player*>(player);
 	}
-	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
+	MotionController* playerMotionController = character->GetMotionController();
 	
 	Entity *bow = sing::engine->GetEntity(1);
 	static Animation bowDraw = bow->GetSceneNode()->GetAnimation("draw");
@@ -131,7 +131,7 @@ void Event::KeyReleasedEvent(int keyCode) {
 	Character *character = NULL;
 	if(player)
 		character = dynamic_cast<Character*>(player);
-	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
+	MotionController* playerMotionController = character->GetMotionController();
 	
 	switch(keyCode) {
 	case irr::KEY_ESCAPE:
@@ -162,7 +162,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 		playerPtr = dynamic_cast<Player*>(player);
 	}
 	
-	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
+	MotionController* playerMotionController = character->GetMotionController();
 	
 	btVector3 vector;
 	
