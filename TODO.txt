@@ -7,10 +7,10 @@ TO DO:
 			TCP - initialization, events, lossless informations
 			UDP - streaming entities transofrmation, movement and animation informations in realtime
 	Add TryBox and TryCylinder to ObjToShapeConverter
-	Optimise crouching/standing up in MotionController
+	Rewrite MotionController
 	Optimise setting transformation to ISceneNode in SceneNode code
 	Optimise loading and creating Entities
-	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape
+	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape (to avoid exact copies of btCollisionShape)
 		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe, get by scale
 		- add CollisionShape::SetScale(btCollisionShape, newScale); // if current btCollisionShape is unique, change it's scale; else if it's not unique, call CollisionShape::GetNewBtCollisionShape(newScale);
 	Official cases:
@@ -21,11 +21,10 @@ TO DO:
 		- update Dependencies.txt for linux
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
-	Video player (maybe from *.png image sequence and *.ogg sound file)
 	Use Semantic Versioning (https://semver.org/) consistently
 	
 
-TO DO (to think):
+TO DO (to think/code restructuring):
 	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
 	Code refactor - Initiate Entities and other classes only in constructor; destroy Entities and other classes only in destructor - rethink ClassFactory structer
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
@@ -81,6 +80,7 @@ TO DO in future:
 	Optimise rendering?
 	Limit number of active OpenAL sound sources (choose closest and loudest sources - eg. order and enable by distance/volume)
 	Make Ogg to use sing::fileSystem
+	Video player (maybe from *.png image sequence and *.ogg sound file)
 	
 
 Bugs:

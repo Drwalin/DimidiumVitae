@@ -107,16 +107,12 @@ void MotionControllerTrigger::Destroy() {
 	Trigger::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetMotionControllerTriggerInstantiator() { static std::shared_ptr<Entity> instantiator(new MotionControllerTrigger(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int MotionControllerTrigger::GetTypeSize() const{ return sizeof(MotionControllerTrigger); }
-void MotionControllerTrigger::Free() { delete this; }
-Entity* MotionControllerTrigger::New() const{ return new MotionControllerTrigger(); }
-std::string MotionControllerTrigger::GetClassName() const{ return "MotionControllerTrigger"; }
-
 MotionControllerTrigger::MotionControllerTrigger() {
 }
 
 MotionControllerTrigger::~MotionControllerTrigger() {
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(MotionControllerTrigger)
 
 #endif

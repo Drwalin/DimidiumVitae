@@ -48,12 +48,6 @@ void StaticEntity::Destroy() {
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetStaticEntityInstantiator() { static std::shared_ptr<Entity> instantiator(new StaticEntity(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int StaticEntity::GetTypeSize() const{ return sizeof(StaticEntity); }
-void StaticEntity::Free() { delete this; }
-Entity* StaticEntity::New() const { return new StaticEntity(); }
-std::string StaticEntity::GetClassName() const{ return "StaticEntity"; }
-
 StaticEntity::StaticEntity() :
 	Entity() {
 }
@@ -61,5 +55,7 @@ StaticEntity::StaticEntity() :
 StaticEntity::~StaticEntity() {
 	Destroy();
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(StaticEntity)
 
 #endif

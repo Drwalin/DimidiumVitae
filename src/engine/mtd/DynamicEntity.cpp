@@ -74,12 +74,6 @@ void DynamicEntity::Destroy() {
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetDynamicEntityInstantiator() { static std::shared_ptr<Entity> instantiator(new DynamicEntity(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int DynamicEntity::GetTypeSize() const{ return sizeof(DynamicEntity); }
-void DynamicEntity::Free() { delete this; }
-Entity* DynamicEntity::New() const { return new DynamicEntity(); }
-std::string DynamicEntity::GetClassName() const{ return "DynamicEntity"; }
-
 DynamicEntity::DynamicEntity() :
 	Entity() {
 	hitSoundSource = NULL;
@@ -88,5 +82,7 @@ DynamicEntity::DynamicEntity() :
 DynamicEntity::~DynamicEntity() {
 	Destroy();
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(DynamicEntity)
 
 #endif

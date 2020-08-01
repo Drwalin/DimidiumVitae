@@ -38,17 +38,13 @@ void Player::Destroy() {
 	Character::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetPlayerInstantiator() { static std::shared_ptr<Entity> instantiator(new Player(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int Player::GetTypeSize() const{ return sizeof(Player); }
-void Player::Free() { delete this; }
-Entity* Player::New() const{ return new Player(); }
-std::string Player::GetClassName() const{ return "Player"; }
-
 Player::Player() : Character() {
 }
 
 Player::~Player() {
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(Player)
 
 #endif
 

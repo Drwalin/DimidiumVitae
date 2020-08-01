@@ -19,8 +19,7 @@ int Engine::GetNumberOfEntities() const {
 }
 
 Entity* Engine::GetNewEntityOfType(const std::string &name) {
-	Entity* entity = classFactory.GetClassInstantiator(name.c_str())->New();
-	return entity;
+	return classFactory.GetNew(name);
 }
 
 bool Engine::RegisterType(const std::string &className, const std::string &moduleName) {
@@ -213,7 +212,7 @@ void Engine::DeleteEntity(const std::string &name) {
 				cameraParent = NULL;
 			
 			it->second->Destroy();
-			it->second->Free();
+			delete it->second;
 		}
 		
 		entities.erase(it);
@@ -280,7 +279,7 @@ void Engine::Destroy() {
 	for(auto it = entities.begin(); it != entities.end(); ++it) {
 		if(it->second) {
 			it->second->Destroy();
-			it->second->Free();
+			delete it->second;
 		}
 		else
 			DEBUG("It shouldn't appear");
@@ -322,7 +321,8 @@ void Engine::Destroy() {
 	}
 }
 
-Engine::Engine() {
+Engine::Engine() :
+	classFactory("__Constructor_%_Function"){
 	resourceManager = NULL;
 	event = NULL;
 	world = NULL;
@@ -372,7 +372,5 @@ Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 
 	}
 	return NULL;
 }
-
-#include "../lib/dll/ClassFactory.cpp"
 
 #endif

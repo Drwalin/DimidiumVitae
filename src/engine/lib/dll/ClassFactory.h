@@ -7,22 +7,70 @@
 
 #include "ModulesFactory.h"
 
-template <typename T >
+#include <string>
+
+template <typename T>
 class ClassFactory : public ModulesFactory {
 public:
 	
-	ClassFactory();
-	~ClassFactory();
+	typedef T* (*ClassFactoryConstructorType)();
 	
-	T* GetNewOf(const char *className);
+	ClassFactory(const std::string &constructorFunctionNamePattern) : pattern(constructorFunctionNamePattern) {}
+	~ClassFactory() {}
 	
-	T* GetClassInstantiator(const char *className);
-	T* AddClass(const char *className, const char *moduleName);
-	void RemoveClass(const char *moduleName);
+	T* GetNew(const std::string &className) {
+		auto it = constructors.find(className);
+		if(it == constructors.end())
+			return NULL;
+		return it->second();
+	}
+	
+	ClassFactoryConstructorType GetConstructor(const char *className) {
+		auto it = constructors.find(className);
+		if(it == constructors.end())
+			return NULL;
+		return it->second;
+	}
+	
+	ClassFactoryConstructorType AddClass(const char *className, const char *moduleName) {
+		auto it = constructors.find(className);
+		if(it != constructors.end())
+			return it->second;
+		
+		std::shared_ptr<Dll> dll = GetModule(moduleName);
+		if(dll == NULL) {
+			fprintf(stderr, "\n Module: \"%s\" is not registered while getting %s class instantiator", moduleName, className);
+			return NULL;
+		}
+		
+		std::string instantiatorSymbol = pattern;
+		while(true) {
+			size_t pos = instantiatorSymbol.find("%");
+			if(pos == std::string::npos)
+				break;
+			instantiatorSymbol.replace(pos, 1, className);
+		}
+		
+		ClassFactoryConstructorType constructor = dll->Get<ClassFactoryConstructorType>(instantiatorSymbol.c_str());
+		
+		if(constructor == NULL) {
+			fprintf(stderr, "\n Cannot get symbol: \"%s\" from: \"%s\"", instantiatorSymbol.c_str(), moduleName);
+			return NULL;
+		}
+		
+		constructors[className] = constructor;
+		return constructor;
+	}
+	
+	void RemoveClass(const char *moduleName) {
+		constructors.erase(moduleName);
+		RemoveModule(moduleName);
+	}
 	
 protected:
 	
-	std::map<std::string, std::shared_ptr<T>> uniqueObjects;
+	std::map<std::string, ClassFactory<T>::ClassFactoryConstructorType> constructors;
+	const std::string pattern;
 };
 
 #endif

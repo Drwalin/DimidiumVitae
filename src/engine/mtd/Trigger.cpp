@@ -63,16 +63,12 @@ void Trigger::Destroy() {
 	Entity::Destroy();
 }
 
-extern "C" std::shared_ptr<Entity> GetTriggerInstantiator() { static std::shared_ptr<Entity> instantiator(new Trigger(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int Trigger::GetTypeSize() const{ return sizeof(Trigger); }
-void Trigger::Free() { delete this; }
-Entity* Trigger::New() const{ return new Trigger(); }
-std::string Trigger::GetClassName() const{ return "Trigger"; }
-
 Trigger::Trigger() {
 }
 
 Trigger::~Trigger() {
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(Trigger)
 
 #endif

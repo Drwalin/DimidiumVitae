@@ -46,10 +46,7 @@ public:
 	
 	virtual void Destroy() override;
 	
-	virtual int GetTypeSize() const override;
-	virtual void Free() override;
-	virtual Entity* New() const override;
-	virtual std::string GetClassName() const override;
+	__ENTITY_DERIVED_HEADER_FACTORY__(MotionControllerTrigger);
 	
 	friend struct SimulationContactResultCallback;
 	

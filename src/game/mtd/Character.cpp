@@ -91,12 +91,6 @@ void Character::Destroy() {
 	motionController = NULL;
 }
 
-extern "C" std::shared_ptr<Entity> GetCharacterInstantiator() { static std::shared_ptr<Entity> instantiator(new Character(), [](Entity *ptr) {delete ptr;}); return instantiator; }
-int Character::GetTypeSize() const{ return sizeof(Character); }
-void Character::Free() { delete this; }
-Entity* Character::New() const{ return new Character(); }
-std::string Character::GetClassName() const{ return "Character"; }
-
 Character::Character() :
 	Entity(), height(1.75) {
 }
@@ -104,6 +98,8 @@ Character::Character() :
 Character::~Character() {
 	Destroy();
 }
+
+__ENTITY_DERIVED_CODE_FACTORY__(Character)
 
 #endif
 
