@@ -84,15 +84,6 @@ void MotionControllerTrigger::Tick(const float deltaTime) {
 	Trigger::Tick(deltaTime);
 }
 
-void MotionControllerTrigger::Load(std::istream &stream) {
-	Trigger::Load(stream);
-}
-
-void MotionControllerTrigger::Save(std::ostream &stream) const
-{
-	Trigger::Save(stream);
-}
-
 void MotionControllerTrigger::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Trigger::Spawn(name, shape, transform);
 }

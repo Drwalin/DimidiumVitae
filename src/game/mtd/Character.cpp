@@ -51,15 +51,6 @@ void Character::ApplyDamage(const float damage, btVector3 point, btVector3 norma
 	Entity::ApplyDamage(damage, point, normal);
 }
 
-void Character::Load(std::istream &stream) {
-	Entity::Load(stream);
-}
-
-void Character::Save(std::ostream &stream) const
-{
-	Entity::Save(stream);
-}
-
 void Character::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Entity::Spawn(name, shape, transform);
 	

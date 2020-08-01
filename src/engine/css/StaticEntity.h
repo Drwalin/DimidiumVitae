@@ -16,8 +16,6 @@ public:
 	virtual void Tick(const float deltaTime) override;
 	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
 	
-	virtual void Load(std::istream &stream) override;
-	virtual void Save(std::ostream &stream) const override;
 	virtual void Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	

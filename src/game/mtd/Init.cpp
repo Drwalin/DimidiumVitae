@@ -40,7 +40,7 @@ extern "C" int Init(int argc, char ** argv) {
 	*/
 	// create animated bow
 	
-	Entity *animatedBow = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("DynamicEntity"), sing::engine->GetAvailableEntityName("Bow"), sing::engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
+	Entity *animatedBow = sing::engine->AddEntity("DynamicEntity", sing::engine->GetAvailableEntityName("Bow"), sing::engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
 	animatedBow->SetModel(sing::resourceManager->GetModel("Models/Bow02.x"));
 	animatedBow->GetBody()->setFriction(0.75);
 	animatedBow->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
@@ -49,7 +49,7 @@ extern "C" int Init(int argc, char ** argv) {
 	animatedBow->GetSceneNode()->GetISceneNode()->setLoopMode(false);
 	
 	// create player
-	Entity *player = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("Player"), "Player", sing::resourceManager->GetCylinder(0.3f, 1.75f), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14)), 75.0);
+	Entity *player = sing::engine->AddEntity("Player", "Player", sing::resourceManager->GetCylinder(0.3f, 1.75f), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14)), 75.0);
 	sing::engine->AttachCameraToEntity("Player", btVector3(0, 0.7f, 0));
 	player->SetCamera(sing::engine->GetCamera());
 	
@@ -58,19 +58,19 @@ extern "C" int Init(int argc, char ** argv) {
 	float mapGridScale = 0.3f;
 	for(float x = -100; x<=100.1; x+=24) {
 		for(float z = -100; z<=100.1; z+=24) {
-			Entity *map = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("StaticEntity"), "TestMap" + std::to_string(x) + "_" + std::to_string(z), 
+			Entity *map = sing::engine->AddEntity("StaticEntity", "TestMap" + std::to_string(x) + "_" + std::to_string(z), 
 			mapShape, btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,0,z)), 100000000.0f);
 			map->SetModel(sing::resourceManager->GetModel("Models/TechDemoMap.x"));
 			map->SetScale(btVector3(1, 1, 1)*mapGridScale);
 		}
 	}
-	Entity *map = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("StaticEntity"), "TestMap", mapShape, btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
+	Entity *map = sing::engine->AddEntity("StaticEntity", "TestMap", mapShape, btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,-100,0)), 100000000.0f);
 	map->SetModel(sing::resourceManager->GetModel("Models/TechDemoMap.x"));
 	map->SetScale(btVector3(3, 3, 3));
 	for(float x = -10; x<=10.1; x+=10) {
 		for(float y = 30; y<=75.1; y+=3.5f) {
 			for(float z = -10; z<=10.1; z+=10) {
-				Entity *box = sing::engine->AddEntity(sing::engine->GetNewEntityOfType("DynamicEntity"), std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
+				Entity *box = sing::engine->AddEntity("DynamicEntity", std::to_string(x)+"_"+std::to_string(y)+"_"+std::to_string(z)+"box", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(x,y,z)), 75.0f);
 				box->SetModel(sing::resourceManager->GetModel("Models/Crate01.obj"));
 				box->SetScale(btVector3(0.8, 2.5, 0.8)*0.5f);
 			}

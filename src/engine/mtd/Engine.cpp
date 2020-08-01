@@ -38,7 +38,8 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-Entity* Engine::AddEntity(Entity *emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
+Entity* Engine::AddEntity(const std::string className, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
+	Entity *emptyEntity = GetNewEntityOfType(className);
 	if(emptyEntity) {
 		auto it = entities.find(name);
 		if(it == entities.end()) {

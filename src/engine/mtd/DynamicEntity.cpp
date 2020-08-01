@@ -38,14 +38,6 @@ void DynamicEntity::ApplyDamage(const float damage, btVector3 point, btVector3 n
 	Entity::ApplyDamage(damage, point, normal);
 }
 
-void DynamicEntity::Load(std::istream &stream) {
-	Entity::Load(stream);
-}
-
-void DynamicEntity::Save(std::ostream &stream) const {
-	Entity::Save(stream);
-}
-
 void DynamicEntity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Entity::Spawn(name, shape, transform);
 	

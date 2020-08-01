@@ -64,8 +64,6 @@ public:
 	void SetModel(std::shared_ptr<Model> model);
 	void SetBody(btCollisionObject *body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
 	
-	virtual void Load(std::istream &stream);
-	virtual void Save(std::ostream &stream) const;
 	virtual void Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual void Despawn();
 	

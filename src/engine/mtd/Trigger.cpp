@@ -37,15 +37,6 @@ void Trigger::Tick(const float deltaTime) {
 	}
 }
 
-void Trigger::Load(std::istream &stream) {
-	Entity::Load(stream);
-}
-
-void Trigger::Save(std::ostream &stream) const
-{
-	Entity::Save(stream);
-}
-
 void Trigger::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Entity::Spawn(name, shape, transform);
 	

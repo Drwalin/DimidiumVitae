@@ -17,15 +17,6 @@ void Player::Tick(const float deltaTime) {
 	Character::Tick(deltaTime);
 }
 
-void Player::Load(std::istream &stream) {
-	Character::Load(stream);
-}
-
-void Player::Save(std::ostream &stream) const
-{
-	Character::Save(stream);
-}
-
 void Player::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	Character::Spawn(name, shape, transform);
 }

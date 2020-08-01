@@ -177,12 +177,6 @@ void Entity::Despawn() {
 	Destroy();
 }
 
-void Entity::Load(std::istream &stream) {
-}
-
-void Entity::Save(std::ostream &stream) const {
-}
-
 void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;

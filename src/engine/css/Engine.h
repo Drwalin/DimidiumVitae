@@ -37,7 +37,6 @@ public:
 	~Engine();
 	
 	int GetNumberOfEntities() const;
-	Entity* GetNewEntityOfType(const std::string &name);
 	bool RegisterType(const std::string &className, const std::string &moduleName);
 	bool RegisterModule(const std::string &moduleName);
 	
@@ -46,7 +45,7 @@ public:
 	void DeleteEntity(const std::string &name);
 	
 	std::string GetAvailableEntityName(const std::string &name);
-	Entity* AddEntity(Entity *emptyEntity, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	Entity* AddEntity(const std::string className, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
 	Entity* GetEntity(const std::string &name);
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
@@ -79,6 +78,7 @@ public:
 	
 private:
 	
+	Entity* GetNewEntityOfType(const std::string &name);
 	inline void UpdateEntitiesOverlapp();
 	inline void UpdateEntities(const float deltaTime);
 	
