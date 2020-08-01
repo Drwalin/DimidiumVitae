@@ -39,7 +39,7 @@ public:
 	
 	virtual void Tick(const float deltaTime) override;
 	
-	virtual void Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
+	virtual void Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	virtual void Despawn() override;
 	
 	virtual void Destroy() override;

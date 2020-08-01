@@ -30,7 +30,6 @@ TO DO (to think/code restructuring):
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
 	Remove GetVersion.cpp
 	Font resource class
-	Replace (std::string)Entity::name by (int/uint64_T)Entity::id
 	
 
 Done:
@@ -64,6 +63,7 @@ Done:
 	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*" and "std::shared_ptr<btCollisionObject>" with "btCollisionObject*"
 	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
 	Make WAVLoadFromFile to use sing::fileSystem
+	Replace (std::string)Entity::name by (uint64_t)Entity::id
 	
 
 TO DO in future:

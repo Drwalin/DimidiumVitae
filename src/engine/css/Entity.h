@@ -53,7 +53,7 @@ public:
 	
 	void SetMass(float mass);
 	
-	const std::string &GetName() const;
+	uint64_t GetId() const;
 	
 	template <typename T = btCollisionObject >
 	inline T* GetBody() { return dynamic_cast<T*>(this->body); }
@@ -64,20 +64,20 @@ public:
 	void SetModel(std::shared_ptr<Model> model);
 	void SetBody(btCollisionObject *body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
 	
-	virtual void Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	virtual void Spawn(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual void Despawn();
 	
 	virtual void Destroy();
 	void DestroyBody();
 	
-	virtual size_t GetTypeSize() const = 0;					// return size of type in bytes
+	virtual uint64_t GetTypeSize() const = 0;					// return size of type in bytes
 	virtual const std::string& GetClassName() const = 0;	// returns type name
 	
 	bool HasCommon(int group, int mask) const;
 	
 protected:
 	
-	std::string name;
+	uint64_t id;
 	
 	btTransform currentTransform;
 	

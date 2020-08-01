@@ -41,18 +41,18 @@ public:
 	bool RegisterModule(const std::string &moduleName);
 	
 	void QueueEntityToDestroy(Entity *ptr);
-	void QueueEntityToDestroy(const std::string &name);
-	void DeleteEntity(const std::string &name);
+	void QueueEntityToDestroy(uint64_t id);
+	void DeleteEntity(uint64_t entityId);
 	
-	std::string GetAvailableEntityName(const std::string &name);
-	Entity* AddEntity(const std::string className, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
-	Entity* GetEntity(const std::string &name);
+	uint64_t GetAvailableEntityId() const;
+	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	Entity* GetEntity(uint64_t entityId);
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
 	std::shared_ptr<Camera> GetCamera() const;
 	Entity* GetCameraParent() const;
-	void AttachCameraToEntity(const std::string &name, btVector3 location);
+	void AttachCameraToEntity(uint64_t id, btVector3 location);
 	
 	float GetDeltaTime();
 	
@@ -93,10 +93,10 @@ private:
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	
-	std::map<std::string, Entity*> entities;
-	std::map<std::string, Trigger*> triggerEntities;
+	std::map<uint64_t, Entity*> entities;
+	std::map<uint64_t, Trigger*> triggerEntities;
 	
-	std::queue<std::string> entitiesQueuedToDestroy;
+	std::queue<uint64_t> entitiesQueuedToDestroy;
 	
 	TimeCounter guiDrawTime;
 	TimeCounter sceneDrawTime;

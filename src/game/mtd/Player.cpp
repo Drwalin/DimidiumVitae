@@ -17,8 +17,8 @@ void Player::Tick(const float deltaTime) {
 	Character::Tick(deltaTime);
 }
 
-void Player::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Character::Spawn(name, shape, transform);
+void Player::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Character::Spawn(id, shape, transform);
 }
 
 void Player::Despawn() {

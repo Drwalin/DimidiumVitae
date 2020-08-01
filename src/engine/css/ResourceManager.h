@@ -21,6 +21,7 @@ class ResourceManager {
 public:
 	
 	ResourceManager(float resourcePersistencyTime);
+	~ResourceManager();
 	
 	std::shared_ptr<Resource> GetResource(const std::string &name);
 	std::shared_ptr<Sound> GetSound(const std::string &name);

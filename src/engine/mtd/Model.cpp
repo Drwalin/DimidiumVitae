@@ -11,7 +11,7 @@
 #include "../lib/StdUtil.hpp"
 #include "../lib/StlStreamExtension.h"
 
-std::shared_ptr<irr::scene::IAnimatedMesh> Model::GetMesh() {
+irr::scene::IAnimatedMesh* Model::GetMesh() {
 	return mesh;
 }
 
@@ -31,10 +31,9 @@ Animation Model::GetAnimation(const std::string &animationName) const {
 void Model::LoadMesh(const std::string &fileName) {
 	Destroy();
 	
-	irr::scene::IAnimatedMesh *newMesh = sing::sceneManager->getMesh(fileName.c_str());
-	if(newMesh == NULL)
+	mesh = sing::sceneManager->getMesh(fileName.c_str());
+	if(mesh == NULL)
 		throw (int)2;
-	mesh = std::shared_ptr<irr::scene::IAnimatedMesh>(newMesh, [](irr::scene::IAnimatedMesh*ptr) {sing::sceneManager->getMeshCache()->removeMesh(ptr);});
 	
 	std::string mtlFileName = GetFileWithPathWithoutExtension(fileName) + ".mtl";
 	try {
@@ -59,7 +58,7 @@ void Model::LoadAnimations(const std::string &animationsFileName) {
 void Model::Destroy() {
 	animations.clear();
 	if(mesh)
-		mesh.reset();
+		sing::sceneManager->getMeshCache()->removeMesh(mesh);
 	mesh = NULL;
 }
 

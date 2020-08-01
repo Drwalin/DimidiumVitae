@@ -86,11 +86,6 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
-
-ResourceManager::ResourceManager(float resourcePersistencyTime) :
-	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName("") {
-}
-
 void ResourceManager::ResourceFreeingCycle(int iterations) {
 	std::vector<std::string> toRemove;
 	auto it = resources.lower_bound(lastIteratedName);
@@ -191,6 +186,13 @@ Resource::ResourceType ResourceManager::GetResourceTypeByPath(const std::string 
 	if(soundExtensions.count(extension) > 0)
 		return Resource::SOUND;
 	return Resource::MODEL;
+}
+
+ResourceManager::ResourceManager(float resourcePersistencyTime) :
+	resourcePersistencyTime(resourcePersistencyTime), lastIteratedName("") {
+}
+
+ResourceManager::~ResourceManager() {
 }
 
 #endif

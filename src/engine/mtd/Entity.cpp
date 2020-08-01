@@ -119,8 +119,8 @@ btVector3 Entity::GetLocation() const {
 	return currentTransform.getOrigin();
 }
 
-const std::string &Entity::GetName() const {
-	return name;
+size_t Entity::GetId() const {
+	return id;
 }
 
 void Entity::SetModel(std::shared_ptr<Model> model) {
@@ -168,7 +168,7 @@ void Entity::DestroyBody() {
 void Entity::Destroy() {
 	sceneNode = NULL;
 	DestroyBody();
-	name = "";
+	id = 0;
 	scale = btVector3(0,0,0);
 	mass = 0.0f;
 }
@@ -177,10 +177,10 @@ void Entity::Despawn() {
 	Destroy();
 }
 
-void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+void Entity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;
-	this->name = name;
+	this->id = id;
 	scale = btVector3(1,1,1);
 	currentTransform = transform;
 }
@@ -188,7 +188,7 @@ void Entity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTr
 Entity::Entity() {
 	body = NULL;
 	mass = 1.0f;
-	name = "";
+	id = 0;
 	scale = btVector3(1,1,1);
 	collisionGroup = 0;
 	collisionMask = 0;

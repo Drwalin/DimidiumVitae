@@ -38,8 +38,8 @@ void DynamicEntity::ApplyDamage(const float damage, btVector3 point, btVector3 n
 	Entity::ApplyDamage(damage, point, normal);
 }
 
-void DynamicEntity::Spawn(std::string name, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(name, shape, transform);
+void DynamicEntity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+	Entity::Spawn(id, shape, transform);
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 1.0f);
 	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);

@@ -35,7 +35,7 @@ public:
 	Model(JSON json);
 	~Model();
 	
-	std::shared_ptr<irr::scene::IAnimatedMesh> GetMesh();
+	irr::scene::IAnimatedMesh* GetMesh();
 	std::shared_ptr<Material> GetDefaultMaterial() const;
 	Animation GetAnimation(const std::string &animationName) const;
 	
@@ -50,7 +50,7 @@ public:
 	
 private:
 	
-	std::shared_ptr<irr::scene::IAnimatedMesh> mesh;
+	irr::scene::IAnimatedMesh *mesh;
 	std::shared_ptr<Material> defaultMaterial;
 	std::map<std::string, Animation> animations;
 };

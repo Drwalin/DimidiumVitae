@@ -38,18 +38,18 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-Entity* Engine::AddEntity(const std::string className, const std::string &name, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
+Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
 	Entity *emptyEntity = GetNewEntityOfType(className);
 	if(emptyEntity) {
-		auto it = entities.find(name);
-		if(it == entities.end()) {
-			emptyEntity->Spawn(name, shape, transform);
+		uint64_t id = GetAvailableEntityId();
+		if(id != 0) {
+			emptyEntity->Spawn(id, shape, transform);
 			emptyEntity->SetMass(mass);
-			entities[name] = emptyEntity;
+			entities[id] = emptyEntity;
 			{
 				Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
 				if(trigger)
-					triggerEntities[name] = trigger;
+					triggerEntities[id] = trigger;
 			}
 			return emptyEntity;
 		}
@@ -82,11 +82,12 @@ inline void Engine::UpdateEntities(const float deltaTime) {
 
 void Engine::QueueEntityToDestroy(Entity *ptr) {
 	if(ptr)
-		entitiesQueuedToDestroy.push(ptr->GetName());
+		entitiesQueuedToDestroy.push(ptr->GetId());
 }
 
-void Engine::QueueEntityToDestroy(const std::string &name) {
-	entitiesQueuedToDestroy.push(name);
+void Engine::QueueEntityToDestroy(uint64_t entityId) {
+	if(entityId)
+		entitiesQueuedToDestroy.push(entityId);
 }
 
 float Engine::GetDeltaTime() {
@@ -163,21 +164,18 @@ Entity* Engine::GetCameraParent() const {
 	return cameraParent;
 }
 
-std::string Engine::GetAvailableEntityName(const std::string &name) {
-	if(entities.find(name) == entities.end()) {
-		return name;
+uint64_t Engine::GetAvailableEntityId() const {
+	uint64_t id = entities.size()+1;
+	while(true) {
+		if(id!=0 && entities.find(id)==entities.end())
+			return id;
+		id += rand();
 	}
-	for(int i = 0;; ++i) {
-		int id = i^rand();
-		if(entities.find(name+std::to_string(id)) == entities.end()) {
-			return name+std::to_string(id);
-		}
-	}
-	return name;
+	return 0;
 }
 
-void Engine::AttachCameraToEntity(const std::string &name, btVector3 location) {
-	auto it = entities.find(name);
+void Engine::AttachCameraToEntity(uint64_t id, btVector3 location) {
+	auto it = entities.find(id);
 	if(it != entities.end()) {
 		cameraParent = it->second;
 	}
@@ -190,23 +188,21 @@ ResourceManager* Engine::GetResourceManager() {
 	return resourceManager;
 }
 
-Entity* Engine::GetEntity(const std::string &name) {
-	auto it = entities.find(name);
+Entity* Engine::GetEntity(uint64_t id) {
+	auto it = entities.find(id);
 	if(it != entities.end()) {
 		if(it->second)
 			return it->second;
-		else
-			entities.erase(it);
 	}
 	return NULL;
 }
 
-void Engine::DeleteEntity(const std::string &name) {
-	auto it = entities.find(name);
+void Engine::DeleteEntity(uint64_t id) {
+	auto it = entities.find(id);
 	if(it != entities.end()) {
 		if(it->second) {
 			if(dynamic_cast<Trigger*>(it->second)) {
-				triggerEntities.erase(name);
+				triggerEntities.erase(id);
 			}
 			
 			if(it->second == cameraParent)
@@ -313,8 +309,6 @@ void Engine::Destroy() {
 		delete window;
 		sing::window = window = NULL;
 	}
-	
-	pausePhysics = false;
 	
 	if(fileSystem) {
 		delete fileSystem;

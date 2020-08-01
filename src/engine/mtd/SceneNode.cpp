@@ -18,7 +18,7 @@ Animation SceneNode::GetAnimation(const std::string &name) const {
 irr::scene::IAnimatedMeshSceneNode *SceneNode::New(std::shared_ptr<Model> model) {
 	if(model) {
 		if(model->GetMesh()) {
-			irr::scene::IAnimatedMeshSceneNode *iSceneNode = sing::sceneManager->addAnimatedMeshSceneNode(model->GetMesh().get());
+			irr::scene::IAnimatedMeshSceneNode *iSceneNode = sing::sceneManager->addAnimatedMeshSceneNode(model->GetMesh());
 			if(model->GetDefaultMaterial())
 				Material::SetTo(model->GetDefaultMaterial(), iSceneNode);
 			return iSceneNode;

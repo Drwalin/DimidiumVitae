@@ -26,7 +26,7 @@ void Event::MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) {
 irr::scene::ISceneNode *lightSceneNode = 0;
 
 void Event::KeyPressedEvent(int keyCode) {
-	Entity *player = sing::engine->GetEntity(std::string("Player"));
+	Entity *player = sing::engine->GetEntity(3);
 	Entity *temp = NULL;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
@@ -37,7 +37,7 @@ void Event::KeyPressedEvent(int keyCode) {
 	}
 	std::shared_ptr<MotionController> playerMotionController = character->GetMotionController();
 	
-	Entity *bow = sing::engine->GetEntity("Bow");
+	Entity *bow = sing::engine->GetEntity(1);
 	static Animation bowDraw = bow->GetSceneNode()->GetAnimation("draw");
 	static Animation bowRelease = bow->GetSceneNode()->GetAnimation("release");
 	static Animation bowFull = bow->GetSceneNode()->GetAnimation("full");
@@ -101,7 +101,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		
 	case irr::KEY_LBUTTON:
 		euler = sing::engine->GetCamera()->GetEulerRotation();
-		temp = sing::engine->AddEntity("DynamicEntity", sing::engine->GetAvailableEntityName("Crate"), sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(sing::engine->GetCamera()->GetRotation(), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(sing::engine->GetCamera()->GetRotation(), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
 			temp->SetModel(sing::resourceManager->GetModel("Models/Crate01.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));
@@ -113,7 +113,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = sing::engine->AddEntity("DynamicEntity", sing::engine->GetAvailableEntityName("Ball"), sing::resourceManager->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
 			temp->SetModel(sing::resourceManager->GetModel("Models/Sphere.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));
@@ -127,7 +127,7 @@ void Event::KeyPressedEvent(int keyCode) {
 }
 
 void Event::KeyReleasedEvent(int keyCode) {
-	Entity *player = sing::engine->GetEntity(std::string("Player"));
+	Entity *player = sing::engine->GetEntity(3);
 	Character *character = NULL;
 	if(player)
 		character = dynamic_cast<Character*>(player);
@@ -151,7 +151,7 @@ void Event::KeyReleasedEvent(int keyCode) {
 }
 
 void Event::KeyHoldedEvent(int keyCode) {
-	Entity *player = sing::engine->GetEntity(std::string("Player"));
+	Entity *player = sing::engine->GetEntity(3);
 	Entity *temp;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
@@ -182,10 +182,10 @@ void Event::KeyHoldedEvent(int keyCode) {
 		}
 		ptemp = sing::engine->RayTrace(begin, end, CollisionGroupVisible | CollisionGroupSight, point, normal, {player});
 		if(ptemp) {
-			if(ptemp->GetName() != "TestMap" && ptemp->GetName() != "Box") {
+			if(ptemp->GetId() > 5) {
 				if(ptemp->GetBody())
 					ptemp->GetBody()->activate();
-				sing::engine->QueueEntityToDestroy(ptemp->GetName());
+				sing::engine->QueueEntityToDestroy(ptemp);
 			}
 		}
 		break;
@@ -230,7 +230,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 void Event::StringToEnterEvent(std::string str) {
 	fprintf(stderr, "\n Input string: \"%s\"", str.c_str());
 	
-	Entity *player = sing::engine->GetEntity(std::string("Player"));
+	Entity *player = sing::engine->GetEntity(2);
 	Entity *temp;
 	btVector3 begin, end, point, normal;
 	Character *character = NULL;
