@@ -18,10 +18,6 @@ int Engine::GetNumberOfEntities() const {
 	return entities.size();
 }
 
-Entity* Engine::GetNewEntityOfType(const std::string &name) {
-	return classFactory.GetNew(name);
-}
-
 bool Engine::RegisterType(const std::string &className, const std::string &moduleName) {
 	if((bool)classFactory.AddClass(className.c_str(), moduleName.c_str())) {
 		return true;
@@ -38,21 +34,19 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass, btVector3 inertia) {
-	Entity *emptyEntity = GetNewEntityOfType(className);
-	if(emptyEntity) {
-		uint64_t id = GetAvailableEntityId();
-		if(id != 0) {
-			emptyEntity->Spawn(id, shape, transform);
-			emptyEntity->SetMass(mass);
-			entities[id] = emptyEntity;
-			{
-				Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
-				if(trigger)
-					triggerEntities[id] = trigger;
-			}
-			return emptyEntity;
+Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
+	uint64_t id = GetAvailableEntityId();
+	if(id != 0) {
+		entities[id] = NULL;
+		Entity *emptyEntity = classFactory.GetNew(className, id, shape, transform);
+		entities[id] = emptyEntity;
+		emptyEntity->SetMass(mass);
+		{
+			Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
+			if(trigger)
+				triggerEntities[id] = trigger;
 		}
+		return emptyEntity;
 	}
 	return NULL;
 }

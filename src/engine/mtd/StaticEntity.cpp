@@ -21,8 +21,8 @@ void StaticEntity::Tick(const float deltaTime) {
 
 void StaticEntity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
 
-void StaticEntity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(id, shape, transform);
+StaticEntity::StaticEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
+	Entity(id, shape, transform) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(shape, transform);
 	
@@ -30,9 +30,6 @@ void StaticEntity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTra
 	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 	
 	SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
-}
-
-StaticEntity::StaticEntity() {
 }
 
 StaticEntity::~StaticEntity() {

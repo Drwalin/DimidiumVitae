@@ -12,13 +12,11 @@
 class DynamicEntity : public Entity {
 public:
 	
-	DynamicEntity();
+	DynamicEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual ~DynamicEntity() override;
 
 	virtual void Tick(const float deltaTime) override;
 	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
-	
-	virtual void Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(DynamicEntity);
 	

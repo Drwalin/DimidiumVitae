@@ -37,16 +37,13 @@ void Trigger::Tick(const float deltaTime) {
 	}
 }
 
-void Trigger::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
-	Entity::Spawn(id, shape, transform);
+Trigger::Trigger(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
+	Entity(id, shape, transform) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateGhostObject(shape, transform);
 	collisionObject->setCollisionFlags(collisionObject->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT);
 	
 	SetBody(collisionObject, shape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
-}
-
-Trigger::Trigger() {
 }
 
 Trigger::~Trigger() {

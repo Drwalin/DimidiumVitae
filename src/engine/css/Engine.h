@@ -45,7 +45,7 @@ public:
 	void DeleteEntity(uint64_t entityId);
 	
 	uint64_t GetAvailableEntityId() const;
-	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f, btVector3 inertia = btVector3(0,0,0));
+	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
 	Entity* GetEntity(uint64_t entityId);
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
@@ -78,13 +78,12 @@ public:
 	
 private:
 	
-	Entity* GetNewEntityOfType(const std::string &name);
 	inline void UpdateEntitiesOverlapp();
 	inline void UpdateEntities(const float deltaTime);
 	
 private:
 	
-	ClassFactory<Entity> classFactory;
+	ClassFactory<Entity, uint64_t, std::shared_ptr<CollisionShape>, btTransform> classFactory;
 	
 	World *world;
 	Window *window;

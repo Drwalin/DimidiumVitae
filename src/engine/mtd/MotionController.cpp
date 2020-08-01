@@ -11,48 +11,6 @@
 
 #include <algorithm>
 
-void MotionController::Init(Entity *characterEntity, float stepHeight) {
-	if(characterEntity) {
-		if(characterEntity->GetCollisionShape()) {
-			crouchingScale = 0.6f;
-			this->stepHeight = stepHeight;
-			this->character = characterEntity;
-			
-			btVector3 aabbMin, aabbMax;
-			character->GetBtCollisionShape()->getAabb(btTransform(btQuaternion(btVector3(0,1,0),0),btVector3(0,0,0)), aabbMin, aabbMax);
-			characterStandingHeight = aabbMax.y() - aabbMin.y();
-			characterCrouchingHeight = characterStandingHeight *crouchingScale;
-			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
-			
-			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
-					sing::engine->AddEntity("MotionControllerTrigger",
-					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
-					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
-			triggerLow = dynamic_cast<MotionControllerTrigger*>(
-					sing::engine->AddEntity("MotionControllerTrigger",
-					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
-					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
-			triggerHigh->Init(characterEntity, triggerLow, stepHeight);
-			triggerLow->Init(characterEntity, triggerHigh, stepHeight);
-			
-			jumpCooldownLimit = 0.03f;
-			jumpCooldown = jumpCooldownLimit;
-			
-			float centerHeightsDifference = (characterStandingHeight - characterCrouchingHeight) *0.5f;
-			triggerLowOffsetCrouching = btVector3(0,0,0);
-			triggerLowOffsetStanding = btVector3(0,-centerHeightsDifference,0);
-			triggerHighOffsetCrouching = btVector3(0,centerHeightsDifference,0);
-			triggerHighOffsetStanding = btVector3(0,0,0);
-			
-			crouchingState = MotionController::CrouchingState::STANDING;
-		}
-		else
-			MESSAGE("NULL btCollisionShape");
-	}
-	else
-		MESSAGE("NULL Entity passed as argument");
-}
-
 void MotionController::UpdateSpeed(const float deltaTime) {
 	btRigidBody *rigidBody = character->GetBody<btRigidBody>();
 	if(rigidBody && GetCurrentSpeed() > 0.0f) {
@@ -229,9 +187,48 @@ void MotionController::StopRunning() {
 	RemoveState(State::RUNNING);
 }
 
-MotionController::MotionController() {
+MotionController::MotionController(Entity *characterEntity, float stepHeight) {
 	character = NULL;
 	triggerLow = NULL;
+	if(characterEntity) {
+		if(characterEntity->GetCollisionShape()) {
+			crouchingScale = 0.6f;
+			this->stepHeight = stepHeight;
+			this->character = characterEntity;
+			
+			btVector3 aabbMin, aabbMax;
+			character->GetBtCollisionShape()->getAabb(btTransform(btQuaternion(btVector3(0,1,0),0),btVector3(0,0,0)), aabbMin, aabbMax);
+			characterStandingHeight = aabbMax.y() - aabbMin.y();
+			characterCrouchingHeight = characterStandingHeight *crouchingScale;
+			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
+			
+			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
+					sing::engine->AddEntity("MotionControllerTrigger",
+					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
+					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
+			triggerLow = dynamic_cast<MotionControllerTrigger*>(
+					sing::engine->AddEntity("MotionControllerTrigger",
+					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
+					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
+			triggerHigh->Init(characterEntity, triggerLow, stepHeight);
+			triggerLow->Init(characterEntity, triggerHigh, stepHeight);
+			
+			jumpCooldownLimit = 0.03f;
+			jumpCooldown = jumpCooldownLimit;
+			
+			float centerHeightsDifference = (characterStandingHeight - characterCrouchingHeight) *0.5f;
+			triggerLowOffsetCrouching = btVector3(0,0,0);
+			triggerLowOffsetStanding = btVector3(0,-centerHeightsDifference,0);
+			triggerHighOffsetCrouching = btVector3(0,centerHeightsDifference,0);
+			triggerHighOffsetStanding = btVector3(0,0,0);
+			
+			crouchingState = MotionController::CrouchingState::STANDING;
+		}
+		else
+			MESSAGE("NULL btCollisionShape");
+	}
+	else
+		MESSAGE("NULL Entity passed as argument");
 }
 
 MotionController::~MotionController() {

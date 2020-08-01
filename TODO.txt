@@ -21,12 +21,12 @@ TO DO:
 		- update Dependencies.txt for linux
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
+	Correct MotionController jump height
 	Make instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
-	Use Semantic Versioning (https://semver.org/) consistently
 	Character should be based on DynamicEntity
+	Use Semantic Versioning (https://semver.org/) consistently
 	Creating Entities from JSON
-	All constructing/spawning Entities in constructor
 	
 
 TO DO (to think/code restructuring):
@@ -69,6 +69,7 @@ Done:
 	Make WAVLoadFromFile to use sing::fileSystem
 	Replace (std::string)Entity::name by (uint64_t)Entity::id
 	All destroying Entities in destructor
+	All constructing/spawning Entities in constructor
 	
 
 TO DO in future:

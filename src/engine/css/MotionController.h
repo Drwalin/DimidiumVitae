@@ -36,10 +36,8 @@ public:
 		STANDING_UP
 	};
 	
-	MotionController();
+	MotionController(Entity *characterEntity, float stepHeight = 0.3f);
 	~MotionController();
-	
-	void Init(Entity *characterEntity, float stepHeight = 0.3f);
 	
 	float GetCurrentSpeed();
 	float GetJumpVelocity();

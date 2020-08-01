@@ -24,14 +24,12 @@ class Engine;
 class Trigger : public Entity {
 public:
 	
-	Trigger();
+	Trigger(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual ~Trigger() override;
 	
 	virtual void NextOverlappingFrame();
 	
 	virtual void Tick(const float deltaTime) override;
-	
-	virtual void Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(Trigger);
 	

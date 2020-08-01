@@ -165,19 +165,13 @@ void Entity::DestroyBody() {
 	collisionShape = NULL;
 }
 
-void Entity::Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+Entity::Entity(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	mass = 0.0f;
 	collisionShape = shape;
 	this->id = id;
 	scale = btVector3(1,1,1);
 	currentTransform = transform;
-}
-
-Entity::Entity() {
 	body = NULL;
-	mass = 1.0f;
-	id = 0;
-	scale = btVector3(1,1,1);
 	collisionGroup = 0;
 	collisionMask = 0;
 }

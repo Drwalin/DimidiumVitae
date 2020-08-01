@@ -26,7 +26,7 @@ struct SimulationContactResultCallback : public btCollisionWorld::ContactResultC
 class MotionControllerTrigger : public Trigger {
 public:
 	
-	MotionControllerTrigger();
+	MotionControllerTrigger(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
 	virtual ~MotionControllerTrigger() override;
 	
 	bool IsTopCollision() const;
@@ -38,8 +38,6 @@ public:
 	void Init(Entity *character, Entity *otherTrigger, float stepHeight);
 	
 	virtual void Tick(const float deltaTime) override;
-	
-	virtual void Spawn(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(MotionControllerTrigger);
 	

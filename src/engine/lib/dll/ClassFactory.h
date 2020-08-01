@@ -18,11 +18,11 @@ public:
 	ClassFactory(const std::string &constructorFunctionNamePattern) : pattern(constructorFunctionNamePattern) {}
 	~ClassFactory() {}
 	
-	T* GetNew(const std::string &className) {
+	T* GetNew(const std::string &className, Args... args) {
 		auto it = constructors.find(className);
 		if(it == constructors.end())
 			return NULL;
-		return it->second();
+		return it->second(args...);
 	}
 	
 	ClassFactoryConstructorType GetConstructor(const char *className) {
