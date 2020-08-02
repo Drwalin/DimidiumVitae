@@ -24,7 +24,7 @@ class Engine;
 class Trigger : public Entity {
 public:
 	
-	Trigger(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	Trigger(JSON json);
 	virtual ~Trigger() override;
 	
 	virtual void NextOverlappingFrame();

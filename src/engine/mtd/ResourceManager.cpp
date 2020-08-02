@@ -51,40 +51,58 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::st
 std::shared_ptr<CollisionShape> ResourceManager::GetSphere(float radius) {
 	JSON json;
 	json.InitObject();
-	json["type"] = "sphere";
-	json["transform"] <<= Math::EmptyTransform;
-	json["radius"] = radius;
+	json["primitives"].InitArray();
+	json["primitives"].Resize(1);
+	json["primitives"][0].InitObject();
+	json["primitives"][0]["type"] = "sphere";
+	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
+	json["primitives"][0]["radius"] = radius;
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
 std::shared_ptr<CollisionShape> ResourceManager::GetBox(const btVector3 &size) {
 	JSON json;
 	json.InitObject();
-	json["type"] = "box";
-	json["transform"] <<= Math::EmptyTransform;
-	json["size"] <<= size;
+	json["primitives"].InitArray();
+	json["primitives"].Resize(1);
+	json["primitives"][0].InitObject();
+	json["primitives"][0]["type"] = "box";
+	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
+	json["primitives"][0]["size"] <<= size;
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
 std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius, float height) {
 	JSON json;
 	json.InitObject();
-	json["type"] = "capsule";
-	json["transform"] <<= Math::EmptyTransform;
-	json["radius"] = radius;
-	json["height"] = height;
+	json["primitives"].InitArray();
+	json["primitives"].Resize(1);
+	json["primitives"][0].InitObject();
+	json["primitives"][0]["type"] = "capsule";
+	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
+	json["primitives"][0]["radius"] = radius;
+	json["primitives"][0]["height"] = height;
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
 std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float height) {
 	JSON json;
 	json.InitObject();
-	json["type"] = "cylinder";
-	json["transform"] <<= Math::EmptyTransform;
-	json["radius"] = radius;
-	json["height"] = height;
+	json["primitives"].InitArray();
+	json["primitives"].Resize(1);
+	json["primitives"][0].InitObject();
+	json["primitives"][0]["type"] = "cylinder";
+	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
+	json["primitives"][0]["radius"] = radius;
+	json["primitives"][0]["height"] = height;
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(JSON json) {
+	if(json.HasKey("name"))
+		return GetCollisionShape(json["name"]);
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
+};
 
 void ResourceManager::ResourceFreeingCycle(int iterations) {
 	std::vector<std::string> toRemove;
@@ -148,13 +166,13 @@ Resource* ResourceManager::LoadResource(const std::string &name) {
 		}
 		return resource;
 	} catch(std::string e) {
-		MESSAGE("\n Excepion while creating Collision shape:" + e);
+		MESSAGE("\n Excepion while loading Resource:" + e + " for file: " + name);
 	} catch(std::exception e) {
-		MESSAGE("\n Excepion while creating Collision shape:" + std::string(e.what()));
+		MESSAGE("\n Excepion while loading Resource:" + std::string(e.what()) + " for file: " + name);
 	} catch(char *e) {
-		MESSAGE("\n Excepion while creating Collision shape:" + std::string(e));
+		MESSAGE("\n Excepion while loading Resource:" + std::string(e) + " for file: " + name);
 	} catch(...) {
-		MESSAGE("\n Unknown exception while creating Collision shape");
+		MESSAGE("\n Unknown exception while loading Resource for file: " + name);
 	}
 	if(resource)
 		delete resource;

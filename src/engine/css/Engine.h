@@ -45,6 +45,8 @@ public:
 	void DeleteEntity(uint64_t entityId);
 	
 	uint64_t GetAvailableEntityId() const;
+	Entity* AddEntity(JSON json);
+	Entity* AddEntity(const std::string className, uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
 	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
 	Entity* GetEntity(uint64_t entityId);
 	
@@ -83,7 +85,7 @@ private:
 	
 private:
 	
-	ClassFactory<Entity, uint64_t, std::shared_ptr<CollisionShape>, btTransform> classFactory;
+	ClassFactory<Entity, JSON> classFactory;
 	
 	World *world;
 	Window *window;

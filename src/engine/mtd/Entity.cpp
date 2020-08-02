@@ -142,7 +142,7 @@ void Entity::SetBody(btCollisionObject* body, std::shared_ptr<CollisionShape> sh
 void Entity::DestroyBody() {
 	if(body) {
 		btCollisionShape *_btCollisionShape = body->getCollisionShape();
-		sing::world->RemoveBody(GetBody());
+		sing::world->RemoveBody(body);
 		
 		btRigidBody *rigidBody = GetBody<btRigidBody>();
 		if(rigidBody) {
@@ -153,7 +153,6 @@ void Entity::DestroyBody() {
 			}
 		}
 		
-		body->setCollisionShape(NULL);
 		delete body;
 		body = NULL;
 		
@@ -165,12 +164,13 @@ void Entity::DestroyBody() {
 	collisionShape = NULL;
 }
 
-Entity::Entity(size_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) {
+Entity::Entity(JSON json) {
 	mass = 0.0f;
-	collisionShape = shape;
-	this->id = id;
+	if(json.HasKey("shape"))
+		collisionShape = sing::resourceManager->GetCollisionShape(json["shape"]);
+	this->id = json["id"];
 	scale = btVector3(1,1,1);
-	currentTransform = transform;
+	currentTransform <<= json["transform"];
 	body = NULL;
 	collisionGroup = 0;
 	collisionMask = 0;

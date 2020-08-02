@@ -84,8 +84,8 @@ void MotionControllerTrigger::Tick(const float deltaTime) {
 	Trigger::Tick(deltaTime);
 }
 
-MotionControllerTrigger::MotionControllerTrigger(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
-	Trigger(id, shape, transform) {
+MotionControllerTrigger::MotionControllerTrigger(JSON json) :
+	Trigger(json) {
 }
 
 MotionControllerTrigger::~MotionControllerTrigger() {

@@ -35,6 +35,8 @@ public:
 	std::shared_ptr<CollisionShape> GetCapsule(float radius, float height);
 	std::shared_ptr<CollisionShape> GetCylinder(float radius, float height);
 	
+	std::shared_ptr<CollisionShape> GetCollisionShape(JSON json);
+	
 	void ResourceFreeingCycle(int iterations = 16);
 	void FreeAllUnused();
 	

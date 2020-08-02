@@ -10,7 +10,7 @@
 class Player : public Character  {
 public:
 	
-	Player(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	Player(JSON json);
 	virtual ~Player() override;
 	
 	virtual void Tick(const float deltaTime) override;

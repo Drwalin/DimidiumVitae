@@ -98,31 +98,6 @@ void Event::KeyPressedEvent(int keyCode) {
 	case irr::KEY_LMENU:
 		playerMotionController->StartSneaking();
 		break;
-		
-	case irr::KEY_LBUTTON:
-		euler = sing::engine->GetCamera()->GetEulerRotation();
-		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(sing::engine->GetCamera()->GetRotation(), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
-		if(temp) {
-			temp->SetModel(sing::resourceManager->GetModel("Models/Crate01.obj"));
-			temp->SetScale(btVector3(0.5, 0.5, 0.5));
-			temp->GetBody()->setFriction(0.75);
-			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);
-			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
-		} else
-			MESSAGE("Couldn't spawn new object");
-		break;
-		
-	case irr::KEY_RBUTTON:
-		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
-		if(temp) {
-			temp->SetModel(sing::resourceManager->GetModel("Models/Sphere.obj"));
-			temp->SetScale(btVector3(0.5, 0.5, 0.5));
-			temp->GetBody()->setFriction(0.75);
-			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);
-			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
-		} else
-			MESSAGE("Couldn't spawn new object");
-		break;
 	}
 }
 
@@ -223,6 +198,31 @@ void Event::KeyHoldedEvent(int keyCode) {
 	case irr::KEY_KEY_D:
 		if(character && playerMotionController)
 			playerMotionController->MoveInDirection(-sing::engine->GetCamera()->GetFlatLeftVector());
+		break;
+		
+	case irr::KEY_LBUTTON:
+		euler = sing::engine->GetCamera()->GetEulerRotation();
+		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(sing::engine->GetCamera()->GetRotation(), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+		if(temp) {
+			temp->SetModel(sing::resourceManager->GetModel("Models/Crate01.obj"));
+			temp->SetScale(btVector3(0.5, 0.5, 0.5));
+			temp->GetBody()->setFriction(0.75);
+			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);
+			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
+		} else
+			MESSAGE("Couldn't spawn new object");
+		break;
+		
+	case irr::KEY_RBUTTON:
+		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+		if(temp) {
+			temp->SetModel(sing::resourceManager->GetModel("Models/Sphere.obj"));
+			temp->SetScale(btVector3(0.5, 0.5, 0.5));
+			temp->GetBody()->setFriction(0.75);
+			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);
+			temp->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
+		} else
+			MESSAGE("Couldn't spawn new object");
 		break;
 	}
 }

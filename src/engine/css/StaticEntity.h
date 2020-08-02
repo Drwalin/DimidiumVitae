@@ -10,7 +10,7 @@
 class StaticEntity : public Entity {
 public:
 	
-	StaticEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	StaticEntity(JSON json);
 	virtual ~StaticEntity() override;
 	
 	virtual void Tick(const float deltaTime) override;

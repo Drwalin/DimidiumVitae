@@ -21,15 +21,15 @@ void StaticEntity::Tick(const float deltaTime) {
 
 void StaticEntity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
 
-StaticEntity::StaticEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
-	Entity(id, shape, transform) {
+StaticEntity::StaticEntity(JSON json) :
+	Entity(json) {
 	
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(shape, transform);
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(collisionShape, currentTransform);
 	
 	collisionObject->setFriction(0.75);
 	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 	
-	SetBody(collisionObject, shape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
+	SetBody(collisionObject, collisionShape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
 }
 
 StaticEntity::~StaticEntity() {

@@ -38,15 +38,15 @@ void DynamicEntity::ApplyDamage(const float damage, btVector3 point, btVector3 n
 	Entity::ApplyDamage(damage, point, normal);
 }
 
-DynamicEntity::DynamicEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
-	Entity(id, shape, transform) {
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 1.0f);
+DynamicEntity::DynamicEntity(JSON json) :
+	Entity(json) {
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, 1.0f);
 	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);
 	
 	rigidBody->setDamping(0.2, 0.2);
 	rigidBody->setFriction(0.75);
 	
-	SetBody(collisionObject, shape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
+	SetBody(collisionObject, collisionShape, CollisionDefaultGroupDynamic, CollisionDefaultMaskDynamic);
 	
 	hitSoundSource = new SoundSource(sing::resourceManager->GetSound("./media/Sounds/wood1.wav"));
 }

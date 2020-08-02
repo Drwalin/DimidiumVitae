@@ -17,8 +17,8 @@ void Player::Tick(const float deltaTime) {
 	Character::Tick(deltaTime);
 }
 
-Player::Player(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
-	Character(id, shape, transform) {
+Player::Player(JSON json) :
+	Character(json) {
 }
 
 Player::~Player() {

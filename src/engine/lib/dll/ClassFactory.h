@@ -18,6 +18,11 @@ public:
 	ClassFactory(const std::string &constructorFunctionNamePattern) : pattern(constructorFunctionNamePattern) {}
 	~ClassFactory() {}
 	
+	bool HasClass(const std::string &className) const {
+		auto it = constructors.find(className);
+		return it!=constructors.end();
+	}
+	
 	T* GetNew(const std::string &className, Args... args) {
 		auto it = constructors.find(className);
 		if(it == constructors.end())

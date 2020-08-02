@@ -51,10 +51,10 @@ void Character::ApplyDamage(const float damage, btVector3 point, btVector3 norma
 	Entity::ApplyDamage(damage, point, normal);
 }
 
-Character::Character(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform) :
-	Entity(id, shape, transform), height(1.75) {
+Character::Character(JSON json) :
+	Entity(json), height(1.75) {
 	
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(shape, transform, 15.0f, btVector3(0,0,0));
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, 15.0f, btVector3(0,0,0));
 	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);
 	
 	rigidBody->setFriction(0.2);
@@ -62,7 +62,7 @@ Character::Character(uint64_t id, std::shared_ptr<CollisionShape> shape, btTrans
 	rigidBody->setActivationState(DISABLE_DEACTIVATION);
 	rigidBody->setDamping(0.1, 0.1);
 	
-	SetBody(collisionObject, shape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
+	SetBody(collisionObject, collisionShape, CollisionDefaultGroupCharacter, CollisionDefaultMaskCharacter);
 	
 	motionController = new MotionController(this, 0.3f);
 }

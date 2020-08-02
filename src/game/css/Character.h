@@ -18,7 +18,7 @@
 class Character : public Entity  {
 public:
 	
-	Character(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	Character(JSON json);
 	virtual ~Character() override;
 	
 	MotionController* GetMotionController();

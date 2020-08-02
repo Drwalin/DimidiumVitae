@@ -12,7 +12,7 @@
 class DynamicEntity : public Entity {
 public:
 	
-	DynamicEntity(uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform);
+	DynamicEntity(JSON json);
 	virtual ~DynamicEntity() override;
 
 	virtual void Tick(const float deltaTime) override;

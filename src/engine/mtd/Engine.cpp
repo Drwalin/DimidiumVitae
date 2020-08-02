@@ -34,21 +34,51 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
-	uint64_t id = GetAvailableEntityId();
-	if(id != 0) {
-		entities[id] = NULL;
-		Entity *emptyEntity = classFactory.GetNew(className, id, shape, transform);
-		entities[id] = emptyEntity;
-		emptyEntity->SetMass(mass);
-		{
-			Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
-			if(trigger)
-				triggerEntities[id] = trigger;
-		}
-		return emptyEntity;
+Entity* Engine::AddEntity(JSON json) {
+	if(!json.IsObject())
+		return NULL;
+	
+	if(!classFactory.HasClass(json["class"]))
+		return NULL;
+	
+	uint64_t id = 0;
+	if(json.HasKey("id"))
+		id = json["id"];
+	
+	if(id == 0)
+		id = GetAvailableEntityId();
+	
+	entities[id] = NULL;
+	Entity *emptyEntity = classFactory.GetNew(json["class"], json);
+	entities[id] = emptyEntity;
+	if(json.HasKey("mass"))
+		emptyEntity->SetMass(json["mass"]);
+	else
+		emptyEntity->SetMass(0.0f);
+	
+	Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
+	if(trigger)
+		triggerEntities[id] = trigger;
+	
+	return emptyEntity;
+}
+
+Entity* Engine::AddEntity(const std::string className, uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
+	JSON json;
+	json.InitObject();
+	json["class"] = className;
+	if(shape) {
+		json["shape"].InitObject();
+		shape->GetJSON(json["shape"]);
 	}
-	return NULL;
+	json["mass"] = mass;
+	json["id"] = id;
+	json["transform"] <<= transform;
+	return AddEntity(json);
+}
+
+Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
+	return AddEntity(className, GetAvailableEntityId(), shape, transform, mass);
 }
 
 inline void Engine::UpdateEntitiesOverlapp() {

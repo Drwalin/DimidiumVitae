@@ -13,8 +13,12 @@
 CollisionShape::CollisionShape(const JSON json) :
 	Resource("") {
 	try {
-		primitives.resize(1);
-		primitives.back().MakeFromJSON(json);
+		primitives.resize(json["primitives"].Size());
+		int i = 0;
+		for(auto it : json["primitives"]) {
+			primitives[i].MakeFromJSON(it.Value());
+			++i;
+		}
 		return;
 	} catch(std::string e) {
 		MESSAGE("\n Excepion while creating Collision shape: " + e + " ; for JSON: " + json.Write());
@@ -23,7 +27,7 @@ CollisionShape::CollisionShape(const JSON json) :
 	} catch(char *e) {
 		MESSAGE("\n Excepion while creating Collision shape: " + std::string(e) + " ; for JSON: " + json.Write());
 	} catch(...) {
-		MESSAGE("\n Unknown exception while creating Collision shape");
+		MESSAGE(std::string("\n Unknown exception while creating Collision shape") + " ; for JSON: " + json.Write());
 	}
 	primitives.clear();
 }

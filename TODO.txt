@@ -25,8 +25,9 @@ TO DO:
 	Make instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
 	Character should be based on DynamicEntity
+	Add initializer list constructor for JSON
+	Add ResourceManager:GetResource(JSON)
 	Use Semantic Versioning (https://semver.org/) consistently
-	Creating Entities from JSON
 	
 
 TO DO (to think/code restructuring):
@@ -70,6 +71,7 @@ Done:
 	Replace (std::string)Entity::name by (uint64_t)Entity::id
 	All destroying Entities in destructor
 	All constructing/spawning Entities in constructor
+	Creating Entities from JSON
 	
 
 TO DO in future:
@@ -93,6 +95,7 @@ Bugs:
 	When entering low-roofed place with very short crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything) (in v0.3.1a)
 	Sometimes undefined coordinates while starting game (randomly) (didn't met since v0.4.1)
+	When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
 	
 
 Removed bugs:
@@ -105,6 +108,7 @@ Removed bugs:
 
 To test:
 	Overall test
+	Add many Entities per second and destroy them to find out any memory leaks (valgrind) and memory usage
 	
 
 Done tests:

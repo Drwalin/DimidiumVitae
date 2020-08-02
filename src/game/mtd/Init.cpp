@@ -39,7 +39,7 @@ extern "C" int Init(int argc, char ** argv) {
 	musicSource.Play();
 	*/
 	
-	{
+	try {
 		// create animated bow
 		Entity *animatedBow = sing::engine->AddEntity("DynamicEntity", sing::engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
 		animatedBow->SetModel(sing::resourceManager->GetModel("Models/Bow02.x"));
@@ -62,7 +62,6 @@ extern "C" int Init(int argc, char ** argv) {
 		Entity *player = sing::engine->AddEntity("Player", sing::resourceManager->GetCylinder(0.3f, 1.75f), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14)), 75.0);
 		sing::engine->AttachCameraToEntity(player->GetId(), btVector3(0, 0.7f, 0));
 		player->SetCamera(sing::engine->GetCamera());
-		std::cerr << "\n player id: " << player->GetId();
 		
 		// create map
 		float mapGridScale = 0.3f;
@@ -85,6 +84,14 @@ extern "C" int Init(int argc, char ** argv) {
 				}
 			}
 		}
+	} catch(std::string e) {
+		MESSAGE("\n Excepion while creating map: " + e);
+	} catch(std::exception e) {
+		MESSAGE("\n Excepion while creating map: " + std::string(e.what()));
+	} catch(char *e) {
+		MESSAGE("\n Excepion while creating map: " + std::string(e));
+	} catch(...) {
+		MESSAGE("\n Unknown exception while creating map");
 	}
 	
 	sing::window->StartMenu<MainMenu>();
