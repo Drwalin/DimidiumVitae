@@ -16,12 +16,13 @@
 class Material : public Resource {
 public:
 	
-	Material(const std::string &name);
+	Material(JSON json);
 	~Material();
 	
 	static void SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode);
 	
 	virtual Resource::ResourceType GetResourceType() const override;
+	virtual void GetJSON(JSON json) const override;
 	
 private:
 	

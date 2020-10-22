@@ -6,6 +6,7 @@
 #define RESOURCE_CPP
 
 #include "../css/Resource.h"
+#include "../css/Singleton.h"
 
 #include <ctime>
 
@@ -16,8 +17,39 @@ const std::string& Resource::GetName() const {
 	return name;
 }
 
-Resource::Resource(const std::string &name) :
-	name(name) {
+Resource::Resource(JSON json) :
+	name(json.HasKey("name") ? json["name"].GetString() : "") {
+}
+
+void Resource::GetJSON(JSON json) const {
+	json.InitObject();
+	json["name"] = name;
+}
+
+const std::string& Resource::GetResourceTypeString(ResourceType type) {
+	const static std::string sound("Sound");
+	const static std::string model("Model");
+	const static std::string texture("Texture");
+	const static std::string material("Material");
+	const static std::string collisionShape("CollisionShape");
+	switch(type) {
+		case SOUND: return sound;
+		case MODEL: return model;
+		case TEXTURE: return texture;
+		case MATERIAL: return material;
+		case COLLISIONSHAPE: return collisionShape;
+	}
+	const static std::string none;
+	return none;
+}
+
+Resource::ResourceType Resource::GetResourceType(const std::string &type) {
+	if(type == "Sound") return SOUND;
+	if(type == "Model") return MODEL;
+	if(type == "Texture") return TEXTURE;
+	if(type == "Material") return MATERIAL;
+	if(type == "CollisionShape") return COLLISIONSHAPE;
+	return NONE;
 }
 
 #endif

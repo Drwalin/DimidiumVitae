@@ -6,6 +6,7 @@
 #define SOUND_CPP
 
 #include "../css/Sound.h"
+#include "../css/Singleton.h"
 
 #include "../lib/StdUtil.hpp"
 #include "../lib/Debug.h"
@@ -101,24 +102,28 @@ Sound::operator bool() const {
 	return bufferID;
 }
 
-void Sound::Destroy() {
+Sound::Sound(JSON json) :
+	Resource(json), bufferID(0) {
+	LoadFromFile(json["name"].GetString());
+}
+
+Sound::~Sound() {
 	if(bufferID) {
 		alDeleteBuffers(1, &bufferID);
 		bufferID = 0;
 	}
 }
 
-Sound::Sound(const std::string &name) :
-	Resource(name), bufferID(0) {
-	LoadFromFile(name);
-}
-
-Sound::~Sound() {
-	Destroy();
-}
-
 Resource::ResourceType Sound::GetResourceType() const {
 	return Resource::SOUND;
+}
+
+void Sound::GetJSON(JSON json) const {
+	json.InitObject();
+	if(name != "") {
+		json["class"] = "Sound";
+		json["name"] = name;
+	}
 }
 
 #endif

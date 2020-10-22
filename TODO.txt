@@ -26,7 +26,6 @@ TO DO:
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
 	Character should be based on DynamicEntity
 	Add initializer list constructor for JSON
-	Add ResourceManager:GetResource(JSON)
 	Use Semantic Versioning (https://semver.org/) consistently
 	
 
@@ -72,6 +71,7 @@ Done:
 	All destroying Entities in destructor
 	All constructing/spawning Entities in constructor
 	Creating Entities from JSON
+	Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON) (remove other constructors), Resource::Resource(JSON)
 	
 
 TO DO in future:

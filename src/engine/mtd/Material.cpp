@@ -15,9 +15,10 @@
 
 #include "../css/Material.h"
 #include "../css/Engine.h"
+#include "../css/Singleton.h"
 
-Material::Material(const std::string &name) :
-	Resource(name) {
+Material::Material(JSON json) :
+	Resource(json) {
 	IFile file = sing::fileSystem->ReadFile(name);
 	if(file && file.good() && !file.eof()) {
 		std::string line;
@@ -78,6 +79,14 @@ Material::~Material() {
 
 Resource::ResourceType Material::GetResourceType() const {
 	return Resource::MATERIAL;
+}
+
+void Material::GetJSON(JSON json) const {
+	json.InitObject();
+	if(name != "") {
+		json["class"] = "Material";
+		json["name"] = name;
+	}
 }
 
 #endif

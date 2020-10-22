@@ -8,10 +8,14 @@
 #include <memory>
 #include <string>
 
+#include "JSON.h"
+#include "FileSystem.h"
+
 class Resource {
 public:
 	
 	enum ResourceType {
+		NONE,
 		SOUND,
 		MODEL,
 		TEXTURE,
@@ -24,9 +28,14 @@ public:
 	const std::string& GetName() const;
 	virtual ResourceType GetResourceType() const =0;
 	
+	virtual void GetJSON(JSON json) const;
+	
+	static const std::string& GetResourceTypeString(ResourceType type);
+	static ResourceType GetResourceType(const std::string &type);
+	
 protected:
 	
-	Resource(const std::string &name);
+	Resource(JSON json);
 	
 protected:
 	
