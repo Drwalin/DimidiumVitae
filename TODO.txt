@@ -1,12 +1,6 @@
 
 
 TO DO:
-	Multiplayer:
-		- divide code sections: server side and client side
-		- internet connection:
-			TCP - initialization, events, lossless informations
-			UDP - streaming entities transofrmation, movement and animation informations in realtime
-	Add TryBox and TryCylinder to ObjToShapeConverter
 	Rewrite MotionController
 	Optimise setting transformation to ISceneNode in SceneNode code
 	Optimise loading and creating Entities
@@ -21,11 +15,11 @@ TO DO:
 		- update Dependencies.txt for linux
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
-	Correct MotionController jump height
+	Correct MotionController varying jump height
 	Make instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
-	Character should be based on DynamicEntity
 	Add initializer list constructor for JSON
+	Add bool Entity::EverNeedTick() const
 	Use Semantic Versioning (https://semver.org/) consistently
 	
 
@@ -72,6 +66,7 @@ Done:
 	All constructing/spawning Entities in constructor
 	Creating Entities from JSON
 	Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON) (remove other constructors), Resource::Resource(JSON)
+	Character should be based on DynamicEntity
 	
 
 TO DO in future:
@@ -89,6 +84,12 @@ TO DO in future:
 	Limit number of active OpenAL sound sources (choose closest and loudest sources - eg. order and enable by distance/volume)
 	Make Ogg to use sing::fileSystem
 	Video player (maybe from *.png image sequence and *.ogg sound file)
+	Multiplayer:
+		- divide code sections: server side and client side
+		- internet connection:
+			TCP - initialization, events, lossless informations
+			UDP - streaming entities transofrmation, movement and animation informations in realtime
+	Add TryBox and TryCylinder to ObjToShapeConverter
 	
 
 Bugs:
@@ -96,6 +97,7 @@ Bugs:
 	Executable once locked whole system (needed to cut power to do anything) (in v0.3.1a)
 	Sometimes undefined coordinates while starting game (randomly) (didn't met since v0.4.1)
 	When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
+	When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to return to game, instantly Event spawns multiple boxes/spheres (atleast since v0.5.0-k)
 	
 
 Removed bugs:

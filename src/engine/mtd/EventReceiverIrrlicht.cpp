@@ -25,7 +25,7 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 	eventQueue.resize(eventQueue.size() + 1);
 	eventQueue.back() = event;
 	queueMutex.unlock();
-	if(event.EventType == irr:: EET_LOG_TEXT_EVENT)
+	if(event.EventType == irr::EET_LOG_TEXT_EVENT)
 		return true;
 	return false;
 }
