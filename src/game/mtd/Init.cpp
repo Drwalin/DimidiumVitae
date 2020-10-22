@@ -61,7 +61,6 @@ extern "C" int Init(int argc, char ** argv) {
 		// create player
 		Entity *player = sing::engine->AddEntity("Player", sing::resourceManager->GetCylinder(0.3f, 1.75f), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(-34,25,14)), 75.0);
 		sing::engine->AttachCameraToEntity(player->GetId(), btVector3(0, 0.7f, 0));
-		player->SetCamera(sing::engine->GetCamera());
 		
 		// create map
 		float mapGridScale = 0.3f;

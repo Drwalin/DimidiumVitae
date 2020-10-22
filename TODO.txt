@@ -66,7 +66,8 @@ Done:
 	All constructing/spawning Entities in constructor
 	Creating Entities from JSON
 	Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON) (remove other constructors), Resource::Resource(JSON)
-	Character should be based on DynamicEntity
+	Character is based on DynamicEntity
+	Remove Entity::camera
 	
 
 TO DO in future:

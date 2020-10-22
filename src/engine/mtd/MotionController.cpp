@@ -48,13 +48,13 @@ void MotionController::UpdateTriggersTransform() {
 	if(IsCrouching()) {
 		triggerLow->SetLocation(characterOrigin + triggerLowOffsetCrouching);
 		triggerHigh->SetLocation(characterOrigin + triggerHighOffsetCrouching);
-		if(character->GetCamera())
-			character->GetCamera()->SetRelativePosition(btVector3(0, characterCrouchingHeight *0.5f - 0.1f, 0));
+		if(sing::engine->GetCameraParent() == character)
+			sing::engine->GetCamera()->SetRelativePosition(btVector3(0, characterCrouchingHeight *0.5f - 0.1f, 0));
 	} else {
 		triggerLow->SetLocation(characterOrigin + triggerLowOffsetStanding);
 		triggerHigh->SetLocation(characterOrigin + triggerHighOffsetStanding);
-		if(character->GetCamera())
-			character->GetCamera()->SetRelativePosition(btVector3(0, characterStandingHeight *0.5f - 0.1f, 0));
+		if(sing::engine->GetCameraParent() == character)
+			sing::engine->GetCamera()->SetRelativePosition(btVector3(0, characterStandingHeight *0.5f - 0.1f, 0));
 	}
 }
 
