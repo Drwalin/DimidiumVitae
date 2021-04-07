@@ -21,6 +21,9 @@ TO DO:
 	Add initializer list constructor for JSON
 	Add bool Entity::EverNeedTick() const
 	Use Semantic Versioning (https://semver.org/) consistently
+	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
+	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
+	
 	
 
 TO DO (to think/code restructuring):
