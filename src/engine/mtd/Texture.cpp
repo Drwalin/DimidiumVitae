@@ -5,11 +5,13 @@
 #ifndef TEXTURE_CPP
 #define TEXTURE_CPP
 
+#include "../css/Singleton.h"
+
 #include <Texture.h>
 #include <Engine.h>
 
-Texture::Texture(const std::string &name) :
-	Resource(name) {
+Texture::Texture(JSON json) :
+	Resource(json) {
 	texture = sing::videoDriver->getTexture(name.c_str());
 }
 
@@ -32,6 +34,14 @@ Texture::operator bool() const  {
 
 Resource::ResourceType Texture::GetResourceType() const {
 	return Resource::TEXTURE;
+}
+
+void Texture::GetJSON(JSON json) const {
+	json.InitObject();
+	if(name != "") {
+		json["class"] = "Texture";
+		json["name"] = name;
+	}
 }
 
 #endif

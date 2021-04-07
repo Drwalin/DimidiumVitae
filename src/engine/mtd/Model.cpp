@@ -7,6 +7,7 @@
 
 #include "../css/Model.h"
 #include "../css/Engine.h"
+#include "../css/Singleton.h"
 
 #include "../lib/StdUtil.hpp"
 #include "../lib/StlStreamExtension.h"
@@ -29,8 +30,6 @@ Animation Model::GetAnimation(const std::string &animationName) const {
 }
 
 void Model::LoadMesh(const std::string &fileName) {
-	Destroy();
-	
 	mesh = sing::sceneManager->getMesh(fileName.c_str());
 	if(mesh == NULL)
 		throw (int)2;
@@ -55,25 +54,16 @@ void Model::LoadAnimations(const std::string &animationsFileName) {
 	}
 }
 
-void Model::Destroy() {
-	animations.clear();
-	if(mesh)
-		sing::sceneManager->getMeshCache()->removeMesh(mesh);
-	mesh = NULL;
-}
-
-Model::Model(const std::string &name) :
-	Resource(name) {
-	LoadMesh(name);
-}
-
 Model::Model(JSON json) :
-	Resource(json["name"]) {
+	Resource(json) {
 	LoadMesh(name);
 }
 
 Model::~Model() {
-	Destroy();
+	animations.clear();
+	if(mesh)
+		sing::sceneManager->getMeshCache()->removeMesh(mesh);
+	mesh = NULL;
 }
 
 Resource::ResourceType Model::GetResourceType() const {
@@ -82,7 +72,10 @@ Resource::ResourceType Model::GetResourceType() const {
 
 void Model::GetJSON(JSON json) const {
 	json.InitObject();
-	json["name"] = name;
+	if(name != "") {
+		json["class"] = "Model";
+		json["name"] = name;
+	}
 }
 
 #endif

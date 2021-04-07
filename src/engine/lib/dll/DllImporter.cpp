@@ -1,6 +1,6 @@
 
 // This file is part of Drwalin's Dll Importer
-// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2021 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef DLL_IMPORTER_CPP
 #define DLL_IMPORTER_CPP
@@ -16,8 +16,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #endif
-
-
 
 struct DllHandleCounterElement
 {
@@ -152,8 +150,6 @@ const char *GetDllExtension() {
 	return ".so";
 }
 
-#  warning Not yet tested
-
 #else
 
 #  error Unknown system, or not defined symbol (__unix__ or __WIN32__ or _WIN64)
@@ -168,14 +164,14 @@ bool Dll::IsValid() const {
 	return handle != NULL;
 }
 
-void *Dll::Open(const char *dllFileName, bool addAppropriateExtension) {
+void* Dll::Open(const char *dllFileName, bool addAppropriateExtension) {
 	Close();
 	const int bufferSize = 4096;
 	char fileName[bufferSize];
 	snprintf(fileName, bufferSize, "%s%s", dllFileName, addAppropriateExtension?GetDllExtension():"");
 	handle = DllLoad(fileName);
 	if(handle == NULL)
-		printf("\n Dll::Open error <%s>: %s", fileName, DllGetErrorString());
+		printf("\n Dll::Open error <%s>:\n   %s\n", fileName, DllGetErrorString());
 	return handle;
 }
 

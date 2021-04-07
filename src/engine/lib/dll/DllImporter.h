@@ -1,6 +1,6 @@
 
 // This file is part of Drwalin's Dll Importer
-// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
+// Copyright (C) 2018-2021 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 #ifndef DLL_IMPORTER_H
 #define DLL_IMPORTER_H
@@ -34,10 +34,10 @@ public:
 	~Dll();
 	
 	bool IsValid() const;
-	void *Open(const char *dllFileName, bool addAppropriateExtension=true);
+	void* Open(const char *dllFileName, bool addAppropriateExtension=true);
 	void Close();
 	
-	template <typename T >
+	template <typename T>
 	T Get(const char *objectName) {
 		return reinterpret_cast<T>(DllGetObject(this->handle, objectName));
 	}

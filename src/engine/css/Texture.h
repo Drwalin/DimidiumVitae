@@ -17,7 +17,7 @@ public:
 
 	Texture() = delete;
 	Texture(const Texture &other) = delete;
-	Texture(const std::string &name);
+	Texture(JSON json);
 	~Texture();
 	Texture &operator = (const Texture &other) = delete;
 	
@@ -27,6 +27,7 @@ public:
 	operator bool() const;
 	
 	virtual Resource::ResourceType GetResourceType() const override;
+	virtual void GetJSON(JSON json) const override;
 	
 private:
 	

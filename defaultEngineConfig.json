@@ -8,7 +8,7 @@
 	"resourcePersistencyTime": 60,
 	"lockMouse": true,
 	"fov": 70.0,
-	"fpsLimit": 60,
+	"fpsLimit": 6000,
 	"modules": [
 		"./engine",
 		"./game-core"

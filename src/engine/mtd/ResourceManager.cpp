@@ -15,11 +15,16 @@
 
 #include <ctime>
 
-std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) {
+std::shared_ptr<Resource> ResourceManager::GetResource(JSON json) {
+	std::string name;
+	if(json.HasKey("name"))
+		name = json["name"].GetString();
+	else
+		return std::shared_ptr<Resource>(LoadResource(json));
 	auto it = resources.find(name);
 	if(it != resources.end())
 		return it->second.first;
-	Resource* resource = LoadResource(name);
+	Resource* resource = LoadResource(json);
 	if(resource==NULL)
 		return std::shared_ptr<Resource>(NULL);
 	std::shared_ptr<Resource> ref(resource);
@@ -28,20 +33,49 @@ std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) 
 	return ref;
 }
 
+std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) {
+	JSON json;
+	json.InitObject();
+	json["name"] = name;
+	return GetResource(json);
+}
+
+std::shared_ptr<Sound> ResourceManager::GetSound(JSON json) {
+	return std::dynamic_pointer_cast<Sound>(GetResource(json));
+}
+
 std::shared_ptr<Sound> ResourceManager::GetSound(const std::string &name) {
 	return std::dynamic_pointer_cast<Sound>(GetResource(name));
+}
+
+std::shared_ptr<Model> ResourceManager::GetModel(JSON json) {
+	return std::dynamic_pointer_cast<Model>(GetResource(json));
 }
 
 std::shared_ptr<Model> ResourceManager::GetModel(const std::string &name) {
 	return std::dynamic_pointer_cast<Model>(GetResource(name));
 }
 
+std::shared_ptr<Material> ResourceManager::GetMaterial(JSON json) {
+	return std::dynamic_pointer_cast<Material>(GetResource(json));
+}
+
 std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) {
 	return std::dynamic_pointer_cast<Material>(GetResource(name));
 }
 
+std::shared_ptr<Texture> ResourceManager::GetTexture(JSON json) {
+	return std::dynamic_pointer_cast<Texture>(GetResource(json));
+}
+
 std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string &name) {
 	return std::dynamic_pointer_cast<Texture>(GetResource(name));
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(JSON json) {
+	if(json.HasKey("name"))
+		return GetCollisionShape((std::string)json["name"]);
+	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
 std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::string &name) {
@@ -98,12 +132,6 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(JSON json) {
-	if(json.HasKey("name"))
-		return GetCollisionShape(json["name"]);
-	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
-};
-
 void ResourceManager::ResourceFreeingCycle(int iterations) {
 	std::vector<std::string> toRemove;
 	auto it = resources.lower_bound(lastIteratedName);
@@ -144,35 +172,40 @@ void ResourceManager::FreeAllUnused() {
 	Remove(toRemove);
 }
 
-Resource* ResourceManager::LoadResource(const std::string &name) {
+Resource* ResourceManager::LoadResource(JSON json) {
 	Resource *resource = NULL;
 	try {
-		switch(GetResourceTypeByPath(name)) {
+		Resource::ResourceType resourceType = Resource::NONE;
+		if(json.HasKey("class"))
+			resourceType = Resource::GetResourceType(json["class"]);
+		else if(json.HasKey("name"))
+			resourceType = GetResourceTypeByPath(json["name"]);
+		switch(resourceType) {
 		case Resource::MODEL:
-			resource = new Model(name);
+			resource = new Model(json);
 			break;
 		case Resource::SOUND:
-			resource = new Sound(name);
+			resource = new Sound(json);
 			break;
 		case Resource::TEXTURE:
-			resource = new Texture(name);
+			resource = new Texture(json);
 			break;
 		case Resource::MATERIAL:
-			resource = new Material(name);
+			resource = new Material(json);
 			break;
 		case Resource::COLLISIONSHAPE:
-			resource = new CollisionShape(name, sing::fileSystem->ReadJSON(name));
+			resource = new CollisionShape(json);
 			break;
 		}
 		return resource;
 	} catch(std::string e) {
-		MESSAGE("\n Excepion while loading Resource:" + e + " for file: " + name);
+		MESSAGE("\n Excepion while loading Resource:" + e + " for json: " + json.Write());
 	} catch(std::exception e) {
-		MESSAGE("\n Excepion while loading Resource:" + std::string(e.what()) + " for file: " + name);
+		MESSAGE("\n Excepion while loading Resource:" + std::string(e.what()) + " for json: " + json.Write());
 	} catch(char *e) {
-		MESSAGE("\n Excepion while loading Resource:" + std::string(e) + " for file: " + name);
+		MESSAGE("\n Excepion while loading Resource:" + std::string(e) + " for json: " + json.Write());
 	} catch(...) {
-		MESSAGE("\n Unknown exception while loading Resource for file: " + name);
+		MESSAGE("\n Unknown exception while loading Resource for json: " + json.Write());
 	}
 	if(resource)
 		delete resource;

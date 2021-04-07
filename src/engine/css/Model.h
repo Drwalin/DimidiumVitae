@@ -31,7 +31,6 @@
 class Model : public Resource {
 public:
 	
-	Model(const std::string &name);
 	Model(JSON json);
 	~Model();
 	
@@ -39,14 +38,13 @@ public:
 	std::shared_ptr<Material> GetDefaultMaterial() const;
 	Animation GetAnimation(const std::string &animationName) const;
 	
+	virtual Resource::ResourceType GetResourceType() const override;
+	virtual void GetJSON(JSON json) const override;
+	
+private:
+	
 	void LoadMesh(const std::string &objFileName);
 	void LoadAnimations(const std::string &animationsFileName);
-	
-	void Destroy();
-	
-	virtual Resource::ResourceType GetResourceType() const override;
-	
-	void GetJSON(JSON json) const;
 	
 private:
 	

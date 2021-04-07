@@ -174,7 +174,7 @@ void Window::UpdateDeltaTime() {
 	while(true) {
 		TimePoint currentTime = TimeCounter::GetCurrentTime();
 		deltaTime = TimeCounter::GetDurationSeconds(beginTime, currentTime);
-		if(deltaTime >= 1.0f/fpsLimit) {
+		if(deltaTime+0.001f >= 1.0f/fpsLimit) {
 			beginTime = currentTime;
 			break;
 		} else {

@@ -6,16 +6,23 @@
 #define COLLISION_SHAPE_CPP
 
 #include "../css/CollisionShape.h"
+#include "../css/Singleton.h"
 
 #include <Debug.h>
 #include <Math.hpp>
 
 CollisionShape::CollisionShape(const JSON json) :
-	Resource("") {
+	Resource(json) {
 	try {
-		primitives.resize(json["primitives"].Size());
+		JSON shape;
+		if(name != "")
+			shape = sing::fileSystem->ReadJSON(name);
+		else
+			shape = json;
+		
+		primitives.resize(shape["primitives"].Size());
 		int i = 0;
-		for(auto it : json["primitives"]) {
+		for(auto it : shape["primitives"]) {
 			primitives[i].MakeFromJSON(it.Value());
 			++i;
 		}
@@ -30,26 +37,6 @@ CollisionShape::CollisionShape(const JSON json) :
 		MESSAGE(std::string("\n Unknown exception while creating Collision shape") + " ; for JSON: " + json.Write());
 	}
 	primitives.clear();
-}
-
-CollisionShape::CollisionShape(const std::string &name, const JSON json) :
-	Resource(name) {
-	try {
-		primitives.resize(json["primitives"].Size());
-		int i = 0;
-		for(auto it : json["primitives"]) {
-			primitives[i].MakeFromJSON(it.Value());
-			++i;
-		}
-	} catch(std::string e) {
-		MESSAGE("\n Excepion while loading Collision shape: " + e + " ; for JSON: " + json.Write());
-	} catch(std::exception e) {
-		MESSAGE("\n Excepion while loading Collision shape: " + std::string(e.what()) + " ; for JSON: " + json.Write());
-	} catch(char *e) {
-		MESSAGE("\n Excepion while loading Collision shape: " + std::string(e) + " ; for JSON: " + json.Write());
-	} catch(...) {
-		MESSAGE("\n Unknown exception while loading Collision shape");
-	}
 }
 
 CollisionShape::~CollisionShape() {
@@ -91,12 +78,17 @@ Resource::ResourceType CollisionShape::GetResourceType() const {
 
 void CollisionShape::GetJSON(JSON json) const {
 	json.InitObject();
-	json["primitives"].InitArray();
-	json["primitives"].Resize(primitives.size());
-	int i=0;
-	for(auto& it : primitives) {
-		it.GetJSON(json["primitives"][i]);
-		++i;
+	json["class"] = "CollisionShape";
+	if(name != "") {
+		json["name"] = name;
+	} else {
+		json["primitives"].InitArray();
+		json["primitives"].Resize(primitives.size());
+		int i=0;
+		for(auto& it : primitives) {
+			it.GetJSON(json["primitives"][i]);
+			++i;
+		}
 	}
 }
 
