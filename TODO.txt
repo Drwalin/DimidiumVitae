@@ -16,11 +16,13 @@ TO DO:
 	Map loading system from JSON
 	Saving and loading Entities, SceneNodes from JSON
 	Correct MotionController varying jump height
-	Make instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
+	Make exmplicit instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
 	Add initializer list constructor for JSON
 	Add bool Entity::EverNeedTick() const
+	Correct jiggly mouse movement while mouse is locked
 	Use Semantic Versioning (https://semver.org/) consistently
+	Add self-choosing os in Makefile
 	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
 	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
 	
@@ -97,9 +99,9 @@ TO DO in future:
 	
 
 Bugs:
-	When entering low-roofed place with very short crouch-key press then character behaves like standing still
+	When entering low-roofed place with very quick crouch-key press then character behaves like standing still
 	Executable once locked whole system (needed to cut power to do anything) (in v0.3.1a)
-	Sometimes undefined coordinates while starting game (randomly) (didn't met since v0.4.1)
+	Sometimes undefined coordinates of player while starting game (randomly) (didn't met since v0.4.1)
 	When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
 	When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to return to game, instantly Event spawns multiple boxes/spheres (atleast since v0.5.0-k)
 	

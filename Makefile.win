@@ -5,13 +5,14 @@ EXTEXECUTABLE = .exe
 
 PLATFORMSPECIFICFLAGS =
 
-PLATFORMSPECIFICLIBS = -lOpenAL32
-PLATFORMSPECIFICSHAREDOBJECTS = libgcc_s_seh-1.dll libwinpthread-1.dll mfc100.dll mfc100u.dll msvcp100.dll msvcr100.dll msvcr100_clr0400.dll libvorbisogg.dll libzlib.dll
-DIRLIBS = -LC:\Programs\mingw-w64\lib\bullet -LC:\Programs\mingw-w64\lib
-DIRINCLUDEPC = -IC:\Programs\mingw-w64\include\bullet -IC:\Programs\mingw-w64\include
+PLATFORMSPECIFICLIBS = -lOpenAL32 -lzlib
+PLATFORMSPECIFICSHAREDOBJECTS = -lgcc_s_seh-1 -lwinpthread-1 -lmfc100 -lmfc100u -lmsvcp100 -lmsvcr100 -lmsvcr100_clr0400 -lvorbisogg
+DIRLIBS = 
+DIRINCLUDEPC = 
 
-DEPENDENCIES = Irrlicht.dll libLinearMath.dll libBulletCollision.dll libBulletDynamics.dll $(PLATFORMSPECIFICSHAREDOBJECTS)
+DEPENDENCIES = $(PLATFORMSPECIFICSHAREDOBJECTS)
 
 MD = mkdir
 CP = copy
 RM = del /f
+RM = rm -f

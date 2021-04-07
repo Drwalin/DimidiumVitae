@@ -4,7 +4,7 @@ include Makefile.win
 CXX = g++
 CC = gcc
 
-CFLAGS = $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Og -pg
+CFLAGS = $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Og
 CXXFLAGS = $(CFLAGS) -std=c++17
 
 GAMEOBJ_ = Character.o Event.o GetVersion.o Init.o MainMenu.o LoadingScreen.o Player.o
@@ -13,7 +13,7 @@ GAMEOBJ = $(addprefix .$(S)bin$(S),$(GAMEOBJ_))
 ENGOBJ_ = Animation.o Camera.o CollisionObjectManager.o CollisionShape.o DllImporter.o DynamicEntity.o Engine.o Entity.o EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o JSON.o Material.o Menu.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o ResourceManager.o SceneNode.o Singleton.o Sound.o SoundEngine.o SoundSource.o StaticEntity.o StlStreamExtension.o StringToEnter.o Texture.o TimeCounter.o Trigger.o Wav.o Window.o World.o
 ENGOBJ = $(addprefix .$(S)bin$(S),$(ENGOBJ_))
 	
-SHAREDLIBS = -lBulletSoftBody -lIrrlicht -lm -lpthread
+SHAREDLIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics -lIrrlicht -lm -lpthread
 LIBS = $(DIRLIBS) $(SHAREDLIBS) $(PLATFORMSPECIFICLIBS) $(DEPENDENCIES)
 
 DIRINCLUDE = $(DIRINCLUDEPC) -Isrc/engine/css -Isrc/engine/lib -Isrc/thirdparty
@@ -35,7 +35,7 @@ tools: .$(S)ObjToShapeConverter$(EXTEXECUTABLE)
 .$(S)engine$(EXTSHARED): $(ENGOBJ)
 	$(CXX) -shared -o $@ $(CXXFLAGS) $^ $(LIBS)
 .$(S)game-core$(EXTSHARED): .$(S)engine$(EXTSHARED) $(GAMEOBJ)
-	$(CXX) -shared -o $@ $(CXXFLAGS) $(LIBS) .$(S)engine$(EXTSHARED) $(GAMEOBJ)
+	$(CXX) -shared -o $@ $(CXXFLAGS) .$(S)engine$(EXTSHARED) $(GAMEOBJ) $(LIBS)
 
 
 
@@ -53,8 +53,5 @@ tools: .$(S)ObjToShapeConverter$(EXTEXECUTABLE)
 .PHONY: clean
 clean:
 	$(RM) .$(S)game$(EXTEXECUTABLE)
-	$(RM) .$(S)engine$(EXTSHARED)
-	$(RM) .$(S)game-core$(EXTSHARED)
-	$(RM) .$(S)engine$(EXTSHARED)
-	$(RM) .$(S)game-core$(EXTSHARED)
-	$(RM) .$(S)bin$(S)*.o
+	$(RM) .$(S)engine$(EXTSHARED) .$(ENGOBJ)
+	$(RM) .$(S)game-core$(EXTSHARED) $(GAMEOBJ)

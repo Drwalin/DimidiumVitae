@@ -261,6 +261,7 @@ void Window::Init(const std::string &windowName, const std::string &iconFile, in
 	eventIrrlichtReceiver = new EventReceiverIrrlicht(eventResponser);
 	
 	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
+	printf("\n Using Irrlicht %s", device->getVersion());
 	device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
 	device->setResizable(true);
 	

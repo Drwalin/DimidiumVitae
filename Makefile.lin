@@ -5,7 +5,7 @@ EXTEXECUTABLE =
 
 PLATFORMSPECIFICFLAGS = -fPIC
 
-PLATFORMSPECIFICLIBS = -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype -lBulletDynamics -lBulletCollision -lLinearMath
+PLATFORMSPECIFICLIBS = -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype
 PLATFORMSPECIFICSHAREDOBJECTS =  
 DIRLIBS =
 DIRINCLUDEPC = -I/usr/include -I/usr/include/irrlich -I/usr/include/bullet
