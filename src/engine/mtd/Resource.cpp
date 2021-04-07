@@ -45,6 +45,4 @@ Resource::ResourceType Resource::GetResourceType(const std::string &type) {
 	if(type == "Material") return MATERIAL;
 	if(type == "CollisionShape") return COLLISIONSHAPE;
 	return NONE;
-}
-
-#endif
+}#endif

@@ -21,6 +21,7 @@ MotionController* Character::GetMotionController() {
 }
 
 void Character::Tick(const float deltaTime) {
+	//DynamicEntity::Tick(deltaTime);
 	Entity::Tick(deltaTime);
 	motionController->Tick(deltaTime);
 	
@@ -48,11 +49,11 @@ void Character::Tick(const float deltaTime) {
 }
 
 void Character::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {
-	Entity::ApplyDamage(damage, point, normal);
+	DynamicEntity::ApplyDamage(damage, point, normal);
 }
 
 Character::Character(JSON json) :
-	Entity(json), height(1.75) {
+	DynamicEntity(json), height(1.75) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, 15.0f, btVector3(0,0,0));
 	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);

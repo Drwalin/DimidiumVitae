@@ -74,7 +74,7 @@ std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string &name) {
 
 std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(JSON json) {
 	if(json.HasKey("name"))
-		return GetCollisionShape((std::string)json["name"]);
+		return GetCollisionShape(json["name"].GetString());
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
@@ -199,16 +199,17 @@ Resource* ResourceManager::LoadResource(JSON json) {
 		}
 		return resource;
 	} catch(std::string e) {
-		MESSAGE("\n Excepion while loading Resource:" + e + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + e + " for json: " + json.Write());
 	} catch(std::exception e) {
-		MESSAGE("\n Excepion while loading Resource:" + std::string(e.what()) + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + std::string(e.what()) + " for json: " + json.Write());
 	} catch(char *e) {
-		MESSAGE("\n Excepion while loading Resource:" + std::string(e) + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + std::string(e) + " for json: " + json.Write());
 	} catch(...) {
 		MESSAGE("\n Unknown exception while loading Resource for json: " + json.Write());
 	}
 	if(resource)
 		delete resource;
+	
 	return NULL;
 }
 

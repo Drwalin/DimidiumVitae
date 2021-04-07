@@ -7,7 +7,7 @@
 
 #include "MotionController.h"
 
-#include <Entity.h>
+#include <DynamicEntity.h>
 #include <Camera.h>
 
 #include <cmath>
@@ -15,7 +15,7 @@
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
-class Character : public Entity  {
+class Character : public DynamicEntity {
 public:
 	
 	Character(JSON json);

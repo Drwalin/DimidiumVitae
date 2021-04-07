@@ -12,14 +12,6 @@
 
 #include <cassert>
 
-void Entity::SetCamera(std::shared_ptr<Camera> camera) {
-	this->camera = camera;
-}
-
-std::shared_ptr<Camera> Entity::GetCamera() {
-	return camera;
-}
-
 std::shared_ptr<SceneNode> Entity::GetSceneNode() {
 	return sceneNode;
 }

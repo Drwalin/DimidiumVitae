@@ -46,7 +46,7 @@ inline std::string MethodName(const std::string& prettyFunction) {
 }
 #define __METHOD_NAME__ (MethodName<int>(__PRETTY_FUNCTION__))
 
-#define DEBUG(x) { if(UseDebugVaraibleStorage) std::cerr << "\n " << __METHOD_NAME__ << "(" << (x) << ") " << __FILE__ << ":" << __LINE__; }
-#define MESSAGE(x) { std::cerr << "\n " << __METHOD_NAME__ << "(" << (x) << ") " << __FILE__ << ":" << __LINE__; }
+#define DEBUG(x) { if(UseDebugVaraibleStorage) std::cerr << "\n " << __METHOD_NAME__ << "(" << (x) << ") " << __FILE__ << ":" << __LINE__; std::cerr.flush(); }
+#define MESSAGE(x) { std::cerr << "\n " << __METHOD_NAME__ << "(" << (x) << ") " << __FILE__ << ":" << __LINE__; std::cerr.flush(); }
 
 #endif

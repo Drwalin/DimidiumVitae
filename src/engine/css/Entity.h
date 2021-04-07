@@ -20,7 +20,6 @@
 
 #include "../lib/Debug.h"
 
-#include "Camera.h"
 #include "SceneNode.h"
 #include "CollisionShape.h"
 
@@ -34,9 +33,6 @@ public:
 	
 	Entity(JSON json);
 	virtual ~Entity();
-	
-	void SetCamera(std::shared_ptr<Camera> camera);
-	std::shared_ptr<Camera> GetCamera();
 	
 	std::shared_ptr<SceneNode> GetSceneNode();
 	
@@ -91,8 +87,6 @@ protected:
 	int collisionMask;
 	
 	float mass;
-	
-	std::shared_ptr<Camera> camera;
 };
 
 #endif

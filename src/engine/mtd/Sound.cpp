@@ -101,7 +101,6 @@ float Sound::GetDuration() const {
 Sound::operator bool() const {
 	return bufferID;
 }
-
 Sound::Sound(JSON json) :
 	Resource(json), bufferID(0) {
 	LoadFromFile(name);

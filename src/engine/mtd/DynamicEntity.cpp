@@ -40,7 +40,7 @@ void DynamicEntity::ApplyDamage(const float damage, btVector3 point, btVector3 n
 
 DynamicEntity::DynamicEntity(JSON json) :
 	Entity(json) {
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, 1.0f);
+	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, json.HasKey("mass")?json["mass"].GetFloat():1.0f);
 	btRigidBody *rigidBody = dynamic_cast<btRigidBody*>(collisionObject);
 	
 	rigidBody->setDamping(0.2, 0.2);

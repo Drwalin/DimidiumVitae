@@ -200,9 +200,8 @@ uint64_t Engine::GetAvailableEntityId() const {
 
 void Engine::AttachCameraToEntity(uint64_t id, btVector3 location) {
 	auto it = entities.find(id);
-	if(it != entities.end()) {
+	if(it != entities.end())
 		cameraParent = it->second;
-	}
 	else
 		cameraParent = NULL;
 	GetCamera()->SetRelativePosition(location);
