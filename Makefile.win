@@ -14,5 +14,4 @@ DEPENDENCIES = $(PLATFORMSPECIFICSHAREDOBJECTS)
 
 MD = mkdir
 CP = copy
-RM = del /f
-RM = rm -f
+RM = cmd /c del /f

@@ -104,6 +104,7 @@ Bugs:
 	Sometimes undefined coordinates of player while starting game (randomly) (didn't met since v0.4.1)
 	When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
 	When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to return to game, instantly Event spawns multiple boxes/spheres (atleast since v0.5.0-k)
+	fprintf(stder,...) in Event::KeyPressedEvent while pressing 'T' to print number of objects in world, crashes since [commit SHA-1: e684b9ee8ba92cc0a29b4ca2e774f0db7ed59098] - temporarilly replaced with std::cout which does not cause problems
 	
 
 Removed bugs:

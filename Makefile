@@ -18,7 +18,7 @@ LIBS = $(DIRLIBS) $(SHAREDLIBS) $(PLATFORMSPECIFICLIBS) $(DEPENDENCIES)
 
 DIRINCLUDE = $(DIRINCLUDEPC) -Isrc/engine/css -Isrc/engine/lib -Isrc/thirdparty
 
-compile: .$(S)game$(EXTEXECUTABLE) .$(S)engine$(EXTSHARED) .$(S)game-core$(EXTSHARED)
+compile: .$(S)game$(EXTEXECUTABLE) .$(S)game-core$(EXTSHARED) .$(S)engine$(EXTSHARED)
 
 run: compile
 	.$(S)game$(EXTEXECUTABLE)
@@ -52,6 +52,6 @@ tools: .$(S)ObjToShapeConverter$(EXTEXECUTABLE)
 
 .PHONY: clean
 clean:
-	$(RM) .$(S)game$(EXTEXECUTABLE)
-	$(RM) .$(S)engine$(EXTSHARED) .$(ENGOBJ)
-	$(RM) .$(S)game-core$(EXTSHARED) $(GAMEOBJ)
+	$(RM) game$(EXTEXECUTABLE) bin$(S)Main.o
+	$(RM) engine$(EXTSHARED) $(ENGOBJ)
+	$(RM) game-core$(EXTSHARED) $(GAMEOBJ)

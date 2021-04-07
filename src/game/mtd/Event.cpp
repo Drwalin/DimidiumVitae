@@ -73,7 +73,7 @@ void Event::KeyPressedEvent(int keyCode) {
 		break;
 		
 	case irr::KEY_KEY_T:
-		fprintf(stderr, "\n Number of objects: %i ", sing::engine->GetNumberOfEntities());
+		std::cout << "\n Number of objects: " << sing::engine->GetNumberOfEntities();
 		break;
 	case irr::KEY_KEY_O:
 		Debug::SwitchDebugState();
