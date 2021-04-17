@@ -6,7 +6,7 @@ GAMEOBJDEL = $(addprefix bin$(S),$(GAMEOBJ_))
 
 ENGOBJ_ = Animation.o Camera.o CollisionObjectManager.o CollisionShape.o
 ENGOBJ_ += DllImporter.o DynamicEntity.o Engine.o Entity.o
-ENGOBJ_ += EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o JSON.o
+ENGOBJ_ += EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o
 ENGOBJ_ += Material.o Menu.o Model.o ModulesFactory.o MotionController.o
 ENGOBJ_ += MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o
 ENGOBJ_ += ResourceManager.o SceneNode.o Singleton.o Sound.o SoundEngine.o

@@ -7,7 +7,7 @@
 
 #include <irrlicht/irrlicht.h>
 
-#include <JSON.h>
+#include <JSON.hpp>
 
 class Animation {
 public:

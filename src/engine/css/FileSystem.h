@@ -12,7 +12,7 @@
 #include <string>
 
 #include <StlStreamExtension.h>
-#include <JSON.h>
+#include <JSON.hpp>
 
 class IFile : public std::istream {
 public:

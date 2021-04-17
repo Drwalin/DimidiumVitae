@@ -12,7 +12,7 @@
 
 #include "Resource.h"
 #include "PrimitiveCollisionShape.h"
-#include <JSON.h>
+#include <JSON.hpp>
 
 #include <vector>
 #include <memory>

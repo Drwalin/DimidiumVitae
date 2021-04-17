@@ -22,7 +22,6 @@ TO DO:
 	Add bool Entity::EverNeedTick() const
 	Correct jiggly mouse movement while mouse is locked
 	Use Semantic Versioning (https://semver.org/) consistently
-	Add self-choosing os in Makefile
 	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
 	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
 	Update Readme.txt
@@ -74,6 +73,7 @@ Done:
 	Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON) (remove other constructors), Resource::Resource(JSON)
 	Character is based on DynamicEntity
 	Remove Entity::camera
+	Add self-choosing os in Makefile
 	
 
 TO DO in future:

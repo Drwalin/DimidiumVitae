@@ -1,3 +1,6 @@
 [submodule "dep/MakefileSTD"]
 	path = dep/MakefileSTD
 	url = https://github.com/Drwalin/MakefileSTD.git
+[submodule "dep/JSON"]
+	path = dep/JSON
+	url = https://github.com/Drwalin/JSON.git

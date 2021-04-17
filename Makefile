@@ -1,7 +1,7 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g
-CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib -Isrc$(S)thirdparty
+CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib -Isrc$(S)thirdparty -Idep$(S)JSON/include
 LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
 LIBS += -lIrrlicht -lm -lpthread
 SHAREDFLAGS = -shared -Wl,-rpath,.
@@ -46,3 +46,4 @@ clean:
 	$(RM) game$(EXEC_EXT) bin$(S)Main.o
 	$(RM) engine$(SHARED_EXT) $(ENGOBJDEL)
 	$(RM) game-core$(SHARED_EXT) $(GAMEOBJDEL)
+

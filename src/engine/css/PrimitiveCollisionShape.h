@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include <JSON.h>
+#include <JSON.hpp>
 
 namespace CollisionShapeInfo {
 	class Info {

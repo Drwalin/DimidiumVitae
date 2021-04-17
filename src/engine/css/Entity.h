@@ -23,7 +23,7 @@
 #include "SceneNode.h"
 #include "CollisionShape.h"
 
-#include <JSON.h>
+#include <JSON.hpp>
 
 #define __ENTITY_DERIVED_HEADER_FACTORY__(__ENTITY_CLASS_NAME_) virtual size_t GetTypeSize() const override; virtual const std::string& GetClassName() const override;
 #define __ENTITY_DERIVED_CODE_FACTORY__(__ENTITY_CLASS_NAME_) size_t __ENTITY_CLASS_NAME_::GetTypeSize() const {return sizeof(__ENTITY_CLASS_NAME_);} const std::string& __ENTITY_CLASS_NAME_::GetClassName() const {const static std::string _m_Name_c_s = #__ENTITY_CLASS_NAME_ ; return _m_Name_c_s;} extern "C" __ENTITY_CLASS_NAME_* __Constructor_##__ENTITY_CLASS_NAME_##_Function(JSON json) {return new __ENTITY_CLASS_NAME_(json);}
