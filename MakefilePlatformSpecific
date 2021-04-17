@@ -1,0 +1,13 @@
+
+include dep/MakefileSTD/MakefileSTD
+
+ifeq ($(platform),win)
+	LIBS += -lOpenAL32 -lzlib
+	LIBS += -lgcc_s_seh-1 -lwinpthread-1 -lmfc100
+	LIBS += -lmfc100u -lmsvcp100 -lmsvcr100 -lmsvcr100_clr0400 -lvorbisogg
+else
+	LIBS += -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype
+	CXXFLAGS += -fPIC
+	CXXFLAGS += -I/usr/include -I/usr/include/irrlich -I/usr/include/bullet
+endif
+

@@ -1,9 +1,6 @@
-*.o
 *.dll
 *.exe
 media
-release
-dep
 /gmon.out
 *.swp
 mediaworkspace

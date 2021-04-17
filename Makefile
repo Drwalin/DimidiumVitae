@@ -1,57 +1,48 @@
 
-include Makefile.win
-
 CXX = g++
-CC = gcc
+CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g
+CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib -Isrc$(S)thirdparty
+LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
+LIBS += -lIrrlicht -lm -lpthread
+SHAREDFLAGS = -shared -Wl,-rpath,.
 
-CFLAGS = $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Og
-CXXFLAGS = $(CFLAGS) -std=c++17
+include MakefilePlatformSpecific
+include MakefileFiles
 
-GAMEOBJ_ = Character.o Event.o GetVersion.o Init.o MainMenu.o LoadingScreen.o Player.o
-GAMEOBJ = $(addprefix .$(S)bin$(S),$(GAMEOBJ_))
-
-ENGOBJ_ = Animation.o Camera.o CollisionObjectManager.o CollisionShape.o DllImporter.o DynamicEntity.o Engine.o Entity.o EventReceiverIrrlicht.o EventResponser.o FileSystem.o GUI.o JSON.o Material.o Menu.o Model.o ModulesFactory.o MotionController.o MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o ResourceManager.o SceneNode.o Singleton.o Sound.o SoundEngine.o SoundSource.o StaticEntity.o StlStreamExtension.o StringToEnter.o Texture.o TimeCounter.o Trigger.o Wav.o Window.o World.o
-ENGOBJ = $(addprefix .$(S)bin$(S),$(ENGOBJ_))
-	
-SHAREDLIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics -lIrrlicht -lm -lpthread
-LIBS = $(DIRLIBS) $(SHAREDLIBS) $(PLATFORMSPECIFICLIBS) $(DEPENDENCIES)
-
-DIRINCLUDE = $(DIRINCLUDEPC) -Isrc/engine/css -Isrc/engine/lib -Isrc/thirdparty
-
-compile: .$(S)game$(EXTEXECUTABLE) .$(S)game-core$(EXTSHARED) .$(S)engine$(EXTSHARED)
+compile: .$(S)game$(EXEC_EXT) .$(S)game-core$(SHARED_EXT) .$(S)engine$(SHARED_EXT)
 
 run: compile
-	.$(S)game$(EXTEXECUTABLE)
+	./game$(EXTEXECUTEXEC_EXT)
 
-tools: .$(S)ObjToShapeConverter$(EXTEXECUTABLE)
+tools: ObjToShapeConverter$(EXEC_EXT)
 
-.$(S)ObjToShapeConverter$(EXTEXECUTABLE): .$(S)src$(S)tools$(S)ObjToShapeConverter.cpp .$(S)bin$(S)JSON.o
+ObjToShapeConverter$(EXEC_EXT): src$(S)tools$(S)ObjToShapeConverter.cpp bin$(S)JSON.o
 	$(CXX) -o $@ $(CXXFLAGS) $(DIRINCLUDE) $(LIBS) $^
 
 
 
-.$(S)game$(EXTEXECUTABLE): .$(S)engine$(EXTSHARED) .$(S)bin$(S)Main.o
-	$(CXX) -o $@ $(CXXFLAGS) $(LIBS) .$(S)engine$(EXTSHARED) .$(S)bin$(S)Main.o
-.$(S)engine$(EXTSHARED): $(ENGOBJ)
-	$(CXX) -shared -o $@ $(CXXFLAGS) $^ $(LIBS)
-.$(S)game-core$(EXTSHARED): .$(S)engine$(EXTSHARED) $(GAMEOBJ)
-	$(CXX) -shared -o $@ $(CXXFLAGS) .$(S)engine$(EXTSHARED) $(GAMEOBJ) $(LIBS)
+.$(S)game$(EXEC_EXT): bin$(S)Main.o .$(S)engine$(SHARED_EXT)
+	$(CXX) -o $@ $(CXXFLAGS) $(LIBS) bin$(S)Main.o .$(S)engine$(SHARED_EXT)
+.$(S)engine$(SHARED_EXT): $(ENGOBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(SHAREDFLAGS) $(LIBS)
+.$(S)game-core$(SHARED_EXT): $(GAMEOBJ) .$(S)engine$(SHARED_EXT)
+	$(CXX) -o $@ $(CXXFLAGS) $(GAMEOBJ) .$(S)engine$(SHARED_EXT) $(SHAREDFLAGS) $(LIBS)
 
 
 
-.$(S)bin$(S)%.o: .$(S)src$(S)engine$(S)mtd$(S)%.cpp .$(S)src$(S)engine$(S)css$(S)%.h
+bin$(S)%.o: src$(S)engine$(S)mtd$(S)%.cpp src$(S)engine$(S)css$(S)%.h
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-.$(S)bin$(S)%.o: .$(S)src$(S)engine$(S)lib$(S)dll$(S)%.cpp
+bin$(S)%.o: src$(S)engine$(S)lib$(S)dll$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-.$(S)bin$(S)%.o: .$(S)src$(S)engine$(S)lib$(S)%.cpp
+bin$(S)%.o: src$(S)engine$(S)lib$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-.$(S)bin$(S)%.o: .$(S)src$(S)game$(S)mtd$(S)%.cpp
+bin$(S)%.o: src$(S)game$(S)mtd$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 
 
 .PHONY: clean
 clean:
-	$(RM) game$(EXTEXECUTABLE) bin$(S)Main.o
-	$(RM) engine$(EXTSHARED) $(ENGOBJ)
-	$(RM) game-core$(EXTSHARED) $(GAMEOBJ)
+	$(RM) game$(EXEC_EXT) bin$(S)Main.o
+	$(RM) engine$(SHARED_EXT) $(ENGOBJDEL)
+	$(RM) game-core$(SHARED_EXT) $(GAMEOBJDEL)
