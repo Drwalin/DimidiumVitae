@@ -37,7 +37,7 @@ void Trigger::Tick(const float deltaTime) {
 	}
 }
 
-Trigger::Trigger(JSON json) :
+Trigger::Trigger(const JSON& json) :
 	Entity(json) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateGhostObject(collisionShape, currentTransform);

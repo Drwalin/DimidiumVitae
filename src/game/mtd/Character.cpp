@@ -52,7 +52,7 @@ void Character::ApplyDamage(const float damage, btVector3 point, btVector3 norma
 	DynamicEntity::ApplyDamage(damage, point, normal);
 }
 
-Character::Character(JSON json) :
+Character::Character(const JSON& json) :
 	DynamicEntity(json), height(1.75) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateRigidBody(collisionShape, currentTransform, 15.0f, btVector3(0,0,0));

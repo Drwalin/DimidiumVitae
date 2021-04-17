@@ -23,19 +23,25 @@ public:
 	ResourceManager(float resourcePersistencyTime);
 	~ResourceManager();
 	
-	std::shared_ptr<Resource> GetResource(JSON json);
+	std::shared_ptr<Resource> GetResource(const JSON& json);
 	std::shared_ptr<Resource> GetResource(const std::string &name);
-	std::shared_ptr<Sound> GetSound(JSON json);
+	std::shared_ptr<Resource> GetResource(const char* name);
+	std::shared_ptr<Sound> GetSound(const JSON& json);
 	std::shared_ptr<Sound> GetSound(const std::string &name);
-	std::shared_ptr<Model> GetModel(JSON json);
+	std::shared_ptr<Sound> GetSound(const char* name);
+	std::shared_ptr<Model> GetModel(const JSON& json);
 	std::shared_ptr<Model> GetModel(const std::string &name);
-	std::shared_ptr<Texture> GetTexture(JSON json);
+	std::shared_ptr<Model> GetModel(const char* name);
+	std::shared_ptr<Texture> GetTexture(const JSON& json);
 	std::shared_ptr<Texture> GetTexture(const std::string &name);
-	std::shared_ptr<Material> GetMaterial(JSON json);
+	std::shared_ptr<Texture> GetTexture(const char* name);
+	std::shared_ptr<Material> GetMaterial(const JSON& json);
 	std::shared_ptr<Material> GetMaterial(const std::string &name);
+	std::shared_ptr<Material> GetMaterial(const char* name);
 	
-	std::shared_ptr<CollisionShape> GetCollisionShape(JSON json);
+	std::shared_ptr<CollisionShape> GetCollisionShape(const JSON& json);
 	std::shared_ptr<CollisionShape> GetCollisionShape(const std::string &name);
+	std::shared_ptr<CollisionShape> GetCollisionShape(const char* name);
 	std::shared_ptr<CollisionShape> GetSphere(float radius);
 	std::shared_ptr<CollisionShape> GetBox(const btVector3 &size);
 	std::shared_ptr<CollisionShape> GetCapsule(float radius, float height);
@@ -49,7 +55,7 @@ public:
 	
 private:
 	
-	Resource* LoadResource(JSON json);
+	Resource* LoadResource(const JSON& json);
 	void Remove(const std::vector<std::string> &toRemove);
 	
 private:

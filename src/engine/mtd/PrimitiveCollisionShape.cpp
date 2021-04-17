@@ -31,11 +31,11 @@ const std::string& CollisionShapeInfo::Box::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Box::GetJSON(JSON json) const {
+void CollisionShapeInfo::Box::GetJSON(JSON& json) const {
 	json["size"] <<= size;
 }
 
-void CollisionShapeInfo::Box::MakeFromJSON(const JSON json) {
+void CollisionShapeInfo::Box::MakeFromJSON(const JSON& json) {
 	size <<= json["size"];
 }
 
@@ -55,11 +55,11 @@ const std::string& CollisionShapeInfo::Sphere::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Sphere::GetJSON(JSON json) const {
+void CollisionShapeInfo::Sphere::GetJSON(JSON& json) const {
 	json["radius"] = radius;
 }
 
-void CollisionShapeInfo::Sphere::MakeFromJSON(const JSON json) {
+void CollisionShapeInfo::Sphere::MakeFromJSON(const JSON& json) {
 	radius = json["radius"];
 }
 
@@ -79,12 +79,12 @@ const std::string& CollisionShapeInfo::Cylinder::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Cylinder::GetJSON(JSON json) const {
+void CollisionShapeInfo::Cylinder::GetJSON(JSON& json) const {
 	json["radius"] = radius;
 	json["height"] = height;
 }
 
-void CollisionShapeInfo::Cylinder::MakeFromJSON(const JSON json) {
+void CollisionShapeInfo::Cylinder::MakeFromJSON(const JSON& json) {
 	radius = json["radius"];
 	height = json["height"];
 }
@@ -106,12 +106,12 @@ const std::string& CollisionShapeInfo::Capsule::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Capsule::GetJSON(JSON json) const {
+void CollisionShapeInfo::Capsule::GetJSON(JSON& json) const {
 	json["radius"] = radius;
 	json["height"] = height;
 }
 
-void CollisionShapeInfo::Capsule::MakeFromJSON(const JSON json) {
+void CollisionShapeInfo::Capsule::MakeFromJSON(const JSON& json) {
 	radius = json["radius"];
 	height = json["height"];
 }
@@ -133,22 +133,21 @@ const std::string& CollisionShapeInfo::Convex::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Convex::GetJSON(JSON json) const {
+void CollisionShapeInfo::Convex::GetJSON(JSON& json) const {
 	json["vertices"].InitArray();
-	JSON verts = json["vertices"];
-	JSON temp;
+	JSON& verts = json["vertices"];
 	for(auto vert : vertices) {
-		verts.PushBack(temp = vert.x());
-		verts.PushBack(temp = vert.y());
-		verts.PushBack(temp = vert.z());
+		verts.Array().push_back(vert.x());
+		verts.Array().push_back(vert.y());
+		verts.Array().push_back(vert.z());
 	}
 }
 
-void CollisionShapeInfo::Convex::MakeFromJSON(const JSON json) {
-	JSON verts = json["vertices"];
-	vertices.resize(verts.Size()/3);
+void CollisionShapeInfo::Convex::MakeFromJSON(const JSON& json) {
+	const JSON& verts = json["vertices"];
+	vertices.resize(verts.size()/3);
 	for(int i=0; i<vertices.size(); ++i) {
-		vertices[i] = btVector3(verts[i*3], verts[i*3+1], verts[i*3+2]);
+		vertices[i] = btVector3(verts[i*3].Real(), verts[i*3+1].Real(), verts[i*3+2].Real());
 	}
 }
 
@@ -167,38 +166,37 @@ const std::string& CollisionShapeInfo::Trimesh::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Trimesh::GetJSON(JSON json) const {
+void CollisionShapeInfo::Trimesh::GetJSON(JSON& json) const {
 	json["vertices"].InitArray();
-	JSON verts = json["vertices"];
-	JSON temp;
+	JSON& verts = json["vertices"];
 	for(auto vert : vertices) {
-		verts.PushBack(temp = vert.x());
-		verts.PushBack(temp = vert.y());
-		verts.PushBack(temp = vert.z());
+		verts.Array().push_back(vert.x());
+		verts.Array().push_back(vert.y());
+		verts.Array().push_back(vert.z());
 	}
 	json["indices"].InitArray();
-	JSON inds = json["indices"];
-	inds.Resize(indices.size());
+	JSON& inds = json["indices"];
+	inds.Array().resize(indices.size());
 	int i = 0;
 	for(int id : indices)
 		inds[i++] = id;
 }
 
-void CollisionShapeInfo::Trimesh::MakeFromJSON(const JSON json) {
+void CollisionShapeInfo::Trimesh::MakeFromJSON(const JSON& json) {
 	if(triangleData)
 		delete triangleData;
 	triangleData = NULL;
 	
-	JSON verts = json["vertices"];
-	vertices.resize(verts.Size()/3);
+	const JSON& verts = json["vertices"];
+	vertices.resize(verts.size()/3);
 	for(int i=0; i<vertices.size(); ++i)
-		vertices[i] = btVector3(verts[i*3], verts[i*3+1], verts[i*3+2]);
+		vertices[i] = btVector3(verts[i*3].Real(), verts[i*3+1].Real(), verts[i*3+2].Real());
 	
-	JSON inds = json["indices"];
+	const JSON& inds = json["indices"];
 	indices.resize(0);
-	indices.reserve(inds.Size());
-	for(auto id : inds)
-		indices.emplace_back(id.Value());
+	indices.reserve(inds.size());
+	for(auto id : inds.Array())
+		indices.emplace_back(id.Integer());
 	
 	Done();
 }
@@ -254,7 +252,7 @@ btTransform PrimitiveCollisionShape::GetTransform() const {
 	return transform;
 }
 
-void PrimitiveCollisionShape::GetJSON(JSON json) const {
+void PrimitiveCollisionShape::GetJSON(JSON& json) const {
 	if(info) {
 		json.InitObject();
 		info->GetJSON(json);
@@ -263,8 +261,8 @@ void PrimitiveCollisionShape::GetJSON(JSON json) const {
 	}
 }
 
-void PrimitiveCollisionShape::MakeFromJSON(const JSON json) {
-	Init(json["type"]);
+void PrimitiveCollisionShape::MakeFromJSON(const JSON& json) {
+	Init(json["type"].String());
 	if(info) {
 		info->MakeFromJSON(json);
 		transform <<= json["transform"];

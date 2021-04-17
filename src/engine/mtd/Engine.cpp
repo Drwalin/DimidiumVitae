@@ -7,7 +7,7 @@
 
 #include "../css/Engine.h"
 
-#include <JSON.h>
+#include <JSON.hpp>
 
 #include <Debug.h>
 #include <Math.hpp>
@@ -34,25 +34,25 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 	return false;
 }
 
-Entity* Engine::AddEntity(JSON json) {
+Entity* Engine::AddEntity(const JSON& json) {
 	if(!json.IsObject())
 		return NULL;
 	
-	if(!classFactory.HasClass(json["class"]))
+	if(!classFactory.HasClass(json["class"].String()))
 		return NULL;
 	
 	uint64_t id = 0;
-	if(json.HasKey("id"))
-		id = json["id"];
+	if(json.Object().count("id"))
+		id = json["id"].Integer();
 	
 	if(id == 0)
 		id = GetAvailableEntityId();
 	
 	entities[id] = NULL;
-	Entity *emptyEntity = classFactory.GetNew(json["class"], json);
+	Entity *emptyEntity = classFactory.GetNew(json["class"].String(), json);
 	entities[id] = emptyEntity;
-	if(json.HasKey("mass"))
-		emptyEntity->SetMass(json["mass"]);
+	if(json.Object().count("mass"))
+		emptyEntity->SetMass(json["mass"].Real());
 	else
 		emptyEntity->SetMass(0.0f);
 	
@@ -253,31 +253,31 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		world->Init();
 		sing::soundEngine = soundEngine = new SoundEngine();
 		sing::window = window = new Window;
-		window->Init(json["windowName"], json.HasKey("iconFile")?json["iconFile"].GetString():"", json["width"], json["height"], event, json.HasKey("fullscreen")?json["fullscreen"]:false);
-		sing::resourceManager = resourceManager = new ResourceManager(json.HasKey("resourcePersistencyTime")?json["resourcePersistencyTime"]:60.0f);
+		window->Init(json["windowName"], json.Object().count("iconFile")?json["iconFile"].String():"", json["width"], json["height"], event, json.Object().count("fullscreen")?json["fullscreen"].Boolean():false);
+		sing::resourceManager = resourceManager = new ResourceManager(json.Object().count("resourcePersistencyTime")?json["resourcePersistencyTime"].Real():60.0f);
 		
-		if(json.HasKey("lockMouse") ? json["lockMouse"] : true) {
+		if(json.Object().count("lockMouse") ? json["lockMouse"].Boolean() : true) {
 			window->HideMouse();
 			window->LockMouse();
 		}
 		
-		if(json.HasKey("fpsLimit")) {
-			window->SetFpsLimit(json["fpsLimit"]);
+		if(json.Object().count("fpsLimit")) {
+			window->SetFpsLimit(json["fpsLimit"].Real());
 		}
 		
 		if(GetCamera() == NULL) {
-			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"], json["height"], sing::sceneManager->addCameraSceneNode())));
-			window->GetCamera()->SetFOV(json.HasKey("fov")?json["fov"]:60.0f);
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"].Integer(), json["height"].Integer(), sing::sceneManager->addCameraSceneNode())));
+			window->GetCamera()->SetFOV(json.Object().count("fov")?json["fov"].Real():60.0f);
 		}
 		
-		for(auto entry : json["modules"])
-			RegisterModule(entry.Value().GetString());
-		for(auto entry : json["types"])
-			RegisterType(entry.Value()["name"], entry.Value()["module"]);
-		if(json.HasKey("fileArchives")) {
+		for(auto entry : json["modules"].Array())
+			RegisterModule(entry.String());
+		for(auto entry : json["types"].Array())
+			RegisterType(entry["name"], entry["module"]);
+		if(json.Object().count("fileArchives")) {
 			irr::io::IFileSystem *fileSystem = window->GetDevice()->getFileSystem();
-			for(auto entry : json["fileArchives"])
-				fileSystem->addFileArchive(entry.Value().GetString().c_str(), false, false);
+			for(auto entry : json["fileArchives"].Array())
+				fileSystem->addFileArchive(entry.String().c_str(), false, false);
 		}
 	} catch(const std::string &e) {
 		MESSAGE("Exception while initialising engine: " + e);

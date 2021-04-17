@@ -48,13 +48,13 @@ void Model::LoadMesh(const std::string &fileName) {
 void Model::LoadAnimations(const std::string &animationsFileName) {
 	JSON json = sing::fileSystem->ReadJSON(animationsFileName);
 	if(json.IsObject()) {
-		for(auto it : json) {
-			animations[it.Name()] = Animation(it.Value());
+		for(auto it : json.Object()) {
+			animations[it.first] = Animation(it.second);
 		}
 	}
 }
 
-Model::Model(JSON json) :
+Model::Model(const JSON& json) :
 	Resource(json) {
 	LoadMesh(name);
 }
@@ -70,7 +70,7 @@ Resource::ResourceType Model::GetResourceType() const {
 	return Resource::MODEL;
 }
 
-void Model::GetJSON(JSON json) const {
+void Model::GetJSON(JSON& json) const {
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Model";

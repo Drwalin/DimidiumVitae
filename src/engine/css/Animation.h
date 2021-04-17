@@ -13,7 +13,7 @@ class Animation {
 public:
 	
 	Animation();
-	Animation(JSON json);
+	Animation(const JSON& json);
 	Animation(const Animation &other);
 	Animation(int startFrame, int endFrame, float duration);
 	Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode);
@@ -22,7 +22,7 @@ public:
 	
 	void SetSceneNode(irr::scene::IAnimatedMeshSceneNode *iSceneNode);
 	
-	void GetJSON(JSON json) const;
+	void GetJSON(JSON& json) const;
 	
 private:
 	

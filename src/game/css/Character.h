@@ -18,7 +18,7 @@
 class Character : public DynamicEntity {
 public:
 	
-	Character(JSON json);
+	Character(const JSON& json);
 	virtual ~Character() override;
 	
 	MotionController* GetMotionController();

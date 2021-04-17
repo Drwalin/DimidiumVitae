@@ -84,7 +84,7 @@ void MotionControllerTrigger::Tick(const float deltaTime) {
 	Trigger::Tick(deltaTime);
 }
 
-MotionControllerTrigger::MotionControllerTrigger(JSON json) :
+MotionControllerTrigger::MotionControllerTrigger(const JSON& json) :
 	Trigger(json) {
 }
 

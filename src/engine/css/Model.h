@@ -31,7 +31,7 @@
 class Model : public Resource {
 public:
 	
-	Model(JSON json);
+	Model(const JSON& json);
 	~Model();
 	
 	irr::scene::IAnimatedMesh* GetMesh();
@@ -39,7 +39,7 @@ public:
 	Animation GetAnimation(const std::string &animationName) const;
 	
 	virtual Resource::ResourceType GetResourceType() const override;
-	virtual void GetJSON(JSON json) const override;
+	virtual void GetJSON(JSON& json) const override;
 	
 private:
 	

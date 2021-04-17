@@ -15,9 +15,9 @@
 
 #include <ctime>
 
-std::shared_ptr<Resource> ResourceManager::GetResource(JSON json) {
+std::shared_ptr<Resource> ResourceManager::GetResource(const JSON& json) {
 	std::string name;
-	if(json.HasKey("name"))
+	if(json.Object().count("name"))
 		name = json["name"].GetString();
 	else
 		return std::shared_ptr<Resource>(LoadResource(json));
@@ -40,7 +40,11 @@ std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) 
 	return GetResource(json);
 }
 
-std::shared_ptr<Sound> ResourceManager::GetSound(JSON json) {
+std::shared_ptr<Resource> ResourceManager::GetResource(const char* name) {
+	return GetResource((std::string)name);
+}
+
+std::shared_ptr<Sound> ResourceManager::GetSound(const JSON& json) {
 	return std::dynamic_pointer_cast<Sound>(GetResource(json));
 }
 
@@ -48,7 +52,11 @@ std::shared_ptr<Sound> ResourceManager::GetSound(const std::string &name) {
 	return std::dynamic_pointer_cast<Sound>(GetResource(name));
 }
 
-std::shared_ptr<Model> ResourceManager::GetModel(JSON json) {
+std::shared_ptr<Sound> ResourceManager::GetSound(const char* name) {
+	return GetSound((std::string)name);
+}
+
+std::shared_ptr<Model> ResourceManager::GetModel(const JSON& json) {
 	return std::dynamic_pointer_cast<Model>(GetResource(json));
 }
 
@@ -56,7 +64,11 @@ std::shared_ptr<Model> ResourceManager::GetModel(const std::string &name) {
 	return std::dynamic_pointer_cast<Model>(GetResource(name));
 }
 
-std::shared_ptr<Material> ResourceManager::GetMaterial(JSON json) {
+std::shared_ptr<Model> ResourceManager::GetModel(const char* name) {
+	return GetModel((std::string)name);
+}
+
+std::shared_ptr<Material> ResourceManager::GetMaterial(const JSON& json) {
 	return std::dynamic_pointer_cast<Material>(GetResource(json));
 }
 
@@ -64,7 +76,11 @@ std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) 
 	return std::dynamic_pointer_cast<Material>(GetResource(name));
 }
 
-std::shared_ptr<Texture> ResourceManager::GetTexture(JSON json) {
+std::shared_ptr<Material> ResourceManager::GetMaterial(const char* name) {
+	return GetMaterial((std::string)name);
+}
+
+std::shared_ptr<Texture> ResourceManager::GetTexture(const JSON& json) {
 	return std::dynamic_pointer_cast<Texture>(GetResource(json));
 }
 
@@ -72,8 +88,12 @@ std::shared_ptr<Texture> ResourceManager::GetTexture(const std::string &name) {
 	return std::dynamic_pointer_cast<Texture>(GetResource(name));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(JSON json) {
-	if(json.HasKey("name"))
+std::shared_ptr<Texture> ResourceManager::GetTexture(const char* name) {
+	return GetTexture((std::string)name);
+}
+
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const JSON& json) {
+	if(json.Object().count("name"))
 		return GetCollisionShape(json["name"].GetString());
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
@@ -82,11 +102,15 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::st
 	return std::dynamic_pointer_cast<CollisionShape>(GetResource(name));
 }
 
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const char* name) {
+	return GetCollisionShape((std::string)name);
+}
+
 std::shared_ptr<CollisionShape> ResourceManager::GetSphere(float radius) {
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
-	json["primitives"].Resize(1);
+	json["primitives"].Array().resize(1);
 	json["primitives"][0].InitObject();
 	json["primitives"][0]["type"] = "sphere";
 	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
@@ -98,7 +122,7 @@ std::shared_ptr<CollisionShape> ResourceManager::GetBox(const btVector3 &size) {
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
-	json["primitives"].Resize(1);
+	json["primitives"].Array().resize(1);
 	json["primitives"][0].InitObject();
 	json["primitives"][0]["type"] = "box";
 	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
@@ -110,7 +134,7 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius, float 
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
-	json["primitives"].Resize(1);
+	json["primitives"].Array().resize(1);
 	json["primitives"][0].InitObject();
 	json["primitives"][0]["type"] = "capsule";
 	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
@@ -123,7 +147,7 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
-	json["primitives"].Resize(1);
+	json["primitives"].Array().resize(1);
 	json["primitives"][0].InitObject();
 	json["primitives"][0]["type"] = "cylinder";
 	json["primitives"][0]["transform"] <<= Math::EmptyTransform;
@@ -172,14 +196,14 @@ void ResourceManager::FreeAllUnused() {
 	Remove(toRemove);
 }
 
-Resource* ResourceManager::LoadResource(JSON json) {
+Resource* ResourceManager::LoadResource(const JSON& json) {
 	Resource *resource = NULL;
 	try {
 		Resource::ResourceType resourceType = Resource::NONE;
-		if(json.HasKey("class"))
-			resourceType = Resource::GetResourceType(json["class"]);
-		else if(json.HasKey("name"))
-			resourceType = GetResourceTypeByPath(json["name"]);
+		if(json.Object().count("class"))
+			resourceType = Resource::GetResourceType(json["class"].String());
+		else if(json.Object().count("name"))
+			resourceType = GetResourceTypeByPath(json["name"].String());
 		switch(resourceType) {
 		case Resource::MODEL:
 			resource = new Model(json);

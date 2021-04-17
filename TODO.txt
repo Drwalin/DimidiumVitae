@@ -25,6 +25,7 @@ TO DO:
 	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
 	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
 	Update Readme.txt
+	Change void GetJSON(JSON& json) const to JSON GetJSON() const
 	
 	
 

@@ -204,7 +204,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 		euler = sing::engine->GetCamera()->GetEulerRotation();
 		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetBox(btVector3(1,1,1)), btTransform(sing::engine->GetCamera()->GetRotation(), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
-			temp->SetModel(sing::resourceManager->GetModel("Models/Crate01.obj"));
+			temp->SetModel(sing::resourceManager->GetModel((std::string)"Models/Crate01.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));
 			temp->GetBody()->setFriction(0.75);
 			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);
@@ -216,7 +216,7 @@ void Event::KeyHoldedEvent(int keyCode) {
 	case irr::KEY_RBUTTON:
 		temp = sing::engine->AddEntity("DynamicEntity", sing::resourceManager->GetSphere(1), btTransform(btQuaternion(btVector3(1,1,1),0), sing::engine->GetCamera()->GetWorldPosition() + sing::engine->GetCamera()->GetForwardVector()), 20.0f);
 		if(temp) {
-			temp->SetModel(sing::resourceManager->GetModel("Models/Sphere.obj"));
+			temp->SetModel(sing::resourceManager->GetModel((std::string)"Models/Sphere.obj"));
 			temp->SetScale(btVector3(0.5, 0.5, 0.5));
 			temp->GetBody()->setFriction(0.75);
 			temp->GetBody<btRigidBody>()->setLinearVelocity(sing::engine->GetCamera()->GetForwardVector()*16.0);

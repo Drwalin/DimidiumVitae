@@ -51,7 +51,7 @@ public:
 	IFile ReadFile(std::string name);
 	OFile WriteFile(std::string name);
 	JSON ReadJSON(std::string name);
-	void WriteJSON(JSON json, std::string name);
+	void WriteJSON(const JSON& json, std::string name);
 };
 
 #endif

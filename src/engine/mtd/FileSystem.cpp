@@ -86,7 +86,7 @@ JSON FileSystem::ReadJSON(std::string name) {
 	}
 	return JSON();
 }
-void FileSystem::WriteJSON(JSON json, std::string name) {
+void FileSystem::WriteJSON(const JSON& json, std::string name) {
 	OFile file = WriteFile(name);
 	if(file) {
 		return json.Write(file);

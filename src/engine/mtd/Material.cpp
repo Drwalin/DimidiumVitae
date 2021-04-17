@@ -17,7 +17,7 @@
 #include "../css/Engine.h"
 #include "../css/Singleton.h"
 
-Material::Material(JSON json) :
+Material::Material(const JSON& json) :
 	Resource(json) {
 	IFile file = sing::fileSystem->ReadFile(name);
 	if(file && file.good() && !file.eof()) {
@@ -81,7 +81,7 @@ Resource::ResourceType Material::GetResourceType() const {
 	return Resource::MATERIAL;
 }
 
-void Material::GetJSON(JSON json) const {
+void Material::GetJSON(JSON& json) const {
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Material";

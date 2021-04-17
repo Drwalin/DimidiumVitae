@@ -12,7 +12,7 @@
 class DynamicEntity : public Entity {
 public:
 	
-	DynamicEntity(JSON json);
+	DynamicEntity(const JSON& json);
 	virtual ~DynamicEntity() override;
 
 	virtual void Tick(const float deltaTime) override;

@@ -43,7 +43,7 @@ extern "C" int Init(int argc, char ** argv) {
 		
 		// create animated bow
 		Entity *animatedBow = sing::engine->AddEntity("DynamicEntity", sing::engine->GetResourceManager()->GetCylinder(0.3, 1), btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(15,3,15)), 3.0f);
-		animatedBow->SetModel(sing::resourceManager->GetModel("Models/Bow02.x"));
+		animatedBow->SetModel(sing::resourceManager->GetModel((std::string)"Models/Bow02.x"));
 		animatedBow->GetBody()->setFriction(0.75);
 		animatedBow->GetBody<btRigidBody>()->setDamping(0.1, 0.1);
 		animatedBow->GetSceneNode()->GetISceneNode()->setAnimationSpeed(24.0f);

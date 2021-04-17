@@ -21,8 +21,8 @@ namespace CollisionShapeInfo {
 	public:
 		virtual btCollisionShape* Get() const =0;
 		virtual const std::string& GetName() const =0;
-		virtual void GetJSON(JSON json) const =0;
-		virtual void MakeFromJSON(const JSON json) =0;
+		virtual void GetJSON(JSON& json) const =0;
+		virtual void MakeFromJSON(const JSON& json) =0;
 	};
 	
 	class Box : public Info {
@@ -31,8 +31,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Box();
 		~Box();
 	};
@@ -42,8 +42,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Sphere();
 		~Sphere();
 	};
@@ -54,8 +54,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Cylinder();
 		~Cylinder();
 	};
@@ -66,8 +66,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Capsule();
 		~Capsule();
 	};
@@ -77,8 +77,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Convex();
 		~Convex();
 	};
@@ -90,8 +90,8 @@ namespace CollisionShapeInfo {
 		
 		virtual btCollisionShape* Get() const override;
 		virtual const std::string& GetName() const override;
-		virtual void GetJSON(JSON json) const override;
-		virtual void MakeFromJSON(const JSON json) override;
+		virtual void GetJSON(JSON& json) const override;
+		virtual void MakeFromJSON(const JSON& json) override;
 		Trimesh();
 		~Trimesh();
 		void Done();
@@ -114,8 +114,8 @@ public:
 	
 	const std::string& GetType() const;
 	
-	void GetJSON(JSON json) const;
-	void MakeFromJSON(const JSON json);
+	void GetJSON(JSON& json) const;
+	void MakeFromJSON(const JSON& json);
 	
 	void Destroy();
 	

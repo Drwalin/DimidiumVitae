@@ -156,11 +156,11 @@ void Entity::DestroyBody() {
 	collisionShape = NULL;
 }
 
-Entity::Entity(JSON json) {
+Entity::Entity(const JSON& json) {
 	mass = 0.0f;
-	if(json.HasKey("shape"))
+	if(json.Object().count("shape"))
 		collisionShape = sing::resourceManager->GetCollisionShape(json["shape"]);
-	this->id = json["id"];
+	this->id = json["id"].Integer();
 	scale = btVector3(1,1,1);
 	currentTransform <<= json["transform"];
 	body = NULL;

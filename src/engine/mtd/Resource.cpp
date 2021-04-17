@@ -17,8 +17,8 @@ const std::string& Resource::GetName() const {
 	return name;
 }
 
-Resource::Resource(JSON json) :
-	name(json.IsObject() ? (json.HasKey("name") ? json["name"].GetString() : "") : "") {
+Resource::Resource(const JSON& json) :
+	name(json.IsObject() ? (json.Object().count("name") ? json["name"].String() : "") : "") {
 }
 
 const std::string& Resource::GetResourceTypeString(ResourceType type) {

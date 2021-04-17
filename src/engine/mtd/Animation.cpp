@@ -33,8 +33,8 @@ Animation::Animation() {
 	endFrame = 0;
 }
 
-Animation::Animation(JSON json) {
-	duration = json["duration"];
+Animation::Animation(const JSON& json) {
+	duration = json["duration"].Real();
 	startFrame = json["start"];
 	endFrame = json["end"];
 	iSceneNode = NULL;
@@ -61,7 +61,7 @@ Animation::Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode 
 	endFrame = other.endFrame;
 }
 
-void Animation::GetJSON(JSON json) const {
+void Animation::GetJSON(JSON& json) const {
 	json.InitObject();
 	json["duration"] = duration;
 	json["start"] = startFrame;

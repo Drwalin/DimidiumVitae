@@ -26,7 +26,7 @@ struct SimulationContactResultCallback : public btCollisionWorld::ContactResultC
 class MotionControllerTrigger : public Trigger {
 public:
 	
-	MotionControllerTrigger(JSON json);
+	MotionControllerTrigger(const JSON& json);
 	virtual ~MotionControllerTrigger() override;
 	
 	bool IsTopCollision() const;

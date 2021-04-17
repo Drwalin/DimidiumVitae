@@ -10,7 +10,7 @@
 class Player : public Character  {
 public:
 	
-	Player(JSON json);
+	Player(const JSON& json);
 	virtual ~Player() override;
 	
 	virtual void Tick(const float deltaTime) override;

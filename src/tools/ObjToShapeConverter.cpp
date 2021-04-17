@@ -20,7 +20,7 @@
 #include <Debug.h>
 #include <Math.hpp>
 #include <StdUtil.hpp>
-#include <JSON.h>
+#include <JSON.hpp>
 
 struct Indices {
 	int v;
@@ -90,21 +90,20 @@ void RemoveDifferentExtensionsIfItExists(std::string extension) {
 	}
 }
 
-void CreateConvex(std::set<int> &vertexIds, JSON json) {
+void CreateConvex(std::set<int> &vertexIds, JSON& json) {
 	json["type"] = "convex";
 	json["transform"] <<= Math::EmptyTransform;
 	json["vertices"].InitArray();
-	JSON verts = json["vertices"];
-	JSON temp;
+	JSON& verts = json["vertices"];
 	for(auto id : vertexIds) {
 		btVector3 vert = vertices[id];
-		verts.PushBack(temp = vert.x());
-		verts.PushBack(temp = vert.y());
-		verts.PushBack(temp = vert.z());
+		verts.Array().push_back(vert.x());
+		verts.Array().push_back(vert.y());
+		verts.Array().push_back(vert.z());
 	}
 }
 
-bool TrySphere(std::set<int> &vertexIds, const std::vector<std::vector<Indices>> &indices, JSON json) {
+bool TrySphere(std::set<int> &vertexIds, const std::vector<std::vector<Indices>> &indices, JSON& json) {
 	btVector3 origin(0,0,0);
 	for(auto it : vertexIds) {
 		origin += vertices[it];
@@ -137,15 +136,15 @@ bool TrySphere(std::set<int> &vertexIds, const std::vector<std::vector<Indices>>
 	return true;
 }
 
-bool TryBox(std::set<int> &vertexIds, const std::vector<std::vector<Indices>> &indices, JSON json) {
+bool TryBox(std::set<int> &vertexIds, const std::vector<std::vector<Indices>> &indices, JSON& json) {
 	return false;
 }
 
-bool TryCylinder(std::set<int> &vertexIds, std::map<int, std::set<int>> vertexIndexToFace, const std::vector<std::vector<Indices>> &indices, JSON json) {
+bool TryCylinder(std::set<int> &vertexIds, std::map<int, std::set<int>> vertexIndexToFace, const std::vector<std::vector<Indices>> &indices, JSON& json) {
 	return false;
 }
 
-bool TryTrimesh(std::set<int> &vertexIds, std::map<int, std::set<int>> vertexIndexToFace, const std::vector<std::vector<Indices>> &indices, JSON json) {
+bool TryTrimesh(std::set<int> &vertexIds, std::map<int, std::set<int>> vertexIndexToFace, const std::vector<std::vector<Indices>> &indices, JSON& json) {
 	for(auto neighbourTriangles : vertexIndexToFace) {
 		for(auto a : neighbourTriangles.second) {
 			btVector3 na = normals[indices[a][0].n];
@@ -191,7 +190,7 @@ bool TryTrimesh(std::set<int> &vertexIds, std::map<int, std::set<int>> vertexInd
 	return true;
 }
 
-void CreateJSONFrom(const std::vector<std::vector<Indices>> &indices, JSON json) {
+void CreateJSONFrom(const std::vector<std::vector<Indices>> &indices, JSON& json) {
 	std::set<int> vertexIds;
 	std::map<int, std::set<int>> vertexIndexToFace;
 	for(int i=0; i<indices.size(); ++i) {

@@ -101,7 +101,7 @@ float Sound::GetDuration() const {
 Sound::operator bool() const {
 	return bufferID;
 }
-Sound::Sound(JSON json) :
+Sound::Sound(const JSON& json) :
 	Resource(json), bufferID(0) {
 	LoadFromFile(name);
 }
@@ -117,7 +117,7 @@ Resource::ResourceType Sound::GetResourceType() const {
 	return Resource::SOUND;
 }
 
-void Sound::GetJSON(JSON json) const {
+void Sound::GetJSON(JSON& json) const {
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Sound";

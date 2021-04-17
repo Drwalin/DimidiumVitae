@@ -31,7 +31,7 @@
 class Entity {
 public:
 	
-	Entity(JSON json);
+	Entity(const JSON& json);
 	virtual ~Entity();
 	
 	std::shared_ptr<SceneNode> GetSceneNode();

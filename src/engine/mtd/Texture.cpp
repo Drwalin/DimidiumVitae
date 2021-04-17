@@ -10,7 +10,7 @@
 #include <Texture.h>
 #include <Engine.h>
 
-Texture::Texture(JSON json) :
+Texture::Texture(const JSON& json) :
 	Resource(json) {
 	texture = sing::videoDriver->getTexture(name.c_str());
 }
@@ -36,7 +36,7 @@ Resource::ResourceType Texture::GetResourceType() const {
 	return Resource::TEXTURE;
 }
 
-void Texture::GetJSON(JSON json) const {
+void Texture::GetJSON(JSON& json) const {
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Texture";

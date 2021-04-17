@@ -20,10 +20,10 @@
 class CollisionShape : public Resource {
 public:
 	
-	CollisionShape(const JSON json);
+	CollisionShape(const JSON& json);
 	virtual ~CollisionShape();
 	
-	virtual void GetJSON(JSON json) const override;
+	virtual void GetJSON(JSON& json) const override;
 	
 	btCollisionShape* GetNewBtCollisionShape() const;
 	static void DestroyBtCollisionShape(btCollisionShape *shape);

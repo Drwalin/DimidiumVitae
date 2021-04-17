@@ -21,7 +21,7 @@ void StaticEntity::Tick(const float deltaTime) {
 
 void StaticEntity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
 
-StaticEntity::StaticEntity(JSON json) :
+StaticEntity::StaticEntity(const JSON& json) :
 	Entity(json) {
 	
 	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(collisionShape, currentTransform);

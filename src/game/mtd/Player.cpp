@@ -17,7 +17,7 @@ void Player::Tick(const float deltaTime) {
 	Character::Tick(deltaTime);
 }
 
-Player::Player(JSON json) :
+Player::Player(const JSON& json) :
 	Character(json) {
 }
 

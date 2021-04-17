@@ -28,12 +28,12 @@ public:
 	const std::string& GetName() const;
 	virtual ResourceType GetResourceType() const =0;
 	
-	virtual void GetJSON(JSON json) const =0;
+	virtual void GetJSON(JSON& json) const =0;
 	
 	static const std::string& GetResourceTypeString(ResourceType type);
 	static ResourceType GetResourceType(const std::string &type);protected:
 	
-	Resource(JSON json);
+	Resource(const JSON& json);
 	
 protected:
 	

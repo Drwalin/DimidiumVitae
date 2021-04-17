@@ -20,7 +20,7 @@
 #include <ostream>
 
 #include "../css/GUI.h"
-#include "JSON.h"
+#include <JSON.hpp>
 
 namespace Math {
 	const float PI = 3.14159265359f;
@@ -48,7 +48,7 @@ namespace Math {
 };
 
 
-inline JSON operator<<=(JSON json, const btVector3 &point) {
+inline JSON& operator<<=(JSON& json, const btVector3 &point) {
 	json.InitArray();
 	if(point.x()!=0.0 || point.y()!=0.0 || point.z()!=0.0) {
 		json[0] = point.x();
@@ -57,7 +57,7 @@ inline JSON operator<<=(JSON json, const btVector3 &point) {
 	}
 	return json;
 }
-inline JSON operator<<=(JSON json, const btQuaternion &rotation) {
+inline JSON& operator<<=(JSON& json, const btQuaternion &rotation) {
 	json.InitArray();
 	if(rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
 		json[0] = rotation.x();
@@ -67,7 +67,7 @@ inline JSON operator<<=(JSON json, const btQuaternion &rotation) {
 	}
 	return json;
 }
-inline JSON operator<<=(JSON json, const btTransform &transform) {
+inline JSON& operator<<=(JSON& json, const btTransform &transform) {
 	json.InitArray();
 	btVector3 point = transform.getOrigin();
 	btQuaternion rotation = transform.getRotation();
@@ -78,24 +78,24 @@ inline JSON operator<<=(JSON json, const btTransform &transform) {
 	return json;
 }
 
-inline btVector3& operator<<=(btVector3 &point, const JSON json) {
-	if(json.Size() != 0) {
+inline btVector3& operator<<=(btVector3 &point, const JSON& json) {
+	if(json.Array().size() != 3) {
 		point = btVector3(json[0], json[1], json[2]);
 	} else {
 		point = btVector3(0, 0, 0);
 	}
 	return point;
 }
-inline btQuaternion& operator<<=(btQuaternion &rotation, const JSON json) {
-	if(json.Size() != 0) {
+inline btQuaternion& operator<<=(btQuaternion &rotation, const JSON& json) {
+	if(json.Array().size() != 4) {
 		rotation = btQuaternion(json[0], json[1], json[2], json[3]);
 	} else {
 		rotation = btQuaternion(0, 0, 0, 1);
 	}
 	return rotation;
 }
-inline btTransform& operator<<=(btTransform &transform, const JSON json) {
-	if(json.Size() != 2) {
+inline btTransform& operator<<=(btTransform &transform, const JSON& json) {
+	if(json.Array().size() != 2) {
 		transform = Math::EmptyTransform;
 	} else {
 		btVector3 point; point <<= json[0];

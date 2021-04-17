@@ -14,7 +14,7 @@ public:
 
 	Sound() = delete;
 	Sound(const Sound &other) = delete;
-	Sound(JSON json);
+	Sound(const JSON& json);
 	~Sound();
 	Sound &operator = (const Sound &other) = delete;
 	
@@ -24,7 +24,7 @@ public:
 	operator bool() const;
 	
 	virtual Resource::ResourceType GetResourceType() const override;
-	virtual void GetJSON(JSON json) const override;
+	virtual void GetJSON(JSON& json) const override;
 	
 private:
 	

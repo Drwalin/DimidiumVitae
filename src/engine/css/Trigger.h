@@ -24,7 +24,7 @@ class Engine;
 class Trigger : public Entity {
 public:
 	
-	Trigger(JSON json);
+	Trigger(const JSON& json);
 	virtual ~Trigger() override;
 	
 	virtual void NextOverlappingFrame();

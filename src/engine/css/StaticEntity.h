@@ -10,7 +10,7 @@
 class StaticEntity : public Entity {
 public:
 	
-	StaticEntity(JSON json);
+	StaticEntity(const JSON& json);
 	virtual ~StaticEntity() override;
 	
 	virtual void Tick(const float deltaTime) override;

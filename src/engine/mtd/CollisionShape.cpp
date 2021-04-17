@@ -11,19 +11,18 @@
 #include <Debug.h>
 #include <Math.hpp>
 
-CollisionShape::CollisionShape(const JSON json) :
+CollisionShape::CollisionShape(const JSON& json) :
 	Resource(json) {
 	try {
-		JSON shape;
+		JSON _shape;
 		if(name != "")
-			shape = sing::fileSystem->ReadJSON(name);
-		else
-			shape = json;
+			_shape = sing::fileSystem->ReadJSON(name);
+		const JSON& shape = name!="" ? _shape : json;
 		
-		primitives.resize(shape["primitives"].Size());
+		primitives.resize(shape["primitives"].size());
 		int i = 0;
-		for(auto it : shape["primitives"]) {
-			primitives[i].MakeFromJSON(it.Value());
+		for(auto it : shape["primitives"].Array()) {
+			primitives[i].MakeFromJSON(it);
 			++i;
 		}
 		return;
@@ -76,14 +75,14 @@ Resource::ResourceType CollisionShape::GetResourceType() const {
 	return Resource::COLLISIONSHAPE;
 }
 
-void CollisionShape::GetJSON(JSON json) const {
+void CollisionShape::GetJSON(JSON& json) const {
 	json.InitObject();
 	json["class"] = "CollisionShape";
 	if(name != "") {
 		json["name"] = name;
 	} else {
 		json["primitives"].InitArray();
-		json["primitives"].Resize(primitives.size());
+		json["primitives"].Array().resize(primitives.size());
 		int i=0;
 		for(auto& it : primitives) {
 			it.GetJSON(json["primitives"][i]);
