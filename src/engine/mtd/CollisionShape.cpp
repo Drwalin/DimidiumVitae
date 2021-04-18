@@ -28,7 +28,7 @@ CollisionShape::CollisionShape(const JSON& json) :
 		return;
 	} catch(std::string e) {
 		MESSAGE("\n Excepion while creating Collision shape: " + e + " ; for JSON: " + json.Write());
-	} catch(std::exception e) {
+	} catch(const std::exception& e) {
 		MESSAGE("\n Excepion while creating Collision shape: " + std::string(e.what()) + " ; for JSON: " + json.Write());
 	} catch(char *e) {
 		MESSAGE("\n Excepion while creating Collision shape: " + std::string(e) + " ; for JSON: " + json.Write());
@@ -46,7 +46,7 @@ btCollisionShape* CollisionShape::GetNewBtCollisionShape() const {
 		return primitives.back().Get();
 	} else if(primitives.size() > 1) {
 		btCompoundShape *compoundShape = new btCompoundShape(true, primitives.size());
-		for(int i=0; i<primitives.size(); ++i) {
+		for(size_t i=0; i<primitives.size(); ++i) {
 			compoundShape->addChildShape(primitives[i].GetTransform(), primitives[i].Get());
 		}
 		return compoundShape;

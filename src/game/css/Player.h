@@ -15,7 +15,7 @@ public:
 	
 	virtual void Tick(const float deltaTime) override;
 	
-	__ENTITY_DERIVED_HEADER_FACTORY__(Player);
+	__ENTITY_DERIVED_HEADER_FACTORY__(Player)
 	
 protected:
 	

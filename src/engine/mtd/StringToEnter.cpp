@@ -34,11 +34,11 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		break;
 	case irr::KEY_RIGHT:
 		++currentPosition;
-		if(currentPosition > str.size())
+		if(currentPosition > (int)str.size())
 			currentPosition = 0;
 		break;
 	case irr::KEY_DELETE:
-		if(currentPosition < str.size()) {
+		if(currentPosition < (int)str.size()) {
 			str.erase(str.begin() + currentPosition);
 		}
 		break;
@@ -61,7 +61,7 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		currentPosition = 0;
 		break;
 	case irr::KEY_END:
-		currentPosition = str.size();
+		currentPosition = (int)str.size();
 		break;
 	default:
 		if(key.Char != 0) {

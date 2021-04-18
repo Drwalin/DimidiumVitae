@@ -45,7 +45,7 @@ namespace Math {
 	inline btTransform MakeTransformFromEuler(const btVector3 &euler) {
 		return btTransform(Math::MakeQuaternionFromEuler(euler));
 	}
-};
+}
 
 
 inline JSON& operator<<=(JSON& json, const btVector3 &point) {
@@ -79,7 +79,7 @@ inline JSON& operator<<=(JSON& json, const btTransform &transform) {
 }
 
 inline btVector3& operator<<=(btVector3 &point, const JSON& json) {
-	if(json.Array().size() != 3) {
+	if(json.Array().size() == 3) {
 		point = btVector3(json[0], json[1], json[2]);
 	} else {
 		point = btVector3(0, 0, 0);
@@ -87,7 +87,7 @@ inline btVector3& operator<<=(btVector3 &point, const JSON& json) {
 	return point;
 }
 inline btQuaternion& operator<<=(btQuaternion &rotation, const JSON& json) {
-	if(json.Array().size() != 4) {
+	if(json.Array().size() == 4) {
 		rotation = btQuaternion(json[0], json[1], json[2], json[3]);
 	} else {
 		rotation = btQuaternion(0, 0, 0, 1);

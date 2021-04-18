@@ -29,7 +29,7 @@ void MotionController::UpdateSpeed(const float deltaTime) {
 		
 		if(walkingDirection.length2() > 0.0001) {
 			walkingDirection.normalize();
-			btVector3 destinyVelocity = walkingDirection *GetCurrentSpeed();
+			//btVector3 destinyVelocity = walkingDirection * GetCurrentSpeed();
 			float currentDot = currentVelocity.dot(walkingDirection);
 			if(currentVelocity.length() < 0.5f || currentDot < GetCurrentSpeed()) {
 				btVector3 modifyingVelocity = walkingDirection *(GetCurrentSpeed() - currentDot) *0.5f;

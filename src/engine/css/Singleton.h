@@ -13,13 +13,13 @@ namespace irr {
 	class IrrlichtDevice;
 	namespace video {
 		class IVideoRenderer;
-	};
+	}
 	namespace scene {
 		class ISceneManager;
-	};
+	}
 	namespace gui {
 		class IGUIEnvironment;
-	};
+	}
 }
 	
 class FileSystem;
@@ -43,7 +43,7 @@ namespace sing {
 	extern class SoundEngine *soundEngine;
 	extern class ResourceManager *resourceManager;
 	extern GUI gui;
-};
+}
 
 #endif
 

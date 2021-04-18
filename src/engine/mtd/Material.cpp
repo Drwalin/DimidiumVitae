@@ -64,10 +64,10 @@ void Material::SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode 
 			int materialCount = std::min<int>(iSceneNode->getMaterialCount(), material->materials.size());
 			for(i=0; i<materialCount; ++i)
 				iSceneNode->getMaterial(i) = material->materials[i];
-			for(; i<iSceneNode->getMaterialCount(); ++i)
+			for(; i<(int)iSceneNode->getMaterialCount(); ++i)
 				iSceneNode->getMaterial(i) = material->materials.back();
 		} else {
-			for(int i=0; i<iSceneNode->getMaterialCount(); ++i)
+			for(size_t i=0; i<iSceneNode->getMaterialCount(); ++i)
 				iSceneNode->getMaterial(i) = irr::video::SMaterial();
 		}
 		iSceneNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);

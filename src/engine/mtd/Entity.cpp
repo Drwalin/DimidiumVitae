@@ -163,6 +163,8 @@ Entity::Entity(const JSON& json) {
 	this->id = json["id"].Integer();
 	scale = btVector3(1,1,1);
 	currentTransform <<= json["transform"];
+	JSON t;
+	t <<= currentTransform;
 	body = NULL;
 	collisionGroup = 0;
 	collisionMask = 0;

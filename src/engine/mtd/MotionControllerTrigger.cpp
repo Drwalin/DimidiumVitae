@@ -75,7 +75,7 @@ void MotionControllerTrigger::NextOverlappingFrame() {
 	GetBtCollisionShape()->getAabb(body->getWorldTransform(), min, max);
 	bottom = min.y();
 	top = max.y();
-	float mid = (bottom + top)*0.5f;
+	//float mid = (bottom + top)*0.5f;
 	
 	Trigger::NextOverlappingFrame();
 }

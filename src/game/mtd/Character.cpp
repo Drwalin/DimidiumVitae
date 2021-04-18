@@ -25,10 +25,10 @@ void Character::Tick(const float deltaTime) {
 	Entity::Tick(deltaTime);
 	motionController->Tick(deltaTime);
 	
-	static TimeCounter fpsCounter = ({TimeCounter cnt; cnt.SetTimeSpan(2.0f); fpsCounter.SubscribeStart(); cnt;});
+	static TimeCounter fpsCounter = []()->TimeCounter{TimeCounter cnt; cnt.SetTimeSpan(2.0f); fpsCounter.SubscribeStart(); return cnt;}();
 	fpsCounter.SubscribeEnd();
 	sing::gui << Rectanglef(0.05,0.02,0.6,0.6) << "Character position: " << GetTransform().getOrigin();
-	btRigidBody *rigidBody = GetBody<btRigidBody>();
+	//btRigidBody *rigidBody = GetBody<btRigidBody>();
 	sing::gui << "\n Entities count: " << sing::engine->GetNumberOfEntities();
 	sing::gui << "\nFPS: " << 1.0f/fpsCounter.GetSmoothTime();
 	sing::gui << " " << 1.0f/fpsCounter.GetPeakTime();

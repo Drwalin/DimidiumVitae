@@ -86,7 +86,7 @@ extern "C" int Init(int argc, char ** argv) {
 		}
 	} catch(std::string e) {
 		MESSAGE("\n Excepion while creating map: " + e);
-	} catch(std::exception e) {
+	} catch(const std::exception& e) {
 		MESSAGE("\n Excepion while creating map: " + std::string(e.what()));
 	} catch(char *e) {
 		MESSAGE("\n Excepion while creating map: " + std::string(e));

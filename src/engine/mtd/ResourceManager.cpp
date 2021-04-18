@@ -17,10 +17,11 @@
 
 std::shared_ptr<Resource> ResourceManager::GetResource(const JSON& json) {
 	std::string name;
-	if(json.Object().count("name"))
+	if(json.Object().count("name")) {
 		name = json["name"].GetString();
-	else
+	} else {
 		return std::shared_ptr<Resource>(LoadResource(json));
+	}
 	auto it = resources.find(name);
 	if(it != resources.end())
 		return it->second.first;
@@ -200,10 +201,11 @@ Resource* ResourceManager::LoadResource(const JSON& json) {
 	Resource *resource = NULL;
 	try {
 		Resource::ResourceType resourceType = Resource::NONE;
-		if(json.Object().count("class"))
+		if(json.Object().count("class")) {
 			resourceType = Resource::GetResourceType(json["class"].String());
-		else if(json.Object().count("name"))
+		} else if(json.Object().count("name")) {
 			resourceType = GetResourceTypeByPath(json["name"].String());
+		}
 		switch(resourceType) {
 		case Resource::MODEL:
 			resource = new Model(json);
@@ -220,11 +222,13 @@ Resource* ResourceManager::LoadResource(const JSON& json) {
 		case Resource::COLLISIONSHAPE:
 			resource = new CollisionShape(json);
 			break;
+		default:
+			break;
 		}
 		return resource;
 	} catch(std::string e) {
 		MESSAGE("\n Excepion while loading Resource: " + e + " for json: " + json.Write());
-	} catch(std::exception e) {
+	} catch(const std::exception& e) {
 		MESSAGE("\n Excepion while loading Resource: " + std::string(e.what()) + " for json: " + json.Write());
 	} catch(char *e) {
 		MESSAGE("\n Excepion while loading Resource: " + std::string(e) + " for json: " + json.Write());
@@ -246,21 +250,22 @@ void ResourceManager::Remove(const std::vector<std::string> &toRemove) {
 
 Resource::ResourceType ResourceManager::GetResourceTypeByPath(const std::string &name) {
 	std::string extension = GetExtension(name);
-	const static std::set<std::string> textureExtensions({"png", "jpg", "tga", "bmp"});
+	const static std::set<std::string> textureExtensions({"png", "jpg", "tga", "bmp", "jpeg", "bmpx"});
 	const static std::set<std::string> graphicMeshExtensions({"x", "dae", "obj"});
 	const static std::set<std::string> collisionMeshExtensions({"shape"});
 	const static std::set<std::string> soundExtensions({"wav", "ogg"});
 	const static std::set<std::string> materialExtensions({"mtl"});
-	if(collisionMeshExtensions.count(extension) > 0)
+	if(collisionMeshExtensions.count(extension) > 0) {
 		return Resource::COLLISIONSHAPE;
-	if(graphicMeshExtensions.count(extension) > 0)
+	} else if(graphicMeshExtensions.count(extension) > 0) {
 		return Resource::MODEL;
-	if(materialExtensions.count(extension) > 0)
+	} else if(materialExtensions.count(extension) > 0) {
 		return Resource::MATERIAL;
-	if(textureExtensions.count(extension) > 0)
+	} else if(textureExtensions.count(extension) > 0) {
 		return Resource::TEXTURE;
-	if(soundExtensions.count(extension) > 0)
+	} else if(soundExtensions.count(extension) > 0) {
 		return Resource::SOUND;
+	}
 	return Resource::MODEL;
 }
 

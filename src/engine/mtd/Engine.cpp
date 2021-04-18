@@ -253,7 +253,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		world->Init();
 		sing::soundEngine = soundEngine = new SoundEngine();
 		sing::window = window = new Window;
-		window->Init(json["windowName"], json.Object().count("iconFile")?json["iconFile"].String():"", json["width"], json["height"], event, json.Object().count("fullscreen")?json["fullscreen"].Boolean():false);
+		window->Init(json["windowName"], json.Object().count("iconFile")?json["iconFile"].String():"", json["width"].Integer(), json["height"].Integer(), event, json.Object().count("fullscreen")?json["fullscreen"].Boolean():false);
 		sing::resourceManager = resourceManager = new ResourceManager(json.Object().count("resourcePersistencyTime")?json["resourcePersistencyTime"].Real():60.0f);
 		
 		if(json.Object().count("lockMouse") ? json["lockMouse"].Boolean() : true) {
@@ -357,7 +357,7 @@ Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 
 		std::set<Entity*> ignoreEntities;
 		int channel;
 		EngineRayResultCallback(btVector3 begin, btVector3 end, const std::vector<Entity*> &ignore, int channel) :
-			ignoreEntities(ignore.begin(), ignore.end()), channel(channel), btCollisionWorld::ClosestRayResultCallback(begin, end) {
+			btCollisionWorld::ClosestRayResultCallback(begin, end), ignoreEntities(ignore.begin(), ignore.end()), channel(channel) {
 			m_collisionFilterGroup = channel;
 			m_collisionFilterMask = channel;
 		}

@@ -12,6 +12,10 @@
 
 #include <cstring>
 
+
+CollisionShapeInfo::Info::~Info() {
+}
+
 void PrimitiveCollisionShape::Init(const std::string &type) {
 	Destroy();
 	if(type == "box")			info = new CollisionShapeInfo::Box;
@@ -146,7 +150,7 @@ void CollisionShapeInfo::Convex::GetJSON(JSON& json) const {
 void CollisionShapeInfo::Convex::MakeFromJSON(const JSON& json) {
 	const JSON& verts = json["vertices"];
 	vertices.resize(verts.size()/3);
-	for(int i=0; i<vertices.size(); ++i) {
+	for(size_t i=0; i<vertices.size(); ++i) {
 		vertices[i] = btVector3(verts[i*3].Real(), verts[i*3+1].Real(), verts[i*3+2].Real());
 	}
 }
@@ -177,7 +181,7 @@ void CollisionShapeInfo::Trimesh::GetJSON(JSON& json) const {
 	json["indices"].InitArray();
 	JSON& inds = json["indices"];
 	inds.Array().resize(indices.size());
-	int i = 0;
+	size_t i = 0;
 	for(int id : indices)
 		inds[i++] = id;
 }
@@ -189,7 +193,7 @@ void CollisionShapeInfo::Trimesh::MakeFromJSON(const JSON& json) {
 	
 	const JSON& verts = json["vertices"];
 	vertices.resize(verts.size()/3);
-	for(int i=0; i<vertices.size(); ++i)
+	for(size_t i=0; i<vertices.size(); ++i)
 		vertices[i] = btVector3(verts[i*3].Real(), verts[i*3+1].Real(), verts[i*3+2].Real());
 	
 	const JSON& inds = json["indices"];

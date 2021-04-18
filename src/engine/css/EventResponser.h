@@ -12,7 +12,7 @@ class EventResponser  {
 public:
 	
 	EventResponser();
-	~EventResponser();
+	virtual ~EventResponser();
 	
 	virtual void MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) = 0;
 	virtual void KeyPressedEvent(int keyCode) = 0;

@@ -61,7 +61,7 @@ float TimeCounter::GetPitTime() const {
 
 float TimeCounter::GetSmoothTime() const {
 	float ret = 0.000001f;
-	for(int i = 0; i < array.size(); ++i)
+	for(size_t i = 0; i < array.size(); ++i)
 		ret += TimeCounter::GetDurationSeconds(array[i].begin, array[i].end);
 	if(array.size()) {
 		ret -= 0.000001f;

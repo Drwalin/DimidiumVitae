@@ -19,7 +19,7 @@ class EventReceiverIrrlicht : public irr::IEventReceiver {
 public:
 	
 	EventReceiverIrrlicht(EventResponser *event);
-	~EventReceiverIrrlicht();
+	virtual ~EventReceiverIrrlicht();
 	
 	void SetCursor(int x, int y);
 	void GetCursor(int &x, int &y);

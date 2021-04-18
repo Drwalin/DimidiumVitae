@@ -12,6 +12,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cinttypes>
 
 GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
 	type = other.type;
@@ -22,6 +23,8 @@ GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
 	case GUIDrawEvent::Type::IMAGE:
 		image = other.image;
 		texture = other.texture;
+		break;
+	default:
 		break;
 	}
 	return (*this);
@@ -34,6 +37,8 @@ void GUIDrawEvent::Draw() {
 		break;
 	case GUIDrawEvent::Type::IMAGE:
 		sing::videoDriver->draw2DImage(texture->GetITexture(), image.destiny, image.source, NULL, &(image.color), true);
+		break;
+	default:
 		break;
 	}
 }
@@ -147,14 +152,14 @@ void GUI::PrintOneText(char *str, int length) {
 		for(i=0; i<length && i<63 && str[i]; ++i) {
 			wchar_t oneCharwstring[2] = {(wchar_t)str[i],0};
 			auto size = currentFont->getDimension(oneCharwstring);
-			if(size.Width + width < wokrSpaceSize.X)
+			if((int)size.Width + width < wokrSpaceSize.X)
 				width += size.Width;
 			else
 			{
 				--i;
 				break;
 			}
-			if(height < size.Height)
+			if(height < (int)size.Height)
 				height = size.Height;
 		}
 		PrintOneLine(str, i, width, height);

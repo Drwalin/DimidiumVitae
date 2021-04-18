@@ -16,7 +16,7 @@ public:
 	virtual void Tick(const float deltaTime) override;
 	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
 	
-	__ENTITY_DERIVED_HEADER_FACTORY__(StaticEntity);
+	__ENTITY_DERIVED_HEADER_FACTORY__(StaticEntity)
 	
 protected:
 	

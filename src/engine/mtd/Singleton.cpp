@@ -11,13 +11,13 @@ namespace irr {
 	class IrrlichtDevice;
 	namespace video {
 		class IVideoRenderer;
-	};
+	}
 	namespace scene {
 		class ISceneManager;
-	};
+	}
 	namespace gui {
 		class IGUIEnvironment;
-	};
+	}
 }
 
 namespace sing {
@@ -35,6 +35,6 @@ namespace sing {
 	class ResourceManager *resourceManager = NULL;
 	
 	GUI gui;
-};
+}
 
 #endif

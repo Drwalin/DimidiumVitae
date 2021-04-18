@@ -31,7 +31,7 @@ public:
 	
 	virtual void Tick(const float deltaTime) override;
 	
-	__ENTITY_DERIVED_HEADER_FACTORY__(Trigger);
+	__ENTITY_DERIVED_HEADER_FACTORY__(Trigger)
 	
 protected:
 	

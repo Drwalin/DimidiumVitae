@@ -1,6 +1,6 @@
 
 CXX = g++
-CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g
+CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Wall -pedantic
 CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib -Isrc$(S)thirdparty -Idep$(S)JSON/include
 LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
 LIBS += -lIrrlicht -lm -lpthread

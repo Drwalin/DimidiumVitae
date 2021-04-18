@@ -97,11 +97,15 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 			mouseX = event.MouseInput.X;
 			mouseY = event.MouseInput.Y;
 			break;
+		default:
+			break;
 		}
 		break;
 	case irr::EET_GUI_EVENT:
 		if(sing::window->GetCurrentMenu())
 			sing::window->GetCurrentMenu()->OnEvent(event.GUIEvent);
+		break;
+	default:
 		break;
 	}
 }

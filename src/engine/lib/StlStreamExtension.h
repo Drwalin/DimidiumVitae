@@ -85,8 +85,8 @@ namespace irr {
 	namespace io {
 		class IWriteFile;
 		class IReadFile;
-	};
-};
+	}
+}
 
 class oirrstreambuf : public __base_ostreambuf {
 public:
@@ -121,7 +121,7 @@ class __t_iostream : public Tstream {
 public:
 	
 	__t_iostream(Args... args) :
-		__streambuf(args...), Tstream(&__streambuf) {
+		Tstream(&__streambuf), __streambuf(args...) {
 	}
 	
 	~__t_iostream() {

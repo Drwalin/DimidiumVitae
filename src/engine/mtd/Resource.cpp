@@ -33,6 +33,7 @@ const std::string& Resource::GetResourceTypeString(ResourceType type) {
 		case TEXTURE: return texture;
 		case MATERIAL: return material;
 		case COLLISIONSHAPE: return collisionShape;
+		default: break;
 	}
 	const static std::string none;
 	return none;

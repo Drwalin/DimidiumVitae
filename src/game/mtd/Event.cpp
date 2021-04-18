@@ -27,13 +27,13 @@ irr::scene::ISceneNode *lightSceneNode = 0;
 
 void Event::KeyPressedEvent(int keyCode) {
 	Entity *player = sing::engine->GetEntity(3);
-	Entity *temp = NULL;
+	//Entity *temp = NULL;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
-	Player *playerPtr = NULL;
+	//Player *playerPtr = NULL;
 	if(player) {
 		character = dynamic_cast<Character*>(player);
-		playerPtr = dynamic_cast<Player*>(player);
+	//	playerPtr = dynamic_cast<Player*>(player);
 	}
 	MotionController* playerMotionController = character->GetMotionController();
 	
@@ -130,11 +130,11 @@ void Event::KeyHoldedEvent(int keyCode) {
 	Entity *temp;
 	btVector3 begin, end, point, normal, euler;
 	Character *character = NULL;
-	Player *playerPtr = NULL;
+	//Player *playerPtr = NULL;
 	Entity* ptemp=NULL;
 	if(player) {
 		character = dynamic_cast<Character*>(player);
-		playerPtr = dynamic_cast<Player*>(player);
+	//	playerPtr = dynamic_cast<Player*>(player);
 	}
 	
 	MotionController* playerMotionController = character->GetMotionController();
@@ -230,12 +230,13 @@ void Event::KeyHoldedEvent(int keyCode) {
 void Event::StringToEnterEvent(std::string str) {
 	fprintf(stderr, "\n Input string: \"%s\"", str.c_str());
 	
-	Entity *player = sing::engine->GetEntity(2);
-	Entity *temp;
+	//Entity *player = sing::engine->GetEntity(2);
+	//Entity *temp;
 	btVector3 begin, end, point, normal;
-	Character *character = NULL;
-	if(player)
-		character = dynamic_cast<Character*>(player);
+	//Character *character = NULL;
+	//if(player) {
+	//	character = dynamic_cast<Character*>(player);
+	//}
 	
 	if(str == "Rel") {
 		fprintf(stderr, "\n StringToEnterEvent(%s); ", str.c_str());

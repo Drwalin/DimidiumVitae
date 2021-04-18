@@ -19,6 +19,7 @@
 namespace CollisionShapeInfo {
 	class Info {
 	public:
+		virtual ~Info();
 		virtual btCollisionShape* Get() const =0;
 		virtual const std::string& GetName() const =0;
 		virtual void GetJSON(JSON& json) const =0;
@@ -96,7 +97,7 @@ namespace CollisionShapeInfo {
 		~Trimesh();
 		void Done();
 	};
-};
+}
 
 class PrimitiveCollisionShape {
 public:

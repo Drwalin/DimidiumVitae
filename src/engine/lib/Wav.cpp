@@ -33,7 +33,7 @@ void *WAVLoadFromFile(WavHeader *wavHeader, const char *fileName) {
 			}
 			file.read(buffer, wavHeader->Subchunk2Size);
 			int c = file.gcount();
-			if(c != wavHeader->Subchunk2Size) {
+			if(c != (int)wavHeader->Subchunk2Size) {
 				free(buffer);
 				fprintf(stderr, "\n Error while reading from file \"%s\" to Wav buffer; readed: %i / %i", fileName, c, wavHeader->Subchunk2Size);
 				return NULL;
