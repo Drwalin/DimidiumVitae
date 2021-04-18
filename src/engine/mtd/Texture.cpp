@@ -36,12 +36,14 @@ Resource::ResourceType Texture::GetResourceType() const {
 	return Resource::TEXTURE;
 }
 
-void Texture::GetJSON(JSON& json) const {
+JSON Texture::GetJSON() const {
+	JSON json;
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Texture";
 		json["name"] = name;
 	}
+	return json;
 }
 
 #endif

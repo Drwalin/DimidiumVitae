@@ -70,12 +70,14 @@ Resource::ResourceType Model::GetResourceType() const {
 	return Resource::MODEL;
 }
 
-void Model::GetJSON(JSON& json) const {
+JSON Model::GetJSON() const {
+	JSON json;
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Model";
 		json["name"] = name;
 	}
+	return json;
 }
 
 #endif

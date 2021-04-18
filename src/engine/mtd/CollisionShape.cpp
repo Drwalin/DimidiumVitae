@@ -75,7 +75,8 @@ Resource::ResourceType CollisionShape::GetResourceType() const {
 	return Resource::COLLISIONSHAPE;
 }
 
-void CollisionShape::GetJSON(JSON& json) const {
+JSON CollisionShape::GetJSON() const {
+	JSON json;
 	json.InitObject();
 	json["class"] = "CollisionShape";
 	if(name != "") {
@@ -85,10 +86,11 @@ void CollisionShape::GetJSON(JSON& json) const {
 		json["primitives"].Array().resize(primitives.size());
 		int i=0;
 		for(auto& it : primitives) {
-			it.GetJSON(json["primitives"][i]);
+			json["primitives"][i] = it.GetJSON();
 			++i;
 		}
 	}
+	return json;
 }
 
 #endif

@@ -22,7 +22,7 @@ public:
 	
 	void SetSceneNode(irr::scene::IAnimatedMeshSceneNode *iSceneNode);
 	
-	void GetJSON(JSON& json) const;
+	JSON GetJSON() const;
 	
 private:
 	

@@ -22,7 +22,7 @@ Compression:
 Ogg files reading:
 	libogg 1.3.4
 	libvorbis 1.3.6
-		-https://github.com/DrwalinPCF/libogg-libvorbis-compiler
+		-https://github.com/Drwalin/libogg-libvorbis-compiler
 		libvorbisogg.dll
 
 GCC and G++ standard:
@@ -38,9 +38,10 @@ Windows specific:
 	msvcr100_clr0400.dll
 
 Json:
-	RapidJSON
+	https://github.com/Drwalin/JSON
 
-
+Crossplatform Makefile:
+	https://github.com/Drwalin/MakefileSTD
 
 
 

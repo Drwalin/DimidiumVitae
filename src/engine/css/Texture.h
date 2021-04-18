@@ -27,7 +27,7 @@ public:
 	operator bool() const;
 	
 	virtual Resource::ResourceType GetResourceType() const override;
-	virtual void GetJSON(JSON& json) const override;
+	virtual JSON GetJSON() const override;
 	
 private:
 	

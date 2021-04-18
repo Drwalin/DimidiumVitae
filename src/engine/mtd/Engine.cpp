@@ -69,7 +69,7 @@ Entity* Engine::AddEntity(const std::string className, uint64_t id, std::shared_
 	json["class"] = className;
 	if(shape) {
 		json["shape"].InitObject();
-		shape->GetJSON(json["shape"]);
+		json["shape"] = shape->GetJSON();
 	}
 	json["mass"] = mass;
 	json["id"] = id;

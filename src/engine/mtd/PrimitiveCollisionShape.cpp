@@ -35,8 +35,10 @@ const std::string& CollisionShapeInfo::Box::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Box::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Box::GetJSON() const {
+	JSON json;
 	json["size"] <<= size;
+	return json;
 }
 
 void CollisionShapeInfo::Box::MakeFromJSON(const JSON& json) {
@@ -59,8 +61,10 @@ const std::string& CollisionShapeInfo::Sphere::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Sphere::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Sphere::GetJSON() const {
+	JSON json;
 	json["radius"] = radius;
+	return json;
 }
 
 void CollisionShapeInfo::Sphere::MakeFromJSON(const JSON& json) {
@@ -83,9 +87,11 @@ const std::string& CollisionShapeInfo::Cylinder::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Cylinder::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Cylinder::GetJSON() const {
+	JSON json;
 	json["radius"] = radius;
 	json["height"] = height;
+	return json;
 }
 
 void CollisionShapeInfo::Cylinder::MakeFromJSON(const JSON& json) {
@@ -110,9 +116,11 @@ const std::string& CollisionShapeInfo::Capsule::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Capsule::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Capsule::GetJSON() const {
+	JSON json;
 	json["radius"] = radius;
 	json["height"] = height;
+	return json;
 }
 
 void CollisionShapeInfo::Capsule::MakeFromJSON(const JSON& json) {
@@ -137,7 +145,8 @@ const std::string& CollisionShapeInfo::Convex::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Convex::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Convex::GetJSON() const {
+	JSON json;
 	json["vertices"].InitArray();
 	JSON& verts = json["vertices"];
 	for(auto vert : vertices) {
@@ -145,6 +154,7 @@ void CollisionShapeInfo::Convex::GetJSON(JSON& json) const {
 		verts.Array().push_back(vert.y());
 		verts.Array().push_back(vert.z());
 	}
+	return json;
 }
 
 void CollisionShapeInfo::Convex::MakeFromJSON(const JSON& json) {
@@ -170,7 +180,8 @@ const std::string& CollisionShapeInfo::Trimesh::GetName() const {
 	return name;
 }
 
-void CollisionShapeInfo::Trimesh::GetJSON(JSON& json) const {
+JSON CollisionShapeInfo::Trimesh::GetJSON() const {
+	JSON json;
 	json["vertices"].InitArray();
 	JSON& verts = json["vertices"];
 	for(auto vert : vertices) {
@@ -184,6 +195,7 @@ void CollisionShapeInfo::Trimesh::GetJSON(JSON& json) const {
 	size_t i = 0;
 	for(int id : indices)
 		inds[i++] = id;
+	return json;
 }
 
 void CollisionShapeInfo::Trimesh::MakeFromJSON(const JSON& json) {
@@ -256,13 +268,15 @@ btTransform PrimitiveCollisionShape::GetTransform() const {
 	return transform;
 }
 
-void PrimitiveCollisionShape::GetJSON(JSON& json) const {
+JSON PrimitiveCollisionShape::GetJSON() const {
+	JSON json;
 	if(info) {
 		json.InitObject();
-		info->GetJSON(json);
+		json = info->GetJSON();
 		json["transform"] <<= transform;
 		json["type"] = info->GetName();
 	}
+	return json;
 }
 
 void PrimitiveCollisionShape::MakeFromJSON(const JSON& json) {

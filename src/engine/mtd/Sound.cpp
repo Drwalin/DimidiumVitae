@@ -117,12 +117,14 @@ Resource::ResourceType Sound::GetResourceType() const {
 	return Resource::SOUND;
 }
 
-void Sound::GetJSON(JSON& json) const {
+JSON Sound::GetJSON() const {
+	JSON json;
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Sound";
 		json["name"] = name;
 	}
+	return json;
 }
 
 #endif

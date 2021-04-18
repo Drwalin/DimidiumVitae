@@ -81,12 +81,14 @@ Resource::ResourceType Material::GetResourceType() const {
 	return Resource::MATERIAL;
 }
 
-void Material::GetJSON(JSON& json) const {
+JSON Material::GetJSON() const {
+	JSON json;
 	json.InitObject();
 	if(name != "") {
 		json["class"] = "Material";
 		json["name"] = name;
 	}
+	return json;
 }
 
 #endif

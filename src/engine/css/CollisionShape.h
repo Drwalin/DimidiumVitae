@@ -23,7 +23,7 @@ public:
 	CollisionShape(const JSON& json);
 	virtual ~CollisionShape();
 	
-	virtual void GetJSON(JSON& json) const override;
+	virtual JSON GetJSON() const override;
 	
 	btCollisionShape* GetNewBtCollisionShape() const;
 	static void DestroyBtCollisionShape(btCollisionShape *shape);

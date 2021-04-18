@@ -39,7 +39,7 @@ public:
 	Animation GetAnimation(const std::string &animationName) const;
 	
 	virtual Resource::ResourceType GetResourceType() const override;
-	virtual void GetJSON(JSON& json) const override;
+	virtual JSON GetJSON() const override;
 	
 private:
 	
