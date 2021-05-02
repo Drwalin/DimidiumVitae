@@ -40,6 +40,9 @@ bin$(S)%.o: src$(S)game$(S)mtd$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 
+bin$(S)JSON.o: dep$(S)JSON$(S)src$(S)JSON.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+
 
 .PHONY: clean
 clean:

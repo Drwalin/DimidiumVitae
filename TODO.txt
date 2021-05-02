@@ -13,18 +13,18 @@ TO DO:
 		- update Readme.txt linux compilation section
 		- choose a license
 		- update Dependencies.txt for linux
-	Map loading system from JSON
-	Saving and loading Entities, SceneNodes from JSON
+	Map loading system from JSON or from script with jsons
+	Saving and loading Entities, SceneNodes from JSON or with using scripts
 	Correct MotionController varying jump height
 	Make explicit instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
 	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
-	Add initializer list constructor for JSON
-	Add bool Entity::EverNeedTick() const
+	Add bool Entity::EverNeedTick() const and separate lists of objects that needs frequent/rare/none updates to reduce engine tick time
 	Correct jiggly mouse movement while mouse is locked
 	Use Semantic Versioning (https://semver.org/) consistently
 	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
 	Update Readme.txt
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
+	Add custom scripts interpreter to control game/map loading/saves and to add native-script ((compiled) loaded from shared object) and scripts written in files, that each line (or code between ';' is interpreted as one line of code), it can be used to add in-game console and to modify objects/game state
 	
 	
 
@@ -34,6 +34,7 @@ TO DO (to think/code restructuring):
 	Font resource class
 	Replace bullet physics engine with simple box/sphere/triangle parallel collision detection
 	
+
 
 Done:
 	Makefile (and binaries?) for linux
