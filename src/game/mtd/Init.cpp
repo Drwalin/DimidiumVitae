@@ -3,7 +3,7 @@
 // Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
 
-#include <dll/DllImporter.h>
+#include <DllImporter.h>
 #include <Math.hpp>
 #include <Debug.h>
 #include <StdUtil.hpp>

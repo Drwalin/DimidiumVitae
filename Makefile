@@ -1,7 +1,8 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Wall -pedantic
-CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib -Isrc$(S)thirdparty -Idep$(S)JSON/include
+CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib
+CXXFLAGS += -Idep$(S)JSON$(S)include -Idep$(S)DllLoader$(S)include
 LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
 LIBS += -lIrrlicht -lm -lpthread
 SHAREDFLAGS = -shared -Wl,-rpath,.
@@ -32,15 +33,17 @@ ObjToShapeConverter$(EXEC_EXT): src$(S)tools$(S)ObjToShapeConverter.cpp bin$(S)J
 
 bin$(S)%.o: src$(S)engine$(S)mtd$(S)%.cpp src$(S)engine$(S)css$(S)%.h
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-bin$(S)%.o: src$(S)engine$(S)lib$(S)dll$(S)%.cpp
-	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 bin$(S)%.o: src$(S)engine$(S)lib$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 bin$(S)%.o: src$(S)game$(S)mtd$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 
+
 bin$(S)JSON.o: dep$(S)JSON$(S)src$(S)JSON.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+
+bin$(S)%.o: dep$(S)DllLoader$(S)src$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 

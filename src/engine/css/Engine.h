@@ -28,7 +28,7 @@
 #include "ResourceManager.h"
 #include "FileSystem.h"
 
-#include <dll/ClassFactory.h>
+#include <ClassFactory.h>
 
 class Engine {
 public:
