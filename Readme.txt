@@ -75,9 +75,18 @@ Dimidium Vitae v0.3.3
 
 ============================================================================
 5. How To Compile
-============================================================================
+================================================================================
 
   On Windows with mingw:
+    #0.:
+  		Add environment variables entries:
+			CPATH:
+				add paths to include directories of Irrlicht, bullet,
+				bullet/bullet, zlib...
+			LIBRARY_PATH:
+				add C:\Windows\System32;C:\Windows\SysWOW64
+				and paths to headers of other libraries.
+				
     #1.:
 	    Compile Irrlicht (http://irrlicht.sourceforge.net/), then copy
 		Irrlicht.dll into /dep directory
