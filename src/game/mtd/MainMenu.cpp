@@ -25,7 +25,7 @@ MainMenu::~MainMenu() {
 }
 
 bool MainMenu::RenderSceneInBackground() const {
-	return false;
+	return true;
 }
 
 void MainMenu::KeyReleasedEvent(int keyCode) {

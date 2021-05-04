@@ -24,7 +24,7 @@ void Window::ParallelToDrawTick() {
 		while(parallelThreadToDrawContinue.load() == false) {
 			if(IsParallelToDrawTickInUse() == false)
 				return;
-			std::this_thread::yield();
+			TimeCounter::Sleep(0.0001);
 		}
 		sing::engine->AsynchronousTick(GetDeltaTime());
 		parallelThreadToDrawContinue.store(false);
@@ -261,7 +261,7 @@ void Window::Init(const std::string &windowName, const std::string &iconFile, in
 	eventIrrlichtReceiver = new EventReceiverIrrlicht(eventResponser);
 	
 	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
-	printf("\n Using Irrlicht %s", device->getVersion());
+	printf(" Using Irrlicht %s\n", device->getVersion());
 	device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
 	device->setResizable(true);
 	

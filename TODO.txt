@@ -33,6 +33,7 @@ TO DO (to think/code restructuring):
 	Remove GetVersion.cpp
 	Font resource class
 	Replace bullet physics engine with simple box/sphere/triangle parallel collision detection
+	Change structure of threads: Renderer, Command/Script Issuer, Update Threads, Collision Thread; Design no-blocking threads communication
 	
 
 
