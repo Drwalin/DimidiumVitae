@@ -1,0 +1,29 @@
+
+//	This file is part of The Drwalin Engine project
+// Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
+
+#include <Script.h>
+#include <Engine.h>
+#include <JSON.hpp>
+#include <Singleton.h>
+
+void Delete(const JSON& args) {
+	if(args[1].String() == "entity") {
+			sing::engine->DeleteEntity(args[2].Integer());
+	} else if(args[1].String() == "entities") {
+		std::string className = args[2].String();
+		std::map<uint64_t, Entity*> entities = sing::engine->GetEntities();
+		size_t deletedCount = 0;
+		for(auto it : entities) {
+			if(it.second->GetClassName() == className) {
+				deletedCount++;
+				sing::engine->DeleteEntity(it.first);
+			}
+		}
+		MESSAGE(std::string("Deleted ") + std::to_string(deletedCount) +
+				" entities");
+	} else {
+		MESSAGE(std::string("Invalid delete argument (1): ") + args[1].Write());
+	}
+}
+

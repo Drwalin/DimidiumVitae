@@ -75,5 +75,19 @@ bool Script::NeedSync() const {
 	return false;
 }
 
+
+
+ScriptNative::ScriptNative(void (*run)(const JSON&), bool needSync) :
+	_Run(run), needSync(needSync) {
+}
+
+void ScriptNative::Run(const JSON& json) const {
+	_Run(json);
+}
+
+bool ScriptNative::NeedSync() const {
+	return needSync;
+}
+
 #endif
 

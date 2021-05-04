@@ -42,5 +42,20 @@ private:
 	std::vector<JSON> commands;
 };
 
+class ScriptNative : public ScriptBase {
+public:
+	
+	ScriptNative(void (*run)(const JSON&), bool needSync);
+	virtual ~ScriptNative() override = default;
+	
+	virtual void Run(const JSON& args) const override;
+	virtual bool NeedSync() const override;
+	
+private:
+	
+	void (*_Run)(const JSON&);
+	const bool needSync;
+};
+
 #endif
 

@@ -37,7 +37,6 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 }
 
 Entity* Engine::AddEntity(const JSON& json) {
-	MESSAGE(json.Write());
 	if(!json.IsObject())
 		return NULL;
 	
@@ -94,6 +93,11 @@ Entity* Engine::AddEntity(const std::string className,
 		btScalar mass) {
 	return AddEntity(className, GetAvailableEntityId(), shape, transform, mass);
 }
+
+const std::map<uint64_t, Entity*>& Engine::GetEntities() const {
+	return entities;
+}
+
 
 inline void Engine::UpdateEntitiesOverlapp() {
 	for(auto it = triggerEntities.begin(); it != triggerEntities.end(); ++it) {
@@ -262,6 +266,10 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	sing::engine = this;
 	try {
 		sing::fileSystem = fileSystem = new FileSystem();
+		sing::commandInterpreter = commandInterpreter = new CommandInterpreter();
+		
+		scriptsDll = std::shared_ptr<Dll>(new Dll("./scripts"));
+		scriptsDll->Get<void(*)(void)>("AddEngineScripts")();
 		
 		JSON json = fileSystem->ReadJSON(jsonConfigFile ? jsonConfigFile :
 				"defaultEngineConfig.json");
@@ -278,7 +286,6 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		sing::resourceManager = resourceManager =
 			new ResourceManager(json.Object().count("resourcePersistencyTime") ?
 					json["resourcePersistencyTime"].Real() : 60.0f);
-		sing::commandInterpreter = commandInterpreter = new CommandInterpreter();
 		
 		if(json.Object().count("lockMouse") ? json["lockMouse"].Boolean() : true) {
 			window->HideMouse();

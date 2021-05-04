@@ -57,6 +57,11 @@ void CommandInterpreter::ExecuteSyncCommands(size_t count) {
 
 
 void CommandInterpreter::AddNativeScript(const std::string& name,
+		void (*run)(const JSON&), bool needSync) {
+	AddNativeScript(name,
+			std::shared_ptr<ScriptBase>(new ScriptNative(run, needSync)));
+}
+void CommandInterpreter::AddNativeScript(const std::string& name,
 		std::shared_ptr<ScriptBase> script) {
 	std::lock_guard<std::mutex> lock(scriptMutex);
 	scripts[name] = script;

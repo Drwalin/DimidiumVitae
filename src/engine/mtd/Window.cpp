@@ -229,7 +229,8 @@ void Window::Tick() {
 	asynchronousTickTime.SubscribeStart();
 	if(IsParallelToDrawTickInUse())
 		parallelThreadToDrawContinue.store(true);
-	Draw(currentMenu==NULL || (currentMenu&&currentMenu->RenderSceneInBackground()));
+	Draw(currentMenu==NULL ||
+			(currentMenu&&currentMenu->RenderSceneInBackground()));
 	if(IsParallelToDrawTickInUse()) {
 		while(parallelThreadToDrawContinue.load())
 			TimeCounter::Sleep(0.0003);
@@ -254,15 +255,19 @@ void Window::DrawGUI() {
 	gui.Flush();
 }
 
-void Window::Init(const std::string &windowName, const std::string &iconFile, int width, int height, EventResponser *eventResponser, bool fullscreen) {
+void Window::Init(const std::string &windowName, const std::string &iconFile,
+		int width, int height, EventResponser *eventResponser, bool fullscreen) {
 	Destroy();
 	
 	this->eventResponser = eventResponser;
 	eventIrrlichtReceiver = new EventReceiverIrrlicht(eventResponser);
 	
-	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(width, height), 16, fullscreen, true, false, this->eventIrrlichtReceiver);
+	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL,
+			irr::core::dimension2du(width, height), 16, fullscreen, true, false,
+			this->eventIrrlichtReceiver);
 	printf(" Using Irrlicht %s\n", device->getVersion());
-	device->setWindowCaption(std::wstring(windowName.c_str(),windowName.c_str()+windowName.size()).c_str());
+	device->setWindowCaption(std::wstring(windowName.c_str(),
+				windowName.c_str()+windowName.size()).c_str());
 	device->setResizable(true);
 	
 	sing::videoDriver = videoDriver = device->getVideoDriver();
@@ -274,7 +279,8 @@ void Window::Init(const std::string &windowName, const std::string &iconFile, in
 	if(!videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET))
 		MESSAGE("videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET) failed");
 	
-	igui->getSkin()->setFont(device->getGUIEnvironment()->getFont("./media/Fonts/courier.bmp"));
+	igui->getSkin()->setFont(device->getGUIEnvironment()->
+			getFont("./media/Fonts/courier.bmp"));
 	
 	gui.Init();
 	

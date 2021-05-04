@@ -50,6 +50,8 @@ public:
 	Entity* AddEntity(const std::string className, uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
 	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
 	Entity* GetEntity(uint64_t entityId);
+	const std::map<uint64_t, Entity*>& GetEntities() const;
+	
 	
 	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
@@ -87,6 +89,7 @@ private:
 private:
 	
 	ClassFactory<Entity, const JSON&> classFactory;
+	std::shared_ptr<Dll> scriptsDll;
 	
 	World *world;
 	Window *window;

@@ -11,7 +11,7 @@ SHAREDFLAGS = -shared -Wl,-rpath,.
 include MakefilePlatformSpecific
 include MakefileFiles
 
-compile: .$(S)game$(EXEC_EXT) .$(S)game-core$(SHARED_EXT) .$(S)engine$(SHARED_EXT)
+compile: .$(S)game$(EXEC_EXT) .$(S)game-core$(SHARED_EXT) .$(S)engine$(SHARED_EXT) .$(S)scripts$(SHARED_EXT)
 
 run: compile
 	./game$(EXTEXECUTEXEC_EXT)
@@ -23,12 +23,14 @@ ObjToShapeConverter$(EXEC_EXT): src$(S)tools$(S)ObjToShapeConverter.cpp bin$(S)J
 
 
 
-.$(S)game$(EXEC_EXT): bin$(S)Main.o .$(S)engine$(SHARED_EXT)
+.$(S)game$(EXEC_EXT): bin$(S)Main.o .$(S)engine$(SHARED_EXT) .$(S)scripts$(SHARED_EXT)
 	$(CXX) -o $@ $(CXXFLAGS) $(LIBS) bin$(S)Main.o .$(S)engine$(SHARED_EXT)
 .$(S)engine$(SHARED_EXT): $(ENGOBJ)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(SHAREDFLAGS) $(LIBS)
 .$(S)game-core$(SHARED_EXT): $(GAMEOBJ) .$(S)engine$(SHARED_EXT)
 	$(CXX) -o $@ $(CXXFLAGS) $(GAMEOBJ) .$(S)engine$(SHARED_EXT) $(SHAREDFLAGS) $(LIBS)
+.$(S)scripts$(SHARED_EXT): $(SCRIPTSOBJ)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(SHAREDFLAGS) $(LIBS)
 
 
 
@@ -47,10 +49,13 @@ bin$(S)JSON.o: dep$(S)JSON$(S)src$(S)JSON.cpp
 bin$(S)%.o: dep$(S)DllLoader$(S)src$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
+bin$(S)scripts$(S)%.o: src$(S)engine$(S)scripts$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 .PHONY: clean
 clean:
 	$(RM) game$(EXEC_EXT) bin$(S)Main.o
 	$(RM) engine$(SHARED_EXT) $(ENGOBJDEL)
 	$(RM) game-core$(SHARED_EXT) $(GAMEOBJDEL)
+	$(RM) scripts$(SHARED_EXT) $(SCRIPTSDEL)
 

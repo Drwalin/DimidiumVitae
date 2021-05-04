@@ -37,6 +37,8 @@ public:
 	void ExecuteSyncCommands(size_t count = 1);
 	
 	void AddNativeScript(const std::string& name,
+			void (*run)(const JSON&), bool needSync);
+	void AddNativeScript(const std::string& name,
 			std::shared_ptr<ScriptBase> script);
 	void AddNativeScript(const std::string& name, std::shared_ptr<Dll> dll);
 	void AddScript(const std::string& name, const std::string& file);
