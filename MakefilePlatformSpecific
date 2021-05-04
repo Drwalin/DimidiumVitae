@@ -6,7 +6,7 @@ ifeq ($(platform),win)
 	LIBS += -lgcc_s_seh-1 -lwinpthread-1 -lmfc100
 	LIBS += -lmfc100u -lmsvcp100 -lmsvcr100 -lmsvcr100_clr0400 -lvorbisogg
 else
-	LIBS += -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype
+	LIBS += -lopenal -lvorbisenc -lvorbisfile -lvorbis -lfreetype -ldl -lz
 	CXXFLAGS += -fPIC
 	CXXFLAGS += -I/usr/include -I/usr/include/irrlich -I/usr/include/bullet
 endif

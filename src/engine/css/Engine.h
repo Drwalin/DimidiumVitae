@@ -27,6 +27,7 @@
 #include "SoundEngine.h"
 #include "ResourceManager.h"
 #include "FileSystem.h"
+#include "CommandInterpreter.h"
 
 #include <ClassFactory.h>
 
@@ -93,6 +94,7 @@ private:
 	FileSystem *fileSystem;
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
+	CommandInterpreter *commandInterpreter;
 	
 	std::map<uint64_t, Entity*> entities;
 	std::map<uint64_t, Trigger*> triggerEntities;

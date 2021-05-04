@@ -21,11 +21,10 @@ TO DO:
 	Add bool Entity::EverNeedTick() const and separate lists of objects that needs frequent/rare/none updates to reduce engine tick time
 	Correct jiggly mouse movement while mouse is locked
 	Use Semantic Versioning (https://semver.org/) consistently
-	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dependencies/DllLoader
 	Update Readme.txt
 	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
-	Add custom scripts interpreter to control game/map loading/saves and to add native-script ((compiled) loaded from shared object) and scripts written in files, that each line (or code between ';' is interpreted as one line of code), it can be used to add in-game console and to modify objects/game state
-	
+	Add map files, loading game state, saving game state with/as scripts
+	Add error validation to script parser
 	
 
 TO DO (to think/code restructuring):
@@ -35,7 +34,6 @@ TO DO (to think/code restructuring):
 	Replace bullet physics engine with simple box/sphere/triangle parallel collision detection
 	Change structure of threads: Renderer, Command/Script Issuer, Update Threads, Collision Thread; Design no-blocking threads communication
 	
-
 
 Done:
 	Makefile (and binaries?) for linux
@@ -78,6 +76,8 @@ Done:
 	Add self-choosing os in Makefile
 	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
 	Change void GetJSON(JSON&) const to JSON GetJSON() const
+	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dep/DllLoader
+	Add custom scripts interpreter to control gameplay and add native-script (loaded from shared object) and scripts written in files, it can be used to add in-game console and to modify objects/game state
 	
 
 TO DO in future:

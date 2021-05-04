@@ -3,6 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Wall -pedantic
 CXXFLAGS += -Isrc$(S)engine$(S)css -Isrc$(S)engine$(S)lib
 CXXFLAGS += -Idep$(S)JSON$(S)include -Idep$(S)DllLoader$(S)include
+CXXFLAGS += -Idep$(S)concurrentqueue
 LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
 LIBS += -lIrrlicht -lm -lpthread
 SHAREDFLAGS = -shared -Wl,-rpath,.

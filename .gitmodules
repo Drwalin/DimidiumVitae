@@ -7,3 +7,6 @@
 [submodule "dep/DllLoader"]
 	path = dep/DllLoader
 	url = https://github.com/Drwalin/DllLoader.git
+[submodule "dep/concurrentqueue"]
+	path = dep/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue.git

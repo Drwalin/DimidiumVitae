@@ -33,6 +33,7 @@ namespace sing {
 	class FileSystem *fileSystem = NULL;
 	class SoundEngine *soundEngine = NULL;
 	class ResourceManager *resourceManager = NULL;
+	class CommandInterpreter *commandInterpreter = NULL;
 	
 	GUI gui;
 }

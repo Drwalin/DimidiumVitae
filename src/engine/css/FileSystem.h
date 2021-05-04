@@ -35,7 +35,7 @@ public:
 	OFile(const OFile &other) = delete;
 	OFile(std::shared_ptr<std::ostream> stream);
 	
-	void flush() const;
+	virtual void flush() const;
 	
 private:
 	

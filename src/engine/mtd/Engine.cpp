@@ -18,11 +18,13 @@ int Engine::GetNumberOfEntities() const {
 	return entities.size();
 }
 
-bool Engine::RegisterType(const std::string &className, const std::string &moduleName) {
+bool Engine::RegisterType(const std::string &className,
+		const std::string &moduleName) {
 	if((bool)classFactory.AddClass(className.c_str(), moduleName.c_str())) {
 		return true;
 	}
-	MESSAGE(std::string("Cannot register type: ")+className+" from module: "+moduleName);
+	MESSAGE(std::string("Cannot register type: ")+className+" from module: "+
+			moduleName);
 	return false;
 }
 
@@ -35,6 +37,7 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 }
 
 Entity* Engine::AddEntity(const JSON& json) {
+	MESSAGE(json.Write());
 	if(!json.IsObject())
 		return NULL;
 	
@@ -60,24 +63,35 @@ Entity* Engine::AddEntity(const JSON& json) {
 	if(trigger)
 		triggerEntities[id] = trigger;
 	
+	if(json.Object().count("model"))
+		emptyEntity->SetModel(
+				sing::resourceManager->GetModel(
+					json["model"].String()));
+	
+	if(json.Object().count("scale")) {
+		btVector3 s;
+		emptyEntity->SetScale(s<<=json["scale"]);
+	}
+	
 	return emptyEntity;
 }
 
-Entity* Engine::AddEntity(const std::string className, uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
+Entity* Engine::AddEntity(const std::string className, uint64_t id,
+		std::shared_ptr<CollisionShape> shape, btTransform transform,
+		btScalar mass) {
 	JSON json;
-	json.InitObject();
 	json["class"] = className;
-	if(shape) {
-		json["shape"].InitObject();
+	if(shape)
 		json["shape"] = shape->GetJSON();
-	}
 	json["mass"] = mass;
 	json["id"] = id;
 	json["transform"] <<= transform;
 	return AddEntity(json);
 }
 
-Entity* Engine::AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass) {
+Entity* Engine::AddEntity(const std::string className,
+		std::shared_ptr<CollisionShape> shape, btTransform transform,
+		btScalar mass) {
 	return AddEntity(className, GetAvailableEntityId(), shape, transform, mass);
 }
 
@@ -169,13 +183,16 @@ void Engine::SynchronousTick(const float deltaTime) {
 	entityUpdateTime.SubscribeStart();
 	UpdateEntities(deltaTime);
 	resourceManager->ResourceFreeingCycle(16);
+	commandInterpreter->ExecuteSyncCommands(16);
 	entityUpdateTime.SubscribeEnd();
 	
-	sing::gui << "\n Entity Update Time: " << entityUpdateTime.GetSmoothTime()*1000.0f;
+	sing::gui << "\n Entity Update Time: " <<
+		entityUpdateTime.GetSmoothTime()*1000.0f;
 	sing::gui << " " << entityUpdateTime.GetPeakTime()*1000.0f;
 	sing::gui << " " << entityUpdateTime.GetPitTime()*1000.0f;
 	
-	sing::gui << "\n Physics Simulation Time: " << physicsSimulationTime.GetSmoothTime()*1000.0f;
+	sing::gui << "\n Physics Simulation Time: " <<
+		physicsSimulationTime.GetSmoothTime()*1000.0f;
 	sing::gui << " " << physicsSimulationTime.GetPeakTime()*1000.0f;
 	sing::gui << " " << physicsSimulationTime.GetPitTime()*1000.0f;
 }
@@ -246,15 +263,22 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	try {
 		sing::fileSystem = fileSystem = new FileSystem();
 		
-		JSON json = fileSystem->ReadJSON(jsonConfigFile ? jsonConfigFile : "defaultEngineConfig.json");
+		JSON json = fileSystem->ReadJSON(jsonConfigFile ? jsonConfigFile :
+				"defaultEngineConfig.json");
 		
 		event = eventResponser;
 		sing::world = world = new World;
 		world->Init();
 		sing::soundEngine = soundEngine = new SoundEngine();
 		sing::window = window = new Window;
-		window->Init(json["windowName"], json.Object().count("iconFile")?json["iconFile"].String():"", json["width"].Integer(), json["height"].Integer(), event, json.Object().count("fullscreen")?json["fullscreen"].Boolean():false);
-		sing::resourceManager = resourceManager = new ResourceManager(json.Object().count("resourcePersistencyTime")?json["resourcePersistencyTime"].Real():60.0f);
+		window->Init(json["windowName"],
+				json.Object().count("iconFile") ? json["iconFile"].String() : "",
+				json["width"].Integer(), json["height"].Integer(), event,
+				json.Object().count("fullscreen") ? json["fullscreen"].Boolean() : false);
+		sing::resourceManager = resourceManager =
+			new ResourceManager(json.Object().count("resourcePersistencyTime") ?
+					json["resourcePersistencyTime"].Real() : 60.0f);
+		sing::commandInterpreter = commandInterpreter = new CommandInterpreter();
 		
 		if(json.Object().count("lockMouse") ? json["lockMouse"].Boolean() : true) {
 			window->HideMouse();
@@ -266,8 +290,11 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		if(GetCamera() == NULL) {
-			window->SetCamera(std::shared_ptr<Camera>(new Camera(false, json["width"].Integer(), json["height"].Integer(), sing::sceneManager->addCameraSceneNode())));
-			window->GetCamera()->SetFOV(json.Object().count("fov")?json["fov"].Real():60.0f);
+			window->SetCamera(std::shared_ptr<Camera>(new Camera(false,
+							json["width"].Integer(), json["height"].Integer(),
+							sing::sceneManager->addCameraSceneNode())));
+			window->GetCamera()->SetFOV(json.Object().count("fov") ?
+					json["fov"].Real() : 60.0f);
 		}
 		
 		for(auto entry : json["modules"].Array())
@@ -275,16 +302,20 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		for(auto entry : json["types"].Array())
 			RegisterType(entry["name"], entry["module"]);
 		if(json.Object().count("fileArchives")) {
-			irr::io::IFileSystem *fileSystem = window->GetDevice()->getFileSystem();
+			irr::io::IFileSystem *fileSystem =
+				window->GetDevice()->getFileSystem();
 			for(auto entry : json["fileArchives"].Array())
-				fileSystem->addFileArchive(entry.String().c_str(), false, false);
+				fileSystem->addFileArchive(entry.String().c_str(), false,
+						false);
 		}
 	} catch(const std::string &e) {
 		MESSAGE("Exception while initialising engine: " + e);
 	} catch(const std::exception &e) {
-		MESSAGE(std::string("Exception while initialising engine: ") + e.what());
+		MESSAGE(std::string("Exception while initialising engine: ") +
+				e.what());
 	} catch(int e) {
-		MESSAGE(std::string("Exception while initialising engine: ") + std::to_string(e));
+		MESSAGE(std::string("Exception while initialising engine: ") +
+				std::to_string(e));
 	} catch(...) {
 		MESSAGE("Unknown exception while initialising engine");
 	}
@@ -333,10 +364,15 @@ void Engine::Destroy() {
 		delete fileSystem;
 		sing::fileSystem = fileSystem = NULL;
 	}
+	
+	if(commandInterpreter) {
+		delete commandInterpreter;
+		sing::commandInterpreter = commandInterpreter = NULL;
+	}
 }
 
 Engine::Engine() :
-	classFactory("__Constructor_%_Function"){
+	classFactory("__Constructor_%_Function") {
 	resourceManager = NULL;
 	event = NULL;
 	world = NULL;
@@ -350,19 +386,27 @@ Engine::~Engine() {
 	Destroy();
 }
 
-Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities) {
+Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel,
+		btVector3 &point, btVector3 &normal,
+		const std::vector<Entity*> &ignoreEntities) {
 	point = normal = btVector3(0,0,0);
 	
-	struct EngineRayResultCallback : public btCollisionWorld::ClosestRayResultCallback {
+	struct EngineRayResultCallback :
+		public btCollisionWorld::ClosestRayResultCallback {
 		std::set<Entity*> ignoreEntities;
 		int channel;
-		EngineRayResultCallback(btVector3 begin, btVector3 end, const std::vector<Entity*> &ignore, int channel) :
-			btCollisionWorld::ClosestRayResultCallback(begin, end), ignoreEntities(ignore.begin(), ignore.end()), channel(channel) {
+		EngineRayResultCallback(btVector3 begin, btVector3 end,
+				const std::vector<Entity*> &ignore, int channel) :
+			btCollisionWorld::ClosestRayResultCallback(begin, end),
+			ignoreEntities(ignore.begin(), ignore.end()), channel(channel) {
 			m_collisionFilterGroup = channel;
 			m_collisionFilterMask = channel;
 		}
-		virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace) {
-			Entity* ent = (Entity*)rayResult.m_collisionObject->getUserPointer();
+		virtual btScalar addSingleResult(
+				btCollisionWorld::LocalRayResult &rayResult,
+				bool normalInWorldSpace) {
+			Entity* ent =
+				(Entity*)rayResult.m_collisionObject->getUserPointer();
 			if(ent) {
 				if(ent->HasCommon(channel, channel) == 0) {
 					return 1.0f;
@@ -370,7 +414,9 @@ Entity* Engine::RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 
 				if(ignoreEntities.count(ent) > 0) {
 					return 1.0f;
 				}
-				return btCollisionWorld::ClosestRayResultCallback::addSingleResult(rayResult, normalInWorldSpace);
+				return
+					btCollisionWorld::ClosestRayResultCallback::addSingleResult(
+							rayResult, normalInWorldSpace);
 			}
 			return 1.0f;
 		}

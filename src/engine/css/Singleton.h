@@ -28,6 +28,7 @@ class ResourceManager;
 class Engine;
 class World;
 class Window;
+class CommandInterpreter;
 
 namespace sing {
 	extern class Engine *engine;
@@ -42,6 +43,8 @@ namespace sing {
 	extern class FileSystem *fileSystem;
 	extern class SoundEngine *soundEngine;
 	extern class ResourceManager *resourceManager;
+	extern class CommandInterpreter *commandInterpreter;
+	
 	extern GUI gui;
 }
 
