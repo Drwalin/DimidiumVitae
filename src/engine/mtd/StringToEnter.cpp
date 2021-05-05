@@ -9,8 +9,12 @@
 #include "../css/StringToEnter.h"
 #include "../css/Window.h"
 
-std::string StringToEnter::GetCurrent() {
+const std::string& StringToEnter::GetCurrent() {
 	return str;
+}
+
+void StringToEnter::SetCurrent(const std::string& str) {
+	this->str = str;
 }
 
 void StringToEnter::Clear() {

@@ -42,12 +42,17 @@ private:
 	void Update();
 	static std::wstring GetLogsText(size_t offset);
 	
+	static std::vector<std::string>& CommandsHistory();
+	
 private:
 	
-	Menu* previousMenu;
+	int scroll;
+	
 	int state;
+	int commandsHistory;
 	
 	Menu::StaticText *log, *input;
+	Menu::ScrollBar *scrollBar;
 	class StringToEnter* stringGetter;
 };
 

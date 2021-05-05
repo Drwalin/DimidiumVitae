@@ -23,7 +23,8 @@ public:
 	void PressKey(const irr::SEvent::SKeyInput &key);
 	
 	void Clear();
-	std::string GetCurrent();
+	const std::string& GetCurrent();
+	void SetCurrent(const std::string& str);
 	
 private:
 

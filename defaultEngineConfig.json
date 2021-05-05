@@ -7,6 +7,7 @@
 	"fullscreen": false,
 	"resourcePersistencyTime": 60,
 	"lockMouse": true,
+	"fpsMax": 10000,
 	"fov": 70.0,
 	"modules": [
 		"./engine",

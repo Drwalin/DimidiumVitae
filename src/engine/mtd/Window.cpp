@@ -64,6 +64,8 @@ void Window::StopMenu() {
 		Menu* top = activeMenus.back();
 		delete top;
 		activeMenus.pop_back();
+		if(!activeMenus.empty())
+			activeMenus.back()->RestoreFromBackground();
 	}
 }
 

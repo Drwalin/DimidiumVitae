@@ -11,6 +11,7 @@
 #include <irrlicht/irrlicht.h>
 
 #include <vector>
+#include <set>
 
 class Menu : public EventResponser {
 public:
@@ -19,6 +20,7 @@ public:
 	typedef irr::gui::IGUIButton Button;
 	typedef irr::gui::IGUIImage Image;
 	typedef irr::gui::IGUIStaticText StaticText;
+	typedef irr::gui::IGUIScrollBar ScrollBar;
 	
 	Menu();
 	virtual ~Menu();
@@ -34,6 +36,9 @@ public:
 	virtual void KeyHoldedEvent(int keyCode) override;
 	virtual void StringToEnterEvent(const std::string& str) override;
 	
+	virtual void PutToBackground();
+	virtual void RestoreFromBackground();
+	
 protected:
 	
 	virtual void OnOtherEvent(const irr::SEvent::SGUIEvent &event);
@@ -44,10 +49,13 @@ protected:
 	Image* AddImage(std::shared_ptr<Texture> texture, int x, int y);
 	StaticText* AddStaticText(irr::core::rect<int> rect,
 			const std::string &text);
+	ScrollBar* AddScrollBar(irr::core::rect<int> rect);
+	
 	
 protected:
 	
 	std::vector<Element*> elements;
+	std::set<Element*> enabledElementsStored, visiblelementssStored;
 	
 	irr::gui::IGUIEnvironment *igui;
 };

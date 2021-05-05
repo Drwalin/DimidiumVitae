@@ -47,6 +47,8 @@ public:
 	std::shared_ptr<Camera> GetCamera();
 	template<typename Menu_t, typename... Args>
 	Menu_t* StartMenu(Args... args) {
+		if(!activeMenus.empty())
+			activeMenus.back()->PutToBackground();
 		Menu_t *menu = new Menu_t(args...);
 		activeMenus.emplace_back(menu);
 		return menu;

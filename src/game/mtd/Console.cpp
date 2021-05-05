@@ -19,17 +19,25 @@ Console::Console() :
 	sing::engine->PauseSimulation();
 	
 	log = AddStaticText({0, 0, 0, 0}, "");
-	log->setRelativePositionProportional({0.0f, 0.0f, 1.0f, 0.9f});
+	log->setRelativePositionProportional({0.0f, 0.0f, 0.985f, 0.9f});
 	log->setBackgroundColor({200, 0, 0, 0});
 	log->setOverrideColor({255, 255, 255, 255});
+	log->setDrawBorder(true);
 	
 	input = AddStaticText({0, 0, 0, 0}, "");
 	input->setRelativePositionProportional({0.0f, 0.9f, 1.0f, 1.0f});
 	input->setBackgroundColor({200, 0, 0, 0});
 	input->setOverrideColor({255, 255, 255, 255});
+	input->setDrawBorder(true);
+	
+	scrollBar = AddScrollBar({0, 0, 0, 0});
+	scrollBar->setRelativePositionProportional({0.985f, 0.0f, 1.0f, 0.9f});
+	scrollBar->setMin(0);
 	
 	stringGetter = sing::window->GetStringToEnterObject();
 	stringGetter->Clear();
+	
+	scroll = 0;
 }
 
 Console::~Console() {
@@ -41,6 +49,7 @@ bool Console::RenderSceneInBackground() const {
 }
 
 void Console::MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) {
+	//scroll -= dw;
 	Update();
 }
 
@@ -61,11 +70,37 @@ void Console::KeyHoldedEvent(int keyCode) {
 }
 
 void Console::KeyPressedEvent(int keyCode) {
+	switch(keyCode) {
+	case irr::KEY_UP:
+		commandsHistory++;
+		if(commandsHistory > CommandsHistory().size())
+			commandsHistory = CommandsHistory().size();
+		else if(commandsHistory > 0) {
+			sing::window->GetStringToEnterObject()->SetCurrent(
+					CommandsHistory()[commandsHistory-1]);
+		} else {
+			sing::window->GetStringToEnterObject()->SetCurrent("");
+		}
+		break;
+	case irr::KEY_DOWN:
+		commandsHistory--;
+		if(commandsHistory < 0)
+			commandsHistory = 0;
+		else if(commandsHistory > 0) {
+			sing::window->GetStringToEnterObject()->SetCurrent(
+					CommandsHistory()[commandsHistory-1]);
+		} else {
+			sing::window->GetStringToEnterObject()->SetCurrent("");
+		}
+		break;
+	}
 	Update();
 }
 
 void Console::StringToEnterEvent(const std::string& str) {
 	sing::commandInterpreter->InvokeCommand(str);
+	CommandsHistory().emplace_back(str);
+	commandsHistory = 0;
 	Update();
 }
 
@@ -78,9 +113,30 @@ void Console::OnButtonClicked(Menu::Button *button, Menu::Element *element) {
 }
 
 void Console::Update() {
+	log->setRelativePositionProportional({0.0f, 0.0f, 1.0f, 0.9f});
+	input->setRelativePositionProportional({0.0f, 0.9f, 1.0f, 1.0f});
+	scrollBar->setRelativePositionProportional({0.985f, 0.0f, 1.0f, 0.9f});
+	
+	int size = AccessLog().size();
+	scrollBar->setMax(size);
+	scroll = scrollBar->getPos();
+	if(scroll >= size)
+		scroll = size-1;
+	if(scroll < 0)
+		scroll = 0;
+	
+	
+	
+	std::wstring first = GetLogsText(scroll);
+	log->setText(first.c_str());
+//	irr::core::rect<int> rect = log->getAbsolutePosition();
+//	if(rect.getHeight() < log->getTextHeight()) {
+//		scroll++;
+//		Update();
+//	}
+	
 	input->setText(std::to_wstring(
-				sing::window->GetStringToEnterObject()->GetCurrent()).c_str());
-	log->setText(GetLogsText(0).c_str());
+			sing::window->GetStringToEnterObject()->GetCurrent()).c_str());
 }
 
 std::vector<std::wstring>& Console::AccessLog() {
@@ -121,6 +177,11 @@ std::wstring Console::GetLogsText(size_t offset) {
 		str += log[i];
 	}
 	return str;
+}
+
+std::vector<std::string>& Console::CommandsHistory() {
+	static std::vector<std::string> cmd;
+	return cmd;
 }
 
 namespace Debug {

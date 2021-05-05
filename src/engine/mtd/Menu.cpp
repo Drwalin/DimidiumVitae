@@ -34,6 +34,32 @@ void Menu::KeyReleasedEvent(int keyCode) {}
 void Menu::KeyHoldedEvent(int keyCode) {}
 void Menu::StringToEnterEvent(const std::string& str) {}
 
+
+void Menu::PutToBackground() {
+	enabledElementsStored.clear();
+	visiblelementssStored.clear();
+	for(auto it : elements) {
+		if(it->isEnabled()) {
+			enabledElementsStored.insert(it);
+			it->setEnabled(false);
+		}
+		if(it->isVisible()) {
+			visiblelementssStored.insert(it);
+			it->setVisible(false);
+		}
+	}
+}
+
+void Menu::RestoreFromBackground() {
+	for(auto it : enabledElementsStored)
+		it->setEnabled(true);
+	enabledElementsStored.clear();
+	for(auto it : visiblelementssStored)
+		it->setVisible(true);
+	visiblelementssStored.clear();
+}
+
+
 void Menu::OnOtherEvent(const irr::SEvent::SGUIEvent &event) {
 }
 
@@ -62,6 +88,13 @@ Menu::StaticText* Menu::AddStaticText(irr::core::rect<int> rect,
 	staticText->setEnabled(true);
 	elements.emplace_back(staticText);
 	return staticText;
+}
+
+Menu::ScrollBar* Menu::AddScrollBar(irr::core::rect<int> rect) {
+	Menu::ScrollBar *elem = sing::igui->addScrollBar(false, rect);
+	elem->setEnabled(true);
+	elements.emplace_back(elem);
+	return elem;
 }
 
 #endif

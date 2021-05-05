@@ -49,7 +49,7 @@ private:
 	
 	void InterpreterLoop();
 	
-	void Interprete(const JSON& json, bool isSynced);
+	void Interpret(const JSON& json, bool isSynced);
 	
 private:
 	

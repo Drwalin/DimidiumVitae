@@ -51,7 +51,7 @@ void CommandInterpreter::ExecuteSyncCommands(size_t count) {
 		JSON json;
 		if(!syncCommands->try_dequeue(json))
 			return;
-		Interprete(json, true);
+		Interpret(json, true);
 	}
 }
 
@@ -106,14 +106,14 @@ void CommandInterpreter::InterpreterLoop() {
 	while(end == false) {
 		JSON json;
 		if(commands->try_dequeue(json))
-			Interprete(json, false);
+			Interpret(json, false);
 		else
 			TimeCounter::Sleep(0.0002f);
 	}
 	ended = true;
 }
 
-void CommandInterpreter::Interprete(const JSON& json, bool isSynced) {
+void CommandInterpreter::Interpret(const JSON& json, bool isSynced) {
 	std::string name = json[0].String();
 	std::shared_ptr<ScriptBase> script = GetScript(name);
 	if(script == NULL) {
