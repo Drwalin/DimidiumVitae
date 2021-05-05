@@ -13,7 +13,7 @@ ENGOBJ_ += MotionControllerTrigger.o Ogg.o PrimitiveCollisionShape.o Resource.o
 ENGOBJ_ += ResourceManager.o SceneNode.o Singleton.o Sound.o SoundEngine.o
 ENGOBJ_ += SoundSource.o StaticEntity.o StlStreamExtension.o StringToEnter.o
 ENGOBJ_ += Texture.o TimeCounter.o Trigger.o Wav.o Window.o World.o
-ENGOBJ_ += Script.o CommandInterpreter.o
+ENGOBJ_ += Script.o CommandInterpreter.o Console.o
 ENGOBJ_ += JSON.o
 ENGOBJ_ += DllImporter.o ModulesFactory.o
 

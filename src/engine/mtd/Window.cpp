@@ -60,14 +60,26 @@ std::shared_ptr<Camera> Window::GetCamera() {
 }
 
 void Window::StopMenu() {
-	if(currentMenu) {
-		delete currentMenu;
-		currentMenu = NULL;
+	if(!activeMenus.empty()) {
+		Menu* top = activeMenus.back();
+		delete top;
+		activeMenus.pop_back();
 	}
 }
 
 Menu* Window::GetCurrentMenu() {
-	return currentMenu;
+	if(!activeMenus.empty()) {
+		return activeMenus.back();
+	}
+	return NULL;
+}
+
+Menu* Window::GetPreviousMenu() {
+	if(activeMenus.size() < 2)
+		return NULL;
+	auto it = activeMenus.rbegin();
+	++it;
+	return *it;
 }
 
 const TimeCounter& Window::GetEventGenerationTime() const {
@@ -229,8 +241,8 @@ void Window::Tick() {
 	asynchronousTickTime.SubscribeStart();
 	if(IsParallelToDrawTickInUse())
 		parallelThreadToDrawContinue.store(true);
-	Draw(currentMenu==NULL ||
-			(currentMenu&&currentMenu->RenderSceneInBackground()));
+	Draw(GetCurrentMenu()==NULL ||
+			(GetCurrentMenu()&&GetCurrentMenu()->RenderSceneInBackground()));
 	if(IsParallelToDrawTickInUse()) {
 		while(parallelThreadToDrawContinue.load())
 			TimeCounter::Sleep(0.0003);
@@ -330,7 +342,6 @@ Window::Window() :
 	
 	eventResponser = NULL;
 	stringToEnter = new StringToEnter;
-	currentMenu = NULL;
 	
 	useParallelThreadToDraw = false;
 	fpsLimit = 60.0f;

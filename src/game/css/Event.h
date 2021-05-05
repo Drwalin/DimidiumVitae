@@ -27,7 +27,7 @@ public:
 	virtual void KeyPressedEvent(int keyCode) override;
 	virtual void KeyReleasedEvent(int keyCode) override;
 	virtual void KeyHoldedEvent(int keyCode) override;
-	virtual void StringToEnterEvent(std::string str) override;
+	virtual void StringToEnterEvent(const std::string& str) override;
 };
 
 #endif

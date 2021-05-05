@@ -13,6 +13,7 @@
 #include "../css/Player.h"
 #include "../css/MotionController.h"
 #include "../css/MainMenu.h"
+#include "../css/Console.h"
 
 #include <irrlicht/irrlicht.h>
 
@@ -111,6 +112,9 @@ void Event::KeyReleasedEvent(int keyCode) {
 	switch(keyCode) {
 	case irr::KEY_ESCAPE:
 		sing::window->StartMenu<MainMenu>();
+		break;
+	case irr::KEY_TILDE:
+		sing::window->StartMenu<Console>();
 		break;
 		
 	case irr::KEY_LSHIFT:
@@ -227,8 +231,8 @@ void Event::KeyHoldedEvent(int keyCode) {
 	}
 }
 
-void Event::StringToEnterEvent(std::string str) {
-	fprintf(stderr, "\n Input string: \"%s\"", str.c_str());
+void Event::StringToEnterEvent(const std::string& str) {
+//	fprintf(stderr, "\n Input string: \"%s\"", str.c_str());
 	
 	//Entity *player = sing::engine->GetEntity(2);
 	//Entity *temp;

@@ -160,6 +160,14 @@ void Engine::ResumeSimulation() {
 	pausePhysics = false;
 }
 
+int Engine::StoreSimulationExecution() {
+	return pausePhysics;
+}
+
+void Engine::RestoreSimulationExecution(int state) {
+	pausePhysics = state;
+}
+
 int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
 	return 1;
 	float fps = 1.0 / deltaTime;

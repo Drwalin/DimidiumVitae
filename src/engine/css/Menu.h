@@ -18,6 +18,7 @@ public:
 	typedef irr::gui::IGUIElement Element;
 	typedef irr::gui::IGUIButton Button;
 	typedef irr::gui::IGUIImage Image;
+	typedef irr::gui::IGUIStaticText StaticText;
 	
 	Menu();
 	virtual ~Menu();
@@ -30,7 +31,7 @@ public:
 	virtual void KeyPressedEvent(int keyCode) override;
 	virtual void KeyReleasedEvent(int keyCode) override;
 	virtual void KeyHoldedEvent(int keyCode) override;
-	virtual void StringToEnterEvent(std::string str) override;
+	virtual void StringToEnterEvent(const std::string& str) override;
 	
 protected:
 	
@@ -39,6 +40,7 @@ protected:
 	
 	Button* AddButton(irr::core::rect<int> rect, const std::string &text, std::string toolTipText="");
 	Image* AddImage(std::shared_ptr<Texture> texture, int x, int y);
+	StaticText* AddStaticText(irr::core::rect<int> rect, const std::string &text);
 	
 protected:
 	

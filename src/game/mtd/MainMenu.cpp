@@ -6,6 +6,8 @@
 #define MAIN_MENU_CPP
 
 #include "../css/MainMenu.h"
+#include "../css/Console.h"
+
 #include <Engine.h>
 
 MainMenu::MainMenu() :
@@ -32,6 +34,9 @@ void MainMenu::KeyReleasedEvent(int keyCode) {
 	switch(keyCode) {
 	case irr::KEY_ESCAPE:
 		sing::window->StopMenu();
+		break;
+	case irr::KEY_TILDE:
+		sing::window->StartMenu<Console>();
 		break;
 	}
 }

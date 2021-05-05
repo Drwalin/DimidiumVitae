@@ -38,9 +38,8 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 			currentPosition = 0;
 		break;
 	case irr::KEY_DELETE:
-		if(currentPosition < (int)str.size()) {
+		if(currentPosition < (int)str.size())
 			str.erase(str.begin() + currentPosition);
-		}
 		break;
 	case irr::KEY_BACK:			// backspace
 		if(currentPosition > 0) {
@@ -49,8 +48,13 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		}
 		break;
 	case irr::KEY_RETURN:		// enter
-		if(sing::window->GetEventResponser()) {
-			sing::window->GetEventResponser()->StringToEnterEvent(str);
+		{
+			EventResponser *currentEventResponser =
+				sing::window->GetEventResponser();
+			if(sing::window->GetCurrentMenu())
+				currentEventResponser = sing::window->GetCurrentMenu();
+			if(currentEventResponser)
+				currentEventResponser->StringToEnterEvent(str);
 		}
 		Clear();
 		break;
@@ -64,9 +68,8 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		currentPosition = (int)str.size();
 		break;
 	default:
-		if(key.Char != 0) {
+		if(key.Char != 0 && key.Char != '\n' && key.Char != -1)
 			InsertCharacter(key.Char);
-		}
 	}
 }
 

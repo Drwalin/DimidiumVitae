@@ -8,6 +8,10 @@
 #include <map>
 #include <string>
 
+namespace irr {
+	const int KEY_TILDE = 192;
+}
+
 class EventResponser  {
 public:
 	
@@ -18,7 +22,7 @@ public:
 	virtual void KeyPressedEvent(int keyCode) = 0;
 	virtual void KeyReleasedEvent(int keyCode) = 0;
 	virtual void KeyHoldedEvent(int keyCode) = 0;
-	virtual void StringToEnterEvent(std::string str) = 0;
+	virtual void StringToEnterEvent(const std::string& str) = 0;
 };
 
 #endif

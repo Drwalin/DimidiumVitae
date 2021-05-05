@@ -94,6 +94,7 @@ extern "C" int Init(int argc, char ** argv) {
 		MESSAGE("\n Unknown exception while creating map");
 	}
 	
+	sing::window->StopMenu();
 	sing::window->StartMenu<MainMenu>();
 	sing::engine->BeginLoop();
 	

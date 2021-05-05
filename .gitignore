@@ -2,7 +2,7 @@
 *.exe
 *.so
 media
-game
+./game
 /gmon.out
 *.swp
 mediaworkspace

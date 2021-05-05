@@ -69,6 +69,8 @@ public:
 	
 	void PauseSimulation();
 	void ResumeSimulation();
+	int StoreSimulationExecution();
+	void RestoreSimulationExecution(int state);
 	
 	int CalculateNumberOfSimulationsPerFrame(const float deltaTime);
 	void SynchronousTick(const float deltaTime);

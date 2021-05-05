@@ -47,13 +47,13 @@ public:
 	std::shared_ptr<Camera> GetCamera();
 	template<typename Menu_t, typename... Args>
 	Menu_t* StartMenu(Args... args) {
-		StopMenu();
 		Menu_t *menu = new Menu_t(args...);
-		currentMenu = menu;
+		activeMenus.emplace_back(menu);
 		return menu;
 	}
 	void StopMenu();
 	Menu* GetCurrentMenu();
+	Menu* GetPreviousMenu();
 	
 	const TimeCounter& GetEventGenerationTime() const;
 	const TimeCounter& GetWholeDrawTime() const;
@@ -122,7 +122,7 @@ private:
 	std::atomic<bool> useParallelThreadToDraw;
 	
 	std::shared_ptr<Camera> camera;
-	Menu* currentMenu;
+	std::list<Menu*> activeMenus;
 	
 	class EventReceiverIrrlicht *eventIrrlichtReceiver;
 	class EventResponser *eventResponser;

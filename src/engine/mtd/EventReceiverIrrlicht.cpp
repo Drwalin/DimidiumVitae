@@ -32,12 +32,10 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 
 void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 	EventResponser *currentEventResponser = eventResponser;
-	if(sing::window->GetCurrentMenu()) {
+	if(sing::window->GetCurrentMenu())
 		currentEventResponser = sing::window->GetCurrentMenu();
-	}
-	if(eventResponser == NULL) {
+	if(eventResponser == NULL)
 		MESSAGE("Event responser does not exists");
-	}
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {
