@@ -15,13 +15,13 @@ void New(const JSON& args) {
 		}
 		JSON json;
 		json["class"] = args[2];
-		json["shape"] = args[23];
+		json["shape"] = args[3];
 		json["transform"] = args[4];
 		if(args.size() >= 5)
 			json["mass"] = args[5];
 		if(args.size() >= 6)
 			json["model"] = args[6];
-		sing::engine->AddEntity(args);
+		sing::engine->AddEntity(json);
 	} else {
 		MESSAGE(std::string("Invalid new argument (1): ") + args[1].Write());
 	}

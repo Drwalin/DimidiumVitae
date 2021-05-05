@@ -98,6 +98,11 @@ void Console::AddLog(const std::string& str) {
 	AccessLog().emplace_back(std::to_wstring(str));
 }
 
+void Console::ClearLog() {
+	std::lock_guard<std::mutex> lock(Mutex());
+	AccessLog().clear();
+}
+
 std::wstring Console::GetLogsText(size_t offset) {
 	std::vector<std::wstring> log;
 	{

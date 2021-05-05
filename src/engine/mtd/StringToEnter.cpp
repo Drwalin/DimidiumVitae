@@ -50,9 +50,7 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 	case irr::KEY_RETURN:		// enter
 		{
 			EventResponser *currentEventResponser =
-				sing::window->GetEventResponser();
-			if(sing::window->GetCurrentMenu())
-				currentEventResponser = sing::window->GetCurrentMenu();
+					sing::window->GetActiveEventResponser();
 			if(currentEventResponser)
 				currentEventResponser->StringToEnterEvent(str);
 		}
@@ -68,7 +66,22 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		currentPosition = (int)str.size();
 		break;
 	default:
-		if(key.Char != 0 && key.Char != '\n' && key.Char != -1)
+		if(key.Key == 'W' && key.Control) {
+			for(; currentPosition>0;) {
+				if(str[currentPosition-1]==' ' ||
+						str[currentPosition-1]=='\t' ||
+						str[currentPosition-1]=='\n' ||
+						str[currentPosition-1]=='\r')
+					break;
+				--(currentPosition);
+				str.erase(str.begin() + currentPosition);
+			}
+		} else if(key.Key == 'V' && key.Control) {
+			std::string clipboard =
+				sing::device->getOSOperator()->getTextFromClipboard();
+			str.insert(str.begin()+currentPosition, clipboard.begin(), clipboard.end());
+			currentPosition += clipboard.size();
+		} else if(key.Char && key.Char!=0 && key.Char!='\n' && key.Char!=-1)
 			InsertCharacter(key.Char);
 	}
 }

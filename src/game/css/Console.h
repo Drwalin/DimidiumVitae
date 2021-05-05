@@ -27,6 +27,7 @@ public:
 	
 	static std::vector<std::wstring>& AccessLog();
 	static void AddLog(const std::string& str);
+	static void ClearLog();
 	
 protected:
 	

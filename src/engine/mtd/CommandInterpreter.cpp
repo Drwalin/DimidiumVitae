@@ -49,9 +49,9 @@ void CommandInterpreter::InvokeCommand(const std::string& cmd) {
 void CommandInterpreter::ExecuteSyncCommands(size_t count) {
 	for(; count>0; --count) {
 		JSON json;
-		if(!commands->try_dequeue(json))
+		if(!syncCommands->try_dequeue(json))
 			return;
-		Interprete(json, false);
+		Interprete(json, true);
 	}
 }
 
@@ -61,6 +61,7 @@ void CommandInterpreter::AddNativeScript(const std::string& name,
 	AddNativeScript(name,
 			std::shared_ptr<ScriptBase>(new ScriptNative(run, needSync)));
 }
+
 void CommandInterpreter::AddNativeScript(const std::string& name,
 		std::shared_ptr<ScriptBase> script) {
 	std::lock_guard<std::mutex> lock(scriptMutex);

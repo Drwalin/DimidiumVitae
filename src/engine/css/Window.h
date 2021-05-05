@@ -63,6 +63,7 @@ public:
 	
 	class StringToEnter *GetStringToEnterObject();
 	class EventResponser *GetEventResponser();
+	class EventResponser *GetActiveEventResponser();
 	
 	bool IsMouseLocked();
 	void LockMouse();

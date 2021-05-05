@@ -129,6 +129,10 @@ EventResponser *Window::GetEventResponser() {
 	return eventResponser;
 }
 
+EventResponser *Window::GetActiveEventResponser() {
+	return eventIrrlichtReceiver->GetActiveEventResponser();
+}
+
 bool Window::IsMouseLocked() {
 	return lockMouse;
 }
@@ -308,7 +312,11 @@ void Window::BeginLoop() {
 }
 
 void Window::Destroy() {
-	StopMenu();
+	while(!activeMenus.empty()) {
+		Menu* top = activeMenus.back();
+		delete top;
+		activeMenus.pop_back();
+	}
 	camera.reset();
 	camera = NULL;
 	ShutDownParallelThreadToDraw();

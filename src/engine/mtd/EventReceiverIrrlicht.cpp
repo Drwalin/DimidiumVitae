@@ -31,18 +31,15 @@ bool EventReceiverIrrlicht::OnEvent(const irr::SEvent& event) {
 }
 
 void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
-	EventResponser *currentEventResponser = eventResponser;
-	if(sing::window->GetCurrentMenu())
-		currentEventResponser = sing::window->GetCurrentMenu();
-	if(eventResponser == NULL)
+	EventResponser *currentEventResponser = GetActiveEventResponser();
+	if(currentEventResponser == NULL)
 		MESSAGE("Event responser does not exists");
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {
 			if(keyHolded.find(event.KeyInput.Key) == keyHolded.end()) {
-				if(event.KeyInput.Char)
-					sing::window->GetStringToEnterObject()->PressKey(
-							event.KeyInput);
+				sing::window->GetStringToEnterObject()->PressKey(
+						event.KeyInput);
 				currentEventResponser->KeyPressedEvent(event.KeyInput.Key);
 				keyPressed.insert(event.KeyInput.Key);
 			}
@@ -113,7 +110,7 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 }
 
 void EventReceiverIrrlicht::GenerateEvents() {
-	std::vector < irr::SEvent > eventQueue;
+	std::vector<irr::SEvent> eventQueue;
 	
 	if(this->eventQueue.size() > 0) {
 		this->queueMutex.lock();
@@ -122,17 +119,27 @@ void EventReceiverIrrlicht::GenerateEvents() {
 		this->queueMutex.unlock();
 	}
 	
-	for(unsigned i = 0; i < eventQueue.size(); ++i) {
+	for(unsigned i=0; i<eventQueue.size(); ++i) {
 		GenerateOneEvent(eventQueue[i]);
 	}
 	
 	eventQueue.clear();
 	
-	for(auto it = keyHolded.begin(); it != keyHolded.end(); ++it) {
-		eventResponser->KeyHoldedEvent(*it);
+	EventResponser *currentEventResponser = GetActiveEventResponser();
+	if(currentEventResponser) {
+		for(auto it : keyHolded) {
+			currentEventResponser->KeyHoldedEvent(it);
+		}
 	}
 	
 	keyHolded.insert(keyPressed.begin(), keyPressed.end());
+}
+
+EventResponser* EventReceiverIrrlicht::GetActiveEventResponser() {
+	EventResponser *currentEventResponser = eventResponser;
+	if(sing::window->GetCurrentMenu())
+		currentEventResponser = sing::window->GetCurrentMenu();
+	return currentEventResponser;
 }
 
 EventReceiverIrrlicht::EventReceiverIrrlicht(EventResponser *event) {

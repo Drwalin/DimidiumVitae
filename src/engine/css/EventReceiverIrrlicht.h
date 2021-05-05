@@ -28,6 +28,8 @@ public:
 	
 	void GenerateEvents();
 	
+	EventResponser* GetActiveEventResponser();
+	
 private:
 	
 	std::vector<irr::SEvent> eventQueue;

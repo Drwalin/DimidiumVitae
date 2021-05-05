@@ -37,6 +37,7 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 }
 
 Entity* Engine::AddEntity(const JSON& json) {
+	MESSAGE(json.Write());
 	if(!json.IsObject())
 		return NULL;
 	

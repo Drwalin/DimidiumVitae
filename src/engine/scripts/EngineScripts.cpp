@@ -11,6 +11,8 @@
 
 void New(const JSON& args);
 void Delete(const JSON& args);
+void Quit(const JSON& args);
+void Clear(const JSON& args);
 
 void Add(const std::string& name, bool needSync, void (*run)(const JSON&)) {
 	sing::commandInterpreter->AddNativeScript(name, run, needSync);
@@ -19,5 +21,9 @@ void Add(const std::string& name, bool needSync, void (*run)(const JSON&)) {
 extern "C" void AddEngineScripts() {
 	Add("new", true, New);
 	Add("delete", true, Delete);
+	Add("exit", true, Quit);
+	Add("quit", true, Quit);
+	Add("shutdown", true, Quit);
+	Add("clear", true, Clear);
 }
 

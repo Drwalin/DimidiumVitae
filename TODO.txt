@@ -40,6 +40,10 @@ TO DO:
 			when declaring variables, members or arguments
 	- Add map files, loading game state, saving game state with/as scripts
 	- Add error validation to script parser
+	- Update StringToEnter class to have ctrl+arrows/delete/backspace editor
+			and other essential stuff
+	- Update Console to show cursor position
+	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
 	
 
 TO DO (to think/code restructuring):
