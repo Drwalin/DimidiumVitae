@@ -268,7 +268,8 @@ void Window::DrawGUI() {
 }
 
 void Window::Init(const std::string &windowName, const std::string &iconFile,
-		int width, int height, EventResponser *eventResponser, bool fullscreen) {
+		int width, int height, EventResponser *eventResponser,
+		bool fullscreen) {
 	Destroy();
 	
 	this->eventResponser = eventResponser;
@@ -289,7 +290,8 @@ void Window::Init(const std::string &windowName, const std::string &iconFile,
 	sceneManager->setShadowColor(irr::video::SColor(220,32,32,32));
 	
 	if(!videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET))
-		MESSAGE("videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET) failed");
+		MESSAGE("videoDriver->queryFeature(irr::video::EVDF_RENDER_TO_TARGET) "
+				"failed");
 	
 	igui->getSkin()->setFont(device->getGUIEnvironment()->
 			getFont("./media/Fonts/courier.bmp"));

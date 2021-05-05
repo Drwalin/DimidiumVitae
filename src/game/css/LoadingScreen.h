@@ -17,7 +17,8 @@ public:
 	
 protected:
 	
-	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element) override;
+	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element)
+			override;
 	
 protected:
 	

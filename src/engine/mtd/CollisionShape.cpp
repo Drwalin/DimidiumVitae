@@ -27,13 +27,17 @@ CollisionShape::CollisionShape(const JSON& json) :
 		}
 		return;
 	} catch(std::string e) {
-		MESSAGE("\n Excepion while creating Collision shape: " + e + " ; for JSON: " + json.Write());
+		MESSAGE("\n Excepion while creating Collision shape: " + e +
+				" ; for JSON: " + json.Write());
 	} catch(const std::exception& e) {
-		MESSAGE("\n Excepion while creating Collision shape: " + std::string(e.what()) + " ; for JSON: " + json.Write());
+		MESSAGE("\n Excepion while creating Collision shape: " +
+				std::string(e.what()) + " ; for JSON: " + json.Write());
 	} catch(char *e) {
-		MESSAGE("\n Excepion while creating Collision shape: " + std::string(e) + " ; for JSON: " + json.Write());
+		MESSAGE("\n Excepion while creating Collision shape: " +
+				std::string(e) + " ; for JSON: " + json.Write());
 	} catch(...) {
-		MESSAGE(std::string("\n Unknown exception while creating Collision shape") + " ; for JSON: " + json.Write());
+		MESSAGE(std::string("\n Unknown exception while creating "
+					"Collision shape") + " ; for JSON: " + json.Write());
 	}
 	primitives.clear();
 }
@@ -45,10 +49,11 @@ btCollisionShape* CollisionShape::GetNewBtCollisionShape() const {
 	if(primitives.size() == 1) {
 		return primitives.back().Get();
 	} else if(primitives.size() > 1) {
-		btCompoundShape *compoundShape = new btCompoundShape(true, primitives.size());
-		for(size_t i=0; i<primitives.size(); ++i) {
-			compoundShape->addChildShape(primitives[i].GetTransform(), primitives[i].Get());
-		}
+		btCompoundShape *compoundShape = new btCompoundShape(true,
+				primitives.size());
+		for(size_t i=0; i<primitives.size(); ++i)
+			compoundShape->addChildShape(primitives[i].GetTransform(),
+					primitives[i].Get());
 		return compoundShape;
 	}
 	return NULL;

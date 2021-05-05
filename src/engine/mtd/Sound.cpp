@@ -53,7 +53,8 @@ void Sound::LoadFromWAV(const std::string &wavFileName) {
 			return;
 		}
 		alGenBuffers(1, &bufferID);
-		alBufferData(bufferID, format, bufferData, wavHeader.Subchunk2Size, wavHeader.SampleRate);
+		alBufferData(bufferID, format, bufferData, wavHeader.Subchunk2Size,
+				wavHeader.SampleRate);
 		WAVFree(bufferData);
 	} else
 		throw std::string(std::string("Cannot open sound file: ")+wavFileName);
@@ -65,7 +66,8 @@ void Sound::LoadFromOGG(const std::string &oggFileName) {
 	ALsizei sampleRate;
 	if(OGGLoadFromFile(oggFileName.c_str(), bufferData, format, sampleRate)) {
 		alGenBuffers(1, &bufferID);
-		alBufferData(bufferID, format, &(bufferData[0]), bufferData.size(), sampleRate);
+		alBufferData(bufferID, format, &(bufferData[0]), bufferData.size(),
+				sampleRate);
 	} else
 		throw std::string(std::string("Cannot open sound file: ")+oggFileName);
 }
@@ -77,7 +79,8 @@ void Sound::LoadFromFile(const std::string &fileName) {
 	else if(extension == "wav")
 		LoadFromWAV(fileName);
 	else
-		throw std::string(std::string("Unrecognized sound file extension: ")+fileName+" -> "+extension);
+		throw std::string(std::string("Unrecognized sound file extension: ") +
+				fileName + " -> " + extension);
 }
 
 unsigned Sound::GetBuffer() const {
@@ -86,14 +89,16 @@ unsigned Sound::GetBuffer() const {
 
 float Sound::GetDuration() const {
 	if(bufferID) {
-		int sampleRate = 0, bitsPerSample = 0, channels = 0, bufferSizeBytes = 0;
+		int sampleRate = 0, bitsPerSample = 0, channels = 0,
+				bufferSizeBytes = 0;
 		alGetBufferi(bufferID, AL_FREQUENCY, &sampleRate);
 		alGetBufferi(bufferID, AL_BITS, &bitsPerSample);
 		alGetBufferi(bufferID, AL_CHANNELS, &channels);
 		alGetBufferi(bufferID, AL_SIZE, &bufferSizeBytes);
 		if(sampleRate == 0 || channels == 0 || AL_BITS == 0)
 			return 0;
-		return ((float)(bufferSizeBytes)) / ((float)(sampleRate*channels*bitsPerSample/8));
+		return ((float)(bufferSizeBytes)) /
+				((float)(sampleRate*channels*bitsPerSample/8));
 	}
 	return 0.0f;
 }

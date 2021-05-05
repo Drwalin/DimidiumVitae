@@ -36,14 +36,16 @@ void GUIDrawEvent::Draw() {
 		text.font->draw(text.str, text.destiny, text.color);
 		break;
 	case GUIDrawEvent::Type::IMAGE:
-		sing::videoDriver->draw2DImage(texture->GetITexture(), image.destiny, image.source, NULL, &(image.color), true);
+		sing::videoDriver->draw2DImage(texture->GetITexture(), image.destiny,
+				image.source, NULL, &(image.color), true);
 		break;
 	default:
 		break;
 	}
 }
 
-GUIDrawEvent::GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *str) {
+GUIDrawEvent::GUIDrawEvent(Font *font, Rectanglei destiny, Color color,
+		char *str) {
 	type = GUIDrawEvent::Type::TEXT;
 	text.font = font;
 	snprintf(text.str, sizeof(text.str)-1, "%s", str);
@@ -51,7 +53,8 @@ GUIDrawEvent::GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *st
 	text.color = color;
 }
 
-GUIDrawEvent::GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color) {
+GUIDrawEvent::GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source,
+		Rectanglei destiny, Color color) {
 	type = GUIDrawEvent::Type::IMAGE;
 	this->texture = texture;
 	image.source = source;
@@ -129,7 +132,8 @@ void GUI::PrintOneBufferLineImplicitly(char *str, int width, int height) {
 			1
 		);
 	
-	toDraw.insert(toDraw.end(), GUIDrawEvent(currentFont, rectangle, currentColor, str));
+	toDraw.insert(toDraw.end(), GUIDrawEvent(currentFont, rectangle,
+			currentColor, str));
 	cursorPosition.X += width;
 	if(newLinePosition.Y < cursorPosition.Y + height)
 		newLinePosition.Y = cursorPosition.Y + height;
@@ -283,11 +287,15 @@ GUI &GUI::operator << (const Rectanglef newWorkspace) {
 	cursorPosition = Vectori(0,0);
 	newLinePosition = Vectori(0,currentFont->getDimension(L" ").Height);
 	Vectori windowSize = GetWindowSize();
-	workSpace = Rectanglei(windowSize.X *newWorkspace.UpperLeftCorner.X, windowSize.Y *newWorkspace.UpperLeftCorner.Y, windowSize.X *newWorkspace.LowerRightCorner.X, windowSize.Y *newWorkspace.LowerRightCorner.Y);
+	workSpace = Rectanglei(windowSize.X * newWorkspace.UpperLeftCorner.X,
+			windowSize.Y * newWorkspace.UpperLeftCorner.Y,
+			windowSize.X * newWorkspace.LowerRightCorner.X,
+			windowSize.Y * newWorkspace.LowerRightCorner.Y);
 	return (*this);
 }
 
-GUI &GUI::DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color) {
+GUI &GUI::DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source,
+		Rectanglei destiny, Color color) {
 	toDraw.insert(toDraw.end(), GUIDrawEvent(texture, source, destiny, color));
 	return (*this);
 }

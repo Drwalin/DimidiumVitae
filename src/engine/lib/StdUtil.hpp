@@ -26,7 +26,8 @@ inline std::string GetCoreName(const std::string &name) {
 	std::string ret(name);
 	int64_t s1 = ret.rfind("/");
 	int64_t s2 = ret.rfind("\\");
-	int64_t slash = std::max( (s1!=(int64_t)std::string::npos?s1:-1), (s2!=(int64_t)std::string::npos?s2:-1) );
+	int64_t slash = std::max( (s1!=(int64_t)std::string::npos?s1:-1),
+			(s2!=(int64_t)std::string::npos?s2:-1) );
 	if(slash != -1)
 		ret = ret.substr(slash+1);
 	int64_t dot = ret.rfind(".");

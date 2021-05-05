@@ -59,7 +59,8 @@ inline JSON& operator<<=(JSON& json, const btVector3 &point) {
 }
 inline JSON& operator<<=(JSON& json, const btQuaternion &rotation) {
 	json.InitArray();
-	if(rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
+	if(rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 ||
+			rotation.w()!=1.0) {
 		json[0] = rotation.x();
 		json[1] = rotation.y();
 		json[2] = rotation.z();
@@ -71,7 +72,8 @@ inline JSON& operator<<=(JSON& json, const btTransform &transform) {
 	json.InitArray();
 	btVector3 point = transform.getOrigin();
 	btQuaternion rotation = transform.getRotation();
-	if(point.x()!=0.0 || point.y()!=0.0 || point.z()!=0.0 || rotation.x()!=0.0 || rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
+	if(point.x()!=0.0 || point.y()!=0.0 || point.z()!=0.0 || rotation.x()!=0.0
+			|| rotation.y()!=0.0 || rotation.z()!=0.0 || rotation.w()!=1.0) {
 		json[0] <<= point;
 		json[1] <<= rotation;
 	}
@@ -114,7 +116,8 @@ inline std::istream& operator >> (std::istream &stream, btVector3 &point) {
 	return stream;
 }
 
-inline std::istream& operator >> (std::istream &stream, btQuaternion &rotation) {
+inline std::istream& operator >> (std::istream &stream,
+		btQuaternion &rotation) {
 	float x, y, z, w;
 	stream >> x;
 	stream >> y;
@@ -142,7 +145,8 @@ inline std::ostream& operator << (std::ostream &stream, const btVector3 point) {
 	return stream;
 }
 
-inline std::ostream& operator << (std::ostream &stream, const btQuaternion rotation) {
+inline std::ostream& operator << (std::ostream &stream,
+		const btQuaternion rotation) {
 	stream << (rotation.x()) << " ";
 	stream << (rotation.y()) << " ";
 	stream << (rotation.z()) << " ";
@@ -150,7 +154,8 @@ inline std::ostream& operator << (std::ostream &stream, const btQuaternion rotat
 	return stream;
 }
 
-inline std::ostream& operator << (std::ostream &stream, const btTransform trans) {
+inline std::ostream& operator << (std::ostream &stream,
+		const btTransform trans) {
 	stream << (trans.getOrigin()) << " ";
 	stream << (trans.getRotation());
 	return stream;

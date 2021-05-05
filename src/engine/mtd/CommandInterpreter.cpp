@@ -75,8 +75,9 @@ void CommandInterpreter::AddNativeScript(const std::string& name,
 		return;
 	}
 	std::string scriptGetter = "NativeScript_" + name;
-	std::shared_ptr<ScriptBase> script = dll->Get<std::shared_ptr<ScriptBase>(*)()>(
-			scriptGetter.c_str())();
+	std::shared_ptr<ScriptBase> script =
+			dll->Get<std::shared_ptr<ScriptBase>(*)()>(
+					scriptGetter.c_str())();
 	AddNativeScript(name, script);
 }
 

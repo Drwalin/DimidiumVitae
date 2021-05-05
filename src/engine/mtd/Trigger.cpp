@@ -14,7 +14,8 @@
 
 #include <cassert>
 
-void Trigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) {
+void Trigger::ProcessOverlappingEntity(Entity* entity,
+		btCollisionObject* collisionObject) {
 }
 
 void Trigger::NextOverlappingFrame() {
@@ -30,7 +31,7 @@ void Trigger::NextOverlappingFrame() {
 	}
 }
 
-void Trigger::Tick(const float deltaTime) {
+void Trigger::Tick(float deltaTime) {
 	if(body) {
 		body->setWorldTransform(currentTransform);
 		sing::world->UpdateColliderForObject(body);
@@ -40,10 +41,15 @@ void Trigger::Tick(const float deltaTime) {
 Trigger::Trigger(const JSON& json) :
 	Entity(json) {
 	
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateGhostObject(collisionShape, currentTransform);
-	collisionObject->setCollisionFlags(collisionObject->getCollisionFlags() | btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE | btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT);
+	btCollisionObject *collisionObject =
+			CollisionObjectManager::CreateGhostObject(collisionShape,
+					currentTransform);
+	collisionObject->setCollisionFlags(collisionObject->getCollisionFlags() |
+			btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE |
+			btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT);
 	
-	SetBody(collisionObject, collisionShape, CollisionDefaultGroupTrigger, CollisionDefaultMaskTrigger);
+	SetBody(collisionObject, collisionShape, CollisionDefaultGroupTrigger,
+			CollisionDefaultMaskTrigger);
 }
 
 Trigger::~Trigger() {

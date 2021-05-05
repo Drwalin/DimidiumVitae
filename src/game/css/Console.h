@@ -18,7 +18,8 @@ public:
 	
 	virtual bool RenderSceneInBackground() const override;
 	
-	virtual void MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) override;
+	virtual void MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw)
+			override;
 	virtual void KeyPressedEvent(int keyCode) override;
 	virtual void KeyHoldedEvent(int keyCode) override;
 	virtual void KeyReleasedEvent(int keyCode) override;
@@ -32,7 +33,8 @@ protected:
 	static std::mutex& Mutex();
 	
 	virtual void OnOtherEvent(const irr::SEvent::SGUIEvent &event) override;
-	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element) override;
+	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element)
+			override;
 	
 private:
 	

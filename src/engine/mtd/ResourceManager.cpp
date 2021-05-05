@@ -34,7 +34,8 @@ std::shared_ptr<Resource> ResourceManager::GetResource(const JSON& json) {
 	return ref;
 }
 
-std::shared_ptr<Resource> ResourceManager::GetResource(const std::string &name) {
+std::shared_ptr<Resource> ResourceManager::GetResource(
+		const std::string &name) {
 	JSON json;
 	json.InitObject();
 	json["name"] = name;
@@ -73,7 +74,8 @@ std::shared_ptr<Material> ResourceManager::GetMaterial(const JSON& json) {
 	return std::dynamic_pointer_cast<Material>(GetResource(json));
 }
 
-std::shared_ptr<Material> ResourceManager::GetMaterial(const std::string &name) {
+std::shared_ptr<Material> ResourceManager::GetMaterial(
+		const std::string &name) {
 	return std::dynamic_pointer_cast<Material>(GetResource(name));
 }
 
@@ -93,17 +95,20 @@ std::shared_ptr<Texture> ResourceManager::GetTexture(const char* name) {
 	return GetTexture((std::string)name);
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const JSON& json) {
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(
+		const JSON& json) {
 	if(json.Object().count("name"))
 		return GetCollisionShape(json["name"].GetString());
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const std::string &name) {
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(
+		const std::string &name) {
 	return std::dynamic_pointer_cast<CollisionShape>(GetResource(name));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(const char* name) {
+std::shared_ptr<CollisionShape> ResourceManager::GetCollisionShape(
+		const char* name) {
 	return GetCollisionShape((std::string)name);
 }
 
@@ -131,7 +136,8 @@ std::shared_ptr<CollisionShape> ResourceManager::GetBox(const btVector3 &size) {
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius, float height) {
+std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius,
+		float height) {
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
@@ -144,7 +150,8 @@ std::shared_ptr<CollisionShape> ResourceManager::GetCapsule(float radius, float 
 	return std::shared_ptr<CollisionShape>(new CollisionShape(json));
 }
 
-std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius, float height) {
+std::shared_ptr<CollisionShape> ResourceManager::GetCylinder(float radius,
+		float height) {
 	JSON json;
 	json.InitObject();
 	json["primitives"].InitArray();
@@ -167,7 +174,8 @@ void ResourceManager::ResourceFreeingCycle(int iterations) {
 		if(it != resources.end()) {
 			if(it->second.first.unique()) {
 				if(it->second.second == -1) {
-					it->second.second = clock() + (int)(resourcePersistencyTime*((float)CLOCKS_PER_SEC));
+					it->second.second = clock() +
+						(int)(resourcePersistencyTime*((float)CLOCKS_PER_SEC));
 				} else {
 					if(it->second.second < clock()) {
 						toRemove.emplace_back(it->first);
@@ -227,13 +235,17 @@ Resource* ResourceManager::LoadResource(const JSON& json) {
 		}
 		return resource;
 	} catch(std::string e) {
-		MESSAGE("\n Excepion while loading Resource: " + e + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + e + " for json: " +
+				json.Write());
 	} catch(const std::exception& e) {
-		MESSAGE("\n Excepion while loading Resource: " + std::string(e.what()) + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + std::string(e.what()) +
+				" for json: " + json.Write());
 	} catch(char *e) {
-		MESSAGE("\n Excepion while loading Resource: " + std::string(e) + " for json: " + json.Write());
+		MESSAGE("\n Excepion while loading Resource: " + std::string(e) +
+				" for json: " + json.Write());
 	} catch(...) {
-		MESSAGE("\n Unknown exception while loading Resource for json: " + json.Write());
+		MESSAGE("\n Unknown exception while loading Resource for json: " +
+				json.Write());
 	}
 	if(resource)
 		delete resource;
@@ -248,13 +260,19 @@ void ResourceManager::Remove(const std::vector<std::string> &toRemove) {
 	}
 }
 
-Resource::ResourceType ResourceManager::GetResourceTypeByPath(const std::string &name) {
+Resource::ResourceType ResourceManager::GetResourceTypeByPath(
+		const std::string &name) {
 	std::string extension = GetExtension(name);
-	const static std::set<std::string> textureExtensions({"png", "jpg", "tga", "bmp", "jpeg", "bmpx"});
-	const static std::set<std::string> graphicMeshExtensions({"x", "dae", "obj"});
-	const static std::set<std::string> collisionMeshExtensions({"shape"});
-	const static std::set<std::string> soundExtensions({"wav", "ogg"});
-	const static std::set<std::string> materialExtensions({"mtl"});
+	const static std::set<std::string> textureExtensions(
+			{"png", "jpg", "tga", "bmp", "jpeg", "bmpx"});
+	const static std::set<std::string> graphicMeshExtensions(
+			{"x", "dae", "obj"});
+	const static std::set<std::string> collisionMeshExtensions(
+			{"shape"});
+	const static std::set<std::string> soundExtensions(
+			{"wav", "ogg"});
+	const static std::set<std::string> materialExtensions(
+			{"mtl"});
 	if(collisionMeshExtensions.count(extension) > 0) {
 		return Resource::COLLISIONSHAPE;
 	} else if(graphicMeshExtensions.count(extension) > 0) {

@@ -34,14 +34,16 @@ void Model::LoadMesh(const std::string &fileName) {
 	if(mesh == NULL)
 		throw (int)2;
 	
-	std::string mtlFileName = GetFileWithPathWithoutExtension(fileName) + ".mtl";
+	std::string mtlFileName = GetFileWithPathWithoutExtension(fileName) +
+			".mtl";
 	try {
 		defaultMaterial = sing::resourceManager->GetMaterial(mtlFileName);
 	} catch(...) {
 		defaultMaterial = NULL;
 	}
 	
-	std::string animFileName = GetFileWithPathWithoutExtension(fileName) + ".anim";
+	std::string animFileName = GetFileWithPathWithoutExtension(fileName) +
+			".anim";
 	LoadAnimations(animFileName);
 }
 

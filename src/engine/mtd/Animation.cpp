@@ -14,7 +14,8 @@
 void Animation::Play(bool loop) {
 	if(iSceneNode) {
 		if(endFrame >= startFrame && duration > 0)
-			iSceneNode->setAnimationSpeed(float(endFrame - startFrame) / duration);
+			iSceneNode->setAnimationSpeed(float(endFrame - startFrame) /
+					duration);
 		else
 			iSceneNode->setAnimationSpeed(24.0f);
 		iSceneNode->setFrameLoop(startFrame, endFrame);
@@ -54,7 +55,8 @@ Animation::Animation(int startFrame, int endFrame, float duration) {
 	iSceneNode = NULL;
 }
 
-Animation::Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
+Animation::Animation(const Animation &other,
+		irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
 	duration = other.duration;
 	this->iSceneNode = iSceneNode;
 	startFrame = other.startFrame;

@@ -27,21 +27,24 @@ public:
 	void Play();
 	void Pause();
 	void Rewind();
-	void SetCurretnMoment(const float time);
+	void SetCurretnMoment(float time);
 	bool IsPlaying() const;
-	void Loop(const bool loop);
+	void Loop(bool loop);
 	
 	float GetCurrentSecond() const;
 	float GetDuration() const;
 	
 	void SetLocation(const btVector3 &location);
 	void SetVelocity(const btVector3 &velocity);
-	void SetDirectionAngle(const btQuaternion &rotation, const float innerAngle, const float outerAngle);
-	void SetDirectionAngle(const btVector3 &direction, const float innerAngle, const float outerAngle);
+	void SetDirectionAngle(const btQuaternion &rotation, float innerAngle,
+			float outerAngle);
+	void SetDirectionAngle(const btVector3 &direction, float innerAngle,
+			float outerAngle);
 	void SetListenerTransform(const btTransform &transform);
-	void SetListenerTransformAngle(const btTransform &transform, const float innerAngle, const float outerAngle);
+	void SetListenerTransformAngle(const btTransform &transform,
+			float innerAngle, float outerAngle);
 	
-	void SetVolume(const float volume);
+	void SetVolume(float volume);
 	void SetSampler(std::shared_ptr<Sound> sampler);
 	
 private:

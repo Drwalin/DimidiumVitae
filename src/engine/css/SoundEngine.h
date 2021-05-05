@@ -26,7 +26,8 @@ public:
 	
 	static void SetListenerLocation(const btVector3 &location);
 	static void SetListenerVelocity(const btVector3 &velocity);
-	static void SetListenerOrientation(const btVector3 &forward, const btVector3 &up);
+	static void SetListenerOrientation(const btVector3 &forward,
+			const btVector3 &up);
 	static void SetListenerOrientation(const btQuaternion &rotation);
 	static void SetListenerTransform(const btTransform &transform);
 	

@@ -13,7 +13,7 @@
 
 #include <ctime>
 
-void Player::Tick(const float deltaTime) {
+void Player::Tick(float deltaTime) {
 	Character::Tick(deltaTime);
 }
 

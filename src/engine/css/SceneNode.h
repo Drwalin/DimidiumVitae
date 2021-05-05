@@ -25,18 +25,21 @@ public:
 	SceneNode();
 	~SceneNode();
 	
-	void Init(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode = NULL);
+	void Init(std::shared_ptr<Model> model,
+			irr::scene::IAnimatedMeshSceneNode *iParentSceneNode = NULL);
 	
 	Animation GetAnimation(const std::string &name) const;
 	
-	static irr::scene::IAnimatedMeshSceneNode *New(std::shared_ptr<Model> model);
+	static irr::scene::IAnimatedMeshSceneNode *New(
+			std::shared_ptr<Model> model);
 	
 	irr::scene::IAnimatedMeshSceneNode *GetISceneNode();
 	
 	void SetTransform(btTransform transform);
 	void SetScale(btVector3 scale);
 	
-	std::shared_ptr<SceneNode> AddChild(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode);
+	std::shared_ptr<SceneNode> AddChild(std::shared_ptr<Model> model,
+			irr::scene::IAnimatedMeshSceneNode *iParentSceneNode);
 	std::shared_ptr<SceneNode> AddChild(std::shared_ptr<Model> model);
 	void DestroyChild(std::shared_ptr<SceneNode> child);
 	

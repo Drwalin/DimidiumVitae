@@ -51,7 +51,8 @@ public:
 	void ResourceFreeingCycle(int iterations = 16);
 	void FreeAllUnused();
 	
-	static Resource::ResourceType GetResourceTypeByPath(const std::string &name);
+	static Resource::ResourceType GetResourceTypeByPath(
+			const std::string &name);
 	
 private:
 	
@@ -62,7 +63,8 @@ private:
 	
 	float resourcePersistencyTime;
 	std::string lastIteratedName;
-	std::map<std::string, std::pair<std::shared_ptr<Resource>, float>> resources;
+	std::map<std::string, std::pair<std::shared_ptr<Resource>, float>>
+			resources;
 };
 
 #endif

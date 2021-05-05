@@ -16,7 +16,8 @@ public:
 	Animation(const JSON& json);
 	Animation(const Animation &other);
 	Animation(int startFrame, int endFrame, float duration);
-	Animation(const Animation &other, irr::scene::IAnimatedMeshSceneNode *iSceneNode);
+	Animation(const Animation &other,
+			irr::scene::IAnimatedMeshSceneNode *iSceneNode);
 	
 	void Play(bool loop);
 	

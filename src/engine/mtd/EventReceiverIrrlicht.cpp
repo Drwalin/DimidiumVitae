@@ -41,7 +41,8 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 		if(event.KeyInput.PressedDown) {
 			if(keyHolded.find(event.KeyInput.Key) == keyHolded.end()) {
 				if(event.KeyInput.Char)
-					sing::window->GetStringToEnterObject()->PressKey(event.KeyInput);
+					sing::window->GetStringToEnterObject()->PressKey(
+							event.KeyInput);
 				currentEventResponser->KeyPressedEvent(event.KeyInput.Key);
 				keyPressed.insert(event.KeyInput.Key);
 			}
@@ -90,7 +91,10 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 			
 		case irr::EMIE_MOUSE_WHEEL:
 		case irr::EMIE_MOUSE_MOVED:
-			currentEventResponser->MouseMoveEvent(event.MouseInput.X, event.MouseInput.Y, mouseW + event.MouseInput.Wheel, event.MouseInput.X - mouseX, event.MouseInput.Y - mouseY, event.MouseInput.Wheel);
+			currentEventResponser->MouseMoveEvent(event.MouseInput.X,
+					event.MouseInput.Y, mouseW + event.MouseInput.Wheel,
+					event.MouseInput.X - mouseX, event.MouseInput.Y - mouseY,
+					event.MouseInput.Wheel);
 			mouseW += event.MouseInput.Wheel;
 			mouseX = event.MouseInput.X;
 			mouseY = event.MouseInput.Y;
@@ -128,7 +132,7 @@ void EventReceiverIrrlicht::GenerateEvents() {
 		eventResponser->KeyHoldedEvent(*it);
 	}
 	
-	keyHolded.insert(keyPressed.begin(), keyPressed.end());		// ????????????????
+	keyHolded.insert(keyPressed.begin(), keyPressed.end());
 }
 
 EventReceiverIrrlicht::EventReceiverIrrlicht(EventResponser *event) {

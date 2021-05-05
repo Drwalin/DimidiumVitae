@@ -43,7 +43,7 @@ public:
 	float GetJumpVelocity();
 	float GetFlatDeceleration();
 	
-	void Tick(const float deltaTime);
+	void Tick(float deltaTime);
 	
 	void MoveInDirection(btVector3 direction);
 	void Jump();
@@ -61,7 +61,7 @@ protected:
 	
 	MotionController::State GetCurrentState() const;
 	
-	void UpdateSpeed(const float deltaTime);
+	void UpdateSpeed(float deltaTime);
 	void AddState(State state);
 	void RemoveState(State state);
 	

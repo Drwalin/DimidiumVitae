@@ -19,7 +19,8 @@
 class Camera {
 public:
 	
-	Camera(bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode);
+	Camera(bool textured, unsigned w, unsigned h,
+			irr::scene::ICameraSceneNode *cameraNode);
 	~Camera();
 	
 	void UseTarget();

@@ -52,11 +52,13 @@ IFile FileSystem::ReadFile(std::string name) {
 			return IFile(file);
 	}
 	{
-		std::shared_ptr<std::ifstream> file(new std::ifstream(name.c_str(), std::ios::binary));
+		std::shared_ptr<std::ifstream> file(new std::ifstream(name.c_str(),
+				std::ios::binary));
 		if(file->good() && !file->eof())
 			return IFile(file);
 	}
-	std::shared_ptr<iirrfstream> file(new iirrfstream(sing::device->getFileSystem()->createAndOpenFile(name.c_str())));
+	std::shared_ptr<iirrfstream> file(new iirrfstream(
+			sing::device->getFileSystem()->createAndOpenFile(name.c_str())));
 	if(file)
 		if(file->good() && !file->eof())
 			return IFile(file);
@@ -69,11 +71,13 @@ OFile FileSystem::WriteFile(std::string name) {
 			return OFile(file);
 	}
 	{
-		std::shared_ptr<std::ofstream> file(new std::ofstream(name.c_str(), std::ios::binary));
+		std::shared_ptr<std::ofstream> file(new std::ofstream(name.c_str(),
+				std::ios::binary));
 		if(file->good())
 			return OFile(file);
 	}
-	std::shared_ptr<oirrfstream> file(new oirrfstream(sing::device->getFileSystem()->createAndWriteFile(name.c_str())));
+	std::shared_ptr<oirrfstream> file(new oirrfstream(
+			sing::device->getFileSystem()->createAndWriteFile(name.c_str())));
 	if(file)
 		if(file->good())
 			return OFile(file);

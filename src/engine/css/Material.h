@@ -19,7 +19,8 @@ public:
 	Material(const JSON& json);
 	~Material();
 	
-	static void SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode);
+	static void SetTo(std::shared_ptr<Material> material,
+			irr::scene::ISceneNode *iSceneNode);
 	
 	virtual Resource::ResourceType GetResourceType() const override;
 	virtual JSON GetJSON() const override;

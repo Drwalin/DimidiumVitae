@@ -37,6 +37,7 @@ namespace CollisionShapeInfo {
 		Box();
 		~Box();
 	};
+	
 	class Sphere : public Info {
 	public:
 		float radius;
@@ -48,6 +49,7 @@ namespace CollisionShapeInfo {
 		Sphere();
 		~Sphere();
 	};
+	
 	class Cylinder : public Info {
 	public:
 		float height;
@@ -60,6 +62,7 @@ namespace CollisionShapeInfo {
 		Cylinder();
 		~Cylinder();
 	};
+	
 	class Capsule : public Info {
 	public:
 		float height;
@@ -72,6 +75,7 @@ namespace CollisionShapeInfo {
 		Capsule();
 		~Capsule();
 	};
+	
 	class Convex : public Info {
 	public:
 		std::vector<btVector3> vertices;
@@ -83,6 +87,7 @@ namespace CollisionShapeInfo {
 		Convex();
 		~Convex();
 	};
+	
 	class Trimesh : public Info {
 	public:
 		std::vector<btVector3> vertices;

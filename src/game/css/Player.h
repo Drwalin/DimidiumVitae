@@ -13,7 +13,7 @@ public:
 	Player(const JSON& json);
 	virtual ~Player() override;
 	
-	virtual void Tick(const float deltaTime) override;
+	virtual void Tick(float deltaTime) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(Player)
 	

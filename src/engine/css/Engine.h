@@ -38,7 +38,8 @@ public:
 	~Engine();
 	
 	int GetNumberOfEntities() const;
-	bool RegisterType(const std::string &className, const std::string &moduleName);
+	bool RegisterType(const std::string &className,
+			const std::string &moduleName);
 	bool RegisterModule(const std::string &moduleName);
 	
 	void QueueEntityToDestroy(Entity *ptr);
@@ -47,13 +48,19 @@ public:
 	
 	uint64_t GetAvailableEntityId() const;
 	Entity* AddEntity(const JSON& json);
-	Entity* AddEntity(const std::string className, uint64_t id, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
-	Entity* AddEntity(const std::string className, std::shared_ptr<CollisionShape> shape, btTransform transform, btScalar mass = 1.0f);
+	Entity* AddEntity(const std::string className, uint64_t id,
+			std::shared_ptr<CollisionShape> shape, btTransform transform,
+			btScalar mass = 1.0f);
+	Entity* AddEntity(const std::string className,
+			std::shared_ptr<CollisionShape> shape, btTransform transform,
+			btScalar mass = 1.0f);
 	Entity* GetEntity(uint64_t entityId);
 	const std::map<uint64_t, Entity*>& GetEntities() const;
 	
 	
-	Entity* RayTrace(btVector3 begin, btVector3 end, int channel, btVector3 &point, btVector3 &normal, const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
+	Entity* RayTrace(btVector3 begin, btVector3 end, int channel,
+			btVector3 &point, btVector3 &normal,
+			const std::vector<Entity*> &ignoreEntities=std::vector<Entity*>());
 	
 	std::shared_ptr<Camera> GetCamera() const;
 	Entity* GetCameraParent() const;

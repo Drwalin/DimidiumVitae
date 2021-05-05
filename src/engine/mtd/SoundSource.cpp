@@ -37,7 +37,7 @@ void SoundSource::Rewind() {
 	alSourcef(sourceID, AL_SEC_OFFSET, 0.0f);
 }
 
-void SoundSource::SetCurretnMoment(const float time) {
+void SoundSource::SetCurretnMoment(float time) {
 	alSourcef(sourceID, AL_SEC_OFFSET, time);
 }
 
@@ -47,7 +47,7 @@ bool SoundSource::IsPlaying() const {
 	return (state == AL_PLAYING);
 }
 
-void SoundSource::Loop(const bool loop) {
+void SoundSource::Loop(bool loop) {
 	alSourcei(sourceID, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
 }
 
@@ -71,11 +71,14 @@ void SoundSource::SetVelocity(const btVector3 &velocity) {
 	alSourcefv(sourceID, AL_VELOCITY, velocity.m_floats);
 }
 
-void SoundSource::SetDirectionAngle(const btQuaternion &rotation, const float innerAngle, const float outerAngle) {
-	SetDirectionAngle(btTransform(rotation)*btVector3(0,0,1), innerAngle, outerAngle);
+void SoundSource::SetDirectionAngle(const btQuaternion &rotation,
+		float innerAngle, float outerAngle) {
+	SetDirectionAngle(btTransform(rotation)*btVector3(0,0,1), innerAngle,
+			outerAngle);
 }
 
-void SoundSource::SetDirectionAngle(const btVector3 &direction, const float innerAngle, const float outerAngle) {
+void SoundSource::SetDirectionAngle(const btVector3 &direction,
+		float innerAngle, float outerAngle) {
 	alSourcefv(sourceID, AL_DIRECTION, direction.m_floats);
 	alSourcef(sourceID, AL_CONE_INNER_ANGLE, innerAngle);
 	alSourcef(sourceID, AL_CONE_OUTER_ANGLE, outerAngle);
@@ -87,12 +90,13 @@ void SoundSource::SetListenerTransform(const btTransform &transform) {
 	SetListenerTransformAngle(transform, innerAngle, outerAngle);
 }
 
-void SoundSource::SetListenerTransformAngle(const btTransform &transform, const float innerAngle, const float outerAngle) {
+void SoundSource::SetListenerTransformAngle(const btTransform &transform,
+		float innerAngle, float outerAngle) {
 	SetLocation(transform.getOrigin());
 	SetDirectionAngle(transform.getRotation(), innerAngle, outerAngle);
 }
 
-void SoundSource::SetVolume(const float volume) {
+void SoundSource::SetVolume(float volume) {
 	alSourcef(sourceID, AL_GAIN, volume);
 }
 

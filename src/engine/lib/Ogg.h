@@ -10,6 +10,7 @@
 
 #include <vector>
 
-extern "C" bool OGGLoadFromFile(const char *oggFileName, std::vector<char> &bufferData, ALenum &format, ALsizei &sampleRate);
+extern "C" bool OGGLoadFromFile(const char *oggFileName,
+		std::vector<char> &bufferData, ALenum &format, ALsizei &sampleRate);
 
 #endif

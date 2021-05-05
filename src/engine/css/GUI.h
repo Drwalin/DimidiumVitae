@@ -51,7 +51,8 @@ public:
 	GUIDrawEvent &operator=(const GUIDrawEvent &other);
 	void Draw();
 	GUIDrawEvent(Font *font, Rectanglei destiny, Color color, char *str);
-	GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color);
+	GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source,
+			Rectanglei destiny, Color color);
 	GUIDrawEvent();
 	GUIDrawEvent(const GUIDrawEvent &other);
 };
@@ -90,7 +91,8 @@ public:
 	GUI &operator << (const Vectori newPosition);
 	GUI &operator << (const Rectanglef newWorkspace);
 	
-	GUI &DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source, Rectanglei destiny, Color color);
+	GUI &DrawTexture(std::shared_ptr<Texture> texture, Rectanglei source,
+			Rectanglei destiny, Color color);
 	
 private:
 	

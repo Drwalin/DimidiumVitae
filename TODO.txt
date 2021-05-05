@@ -1,132 +1,177 @@
 
 
 TO DO:
-	Rewrite MotionController
-	Optimise setting transformation to ISceneNode in SceneNode code
-	Optimise loading and creating Entities
-	Optimise btCollisionShape and CollisionShape - make a map inside CollisionShape: (scale) -> btCollisionShape (to avoid exact copies of btCollisionShape)
-		- add CollisionShape::GetNewBtCollisionShape(scale); // not necessery uniqe, get by scale
-		- add CollisionShape::SetScale(btCollisionShape, newScale); // if current btCollisionShape is unique, change it's scale; else if it's not unique, call CollisionShape::GetNewBtCollisionShape(newScale);
-	Official cases:
-		- create documentation (for v1.0.0)
-		- update ChangeLog.txt
-		- update Readme.txt linux compilation section
-		- choose a license
-		- update Dependencies.txt for linux
-	Map loading system from JSON or from script with jsons
-	Saving and loading Entities, SceneNodes from JSON or with using scripts
-	Correct MotionController varying jump height
-	Make explicit instance of btCollisionObject in StaticEntity, btRigidBody in DynamicEntity, btGhostObject in Trigger, and remove btCollisionObject*Entity::body
-	Add void Entity::SetPhysicsEnabled(bool), void Entity::SetCollisionEnabled(bool) (and getters for them)
-	Add bool Entity::EverNeedTick() const and separate lists of objects that needs frequent/rare/none updates to reduce engine tick time
-	Correct jiggly mouse movement while mouse is locked
-	Use Semantic Versioning (https://semver.org/) consistently
-	Update Readme.txt
-	Code refactor - Reorder methods in classes to be consecutive and keep that order in *.cpp files
-	Add map files, loading game state, saving game state with/as scripts
-	Add error validation to script parser
+	- Rewrite MotionController
+	- Optimise setting transformation to ISceneNode in SceneNode code
+	- Optimise loading and creating Entities
+	- Optimise btCollisionShape and CollisionShape - make a map inside
+			CollisionShape: (scale) -> btCollisionShape
+			(to avoid exact copies of btCollisionShape)
+		* add CollisionShape::GetNewBtCollisionShape(scale);
+			// not necessery uniqe, get by scale
+		* add CollisionShape::SetScale(btCollisionShape, newScale);
+			// if current btCollisionShape is unique, change it's scale;
+			// else if it's not unique,
+			// call CollisionShape::GetNewBtCollisionShape(newScale);
+	- Official cases:
+		* create documentation (for v1.0.0)
+		* update ChangeLog.txt
+		* update Readme.txt linux compilation section
+		* choose a license
+		* update Dependencies.txt for linux
+	- Saving and loading Entities, SceneNodes from JSON or with using scripts
+	- Correct MotionController varying jump height
+	- Make explicit instance of btCollisionObject in StaticEntity, btRigidBody
+			in DynamicEntity, btGhostObject in Trigger, and remove
+			btCollisionObject*Entity::body
+	- Add void Entity::SetPhysicsEnabled(bool),
+			void Entity::SetCollisionEnabled(bool) (and getters for them)
+	- Add bool Entity::EverNeedTick() const and separate lists of objects that
+			needs frequent/rare/none updates to reduce engine tick time
+	- Correct jiggly mouse movement while mouse is locked
+	- Use Semantic Versioning (https://semver.org/) consistently
+	- Update Readme.txt
+	- Code refactor - reorder methods in classes to be consecutive and keep
+			that order in *.cpp files
+	- Code refactor - update to my new code style
+	- Code refactor - update license dates and licenes
+	- Code refactor - make classes smaller, split it's tasks to smaller classes
+	- Code refactor - change position of asterisk (*) and ampersand (&)
+			when declaring variables, members or arguments
+	- Add map files, loading game state, saving game state with/as scripts
+	- Add error validation to script parser
 	
 
 TO DO (to think/code restructuring):
-	Mesh class resource (combination of graphical model and it's LOD, collision shape); possibly replacement for SceneNode
-	Remove GetVersion.cpp
-	Font resource class
-	Replace bullet physics engine with simple box/sphere/triangle parallel collision detection
-	Change structure of threads: Renderer, Command/Script Issuer, Update Threads, Collision Thread; Design no-blocking threads communication
+	- Mesh class resource (combination of graphical model and it's LOD,
+			collision shape); possibly replacement for SceneNode
+	- Remove GetVersion.cpp
+	- Font resource class
+	- Replace bullet physics engine with simple box/sphere/triangle
+			parallel collision detection
+	- Change structure of threads: Renderer, Command/Script Issuer,
+			Update Threads, Collision Thread;
+			Design no-blocking threads communication
 	
 
 Done:
-	Makefile (and binaries?) for linux
-	Using compressed files
-	Decoding ogg sound files
-	Entity-derived classes and other class reorganisation, move from game\* to engine\*:
-		StaticEntity
-		DynamicEntity
-		Trigger
-		CharacterWalkTrigger -> MotionControllerTrigger
-		MotionController
-	Multiple Entity-derived classes in one module
-	Sounds
-	Animations
-	Loading archives from irrlicht file system
-	enable window resizing with fov and aspect correction
-	ResourceManager - garbage collecor
-	Model class resource, integrate it with ResourceManager
-	Better ray tracing
-	Sound (previously SoundSampler) as resource and integrate it with ResourceManager
-	Material resource class
-	Configurations in json files
-	Rewrite collision shape and collision shape constructor (combine them into one class) - make CollisionShape resource; remove CollisionShapeManager and use ResourceManager instead
-	Texture resource class, and use it while loading material
-	FileSystem class and IFile and OFile class for unified file access
-	High resolution clock for frame delta time
-	Limit frame rate
-	Menu system
-	Code refactor - Remove "this->" where possible
-	Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*" and "std::shared_ptr<btCollisionObject>" with "btCollisionObject*"
-	Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver, ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine, ResourceManager instances as singletons and remove every references
-	Make WAVLoadFromFile to use sing::fileSystem
-	Replace (std::string)Entity::name by (uint64_t)Entity::id
-	All destroying Entities in destructor
-	All constructing/spawning Entities in constructor
-	Creating Entities from JSON
-	Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON) (remove other constructors), Resource::Resource(JSON)
-	Character is based on DynamicEntity
-	Remove Entity::camera
-	Add self-choosing os in Makefile
-	Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git submodule in dependencies/JSON
-	Change void GetJSON(JSON&) const to JSON GetJSON() const
-	Replace explicit DllLoader code and replace it with github.com/Drwalin/DllLoader.git submodule in dep/DllLoader
-	Add custom scripts interpreter to control gameplay and add native-script (loaded from shared object) and scripts written in files, it can be used to add in-game console and to modify objects/game state
+	- Makefile (and binaries?) for linux
+	- Using compressed files
+	- Decoding ogg sound files
+	- Entity-derived classes and other class reorganisation, move from game\*
+			to engine\*:
+		* StaticEntity
+		* DynamicEntity
+		* Trigger
+		* CharacterWalkTrigger -> MotionControllerTrigger
+		* MotionController
+	- Multiple Entity-derived classes in one module
+	- Sounds
+	- Animations
+	- Loading archives from irrlicht file system
+	- enable window resizing with fov and aspect correction
+	- ResourceManager - garbage collecor
+	- Model class resource, integrate it with ResourceManager
+	- Better ray tracing
+	- Sound (previously SoundSampler) as resource and integrate it with
+			ResourceManager
+	- Material resource class
+	- Configurations in json files
+	- Rewrite collision shape and collision shape constructor (combine them
+			into one class) - make CollisionShape resource;
+			remove CollisionShapeManager and use ResourceManager instead
+	- Texture resource class, and use it while loading material
+	- FileSystem class and IFile and OFile class for unified file access
+	- High resolution clock for frame delta time
+	- Limit frame rate
+	- Menu system
+	- Code refactor - Remove "this->" where possible
+	- Code refactor - Replace "std::shared_ptr<Entity>" with "Entity*" and
+			"std::shared_ptr<btCollisionObject>" with "btCollisionObject*"
+	- Code refactor - Make Engine, World, Window, IrrlichtDevice, IVideoDriver,
+			ISceneManager, IGUIEnvironmentm, FileSystem, SoundEngine,
+			ResourceManager instances as singletons and remove every references
+	- Make WAVLoadFromFile to use sing::fileSystem
+	- Replace (std::string)Entity::name by (uint64_t)Entity::id
+	- All destroying Entities in destructor
+	- All constructing/spawning Entities in constructor
+	- Creating Entities from JSON
+	- Add ResourceManager:GetResource(JSON), Resource::GetJSON(JSON)
+			(remove other constructors), Resource::Resource(JSON)
+	- Character is based on DynamicEntity
+	- Remove Entity::camera
+	- Add self-choosing os in Makefile
+	- Replace RapidJSON and it's wrapper with github.com/Drwalin/JSON.git
+			submodule in dependencies/JSON
+	- Change void GetJSON(JSON&) const to JSON GetJSON() const
+	- Replace explicit DllLoader code and replace it with
+			github.com/Drwalin/DllLoader.git submodule in dep/DllLoader
+	- Add custom scripts interpreter to control gameplay and add native-script
+			(loaded from shared object) and scripts written in files, it can be
+			used to add in-game console and to modify objects/game state
 	
 
 TO DO in future:
-	MotionController steps on staircase or low objects
-	NavMesh
-	Light maps
-	Dynamic light maps
-	Sound occlusion
-	Mesh occlusion
-	Lights
-	Particles
-	LOD system
-	Sprites in world space
-	Optimise rendering?
-	Limit number of active OpenAL sound sources (choose closest and loudest sources - eg. order and enable by distance/volume)
-	Make Ogg to use sing::fileSystem
-	Video player (maybe from *.png image sequence and *.ogg sound file)
-	Multiplayer:
-		- divide code sections: server side and client side
-		- internet connection:
+	- MotionController steps on staircase or low objects
+	- NavMesh
+	- Light maps
+	- Dynamic light maps
+	- Sound occlusion
+	- Mesh occlusion
+	- Lights
+	- Particles
+	- LOD system
+	- Sprites in world space
+	- Optimise rendering?
+	- Limit number of active OpenAL sound sources (choose closest and loudest
+			sources - eg. order and enable by distance/volume)
+	- Make Ogg to use sing::fileSystem
+	- Video player (maybe from *.png image sequence and *.ogg sound file)
+	- Multiplayer:
+		* divide code sections: server side and client side
+		* internet connection:
 			TCP - initialization, events, lossless informations
-			UDP - streaming entities transofrmation, movement and animation informations in realtime
-	Add TryBox and TryCylinder to ObjToShapeConverter
+			UDP - streaming entities transofrmation, movement and animation
+					informations in realtime
+	- Add TryBox and TryCylinder to ObjToShapeConverter
 	
 
 Bugs:
-	When entering low-roofed place with very quick crouch-key press then character behaves like standing still
-	Executable once crashed whole system (needed to cut power to do anything) (in v0.3.1a)
-	Sometimes undefined coordinates of player while starting game (randomly) (didn't met since v0.4.1)
-	When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
-	When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to return to game, instantly Event spawns multiple boxes/spheres (atleast since v0.5.0-k)
-	fprintf(stder,...) in Event::KeyPressedEvent while pressing 'T' to print number of objects in world, crashes since [commit SHA-1: e684b9ee8ba92cc0a29b4ca2e774f0db7ed59098] - temporarilly replaced with std::cout which does not cause problems
-	Sometimes invalid coordinates of Player in the begining (NaN/Inf) spotted again in [commit SHA-1: ac76263793df94e73d7415d81cb62aec0021682a]
+	- When entering low-roofed place with very quick crouch-key press then
+			character behaves like standing still
+	- Executable once crashed whole system (needed to cut power to do anything)
+			(in v0.3.1a)
+	- Sometimes undefined coordinates of player while starting game (randomly)
+			(didn't met since v0.4.1)
+	- When pressed Exit Game button, game crashed (only one time) (v0.5.0-k)
+	- When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to
+			return to game, instantly Event spawns multiple boxes/spheres
+			(atleast since v0.5.0-k)
+	- fprintf(stder,...) in Event::KeyPressedEvent while pressing 'T' to print
+			number of objects in world, crashes since [commit SHA-1:
+			e684b9ee8ba92cc0a29b4ca2e774f0db7ed59098] - temporarilly replaced
+			with std::cout which does not cause problems
+	- Sometimes invalid coordinates of Player in the begining (NaN/Inf) spotted
+			again in [commit SHA-1: ac76263793df94e73d7415d81cb62aec0021682a]
 	
 
 Removed bugs:
-	Removing entity does not remove a ISceneNode
-	When resource manager removes a Resource -> destructor is not called
-	When starting MainMenu at beginig, simulation is not paused
-	Crashed when raytesting for destroying Entities, randomly (v0.5.0-e)
-	Very unstable fps (since v0.4.0) - only feeling of game is unstable, but actual frame times are good - corrected in v0.5.0-e by removing smoothing frametime between two frames
+	- Removing entity does not remove a ISceneNode
+	- When resource manager removes a Resource -> destructor is not called
+	- When starting MainMenu at beginig, simulation is not paused
+	- Crashed when raytesting for destroying Entities, randomly (v0.5.0-e)
+	- Very unstable fps (since v0.4.0) - only feeling of game is unstable, but
+			actual frame times are good - corrected in v0.5.0-e by removing
+			smoothing frametime between two frames
 	
 
 To test:
-	Overall test
-	Add many Entities per second and destroy them to find out any memory leaks (valgrind) and memory usage
+	- Overall test
+	- Add many Entities per second and destroy them to find out any memory leaks
+			(valgrind) and memory usage
 	
 
 Done tests:
-	ResourceManager garbage collector
-	JSON wrapper
+	- ResourceManager garbage collector
+	- JSON wrapper
 	

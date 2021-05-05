@@ -8,16 +8,21 @@
 #include "../css/MotionControllerTrigger.h"
 #include <Engine.h>
 
-SimulationContactResultCallback::SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid) : trigger(trigger), mid(mid) {}
+SimulationContactResultCallback::SimulationContactResultCallback(
+		MotionControllerTrigger *trigger, float mid) :
+		trigger(trigger), mid(mid) {
+}
 
-btScalar SimulationContactResultCallback::addSingleResult(btManifoldPoint& manifoldPoint,
-	const btCollisionObjectWrapper* colObj0Wrap,
-	int partId0,
-	int index0,
-	const btCollisionObjectWrapper* colObj1Wrap,
-	int partId1,
-	int index1) {
-	btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB + manifoldPoint.m_positionWorldOnA) *0.5f;
+btScalar SimulationContactResultCallback::addSingleResult(
+		btManifoldPoint& manifoldPoint,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1) {
+	btVector3 contactPoint = (manifoldPoint.m_positionWorldOnB +
+			manifoldPoint.m_positionWorldOnA) * 0.5f;
 	btVector3 normal = manifoldPoint.m_normalWorldOnB.normalized();
 	if(normal.y() < 0.0f)
 		normal.setY(-normal.y());
@@ -49,7 +54,8 @@ bool MotionControllerTrigger::IsBottomCollision() const {
 	return bottomCollision;
 }
 
-void MotionControllerTrigger::Init(Entity *character, Entity *otherTrigger, float stepHeight) {
+void MotionControllerTrigger::Init(Entity *character, Entity *otherTrigger,
+		float stepHeight) {
 	this->character = character;
 	this->otherTrigger = otherTrigger;
 	this->stepHeight = stepHeight;
@@ -57,12 +63,14 @@ void MotionControllerTrigger::Init(Entity *character, Entity *otherTrigger, floa
 	top = 1.75f;
 }
 
-void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) {
+void MotionControllerTrigger::ProcessOverlappingEntity(Entity* entity,
+		btCollisionObject* collisionObject) {
 	if(entity != character && entity != this && entity != otherTrigger) {
 		float mid = (bottom + top)*0.5f;
 		
 		SimulationContactResultCallback resultCallback(this, mid);
-		sing::world->GetDynamicsWorld()->contactPairTest(collisionObject, body, resultCallback);
+		sing::world->GetDynamicsWorld()->contactPairTest(collisionObject, body,
+				resultCallback);
 	}
 }
 
@@ -80,7 +88,7 @@ void MotionControllerTrigger::NextOverlappingFrame() {
 	Trigger::NextOverlappingFrame();
 }
 
-void MotionControllerTrigger::Tick(const float deltaTime) {
+void MotionControllerTrigger::Tick(float deltaTime) {
 	Trigger::Tick(deltaTime);
 }
 

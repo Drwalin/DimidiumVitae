@@ -15,8 +15,9 @@ public:
 	DynamicEntity(const JSON& json);
 	virtual ~DynamicEntity() override;
 
-	virtual void Tick(const float deltaTime) override;
-	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal) override;
+	virtual void Tick(float deltaTime) override;
+	virtual void ApplyDamage(float damage, btVector3 point, btVector3 normal)
+			override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(DynamicEntity)
 	

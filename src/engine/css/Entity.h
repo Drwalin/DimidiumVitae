@@ -25,8 +25,22 @@
 
 #include <JSON.hpp>
 
-#define __ENTITY_DERIVED_HEADER_FACTORY__(__ENTITY_CLASS_NAME_) virtual size_t GetTypeSize() const override; virtual const std::string& GetClassName() const override;
-#define __ENTITY_DERIVED_CODE_FACTORY__(__ENTITY_CLASS_NAME_) size_t __ENTITY_CLASS_NAME_::GetTypeSize() const {return sizeof(__ENTITY_CLASS_NAME_);} const std::string& __ENTITY_CLASS_NAME_::GetClassName() const {const static std::string _m_Name_c_s = #__ENTITY_CLASS_NAME_ ; return _m_Name_c_s;} extern "C" __ENTITY_CLASS_NAME_* __Constructor_##__ENTITY_CLASS_NAME_##_Function(const JSON& json) {return new __ENTITY_CLASS_NAME_(json);}
+#define __ENTITY_DERIVED_HEADER_FACTORY__(__ENTITY_CLASS_NAME_) \
+	virtual size_t GetTypeSize() const override; \
+	virtual const std::string& GetClassName() const override;
+
+#define __ENTITY_DERIVED_CODE_FACTORY__(__ENTITY_CLASS_NAME_) \
+	size_t 	__ENTITY_CLASS_NAME_::GetTypeSize() const { \
+		return sizeof(__ENTITY_CLASS_NAME_); \
+	} \
+	const std::string& __ENTITY_CLASS_NAME_::GetClassName() const { \
+		const static std::string _m_Name_c_s = #__ENTITY_CLASS_NAME_ ; \
+		return _m_Name_c_s; \
+	} \
+	extern "C" __ENTITY_CLASS_NAME_* \
+		__Constructor_##__ENTITY_CLASS_NAME_##_Function(const JSON& json) { \
+			return new __ENTITY_CLASS_NAME_(json); \
+		}
 
 class Entity {
 public:
@@ -56,14 +70,19 @@ public:
 	template <typename T = btCollisionObject >
 	inline T* GetBody() { return dynamic_cast<T*>(this->body); }
 	
-	virtual void Tick(const float deltaTime);
-	virtual void ApplyDamage(const float damage, btVector3 point, btVector3 normal);
+	virtual void Tick(float deltaTime);
+	virtual void ApplyDamage(float damage, btVector3 point, btVector3 normal);
 	
 	void SetModel(std::shared_ptr<Model> model);
-	void SetBody(btCollisionObject *body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	void SetBody(btCollisionObject *body,
+			std::shared_ptr<CollisionShape> shape,
+			int collisionFilterGroup=btBroadphaseProxy::DefaultFilter,
+			int collisionFilterMask=btBroadphaseProxy::AllFilter);
 	
-	virtual uint64_t GetTypeSize() const = 0;					// return size of type in bytes
-	virtual const std::string& GetClassName() const = 0;	// returns type name
+	// return size of type in bytes
+	virtual uint64_t GetTypeSize() const = 0;	
+	// returns type name
+	virtual const std::string& GetClassName() const = 0;
 	
 	bool HasCommon(int group, int mask) const;
 	

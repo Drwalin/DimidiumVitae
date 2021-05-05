@@ -20,7 +20,8 @@ public:
 protected:
 	
 	virtual void OnOtherEvent(const irr::SEvent::SGUIEvent &event) override;
-	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element) override;
+	virtual void OnButtonClicked(Menu::Button *button, Menu::Element *element)
+			override;
 	
 protected:
 	

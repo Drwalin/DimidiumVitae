@@ -64,20 +64,25 @@ void World::Init() {
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 	solver = new btSequentialImpulseConstraintSolver();
-	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver,
+			collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -20, 0));
-	dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	dynamicsWorld->getBroadphase()->getOverlappingPairCache()->
+			setInternalGhostPairCallback(new btGhostPairCallback());
 	dynamicsWorld->setForceUpdateAllAabbs(false);
 }
 
-bool World::AddBody(btCollisionObject *body, int collisionFilterGroup, int collisionFilterMask) {
+bool World::AddBody(btCollisionObject *body, int collisionFilterGroup,
+		int collisionFilterMask) {
 	if(body) {
 		if(object.find(body) == object.end()) {
 			btRigidBody *rigid = dynamic_cast<btRigidBody*>(body);
 			if(rigid)
-				dynamicsWorld->addRigidBody(rigid, collisionFilterGroup, collisionFilterMask);
+				dynamicsWorld->addRigidBody(rigid, collisionFilterGroup,
+						collisionFilterMask);
 			else
-				dynamicsWorld->addCollisionObject(body, collisionFilterGroup, collisionFilterMask);
+				dynamicsWorld->addCollisionObject(body, collisionFilterGroup,
+						collisionFilterMask);
 			object.insert(body);
 			body->activate();
 		}

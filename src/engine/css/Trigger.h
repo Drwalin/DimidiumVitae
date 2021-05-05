@@ -29,13 +29,14 @@ public:
 	
 	virtual void NextOverlappingFrame();
 	
-	virtual void Tick(const float deltaTime) override;
+	virtual void Tick(float deltaTime) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(Trigger)
 	
 protected:
 	
-	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject);
+	virtual void ProcessOverlappingEntity(Entity* entity,
+			btCollisionObject* collisionObject);
 };
 
 #endif

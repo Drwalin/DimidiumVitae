@@ -40,7 +40,8 @@ void Menu::OnOtherEvent(const irr::SEvent::SGUIEvent &event) {
 Menu::Button* Menu::AddButton(irr::core::rect<int> rect,
 		const std::string &text, std::string toolTipText) {
 	Menu::Button *button = sing::igui->addButton(rect, NULL, -1,
-			std::to_wstring(text).c_str(), std::to_wstring(toolTipText).c_str());
+			std::to_wstring(text).c_str(),
+			std::to_wstring(toolTipText).c_str());
 	button->setEnabled(true);
 	elements.emplace_back(button);
 	return button;

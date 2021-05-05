@@ -9,7 +9,8 @@
 
 #include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 
-btCollisionObject* CollisionObjectManager::CreateCollisionObject(std::shared_ptr<CollisionShape> shape, btTransform transform) {
+btCollisionObject* CollisionObjectManager::CreateCollisionObject(
+		std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	if(shape == NULL)
 		return NULL;
 	
@@ -19,7 +20,9 @@ btCollisionObject* CollisionObjectManager::CreateCollisionObject(std::shared_ptr
 	return object;
 }
 
-btCollisionObject* CollisionObjectManager::CreateRigidBody(std::shared_ptr<CollisionShape> shape, btTransform transform, float mass, btVector3 inertia) {
+btCollisionObject* CollisionObjectManager::CreateRigidBody(
+		std::shared_ptr<CollisionShape> shape, btTransform transform,
+		float mass, btVector3 inertia) {
 	if(shape == NULL)
 		return NULL;
 	btCollisionShape *btShape = shape->GetNewBtCollisionShape();
@@ -34,7 +37,8 @@ btCollisionObject* CollisionObjectManager::CreatePairCachingGhostObject() {
 	return new btPairCachingGhostObject();
 }
 
-btCollisionObject* CollisionObjectManager::CreateGhostObject(std::shared_ptr<CollisionShape> shape, btTransform transform) {
+btCollisionObject* CollisionObjectManager::CreateGhostObject(
+		std::shared_ptr<CollisionShape> shape, btTransform transform) {
 	btGhostObject *ghost(new btGhostObject());
 	ghost->setCollisionShape(shape->GetNewBtCollisionShape());
 	ghost->setWorldTransform(transform);

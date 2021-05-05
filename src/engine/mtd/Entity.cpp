@@ -58,18 +58,21 @@ void Entity::Rotate(const btQuaternion &quat) {
 	SetRotation(currentTransform.getRotation() *quat);
 }
 
-void Entity::Tick(const float deltaTime) {
+void Entity::Tick(float deltaTime) {
 	if(body) {
 		btRigidBody *rigidBody = GetBody<btRigidBody>();
-		if(rigidBody) rigidBody->getMotionState()->getWorldTransform(currentTransform);
-		else currentTransform = GetBody<btCollisionObject>()->getWorldTransform();
+		if(rigidBody)
+			rigidBody->getMotionState()->getWorldTransform(currentTransform);
+		else
+			currentTransform =
+					GetBody<btCollisionObject>()->getWorldTransform();
 	}
 	
 	if(sceneNode)
 		sceneNode->SetTransform(currentTransform);
 }
 
-void Entity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
+void Entity::ApplyDamage(float damage, btVector3 point, btVector3 normal) {}
 
 void Entity::SetMass(float mass) {
 	btRigidBody *rigidBody = GetBody<btRigidBody>();
@@ -121,12 +124,14 @@ void Entity::SetModel(std::shared_ptr<Model> model) {
 	sceneNode->Init(model);
 }
 
-void Entity::SetBody(btCollisionObject* body, std::shared_ptr<CollisionShape> shape, int collisionFilterGroup, int collisionFilterMask) {
+void Entity::SetBody(btCollisionObject* body,
+		std::shared_ptr<CollisionShape> shape, int collisionFilterGroup,
+		int collisionFilterMask) {
 	DestroyBody();
 	this->body = body;
 	collisionShape = shape;
-	sing::world->AddBody(this->body, collisionFilterGroup, collisionFilterMask);
-	this->body->setUserPointer(this);
+	sing::world->AddBody(body, collisionFilterGroup, collisionFilterMask);
+	body->setUserPointer(this);
 	collisionGroup = collisionFilterGroup;
 	collisionMask = collisionFilterMask;
 }
@@ -159,7 +164,8 @@ void Entity::DestroyBody() {
 Entity::Entity(const JSON& json) {
 	mass = 0.0f;
 	if(json.Object().count("shape"))
-		collisionShape = sing::resourceManager->GetCollisionShape(json["shape"]);
+		collisionShape =
+				sing::resourceManager->GetCollisionShape(json["shape"]);
 	this->id = json["id"].Integer();
 	scale = btVector3(1,1,1);
 	currentTransform <<= json["transform"];

@@ -33,7 +33,8 @@ void TimeCounter::SetTimeSpan(float time) {
 
 float TimeCounter::GetPeakTime() const {
 	if(array.size()) {
-		float peak = TimeCounter::GetDurationSeconds(array.front().begin, array.front().end);
+		float peak = TimeCounter::GetDurationSeconds(array.front().begin,
+				array.front().end);
 		float temp;
 		for(auto it=array.begin(); it!=array.end(); ++it) {
 			temp = TimeCounter::GetDurationSeconds(it->begin, it->end);
@@ -47,7 +48,8 @@ float TimeCounter::GetPeakTime() const {
 
 float TimeCounter::GetPitTime() const {
 	if(array.size()) {
-		float pit = TimeCounter::GetDurationSeconds(array.front().begin, array.back().end);
+		float pit = TimeCounter::GetDurationSeconds(array.front().begin,
+				array.back().end);
 		float temp;
 		for(auto it=array.begin(); it!=array.end(); ++it) {
 			temp = TimeCounter::GetDurationSeconds(it->begin, it->end);
@@ -82,7 +84,8 @@ void TimeCounter::SubscribeEnd() {
 		array.back().end = currentTime;
 		
 		for(int i=array.size()-1; i>=0; --i) {
-			if(TimeCounter::GetDurationSeconds(array[i].end, currentTime) > timeSpan) {
+			if(TimeCounter::GetDurationSeconds(array[i].end, currentTime) >
+					timeSpan) {
 				array.erase(array.begin(), array.begin() + i);
 				break;
 			}

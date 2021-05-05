@@ -17,10 +17,10 @@ void MotionController::UpdateSpeed(const float deltaTime) {
 		btVector3 currentVelocity = rigidBody->getLinearVelocity();
 		float currentSpeed = currentVelocity.length();
 		if(currentSpeed >= 0.0000001f) {
-			float newSpeed = currentSpeed - (deltaTime *GetFlatDeceleration());
+			float newSpeed = currentSpeed - (deltaTime * GetFlatDeceleration());
 			if(newSpeed < 0.0f)
 				newSpeed = 0.0f;
-			btVector3 newVelocity = currentVelocity *(newSpeed / currentSpeed);
+			btVector3 newVelocity = currentVelocity * (newSpeed / currentSpeed);
 			newVelocity.setY(currentVelocity.y());
 			rigidBody->setLinearVelocity(newVelocity);
 		}
@@ -31,9 +31,12 @@ void MotionController::UpdateSpeed(const float deltaTime) {
 			walkingDirection.normalize();
 			//btVector3 destinyVelocity = walkingDirection * GetCurrentSpeed();
 			float currentDot = currentVelocity.dot(walkingDirection);
-			if(currentVelocity.length() < 0.5f || currentDot < GetCurrentSpeed()) {
-				btVector3 modifyingVelocity = walkingDirection *(GetCurrentSpeed() - currentDot) *0.5f;
-				rigidBody->setLinearVelocity(currentVelocity + modifyingVelocity);
+			if(currentVelocity.length() < 0.5f ||
+					currentDot < GetCurrentSpeed()) {
+				btVector3 modifyingVelocity = walkingDirection *
+						(GetCurrentSpeed() - currentDot) *0.5f;
+				rigidBody->setLinearVelocity(
+						currentVelocity + modifyingVelocity);
 			}
 		}
 	}
@@ -49,12 +52,14 @@ void MotionController::UpdateTriggersTransform() {
 		triggerLow->SetLocation(characterOrigin + triggerLowOffsetCrouching);
 		triggerHigh->SetLocation(characterOrigin + triggerHighOffsetCrouching);
 		if(sing::engine->GetCameraParent() == character)
-			sing::engine->GetCamera()->SetRelativePosition(btVector3(0, characterCrouchingHeight *0.5f - 0.1f, 0));
+			sing::engine->GetCamera()->SetRelativePosition(
+					btVector3(0, characterCrouchingHeight *0.5f - 0.1f, 0));
 	} else {
 		triggerLow->SetLocation(characterOrigin + triggerLowOffsetStanding);
 		triggerHigh->SetLocation(characterOrigin + triggerHighOffsetStanding);
 		if(sing::engine->GetCameraParent() == character)
-			sing::engine->GetCamera()->SetRelativePosition(btVector3(0, characterStandingHeight *0.5f - 0.1f, 0));
+			sing::engine->GetCamera()->SetRelativePosition(
+					btVector3(0, characterStandingHeight *0.5f - 0.1f, 0));
 	}
 }
 
@@ -68,7 +73,8 @@ float MotionController::GetFlatDeceleration() {
 }
 
 MotionController::State MotionController::GetCurrentState() const {
-	if(crouchingState == MotionController::CrouchingState::CROUCHING || crouchingState == MotionController::CrouchingState::STANDING_UP)
+	if(crouchingState == MotionController::CrouchingState::CROUCHING ||
+			crouchingState == MotionController::CrouchingState::STANDING_UP)
 		return MotionController::State::CROUCHING;
 	if(states.size()) {
 		return states.back();
@@ -105,8 +111,10 @@ float MotionController::GetJumpVelocity() {
 }
 
 void MotionController::Tick(const float deltaTime) {
-	if(crouchingState == MotionController::CrouchingState::STANDING_UP && !triggerHigh->IsTopCollision()) {
-		character->GetBody()->setCollisionShape(triggerHigh->GetBtCollisionShape());
+	if(crouchingState == MotionController::CrouchingState::STANDING_UP &&
+				!triggerHigh->IsTopCollision()) {
+		character->GetBody()->setCollisionShape(
+				triggerHigh->GetBtCollisionShape());
 		sing::world->UpdateColliderForObject(character->GetBody());
 		crouchingState = MotionController::CrouchingState::STANDING;
 	}
@@ -133,7 +141,9 @@ void MotionController::Jump() {
 		jumpCooldown = 0.0f;
 		btRigidBody *rigidBody = character->GetBody<btRigidBody>();
 		if(rigidBody) {
-			rigidBody->applyCentralImpulse(btVector3(0, 1, 0)*GetJumpVelocity()/rigidBody->getInvMass());
+			rigidBody->applyCentralImpulse(
+					btVector3(0, 1, 0) * GetJumpVelocity() /
+					rigidBody->getInvMass());
 		}
 	}
 }
@@ -154,12 +164,14 @@ void MotionController::RemoveState(State state) {
 }
 
 bool MotionController::IsCrouching() {
-	return crouchingState == MotionController::CrouchingState::CROUCHING || crouchingState == MotionController::CrouchingState::STANDING_UP;
+	return crouchingState == MotionController::CrouchingState::CROUCHING ||
+			crouchingState == MotionController::CrouchingState::STANDING_UP;
 }
 
 void MotionController::StartCrouching() {
 	if(!IsCrouching()) {
-		character->GetBody()->setCollisionShape(triggerLow->GetBtCollisionShape());
+		character->GetBody()->setCollisionShape(
+				triggerLow->GetBtCollisionShape());
 		sing::world->UpdateColliderForObject(character->GetBody());
 	}
 	AddState(State::CROUCHING);
@@ -197,26 +209,34 @@ MotionController::MotionController(Entity *characterEntity, float stepHeight) {
 			this->character = characterEntity;
 			
 			btVector3 aabbMin, aabbMax;
-			character->GetBtCollisionShape()->getAabb(btTransform(btQuaternion(btVector3(0,1,0),0),btVector3(0,0,0)), aabbMin, aabbMax);
+			character->GetBtCollisionShape()->getAabb(
+					btTransform(
+							btQuaternion(btVector3(0,1,0),0),
+							btVector3(0,0,0)), aabbMin, aabbMax);
 			characterStandingHeight = aabbMax.y() - aabbMin.y();
 			characterCrouchingHeight = characterStandingHeight *crouchingScale;
 			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
 			
 			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
 					sing::engine->AddEntity("MotionControllerTrigger",
-					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
-					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
+					sing::resourceManager->GetCapsule(characterRadius,
+							characterStandingHeight),
+					btTransform(btQuaternion(btVector3(1,1,1),0),
+							btVector3(0,10,0)), 75.0));
 			triggerLow = dynamic_cast<MotionControllerTrigger*>(
 					sing::engine->AddEntity("MotionControllerTrigger",
-					sing::resourceManager->GetCapsule(characterRadius, characterStandingHeight),
-					btTransform(btQuaternion(btVector3(1,1,1),0), btVector3(0,10,0)), 75.0));
+					sing::resourceManager->GetCapsule(characterRadius,
+							characterStandingHeight),
+					btTransform(btQuaternion(btVector3(1,1,1),0),
+							btVector3(0,10,0)), 75.0));
 			triggerHigh->Init(characterEntity, triggerLow, stepHeight);
 			triggerLow->Init(characterEntity, triggerHigh, stepHeight);
 			
 			jumpCooldownLimit = 0.03f;
 			jumpCooldown = jumpCooldownLimit;
 			
-			float centerHeightsDifference = (characterStandingHeight - characterCrouchingHeight) *0.5f;
+			float centerHeightsDifference =
+					(characterStandingHeight - characterCrouchingHeight) * 0.5f;
 			triggerLowOffsetCrouching = btVector3(0,0,0);
 			triggerLowOffsetStanding = btVector3(0,-centerHeightsDifference,0);
 			triggerHighOffsetCrouching = btVector3(0,centerHeightsDifference,0);

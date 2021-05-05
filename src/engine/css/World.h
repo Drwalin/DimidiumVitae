@@ -27,21 +27,27 @@ enum CollisionGroups {
 
 enum CollisionDefaultGroups {
 	CollisionDefaultGroup = CollisionGroupDynamic | CollisionGroupVisible,
-	CollisionDefaultGroupDynamic = CollisionGroupDynamic | CollisionGroupVisible,
+	CollisionDefaultGroupDynamic = CollisionGroupDynamic |
+			CollisionGroupVisible,
 	CollisionDefaultGroupStatic = CollisionGroupStatic | CollisionGroupVisible,
 	CollisionDefaultGroupTrigger = CollisionGroupTrigger,
-	CollisionDefaultGroupCharacter = CollisionGroupDynamic | CollisionGroupVisible,
+	CollisionDefaultGroupCharacter = CollisionGroupDynamic |
+			CollisionGroupVisible,
 	CollisionDefaultGroupLiquid = CollisionGroupLiquid
 };
 
 enum CollisionDefaultMasks {
 	CollisionDefaultMaskAll = ~0,
-	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
-	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger | CollisionGroupSight,
+	CollisionDefaultMaskDynamic = CollisionGroupDynamic | CollisionGroupStatic |
+			CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
+	CollisionDefaultMaskStatic = CollisionGroupDynamic | CollisionGroupTrigger |
+			CollisionGroupSight,
 	CollisionDefaultMaskTrigger = CollisionGroupDynamic | CollisionGroupStatic,
-	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
+	CollisionDefaultMaskCharacter = CollisionGroupDynamic | CollisionGroupStatic
+			| CollisionGroupLiquid | CollisionGroupTrigger | CollisionGroupSight,
 	CollisionDefaultMaskLiquid = CollisionGroupDynamic | CollisionGroupTrigger,
-	CollisionDefaultMaskDynamicNotinteractive = CollisionGroupStatic | CollisionGroupLiquid | CollisionGroupTrigger
+	CollisionDefaultMaskDynamicNotinteractive = CollisionGroupStatic |
+			CollisionGroupLiquid | CollisionGroupTrigger
 };
 
 class World {
@@ -62,7 +68,9 @@ public:
 	
 	void Tick(btScalar deltaTime, int count = 0);
 	
-	bool AddBody(btCollisionObject* body, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	bool AddBody(btCollisionObject* body,
+			int collisionFilterGroup=btBroadphaseProxy::DefaultFilter,
+			int collisionFilterMask=btBroadphaseProxy::AllFilter);
 	bool RemoveBody(btCollisionObject* body);
 	void RemoveBodys();
 	

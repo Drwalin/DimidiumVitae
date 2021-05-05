@@ -37,39 +37,41 @@ btTransform Camera::GetTransform() const {
 }
 
 btQuaternion Camera::GetRotation() const {
-	return parentTransformation.getRotation() *Math::MakeQuaternionFromEuler(rotation);
+	return parentTransformation.getRotation() *
+			Math::MakeQuaternionFromEuler(rotation);
 }
 
 btQuaternion Camera::GetFlatRotation() const {
-	return parentTransformation.getRotation() *btQuaternion(btVector3(0, 1, 0), -rotation.y());
+	return parentTransformation.getRotation() *
+			btQuaternion(btVector3(0, 1, 0), -rotation.y());
 }
 
 btVector3 Camera::GetUpVector() const {
-	return btTransform(GetRotation()) *btVector3(0, 1, 0);
+	return btTransform(GetRotation()) * btVector3(0, 1, 0);
 }
 
 btVector3 Camera::GetFlatRightVector() const {
-	return btTransform(GetFlatRotation()) *btVector3(-1, 0, 0);
+	return btTransform(GetFlatRotation()) * btVector3(-1, 0, 0);
 }
 
 btVector3 Camera::GetRightVector() const {
-	return btTransform(GetRotation()) *btVector3(-1, 0, 0);
+	return btTransform(GetRotation()) * btVector3(-1, 0, 0);
 }
 
 btVector3 Camera::GetFlatLeftVector() const {
-	return btTransform(GetFlatRotation()) *btVector3(1, 0, 0);
+	return btTransform(GetFlatRotation()) * btVector3(1, 0, 0);
 }
 
 btVector3 Camera::GetLeftVector() const {
-	return btTransform(GetRotation()) *btVector3(1, 0, 0);
+	return btTransform(GetRotation()) * btVector3(1, 0, 0);
 }
 
 btVector3 Camera::GetFlatForwardVector() const {
-	return btTransform(GetFlatRotation()) *btVector3(0, 0, 1);
+	return btTransform(GetFlatRotation()) * btVector3(0, 0, 1);
 }
 
 btVector3 Camera::GetForwardVector() const {
-	return btTransform(GetRotation()) *btVector3(0, 0, 1);
+	return btTransform(GetRotation()) * btVector3(0, 0, 1);
 }
 
 btVector3 Camera::GetPosition() const {
@@ -100,15 +102,18 @@ void Camera::UpdateCameraView() {
 	else if(rotation.m_floats[2] < -Math::PI*2.0)
 		rotation.m_floats[2] += Math::PI*2.0;
 	
-	sceneNode->setTarget(Math::GetIrrVec(GetWorldPosition() + GetForwardVector()));
+	sceneNode->setTarget(Math::GetIrrVec(GetWorldPosition() +
+			GetForwardVector()));
 	sceneNode->setUpVector(Math::GetIrrVec(GetUpVector()));
 	sceneNode->setPosition(Math::GetIrrVec(GetWorldPosition()));
 }
 
-void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth) {
+void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint,
+		bool smooth) {
 	btVector3 dstCameraRotation(0,0,0);
 	{
-		btVector3 dstLookingDirection = (worldPoint - GetWorldPosition()).normalized();
+		btVector3 dstLookingDirection =
+				(worldPoint - GetWorldPosition()).normalized();
 		btVector3 forwardVector = GetForwardVector().normalized();
 		btVector3 flatForward = forwardVector;
 		flatForward.m_floats[1] = 0.0f;
@@ -117,10 +122,20 @@ void Camera::RotateCameraToLookAtPoint(const btVector3 &worldPoint, bool smooth)
 		flatDstLookingDirection.m_floats[1] = 0.0f;
 		flatDstLookingDirection.normalize();
 		
-		float dot = flatForward.normalized().dot(flatDstLookingDirection.normalized());
-		dstCameraRotation.m_floats[1] = ((dot<=-1 || dot>=1) ? 0.001f : acos(dot))*(flatDstLookingDirection.dot(GetFlatLeftVector()) > 0.0f ? -1.0f : 1.0f);
-		dot = forwardVector.normalized().dot((Math::MakeTransformFromEuler(btVector3(0, -dstCameraRotation.y(), 0))*dstLookingDirection).normalized());
-		dstCameraRotation.m_floats[0] = ((dot<=-1 || dot>=1) ? 0.001f : acos(dot))*(dstLookingDirection.y() > forwardVector.y() ? -1.0f : 1.0f);
+		float dot = flatForward.normalized().dot(
+				flatDstLookingDirection.normalized());
+		dstCameraRotation.m_floats[1] =
+				((dot<=-1 || dot>=1) ? 0.001f : acos(dot)) *
+				(flatDstLookingDirection.dot(GetFlatLeftVector()) > 0.0f ?
+						-1.0f : 1.0f
+				);
+		dot = forwardVector.normalized().dot((
+				Math::MakeTransformFromEuler(
+						btVector3(0, -dstCameraRotation.y(), 0)) *
+				dstLookingDirection).normalized());
+		dstCameraRotation.m_floats[0] =
+				((dot<=-1 || dot>=1) ? 0.001f : acos(dot)) *
+				(dstLookingDirection.y() > forwardVector.y() ? -1.0f : 1.0f);
 	}
 	
 	if(smooth)
@@ -163,19 +178,22 @@ void Camera::SetFOV(float fovDegrees) {
 
 void Camera::SetRenderTargetSize(unsigned width, unsigned height) {
 	if(target) {
-		if(target->getOriginalSize() == irr::core::dimension2d<unsigned>(width, height)) {
+		if(target->getOriginalSize() ==
+				irr::core::dimension2d<unsigned>(width, height)) {
 			return;
 		}
 		sing::videoDriver->setRenderTarget(0, true, true, 0);
 		target->drop();
 		sing::videoDriver->removeTexture(target);
 		target = NULL;
-		target = sing::videoDriver->addRenderTargetTexture(irr::core::dimension2d<unsigned>(width, height));//, "RTT1");
+		target = sing::videoDriver->addRenderTargetTexture(
+				irr::core::dimension2d<unsigned>(width, height));//, "RTT1");
 	}
 	sceneNode->setAspectRatio(float(width)/float(height));
 }
 
-Camera::Camera(bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNode *cameraNode) {
+Camera::Camera(bool textured, unsigned w, unsigned h,
+		irr::scene::ICameraSceneNode *cameraNode) {
 	target = NULL;
 	
 	fovDegrees = 70.0f;
@@ -186,13 +204,15 @@ Camera::Camera(bool textured, unsigned w, unsigned h, irr::scene::ICameraSceneNo
 	
 	position = btVector3(0, 0, 0);
 	rotation = btVector3(0, 0, 0);
-	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
+	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0),
+			btVector3(0, 0, 0));
 }
 
 Camera::~Camera() {
 	position = btVector3(0, 0, 0);
 	rotation = btVector3(0, 0, 0);
-	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0), btVector3(0, 0, 0));
+	parentTransformation = btTransform(btQuaternion(btVector3(0, 1, 0), 0),
+			btVector3(0, 0, 0));
 }
 
 #endif

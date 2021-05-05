@@ -105,7 +105,7 @@ inline void Engine::UpdateEntitiesOverlapp() {
 	}
 }
 
-inline void Engine::UpdateEntities(const float deltaTime) {
+inline void Engine::UpdateEntities(float deltaTime) {
 	while(!entitiesQueuedToDestroy.empty()) {
 		DeleteEntity(entitiesQueuedToDestroy.front());
 		entitiesQueuedToDestroy.pop();
@@ -168,7 +168,7 @@ void Engine::RestoreSimulationExecution(int state) {
 	pausePhysics = state;
 }
 
-int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
+int Engine::CalculateNumberOfSimulationsPerFrame(float deltaTime) {
 	return 1;
 	float fps = 1.0 / deltaTime;
 	if(fps >= 57.0)
@@ -184,14 +184,14 @@ int Engine::CalculateNumberOfSimulationsPerFrame(const float deltaTime) {
 	return 1;
 }
 
-void Engine::AsynchronousTick(const float deltaTime) {
+void Engine::AsynchronousTick(float deltaTime) {
 	physicsSimulationTime.SubscribeStart();
 	if(!pausePhysics)
 		world->Tick(deltaTime, CalculateNumberOfSimulationsPerFrame(deltaTime));
 	physicsSimulationTime.SubscribeEnd();
 }
 
-void Engine::SynchronousTick(const float deltaTime) {
+void Engine::SynchronousTick(float deltaTime) {
 	entityUpdateTime.SubscribeStart();
 	UpdateEntities(deltaTime);
 	resourceManager->ResourceFreeingCycle(16);
@@ -274,7 +274,8 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	sing::engine = this;
 	try {
 		sing::fileSystem = fileSystem = new FileSystem();
-		sing::commandInterpreter = commandInterpreter = new CommandInterpreter();
+		sing::commandInterpreter = commandInterpreter =
+				new CommandInterpreter();
 		
 		scriptsDll = std::shared_ptr<Dll>(new Dll("./scripts"));
 		scriptsDll->Get<void(*)(void)>("AddEngineScripts")();
@@ -288,14 +289,17 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		sing::soundEngine = soundEngine = new SoundEngine();
 		sing::window = window = new Window;
 		window->Init(json["windowName"],
-				json.Object().count("iconFile") ? json["iconFile"].String() : "",
+				json.Object().count("iconFile") ?
+				json["iconFile"].String() : "",
 				json["width"].Integer(), json["height"].Integer(), event,
-				json.Object().count("fullscreen") ? json["fullscreen"].Boolean() : false);
+				json.Object().count("fullscreen") ?
+				json["fullscreen"].Boolean() : false);
 		sing::resourceManager = resourceManager =
 			new ResourceManager(json.Object().count("resourcePersistencyTime") ?
 					json["resourcePersistencyTime"].Real() : 60.0f);
 		
-		if(json.Object().count("lockMouse") ? json["lockMouse"].Boolean() : true) {
+		if(json.Object().count("lockMouse") ?
+				json["lockMouse"].Boolean() : true) {
 			window->HideMouse();
 			window->LockMouse();
 		}

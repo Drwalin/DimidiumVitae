@@ -13,7 +13,8 @@
 
 #include <cstdio>
 
-extern "C" bool OGGLoadFromFile(const char *oggFileName, std::vector<char> &bufferData, ALenum &format, ALsizei &sampleRate) {
+extern "C" bool OGGLoadFromFile(const char *oggFileName,
+		std::vector<char> &bufferData, ALenum &format, ALsizei &sampleRate) {
 	FILE *file = fopen(oggFileName, "rb");
 	if(file == NULL)
 		return false;
@@ -40,13 +41,15 @@ extern "C" bool OGGLoadFromFile(const char *oggFileName, std::vector<char> &buff
 	int bitStream = 0;
 	while(true) {
 		long bytesReaded;
-		bytesReaded = ov_read(&oggFileStream, cacheBuffer, cacheBufferSize, 0, 2, 1, &bitStream);
+		bytesReaded = ov_read(&oggFileStream, cacheBuffer, cacheBufferSize, 0,
+				2, 1, &bitStream);
 		if(bytesReaded < 0) {
 			ov_clear(&oggFileStream);
 			free(cacheBuffer);
 			return false;
 		}
-		bufferData.insert(bufferData.end(), cacheBuffer, cacheBuffer+bytesReaded);
+		bufferData.insert(bufferData.end(), cacheBuffer,
+				cacheBuffer+bytesReaded);
 		if(bytesReaded == 0)
 			break;
 	}

@@ -9,10 +9,12 @@
 
 #include <cmath>
 
-struct SimulationContactResultCallback : public btCollisionWorld::ContactResultCallback {
+struct SimulationContactResultCallback :
+	public btCollisionWorld::ContactResultCallback {
 	class MotionControllerTrigger *trigger;
 	float mid;
-	SimulationContactResultCallback(MotionControllerTrigger *trigger, float mid);
+	SimulationContactResultCallback(MotionControllerTrigger *trigger,
+			float mid);
 
 	btScalar addSingleResult(btManifoldPoint& manifoldPoint,
 		const btCollisionObjectWrapper* colObj0Wrap,
@@ -37,7 +39,7 @@ public:
 	
 	void Init(Entity *character, Entity *otherTrigger, float stepHeight);
 	
-	virtual void Tick(const float deltaTime) override;
+	virtual void Tick(float deltaTime) override;
 	
 	__ENTITY_DERIVED_HEADER_FACTORY__(MotionControllerTrigger)
 	
@@ -45,7 +47,8 @@ public:
 	
 protected:
 	
-	virtual void ProcessOverlappingEntity(Entity* entity, btCollisionObject* collisionObject) override;
+	virtual void ProcessOverlappingEntity(Entity* entity,
+			btCollisionObject* collisionObject) override;
 	
 protected:
 	

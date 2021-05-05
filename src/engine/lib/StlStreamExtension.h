@@ -11,7 +11,8 @@
 class __base_ostreambuf : public std::streambuf {
 public:
 	
-	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) = 0;
+	virtual std::streamsize xsputn(const char *buffer,
+			std::streamsize buffersize) = 0;
 	int overflow(int ch);
 };
 
@@ -32,7 +33,8 @@ protected:
 class ocstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	virtual std::streamsize xsputn(const char *buffer,
+			std::streamsize buffersize) override;
 	ocstreambuf(const char *filename);
 	~ocstreambuf();
 	
@@ -58,7 +60,8 @@ private:
 class ogzstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	virtual std::streamsize xsputn(const char *buffer,
+			std::streamsize buffersize) override;
 	ogzstreambuf(const char *filename);
 	~ogzstreambuf();
 	
@@ -91,7 +94,8 @@ namespace irr {
 class oirrstreambuf : public __base_ostreambuf {
 public:
 	
-	virtual std::streamsize xsputn(const char *buffer, std::streamsize buffersize) override;
+	virtual std::streamsize xsputn(const char *buffer,
+			std::streamsize buffersize) override;
 	oirrstreambuf(irr::io::IWriteFile *file);
 	~oirrstreambuf();
 	
@@ -132,13 +136,15 @@ private:
 	T __streambuf;
 };
 
-typedef __t_iostream<icstreambuf,std::istream,const char*> icfstream;
-typedef __t_iostream<ocstreambuf,std::ostream,const char*> ocfstream;
+using icfstream = __t_iostream<icstreambuf, std::istream, const char*>;
+using ocfstream = __t_iostream<ocstreambuf, std::ostream, const char*>;
 
-typedef __t_iostream<igzstreambuf,std::istream,const char*> igzfstream;
-typedef __t_iostream<ogzstreambuf,std::ostream,const char*> ogzfstream;
+using igzfstream = __t_iostream<igzstreambuf, std::istream, const char*>;
+using ogzfstream = __t_iostream<ogzstreambuf, std::ostream, const char*>;
 
-typedef __t_iostream<iirrstreambuf,std::istream,class irr::io::IReadFile*> iirrfstream;
-typedef __t_iostream<oirrstreambuf,std::ostream,class irr::io::IWriteFile*> oirrfstream;
+using iirrfstream = __t_iostream<iirrstreambuf, std::istream,
+		class irr::io::IReadFile*>;
+using oirrfstream = __t_iostream<oirrstreambuf, std::ostream,
+		class irr::io::IWriteFile*>;
 
 #endif

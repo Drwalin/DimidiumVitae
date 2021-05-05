@@ -44,7 +44,8 @@ __base_istreambuf::~__base_istreambuf() {
 	}
 }
 
-std::streamsize ocstreambuf::xsputn(const char *buffer, std::streamsize buffersize) {
+std::streamsize ocstreambuf::xsputn(const char *buffer,
+		std::streamsize buffersize) {
 	if(filefd)
 		return fwrite(buffer, 1, buffersize, (FILE*)filefd);
 	return 0;
@@ -78,7 +79,8 @@ icstreambuf::~icstreambuf() {
 	}
 }
 
-std::streamsize ogzstreambuf::xsputn(const char *buffer, std::streamsize buffersize) {
+std::streamsize ogzstreambuf::xsputn(const char *buffer,
+		std::streamsize buffersize) {
 	if(filefd)
 		return gzwrite(filefd, buffer, buffersize);
 	return 0;
@@ -112,7 +114,8 @@ igzstreambuf::~igzstreambuf() {
 	}
 }
 
-std::streamsize oirrstreambuf::xsputn(const char *buffer, std::streamsize buffersize) {
+std::streamsize oirrstreambuf::xsputn(const char *buffer,
+		std::streamsize buffersize) {
 	if(file)
 		return file->write(buffer, buffersize);
 	return 0;

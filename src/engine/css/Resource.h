@@ -31,7 +31,9 @@ public:
 	virtual JSON GetJSON() const =0;
 	
 	static const std::string& GetResourceTypeString(ResourceType type);
-	static ResourceType GetResourceType(const std::string &type);protected:
+	static ResourceType GetResourceType(const std::string &type);
+	
+protected:
 	
 	Resource(const JSON& json);
 	

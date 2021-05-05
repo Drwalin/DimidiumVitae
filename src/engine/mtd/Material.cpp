@@ -31,16 +31,34 @@ Material::Material(const JSON& json) :
 					materials.resize(materials.size() + 1);
 				} else if(line.find("map_K") == 0) {
 					std::string textureFileName = (line.c_str()+7);
-					textures.emplace_back(sing::resourceManager->GetTexture(textureFileName));
-					materials.back().setTexture(0, textures.back()->GetITexture());
+					textures.emplace_back(
+							sing::resourceManager->GetTexture(textureFileName));
+					materials.back().setTexture(0,
+							textures.back()->GetITexture());
 				} else if(line[0] == 'K') {
 					float r, g, b;
 					sscanf(line.c_str()+3, "%f%f%f", &r, &g, &b);
 					switch(line[1]) {
-					case 'a': materials.back().AmbientColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 'd': materials.back().DiffuseColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 's': materials.back().SpecularColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
-					case 'e': materials.back().EmissiveColor = irr::video::SColor(255, r*255.0f, g*255.0f, b*255.0f); break;
+					case 'a':
+						materials.back().AmbientColor =
+								irr::video::SColor(255, r*255.0f, g*255.0f,
+										b*255.0f);
+						break;
+					case 'd':
+						materials.back().DiffuseColor =
+								irr::video::SColor(255, r*255.0f, g*255.0f,
+										b*255.0f);
+						break;
+					case 's':
+						materials.back().SpecularColor =
+								irr::video::SColor(255, r*255.0f, g*255.0f,
+										b*255.0f);
+						break;
+					case 'e':
+						materials.back().EmissiveColor =
+								irr::video::SColor(255, r*255.0f, g*255.0f,
+										b*255.0f);
+						break;
 					}
 				} else if(line.find("Ns") == 0) {
 					float s;
@@ -57,11 +75,13 @@ Material::Material(const JSON& json) :
 		throw std::string(std::string("Cannot load material from file: ")+name);
 }
 
-void Material::SetTo(std::shared_ptr<Material> material, irr::scene::ISceneNode *iSceneNode) {
+void Material::SetTo(std::shared_ptr<Material> material,
+		irr::scene::ISceneNode *iSceneNode) {
 	if(iSceneNode) {
 		if(material && material->materials.size()>0) {
 			int i=0;
-			int materialCount = std::min<int>(iSceneNode->getMaterialCount(), material->materials.size());
+			int materialCount = std::min<int>(iSceneNode->getMaterialCount(),
+					material->materials.size());
 			for(i=0; i<materialCount; ++i)
 				iSceneNode->getMaterial(i) = material->materials[i];
 			for(; i<(int)iSceneNode->getMaterialCount(); ++i)

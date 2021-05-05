@@ -15,21 +15,27 @@
 
 #include <ctime>
 
-void StaticEntity::Tick(const float deltaTime) {
+void StaticEntity::Tick(float deltaTime) {
 	Entity::Tick(deltaTime);
 }
 
-void StaticEntity::ApplyDamage(const float damage, btVector3 point, btVector3 normal) {}
+void StaticEntity::ApplyDamage(float damage, btVector3 point,
+		btVector3 normal) {
+}
 
 StaticEntity::StaticEntity(const JSON& json) :
 	Entity(json) {
 	
-	btCollisionObject *collisionObject = CollisionObjectManager::CreateCollisionObject(collisionShape, currentTransform);
+	btCollisionObject *collisionObject =
+			CollisionObjectManager::CreateCollisionObject(collisionShape,
+					currentTransform);
 	
 	collisionObject->setFriction(0.75);
-	collisionObject->setCollisionFlags(btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
+	collisionObject->setCollisionFlags(
+			btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 	
-	SetBody(collisionObject, collisionShape, CollisionDefaultGroupStatic, CollisionDefaultMaskStatic);
+	SetBody(collisionObject, collisionShape, CollisionDefaultGroupStatic,
+			CollisionDefaultMaskStatic);
 }
 
 StaticEntity::~StaticEntity() {

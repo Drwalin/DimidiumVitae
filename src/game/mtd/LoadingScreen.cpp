@@ -10,7 +10,8 @@
 
 LoadingScreen::LoadingScreen() :
 	Menu() {
-	loadingTexture = sing::resourceManager->GetTexture("Textures/PoweredBy-inverted.png");
+	loadingTexture = sing::resourceManager->GetTexture(
+			"Textures/PoweredBy-inverted.png");
 	AddImage(loadingTexture, 0, 0);
 }
 LoadingScreen::~LoadingScreen() {
@@ -20,7 +21,8 @@ LoadingScreen::~LoadingScreen() {
 bool LoadingScreen::RenderSceneInBackground() const {
 	return false;
 }
-void LoadingScreen::OnButtonClicked(Menu::Button *button, Menu::Element *element) {
+void LoadingScreen::OnButtonClicked(Menu::Button *button,
+		Menu::Element *element) {
 }
 
 #endif

@@ -18,7 +18,9 @@ Animation SceneNode::GetAnimation(const std::string &name) const {
 irr::scene::IAnimatedMeshSceneNode *SceneNode::New(std::shared_ptr<Model> model) {
 	if(model) {
 		if(model->GetMesh()) {
-			irr::scene::IAnimatedMeshSceneNode *iSceneNode = sing::sceneManager->addAnimatedMeshSceneNode(model->GetMesh());
+			irr::scene::IAnimatedMeshSceneNode *iSceneNode =
+					sing::sceneManager->addAnimatedMeshSceneNode(
+							model->GetMesh());
 			if(model->GetDefaultMaterial())
 				Material::SetTo(model->GetDefaultMaterial(), iSceneNode);
 			return iSceneNode;
@@ -32,12 +34,15 @@ irr::scene::IAnimatedMeshSceneNode *SceneNode::GetISceneNode() {
 }
 
 void SceneNode::SetTransform(btTransform transform) {
-	if(previousTransform.getRotation()!=transform.getRotation() || previousTransform.getOrigin()!=transform.getOrigin()) {
+	if(previousTransform.getRotation()!=transform.getRotation() ||
+				previousTransform.getOrigin()!=transform.getOrigin()) {
 		iSceneNode->setPosition(Math::GetIrrVec(transform.getOrigin()));
 		irr::core::vector3d<float> eulerRadians;
-		btQuaternion quat(transform.getRotation().getAxis() *btVector3(1,-1,-1), transform.getRotation().getAngle());
+		btQuaternion quat(transform.getRotation().getAxis() *btVector3(1,-1,-1),
+				transform.getRotation().getAngle());
 		irr::core::quaternion q;
-		q.fromAngleAxis(quat.getAngle(), irr::core::vector3d<float>(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z()));
+		q.fromAngleAxis(quat.getAngle(), irr::core::vector3d<float>(
+				quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z()));
 		q.toEuler(eulerRadians);
 		iSceneNode->setRotation(eulerRadians *irr::core::RADTODEG);
 		previousTransform = transform;
@@ -45,10 +50,12 @@ void SceneNode::SetTransform(btTransform transform) {
 }
 
 void SceneNode::SetScale(btVector3 scale) {
-	iSceneNode->setScale(irr::core::vector3d<float>(scale.x(),scale.y(),scale.z()));
+	iSceneNode->setScale(
+			irr::core::vector3d<float>(scale.x(),scale.y(),scale.z()));
 }
 
-std::shared_ptr<SceneNode> SceneNode::AddChild(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
+std::shared_ptr<SceneNode> SceneNode::AddChild(std::shared_ptr<Model> model,
+		irr::scene::IAnimatedMeshSceneNode *iSceneNode) {
 	std::shared_ptr<SceneNode> child(new SceneNode);
 	child->Init(model);
 	iSceneNode->addChild(child->iSceneNode);
@@ -70,7 +77,8 @@ void SceneNode::SetMaterial(std::shared_ptr<Material> material) {
 	this->material = material;
 }
 
-void SceneNode::Init(std::shared_ptr<Model> model, irr::scene::IAnimatedMeshSceneNode *iParentSceneNode) {
+void SceneNode::Init(std::shared_ptr<Model> model,
+		irr::scene::IAnimatedMeshSceneNode *iParentSceneNode) {
 	this->model = model;
 	this->iSceneNode = SceneNode::New(this->model);
 	this->iParentSceneNode = iParentSceneNode;
