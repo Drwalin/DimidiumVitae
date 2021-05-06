@@ -229,13 +229,14 @@ void Window::GenerateEvents() {
 }
 
 void Window::Tick() {
-	if(lockMouse) {
-		unsigned W = GetWidth();
-		unsigned H = GetHeight();
-		float w=W;
-		float h=H;
-		eventIrrlichtReceiver->SetCursor(W/2, H/2);
-		device->getCursorControl()->setPosition(float(W/2)/w, float(H/2)/h);
+	if(lockMouse && sing::device->isWindowFocused()) {
+		irr::core::vector2d<int> P, m, np;
+		eventIrrlichtReceiver->GetCursor(P.X, P.Y);
+		m.X = GetWidth()/2;
+		m.Y = GetHeight()/2;
+		eventIrrlichtReceiver->SetCursor(m.X, m.Y);
+		auto p = device->getCursorControl()->getPosition();
+		device->getCursorControl()->setPosition(m);
 	}
 	
 	GenerateEvents();

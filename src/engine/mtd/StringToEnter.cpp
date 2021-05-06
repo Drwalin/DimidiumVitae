@@ -52,13 +52,15 @@ void StringToEnter::PressKey(const irr::SEvent::SKeyInput &key) {
 		}
 		break;
 	case irr::KEY_RETURN:		// enter
-		{
+		if(!key.Shift) {
 			EventResponser *currentEventResponser =
 					sing::window->GetActiveEventResponser();
 			if(currentEventResponser)
 				currentEventResponser->StringToEnterEvent(str);
+			Clear();
+		} else {
+			InsertCharacter('\n');
 		}
-		Clear();
 		break;
 	case irr::KEY_ESCAPE:
 		Clear();
@@ -97,8 +99,9 @@ void StringToEnter::SetCharactersLimit(unsigned value) {
 }
 
 StringToEnter::StringToEnter() {
-	charactersLimit = 1024*4;
+	charactersLimit = 1024*256;
 	str = "";
+	str.reserve(charactersLimit);
 	currentPosition = 0;
 }
 

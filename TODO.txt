@@ -28,7 +28,6 @@ TO DO:
 			void Entity::SetCollisionEnabled(bool) (and getters for them)
 	- Add bool Entity::EverNeedTick() const and separate lists of objects that
 			needs frequent/rare/none updates to reduce engine tick time
-	- Correct jiggly mouse movement while mouse is locked
 	- Use Semantic Versioning (https://semver.org/) consistently
 	- Update Readme.txt
 	- Code refactor - reorder methods in classes to be consecutive and keep
@@ -168,6 +167,7 @@ Removed bugs:
 	- When in game pressed ESC, then pressed RMB/LMB and then pressed ESC to
 			return to game, instantly Event spawns multiple boxes/spheres
 			(atleast since v0.5.0-k)
+	- Correct jiggly mouse movement while mouse is locked
 	
 
 To test:

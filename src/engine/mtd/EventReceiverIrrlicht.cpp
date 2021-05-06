@@ -37,9 +37,9 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 	switch(event.EventType) {
 	case irr::EET_KEY_INPUT_EVENT:
 		if(event.KeyInput.PressedDown) {
+			sing::window->GetStringToEnterObject()->PressKey(
+					event.KeyInput);
 			if(keyHolded.find(event.KeyInput.Key) == keyHolded.end()) {
-				sing::window->GetStringToEnterObject()->PressKey(
-						event.KeyInput);
 				currentEventResponser->KeyPressedEvent(event.KeyInput.Key);
 				keyPressed.insert(event.KeyInput.Key);
 			}
