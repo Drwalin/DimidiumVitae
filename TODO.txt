@@ -37,8 +37,6 @@ TO DO:
 	- Code refactor - make classes smaller, split it's tasks to smaller classes
 	- Code refactor - change position of asterisk (*) and ampersand (&)
 			when declaring variables, members or arguments
-	- Code refactor - split code files into multiple directories by category and
-			move file *.h/*.hpp and *.cpp to the same directory
 	- Code refactor - rename header files *.h to *.hpp
 	- Code refactor - move updating entities to Simulation class
 	- Code refactor - clean up parallel processing code
@@ -48,6 +46,8 @@ TO DO:
 			and other essential stuff
 	- Update Console to show cursor position
 	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
+	- Code refactor - split code files into multiple directories by category and
+			move file *.h/*.hpp and *.cpp to the same directory
 	
 
 TO DO (to think/code restructuring):
