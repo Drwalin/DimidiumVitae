@@ -184,19 +184,19 @@ void Event::KeyHoldedEvent(int keyCode) {
 		
 	case irr::KEY_UP:
 		sing::engine->GetCamera()->Rotate(
-				btVector3(-(sing::window->GetDeltaTime()), 0.0, 0.0)*2.0);
+				btVector3(-(sing::engine->GetDeltaTime()), 0.0, 0.0)*2.0);
 		break;
 	case irr::KEY_DOWN:
 		sing::engine->GetCamera()->Rotate(
-				btVector3((sing::window->GetDeltaTime()), 0.0, 0.0)*2.0);
+				btVector3((sing::engine->GetDeltaTime()), 0.0, 0.0)*2.0);
 		break;
 	case irr::KEY_RIGHT:
 		sing::engine->GetCamera()->Rotate(
-				btVector3(0.0, (sing::window->GetDeltaTime()), 0.0)*2.0);
+				btVector3(0.0, (sing::engine->GetDeltaTime()), 0.0)*2.0);
 		break;
 	case irr::KEY_LEFT:
 		sing::engine->GetCamera()->Rotate(
-				btVector3(0.0, -(sing::window->GetDeltaTime()), 0.0)*2.0);
+				btVector3(0.0, -(sing::engine->GetDeltaTime()), 0.0)*2.0);
 		break;
 		
 	case irr::KEY_SPACE:

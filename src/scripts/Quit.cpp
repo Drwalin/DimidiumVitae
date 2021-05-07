@@ -10,6 +10,6 @@
 #include <JSON.hpp>
 
 void Quit(const JSON& args) {
-	sing::window->QueueQuit();
+	sing::engine->QueueQuit();
 }
 

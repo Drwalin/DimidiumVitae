@@ -20,6 +20,7 @@ MainMenu::MainMenu() :
 	sing::window->ShowMouse();
 	sing::engine->PauseSimulation();
 }
+
 MainMenu::~MainMenu() {
 	sing::window->LockMouse();
 	sing::window->HideMouse();
@@ -41,15 +42,28 @@ void MainMenu::KeyReleasedEvent(int keyCode) {
 	}
 }
 
+void MainMenu::PutToBackground() {
+	Menu::PutToBackground();
+	sing::engine->ResumeSimulation();
+}
+
+void MainMenu::RestoreFromBackground() {
+	Menu::RestoreFromBackground();
+	sing::window->UnlockMouse();
+	sing::window->ShowMouse();
+	sing::engine->PauseSimulation();
+}
+
 void MainMenu::OnOtherEvent(const irr::SEvent::SGUIEvent &event) {
 }
+
 void MainMenu::OnButtonClicked(Menu::Button *button, Menu::Element *element) {
 	if(button == startNewGame) {
 		sing::window->StopMenu();
 	} else if(button == continueGame) {
 		sing::window->StopMenu();
 	} else if(button == exitGame) {
-		sing::window->QueueQuit();
+		sing::engine->QueueQuit();
 	} else if(button == options) {
 		//sing::window->StartMenu<OptionsMenu>();
 	}

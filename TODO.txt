@@ -39,15 +39,13 @@ TO DO:
 			when declaring variables, members or arguments
 	- Code refactor - rename header files *.h to *.hpp
 	- Code refactor - move updating entities to Simulation class
-	- Code refactor - clean up parallel processing code
+	- Code refactor - move mouse lock to event receiver irrlicht
 	- Add map files, loading game state, saving game state with/as scripts
 	- Add error validation to script parser
 	- Update StringToEnter class to have ctrl+arrows/delete/backspace editor
 			and other essential stuff
 	- Update Console to show cursor position
 	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
-	- Code refactor - split code files into multiple directories by category and
-			move file *.h/*.hpp and *.cpp to the same directory
 	
 
 TO DO (to think/code restructuring):
@@ -119,6 +117,9 @@ Done:
 			used to add in-game console and to modify objects/game state
 	- Add scroll bar to console
 	- Code refactor - added Thread class which controlls parallel to draw tick
+	- Code refactor - split code files into multiple directories by category and
+			move file *.h/*.hpp and *.cpp to the same directory
+	- Code refactor - clean up parallel processing code
 	
 
 TO DO in future:

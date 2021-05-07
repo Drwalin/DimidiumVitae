@@ -81,8 +81,8 @@ public:
 	int StoreSimulationExecution();
 	void RestoreSimulationExecution(int state);
 	
-	void SynchronousTick(const float deltaTime);
-	void AsynchronousTick(const float deltaTime);
+	void SynchronousTick();
+	void AsynchronousTick();
 	
 	void Init(EventResponser *eventResponser, const char *jsonConfigFile);
 	void BeginLoop();
@@ -91,7 +91,14 @@ public:
 	
 	friend class EventResponser;
 	
+	void SetFpsLimit(float fps);
+	float GetSmoothFps();
+	
+	void QueueQuit();
+	
 private:
+	
+	void UpdateDeltaTime();
 	
 	inline void UpdateEntitiesOverlapp();
 	inline void UpdateEntities(const float deltaTime);
@@ -122,6 +129,14 @@ private:
 	Entity *cameraParent;
 	
 	bool pausePhysics;
+	
+	TimePoint beginTime;
+	float deltaTime;
+	
+	float fpsLimit;
+	
+	Thread simulationThread;
+	std::atomic<bool> quitWhenPossible;
 };
 
 #endif

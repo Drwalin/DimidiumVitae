@@ -99,4 +99,12 @@ Menu::ScrollBar* Menu::AddScrollBar(irr::core::rect<int> rect) {
 	return elem;
 }
 
+Menu::ListBox* Menu::AddListBox(irr::core::rect<int> rect) {
+	Menu::ListBox *elem = sing::igui->addListBox(rect);
+	elem->setEnabled(true);
+	elements.emplace_back(elem);
+	return elem;
+	
+}
+
 #endif

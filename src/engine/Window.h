@@ -34,7 +34,6 @@ public:
 	void Init(const std::string &windowName, const std::string &iconFile,
 			int width, int height, class EventResponser *eventResponser,
 			bool fullscreen = false);
-	void BeginLoop();
 	
 	irr::IrrlichtDevice *GetDevice();
 	irr::video::IVideoDriver *GetVideoDriver();
@@ -72,31 +71,18 @@ public:
 	void HideMouse();
 	void ShowMouse();
 	
-	float GetDeltaTime();
-	void SetFpsLimit(float fps);
-	
 	unsigned GetWidth();
 	unsigned GetHeight();
 	
-	void QueueQuit();
-	
 	void Destroy();
 	
-	void ParallelToDrawTick();
+	void Draw(bool doNotDrawEnvironment = false);
 	
-	void Draw(bool drawEnvironment);
+	void GenerateEvents();
 	
 private:
 	
-	void OneLoopFullTick();
-	float GetSmoothFps();
-	void GenerateEvents();
-	void Tick();
-	void UpdateDeltaTime();
-	
 	void DrawGUI();
-	
-	bool IsParallelToDrawTickRunning();
 	
 private:
 	
@@ -105,18 +91,12 @@ private:
 	irr::scene::ISceneManager *sceneManager;
 	irr::gui::IGUIEnvironment *igui;
 	
-	bool quitWhenPossible;
-	
-	float deltaTime;
-	
 	TimeCounter eventsTime;
 	TimeCounter wholeDrawTime;
 	TimeCounter engineTickTime;
 	TimeCounter skippedTime;
 	
 	bool lockMouse;
-	
-	Thread parallelThreadToDraw;
 	
 	std::shared_ptr<Camera> camera;
 	std::list<Menu*> activeMenus;
@@ -125,10 +105,6 @@ private:
 	class EventResponser *eventResponser;
 	class StringToEnter *stringToEnter;
 	GUI &gui;
-	
-	float fpsLimit;
-	
-	TimePoint beginTime;
 };
 
 #endif

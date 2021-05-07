@@ -17,6 +17,9 @@ public:
 	
 	virtual void KeyReleasedEvent(int keyCode) override;
 	
+	virtual void PutToBackground() override;
+	virtual void RestoreFromBackground() override;
+	
 protected:
 	
 	virtual void OnOtherEvent(const irr::SEvent::SGUIEvent &event) override;

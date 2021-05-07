@@ -22,6 +22,7 @@ public:
 	typedef irr::gui::IGUIImage Image;
 	typedef irr::gui::IGUIStaticText StaticText;
 	typedef irr::gui::IGUIScrollBar ScrollBar;
+	typedef irr::gui::IGUIListBox ListBox;
 	
 	Menu();
 	virtual ~Menu();
@@ -51,6 +52,7 @@ protected:
 	StaticText* AddStaticText(irr::core::rect<int> rect,
 			const std::string &text);
 	ScrollBar* AddScrollBar(irr::core::rect<int> rect);
+	ListBox* AddListBox(irr::core::rect<int> rect);
 	
 	
 protected:

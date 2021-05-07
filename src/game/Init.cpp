@@ -33,7 +33,8 @@ extern "C" int Init(int argc, char ** argv) {
 	sing::engine->Init(new Event(), argc>1 ? argv[1] : NULL);
 	
 	sing::window->StartMenu<LoadingScreen>();
-	sing::window->Draw(false);
+	sing::window->Draw(true);
+	
 	/*
 	SoundSource musicSource(sing::resourceManager->GetSound(
 			"./media/Sounds/track01.ogg"));

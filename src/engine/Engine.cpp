@@ -133,7 +133,7 @@ void Engine::QueueEntityToDestroy(uint64_t entityId) {
 }
 
 float Engine::GetDeltaTime() {
-		return window->GetDeltaTime();
+		return deltaTime;
 }
 
 World *Engine::GetWorld() {
@@ -168,7 +168,7 @@ void Engine::RestoreSimulationExecution(int state) {
 	pausePhysics = state;
 }
 
-void Engine::AsynchronousTick(float deltaTime) {
+void Engine::AsynchronousTick() {
 	physicsSimulationTime.SubscribeStart();
 	if(!pausePhysics) {
 		world->Tick(deltaTime, 1);
@@ -176,7 +176,7 @@ void Engine::AsynchronousTick(float deltaTime) {
 	physicsSimulationTime.SubscribeEnd();
 }
 
-void Engine::SynchronousTick(float deltaTime) {
+void Engine::SynchronousTick() {
 	entityUpdateTime.SubscribeStart();
 	UpdateEntities(deltaTime);
 	resourceManager->ResourceFreeingCycle(16);
@@ -225,6 +225,11 @@ ResourceManager* Engine::GetResourceManager() {
 	return resourceManager;
 }
 
+void Engine::QueueQuit() {
+	quitWhenPossible = true;
+}
+
+
 Entity* Engine::GetEntity(uint64_t id) {
 	auto it = entities.find(id);
 	if(it != entities.end()) {
@@ -252,7 +257,48 @@ void Engine::DeleteEntity(uint64_t id) {
 }
 
 void Engine::BeginLoop() {
-	window->BeginLoop();
+	while(!quitWhenPossible && sing::device->run()) {
+		UpdateDeltaTime();
+		window->GenerateEvents();
+		SynchronousTick();
+		
+		simulationThread.RunOnce();
+		window->Draw();
+		simulationThread.PauseBlock();
+	}
+}
+
+void Engine::UpdateDeltaTime() {
+	while(true) {
+		TimePoint currentTime = TimeCounter::GetCurrentTime();
+		deltaTime = TimeCounter::GetDurationSeconds(beginTime, currentTime);
+		if(deltaTime+0.001f >= 1.0f/fpsLimit) {
+			beginTime = currentTime;
+			break;
+		} else {
+			TimeCounter::Sleep((1.0f/fpsLimit) - deltaTime);
+		}
+	}
+	
+	if(deltaTime > 0.3f)
+		deltaTime = 0.3f;
+}
+
+float Engine::GetSmoothFps() {
+	static float last_fps = 0;
+	static float fps = 0;
+	static int n = 0;
+	
+	if(n == 20) {
+		last_fps = fps / float(n);
+		n = 0;
+		fps = 0;
+	}
+	
+	fps += 1.0 / GetDeltaTime();
+	++n;
+	
+	return last_fps;
 }
 
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
@@ -290,7 +336,7 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		if(json.Object().count("fpsLimit")) {
-			window->SetFpsLimit(json["fpsLimit"].Real());
+			SetFpsLimit(json["fpsLimit"].Real());
 		}
 		
 		if(GetCamera() == NULL) {
@@ -375,8 +421,18 @@ void Engine::Destroy() {
 	}
 }
 
+void Engine::SetFpsLimit(float fps) {
+	if(fps >= 2048.0f)
+		fpsLimit = 2048.0f;
+	else if(fps <= 24.0f)
+		fpsLimit = 24.0f;
+	else
+		fpsLimit = fps;
+}
+
 Engine::Engine() :
-	classFactory("__Constructor_%_Function") {
+	classFactory("__Constructor_%_Function"),
+	simulationThread(std::bind(&Engine::AsynchronousTick, this)) {
 	resourceManager = NULL;
 	event = NULL;
 	world = NULL;
@@ -384,6 +440,10 @@ Engine::Engine() :
 	fileSystem = NULL;
 	pausePhysics = true;
 	soundEngine = NULL;
+	
+	fpsLimit = 60.0f;
+	
+	quitWhenPossible = false;
 }
 
 Engine::~Engine() {

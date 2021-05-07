@@ -39,9 +39,15 @@ Console::Console() :
 	
 	scroll = 0;
 	Update();
+	
+	sing::window->UnlockMouse();
+	sing::window->ShowMouse();
+	sing::engine->PauseSimulation();
 }
 
 Console::~Console() {
+	sing::window->LockMouse();
+	sing::window->HideMouse();
 	sing::engine->RestoreSimulationExecution(state);
 }
 
@@ -117,7 +123,11 @@ void Console::Update() {
 	input->setRelativePositionProportional({0.0f, 0.9f, 1.0f, 1.0f});
 	scrollBar->setRelativePositionProportional({0.985f, 0.0f, 1.0f, 0.9f});
 	
-	int size = AccessLog().size();
+	int newSize = AccessLog().size();
+	if(size != newSize) {
+		size = newSize;
+		scrollBar->setPos(size-3);
+	}
 	scrollBar->setMax(size);
 	scroll = scrollBar->getPos();
 	if(scroll >= size)
@@ -127,11 +137,6 @@ void Console::Update() {
 	
 	std::wstring first = GetLogsText(scroll);
 	log->setText(first.c_str());
-//	irr::core::rect<int> rect = log->getAbsolutePosition();
-//	if(rect.getHeight() < log->getTextHeight()) {
-//		scroll++;
-//		Update();
-//	}
 	
 	input->setText(std::to_wstring(
 			sing::window->GetStringToEnterObject()->GetCurrent()).c_str());
@@ -150,6 +155,9 @@ std::mutex& Console::Mutex() {
 void Console::AddLog(const std::string& str) {
 	std::lock_guard<std::mutex> lock(Mutex());
 	AccessLog().emplace_back(std::to_wstring(str));
+	if(AccessLog().size() > 10000) {
+		AccessLog().erase(AccessLog().begin(), AccessLog().begin() + 100);
+	}
 }
 
 void Console::ClearLog() {
@@ -158,20 +166,17 @@ void Console::ClearLog() {
 }
 
 std::wstring Console::GetLogsText(size_t offset) {
-	std::vector<std::wstring> log;
-	{
-		std::lock_guard<std::mutex> lock(Mutex());
-		log = AccessLog();
-	}
+	std::lock_guard<std::mutex> lock(Mutex());
+	const std::vector<std::wstring>& log = AccessLog();
+	
 	std::wstring str;
 	if(offset >= log.size()) {
 		offset = log.size();
 		if(offset > 0)
 			--offset;
 	}
-	for(size_t i=offset; i<log.size(); ++i) {
-		if(i)
-			str += L"\n";
+	int end = std::min(log.size(), offset + 50);
+	for(size_t i=offset; i<end; ++i) {
 		str += log[i];
 	}
 	return str;

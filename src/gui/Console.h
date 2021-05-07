@@ -46,12 +46,14 @@ private:
 	
 private:
 	
+	int size;
 	int scroll;
 	
 	int state;
 	int commandsHistory;
 	
-	Menu::StaticText *log, *input;
+	Menu::StaticText *input;
+	Menu::StaticText *log;
 	Menu::ScrollBar *scrollBar;
 	class StringToEnter* stringGetter;
 };

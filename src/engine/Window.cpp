@@ -15,10 +15,6 @@
 
 #include <cstring>
 
-void Window::ParallelToDrawTick() {
-	sing::engine->AsynchronousTick(GetDeltaTime());
-}
-
 irr::IrrlichtDevice *Window::GetDevice() {
 	return device;
 }
@@ -88,10 +84,6 @@ const TimeCounter& Window::GetSkippedTime() const {
 	return skippedTime;
 }
 
-bool Window::IsParallelToDrawTickRunning() {
-	return !parallelThreadToDraw.IsPaused();
-}
-
 StringToEnter *Window::GetStringToEnterObject() {
 	return stringToEnter;
 }
@@ -124,18 +116,6 @@ void Window::ShowMouse() {
 	device->getCursorControl()->setVisible(true);
 }
 
-float Window::GetDeltaTime() {
-	return deltaTime;
-}
-
-void Window::SetFpsLimit(float fps) {
-	if(fps >= 2048.0f)
-		fpsLimit = 2048.0f;
-	else if(fps <= 24.0f)
-		fpsLimit = 24.0f;
-	else
-		fpsLimit = fps;
-}
 
 unsigned Window::GetWidth() {
 	return videoDriver->getScreenSize().Width;
@@ -145,51 +125,6 @@ unsigned Window::GetHeight() {
 	return videoDriver->getScreenSize().Height;
 }
 
-void Window::QueueQuit() {
-	quitWhenPossible = true;
-}
-
-void Window::OneLoopFullTick() {
-	skippedTime.SubscribeStart();
-	UpdateDeltaTime();
-	skippedTime.SubscribeEnd();
-	
-	Tick();
-}
-
-void Window::UpdateDeltaTime() {
-	while(true) {
-		TimePoint currentTime = TimeCounter::GetCurrentTime();
-		deltaTime = TimeCounter::GetDurationSeconds(beginTime, currentTime);
-		if(deltaTime+0.001f >= 1.0f/fpsLimit) {
-			beginTime = currentTime;
-			break;
-		} else {
-			TimeCounter::Sleep((1.0f/fpsLimit) - deltaTime);
-		}
-	}
-	
-	if(deltaTime > 0.3f)
-		deltaTime = 0.3f;
-}
-
-float Window::GetSmoothFps() {
-	static float last_fps = 0;
-	static float fps = 0;
-	static int n = 0;
-	
-	if(n == 20) {
-		last_fps = fps / float(n);
-		n = 0;
-		fps = 0;
-	}
-	
-	fps += 1.0 / GetDeltaTime();
-	++n;
-	
-	return last_fps;
-}
-
 void Window::GenerateEvents() {
 	eventsTime.SubscribeStart();
 	eventIrrlichtReceiver->GenerateEvents();
@@ -197,34 +132,11 @@ void Window::GenerateEvents() {
 	eventsTime.SubscribeEnd();
 }
 
-void Window::Tick() {
-	/*if(lockMouse && sing::device->isWindowFocused()) {
-		MESSAGE("Begin");
-		irr::core::vector2d<int> P, m, np;
-		eventIrrlichtReceiver->GetCursor(P.X, P.Y);
-		m.X = GetWidth()/2;
-		m.Y = GetHeight()/2;
-		eventIrrlichtReceiver->SetCursor(m.X, m.Y);
-		device->getCursorControl()->setPosition(m);
-		MESSAGE("End");
-		
-		
-	}*/
-	
-	GenerateEvents();
-	
-	engineTickTime.SubscribeStart();
-	sing::engine->SynchronousTick(deltaTime);
-	engineTickTime.SubscribeEnd();
-	
-	
-	parallelThreadToDraw.RunOnce();
-	Draw(GetCurrentMenu()==NULL ||
-			(GetCurrentMenu()&&GetCurrentMenu()->RenderSceneInBackground()));
-	parallelThreadToDraw.PauseBlock();
-}
-
-void Window::Draw(bool drawEnvironment) {
+void Window::Draw(bool doNotDrawEnvironment) {
+	bool drawEnvironment = GetCurrentMenu()==NULL ||
+			(GetCurrentMenu()&&GetCurrentMenu()->RenderSceneInBackground());
+	if(doNotDrawEnvironment)
+		drawEnvironment = false;
 	wholeDrawTime.SubscribeStart();
 	videoDriver->beginScene(true, true, irr::video::SColor(255,16,32,64));
 	GetCamera()->UseTarget();
@@ -273,12 +185,6 @@ void Window::Init(const std::string &windowName, const std::string &iconFile,
 	gui.Init();
 }
 
-void Window::BeginLoop() {
-	quitWhenPossible = false;
-	while(!quitWhenPossible && device->run())
-		OneLoopFullTick();	
-}
-
 void Window::Destroy() {
 	while(!activeMenus.empty()) {
 		Menu* top = activeMenus.back();
@@ -292,8 +198,6 @@ void Window::Destroy() {
 		device->drop();
 		device = NULL;
 	}
-	quitWhenPossible = false;
-	deltaTime = 0.0;
 	lockMouse = false;
 	eventResponser = NULL;
 	sing::device = NULL;
@@ -302,26 +206,16 @@ void Window::Destroy() {
 	sing::igui = NULL;
 }
 
-Window::Window() :
-	parallelThreadToDraw(std::bind(&Window::ParallelToDrawTick, this)),
-	gui(sing::gui)
-{
-	beginTime = TimeCounter::GetCurrentTime();
+Window::Window() : gui(sing::gui) {
 	device = NULL;
 	videoDriver = NULL;
 	sceneManager = NULL;
 	igui = NULL;
 	
-	quitWhenPossible = false;
-	
-	deltaTime = 0.01;
-	
 	lockMouse = false;
 	
 	eventResponser = NULL;
 	stringToEnter = new StringToEnter;
-	
-	fpsLimit = 60.0f;
 }
 
 Window::~Window() {
