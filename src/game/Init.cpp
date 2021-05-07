@@ -12,10 +12,13 @@
 #include <engine/Engine.h>
 
 #include "Header.h"
-#include "Player.h"
+
+#include <entities/Player.h>
+
 #include "Event.h"
-#include "MainMenu.h"
-#include "LoadingScreen.h"
+
+#include <gui/MainMenu.h>
+#include <gui/LoadingScreen.h>
 
 #include <iostream>
 #include <memory>

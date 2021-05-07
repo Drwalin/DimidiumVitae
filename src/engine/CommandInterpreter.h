@@ -23,7 +23,7 @@ namespace moodycamel {
 #include <JSON.hpp>
 #include <DllImporter.h>
 
-#include <engine/Script.h>
+#include <scripts/Script.h>
 
 class CommandInterpreter {
 public:

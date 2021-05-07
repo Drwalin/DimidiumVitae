@@ -8,8 +8,8 @@
 #include "Singleton.h"
 
 #include "Camera.h"
-#include "GUI.h"
-#include "Menu.h"
+#include <gui/GUI.h>
+#include <gui/Menu.h>
 
 #include <util/TimeCounter.h>
 #include <util/Thread.h>

@@ -2,11 +2,13 @@
 //	This file is part of The Drwalin Engine project
 // Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#include <engine/Script.h>
+#include "Script.h"
+
 #include <engine/Engine.h>
 #include <engine/Singleton.h>
 
 #include <JSON.hpp>
+
 #include <util/Debug.h>
 
 void New(const JSON& args);

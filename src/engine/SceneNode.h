@@ -16,8 +16,8 @@
 #include <set>
 #include <memory>
 
-#include "Model.h"
-#include "Material.h"
+#include <resources/Model.h>
+#include <resources/Material.h>
 
 class SceneNode {
 public:

@@ -12,9 +12,8 @@
 #include <bullet/btBulletCollisionCommon.h>
 #include <bullet/BulletDynamics/Character/btKinematicCharacterController.h>
 
-#include "MotionControllerTrigger.h"
-
-#include "Entity.h"
+#include <entities/MotionControllerTrigger.h>
+#include <entities/Entity.h>
 
 #include <memory>
 

@@ -7,10 +7,10 @@
 
 #include "EventReceiverIrrlicht.h"
 #include "EventResponser.h"
-#include "StringToEnter.h"
 #include "Window.h"
 #include "Engine.h"
 
+#include <util/StringToEnter.h>
 #include <util/Debug.h>
 
 #include <cstring>

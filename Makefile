@@ -1,8 +1,7 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 $(PLATFORMSPECIFICFLAGS) -m64 -ggdb3 -ggdb -g3 -g -Wall -pedantic
-CXXFLAGS += -Isrc
-CXXFLAGS += -Idep$(S)JSON$(S)include -Idep$(S)DllLoader$(S)include
+CXXFLAGS += -Isrc -Idep$(S)JSON$(S)include -Idep$(S)DllLoader$(S)include
 CXXFLAGS += -Idep$(S)concurrentqueue
 LIBS = -lBulletSoftBody -lLinearMath -lBulletCollision -lBulletDynamics
 LIBS += -lIrrlicht -lm -lpthread
@@ -36,11 +35,19 @@ ObjToShapeConverter$(EXEC_EXT): src$(S)tools$(S)ObjToShapeConverter.cpp bin$(S)J
 
 bin$(S)%.o: src$(S)engine$(S)%.cpp src$(S)engine$(S)%.h
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+bin$(S)%.o: src$(S)entities$(S)%.cpp src$(S)entities$(S)%.h
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+bin$(S)%.o: src$(S)gui$(S)%.cpp src$(S)gui$(S)%.h
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+bin$(S)%.o: src$(S)resources$(S)%.cpp src$(S)resources$(S)%.h
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 bin$(S)%.o: src$(S)util$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-bin$(S)%.o: src$(S)game$(S)%.cpp
+bin$(S)%.o: src$(S)game$(S)%.cpp src$(S)game$(S)%.h
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
-bin$(S)scripts$(S)%.o: src$(S)scripts$(S)%.cpp
+bin$(S)%.o: src$(S)scripts$(S)%.cpp
+	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
+bin$(S)%.o: src$(S)game$(S)%.cpp
 	$(CXX) -o $@ -c $(CXXFLAGS) $(DIRINCLUDE) $<
 
 

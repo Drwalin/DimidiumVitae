@@ -9,11 +9,13 @@
 #include <engine/Engine.h>
 #include <engine/MotionController.h>
 
+#include <entities/Character.h>
+#include <entities/Player.h>
+
 #include "Event.h"
-#include "Character.h"
-#include "Player.h"
-#include "MainMenu.h"
-#include "Console.h"
+
+#include <gui/MainMenu.h>
+#include <gui/Console.h>
 
 #include <irrlicht/irrlicht.h>
 

@@ -5,7 +5,8 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#include <engine/Model.h>
+#include <resources/Model.h>
+
 #include <engine/Engine.h>
 
 #include <memory>

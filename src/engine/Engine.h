@@ -18,14 +18,16 @@
 #include <queue>
 #include <memory>
 
-#include "Model.h"
-#include "Entity.h"
-#include "Trigger.h"
+#include <resources/Model.h>
+#include <resources/ResourceManager.h>
+#include <resources/SoundEngine.h>
+
+#include <entities/Entity.h>
+#include <entities/Trigger.h>
+
 #include "World.h"
 #include "Window.h"
 #include "EventResponser.h"
-#include "SoundEngine.h"
-#include "ResourceManager.h"
 #include "FileSystem.h"
 #include "CommandInterpreter.h"
 

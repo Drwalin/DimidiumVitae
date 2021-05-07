@@ -6,7 +6,7 @@
 #define EVENT_RECEIVER_IRRLICHT_CPP
 
 #include "EventReceiverIrrlicht.h"
-#include "StringToEnter.h"
+#include <util/StringToEnter.h>
 
 #include <cstdio>
 

@@ -22,6 +22,6 @@ ENGOBJDEL = $(addprefix bin$(S),$(ENGOBJ_))
 
 
 SCRIPTSOBJ_ = EngineScripts.o New.o Delete.o Quit.o Clear.o
-SCRIPTSOBJ = $(addprefix bin$(S)scripts$(S),$(SCRIPTSOBJ_))
-SCRIPTSOBJDEL = $(addprefix bin$(S)scripts$(S),$(SCRIPTSOBJ_))
+SCRIPTSOBJ = $(addprefix bin$(S),$(SCRIPTSOBJ_))
+SCRIPTSOBJDEL = $(addprefix bin$(S),$(SCRIPTSOBJ_))
 

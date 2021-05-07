@@ -7,7 +7,7 @@
 
 #ifndef ENGINE_SINGLETON_CPP
 
-#include "GUI.h"
+#include <gui/GUI.h>
 
 namespace irr {
 	class IrrlichtDevice;

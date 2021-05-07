@@ -19,7 +19,7 @@
 #include <istream>
 #include <ostream>
 
-#include "../engine/GUI.h"
+#include "../gui/GUI.h"
 #include <JSON.hpp>
 
 namespace Math {
