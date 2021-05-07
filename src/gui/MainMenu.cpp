@@ -65,7 +65,7 @@ void MainMenu::OnButtonClicked(Menu::Button *button, Menu::Element *element) {
 	} else if(button == exitGame) {
 		sing::engine->QueueQuit();
 	} else if(button == options) {
-		//sing::window->StartMenu<OptionsMenu>();
+		//sing::window->StartMenu<OptionMenu>();
 	}
 }
 

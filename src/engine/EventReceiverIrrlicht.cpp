@@ -153,7 +153,8 @@ void EventReceiverIrrlicht::GenerateEvents() {
 
 EventResponser* EventReceiverIrrlicht::GetActiveEventResponser() {
 	EventResponser *currentEventResponser = eventResponser;
-	if(sing::window->GetCurrentMenu())
+	Menu* menu = sing::window->GetCurrentMenu();
+	if(menu && menu->ReceiveEvents())
 		currentEventResponser = sing::window->GetCurrentMenu();
 	return currentEventResponser;
 }

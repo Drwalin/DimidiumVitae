@@ -61,9 +61,18 @@ void Menu::RestoreFromBackground() {
 	visiblelementssStored.clear();
 }
 
+bool Menu::ReceiveEvents() const {
+	return true;
+}
+
+
+void Menu::TickRender() {
+}
+
 
 void Menu::OnOtherEvent(const irr::SEvent::SGUIEvent &event) {
 }
+
 
 Menu::Button* Menu::AddButton(irr::core::rect<int> rect,
 		const std::string &text, std::string toolTipText) {

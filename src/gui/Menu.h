@@ -41,6 +41,9 @@ public:
 	virtual void PutToBackground();
 	virtual void RestoreFromBackground();
 	
+	virtual bool ReceiveEvents() const;
+	virtual void TickRender();
+	
 protected:
 	
 	virtual void OnOtherEvent(const irr::SEvent::SGUIEvent &event);
@@ -53,7 +56,6 @@ protected:
 			const std::string &text);
 	ScrollBar* AddScrollBar(irr::core::rect<int> rect);
 	ListBox* AddListBox(irr::core::rect<int> rect);
-	
 	
 protected:
 	
