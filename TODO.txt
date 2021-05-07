@@ -46,6 +46,7 @@ TO DO:
 			and other essential stuff
 	- Update Console to show cursor position
 	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
+	- Add HUD class
 	
 
 TO DO (to think/code restructuring):

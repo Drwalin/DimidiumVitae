@@ -18,80 +18,15 @@ int Engine::GetNumberOfEntities() const {
 	return entities.size();
 }
 
-bool Engine::RegisterType(const std::string &className,
-		const std::string &moduleName) {
-	if((bool)classFactory.AddClass(className.c_str(), moduleName.c_str())) {
-		return true;
+
+Entity* Engine::AddEntity(Entity* entity) {
+	if(entity) {
+		entities[entity->GetId()] = entity;
+		Trigger* trigger = dynamic_cast<Trigger*>(entity);
+		if(trigger)
+			triggerEntities[entity->GetId()] = trigger;
 	}
-	MESSAGE(std::string("Cannot register type: ")+className+" from module: "+
-			moduleName);
-	return false;
-}
-
-bool Engine::RegisterModule(const std::string &modulePath) {
-	if((bool)classFactory.AddModule(modulePath.c_str())) {
-		return true;
-	}
-	MESSAGE(std::string("Cannot register module: ")+modulePath);
-	return false;
-}
-
-Entity* Engine::AddEntity(const JSON& json) {
-	if(!json.IsObject())
-		return NULL;
-	
-	if(!classFactory.HasClass(json["class"].String()))
-		return NULL;
-	
-	uint64_t id = 0;
-	if(json.Object().count("id"))
-		id = json["id"].Integer();
-	
-	if(id == 0)
-		id = GetAvailableEntityId();
-	
-	entities[id] = NULL;
-	Entity *emptyEntity = classFactory.GetNew(json["class"].String(), json);
-	entities[id] = emptyEntity;
-	if(json.Object().count("mass"))
-		emptyEntity->SetMass(json["mass"].Real());
-	else
-		emptyEntity->SetMass(0.0f);
-	
-	Trigger *trigger = dynamic_cast<Trigger*>(emptyEntity);
-	if(trigger)
-		triggerEntities[id] = trigger;
-	
-	if(json.Object().count("model"))
-		emptyEntity->SetModel(
-				sing::resourceManager->GetModel(
-					json["model"].String()));
-	
-	if(json.Object().count("scale")) {
-		btVector3 s;
-		emptyEntity->SetScale(s<<=json["scale"]);
-	}
-	
-	return emptyEntity;
-}
-
-Entity* Engine::AddEntity(const std::string className, uint64_t id,
-		std::shared_ptr<CollisionShape> shape, btTransform transform,
-		btScalar mass) {
-	JSON json;
-	json["class"] = className;
-	if(shape)
-		json["shape"] = shape->GetJSON();
-	json["mass"] = mass;
-	json["id"] = id;
-	json["transform"] <<= transform;
-	return AddEntity(json);
-}
-
-Entity* Engine::AddEntity(const std::string className,
-		std::shared_ptr<CollisionShape> shape, btTransform transform,
-		btScalar mass) {
-	return AddEntity(className, GetAvailableEntityId(), shape, transform, mass);
+	return entity;
 }
 
 const std::map<uint64_t, Entity*>& Engine::GetEntities() const {
@@ -262,9 +197,9 @@ void Engine::BeginLoop() {
 		window->GenerateEvents();
 		SynchronousTick();
 		
-		simulationThread.RunOnce();
+		simulation.Start();
 		window->Draw();
-		simulationThread.PauseBlock();
+		simulation.Sync();
 	}
 }
 
@@ -304,6 +239,9 @@ float Engine::GetSmoothFps() {
 void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 	sing::engine = this;
 	try {
+		sing::simulation = &simulation;
+		sing::entityFactory = &entityFactory;
+		
 		sing::fileSystem = fileSystem = new FileSystem();
 		sing::commandInterpreter = commandInterpreter =
 				new CommandInterpreter();
@@ -348,9 +286,9 @@ void Engine::Init(EventResponser *eventResponser, const char *jsonConfigFile) {
 		}
 		
 		for(auto entry : json["modules"].Array())
-			RegisterModule(entry.String());
+			entityFactory.RegisterModule(entry.String());
 		for(auto entry : json["types"].Array())
-			RegisterType(entry["name"], entry["module"]);
+			entityFactory.RegisterType(entry["name"], entry["module"]);
 		if(json.Object().count("fileArchives")) {
 			irr::io::IFileSystem *fileSystem =
 				window->GetDevice()->getFileSystem();
@@ -430,9 +368,7 @@ void Engine::SetFpsLimit(float fps) {
 		fpsLimit = fps;
 }
 
-Engine::Engine() :
-	classFactory("__Constructor_%_Function"),
-	simulationThread(std::bind(&Engine::AsynchronousTick, this)) {
+Engine::Engine() {
 	resourceManager = NULL;
 	event = NULL;
 	world = NULL;

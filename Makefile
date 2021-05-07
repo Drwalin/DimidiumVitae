@@ -63,5 +63,5 @@ clean:
 	$(RM) game$(EXEC_EXT) bin$(S)Main.o
 	$(RM) engine$(SHARED_EXT) $(ENGOBJDEL)
 	$(RM) game-core$(SHARED_EXT) $(GAMEOBJDEL)
-	$(RM) scripts$(SHARED_EXT) $(SCRIPTSDEL)
+	$(RM) scripts$(SHARED_EXT) $(SCRIPTSOBJDEL)
 

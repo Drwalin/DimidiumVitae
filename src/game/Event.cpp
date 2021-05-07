@@ -227,11 +227,11 @@ void Event::KeyHoldedEvent(int keyCode) {
 		
 	case irr::KEY_LBUTTON:
 		euler = sing::engine->GetCamera()->GetEulerRotation();
-		temp = sing::engine->AddEntity("DynamicEntity",
+		temp = sing::engine->AddEntity(sing::entityFactory->AddEntity("DynamicEntity",
 				sing::resourceManager->GetBox(btVector3(1,1,1)),
 				btTransform(sing::engine->GetCamera()->GetRotation(),
 						sing::engine->GetCamera()->GetWorldPosition() +
-						sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+						sing::engine->GetCamera()->GetForwardVector()), 20.0f));
 		if(temp) {
 			temp->SetModel(sing::resourceManager->GetModel(
 					(std::string)"Models/Crate01.obj"));
@@ -245,11 +245,11 @@ void Event::KeyHoldedEvent(int keyCode) {
 		break;
 		
 	case irr::KEY_RBUTTON:
-		temp = sing::engine->AddEntity("DynamicEntity",
+		temp = sing::engine->AddEntity(sing::entityFactory->AddEntity("DynamicEntity",
 				sing::resourceManager->GetSphere(1),
 				btTransform(btQuaternion(btVector3(1,1,1),0),
 					sing::engine->GetCamera()->GetWorldPosition() +
-					sing::engine->GetCamera()->GetForwardVector()), 20.0f);
+					sing::engine->GetCamera()->GetForwardVector()), 20.0f));
 		if(temp) {
 			temp->SetModel(sing::resourceManager->GetModel(
 					(std::string)"Models/Sphere.obj"));

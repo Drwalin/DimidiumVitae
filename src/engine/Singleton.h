@@ -29,6 +29,9 @@ class Engine;
 class World;
 class Window;
 class CommandInterpreter;
+class EventReceiverIrrlicht;
+class Simulation;
+class EntityFactory;
 
 namespace sing {
 	extern class Engine *engine;
@@ -44,6 +47,10 @@ namespace sing {
 	extern class SoundEngine *soundEngine;
 	extern class ResourceManager *resourceManager;
 	extern class CommandInterpreter *commandInterpreter;
+	extern class Simulation *simulation;
+	extern class EntityFactory *entityFactory;
+	
+	extern class EventReceiverIrrlicht *irrlichtEventReceiver;
 	
 	extern GUI gui;
 }

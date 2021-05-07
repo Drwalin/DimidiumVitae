@@ -218,17 +218,17 @@ MotionController::MotionController(Entity *characterEntity, float stepHeight) {
 			characterRadius = (aabbMax.x()-aabbMin.x()) *0.5f;
 			
 			triggerHigh = dynamic_cast<MotionControllerTrigger*>(
-					sing::engine->AddEntity("MotionControllerTrigger",
+					sing::engine->AddEntity(sing::entityFactory->AddEntity("MotionControllerTrigger",
 					sing::resourceManager->GetCapsule(characterRadius,
 							characterStandingHeight),
 					btTransform(btQuaternion(btVector3(1,1,1),0),
-							btVector3(0,10,0)), 75.0));
+							btVector3(0,10,0)), 75.0)));
 			triggerLow = dynamic_cast<MotionControllerTrigger*>(
-					sing::engine->AddEntity("MotionControllerTrigger",
+					sing::engine->AddEntity(sing::entityFactory->AddEntity("MotionControllerTrigger",
 					sing::resourceManager->GetCapsule(characterRadius,
 							characterStandingHeight),
 					btTransform(btQuaternion(btVector3(1,1,1),0),
-							btVector3(0,10,0)), 75.0));
+							btVector3(0,10,0)), 75.0)));
 			triggerHigh->Init(characterEntity, triggerLow, stepHeight);
 			triggerLow->Init(characterEntity, triggerHigh, stepHeight);
 			

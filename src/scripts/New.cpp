@@ -12,7 +12,7 @@
 void New(const JSON& args) {
 	if(args[1].String() == "entity") {
 		if(args.size() == 3) {
-			sing::engine->AddEntity(args[2]);
+			sing::engine->AddEntity(sing::entityFactory->AddEntity(args[2]));
 			return;
 		}
 		JSON json;
@@ -23,7 +23,7 @@ void New(const JSON& args) {
 			json["mass"] = args[5];
 		if(args.size() >= 6)
 			json["model"] = args[6];
-		sing::engine->AddEntity(json);
+		sing::engine->AddEntity(sing::entityFactory->AddEntity(json));
 	} else {
 		MESSAGE(std::string("Invalid new argument (1): ") + args[1].Write());
 	}

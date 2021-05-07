@@ -160,6 +160,7 @@ void Window::Init(const std::string &windowName, const std::string &iconFile,
 	
 	this->eventResponser = eventResponser;
 	eventIrrlichtReceiver = new EventReceiverIrrlicht(eventResponser);
+	sing::irrlichtEventReceiver = eventIrrlichtReceiver;
 	
 	sing::device = device = irr::createDevice(irr::video::EDT_OPENGL,
 			irr::core::dimension2du(width, height), 16, fullscreen, true, false,

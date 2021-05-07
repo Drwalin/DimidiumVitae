@@ -24,14 +24,14 @@
 
 #include <entities/Entity.h>
 #include <entities/Trigger.h>
+#include <entities/EntityFactory.h>
 
+#include "Simulation.h"
 #include "World.h"
 #include "Window.h"
 #include "EventResponser.h"
 #include "FileSystem.h"
 #include "CommandInterpreter.h"
-
-#include <ClassFactory.h>
 
 class Engine {
 public:
@@ -40,22 +40,14 @@ public:
 	~Engine();
 	
 	int GetNumberOfEntities() const;
-	bool RegisterType(const std::string &className,
-			const std::string &moduleName);
-	bool RegisterModule(const std::string &moduleName);
 	
 	void QueueEntityToDestroy(Entity *ptr);
 	void QueueEntityToDestroy(uint64_t id);
 	void DeleteEntity(uint64_t entityId);
 	
 	uint64_t GetAvailableEntityId() const;
-	Entity* AddEntity(const JSON& json);
-	Entity* AddEntity(const std::string className, uint64_t id,
-			std::shared_ptr<CollisionShape> shape, btTransform transform,
-			btScalar mass = 1.0f);
-	Entity* AddEntity(const std::string className,
-			std::shared_ptr<CollisionShape> shape, btTransform transform,
-			btScalar mass = 1.0f);
+	
+	Entity* AddEntity(Entity* entity);
 	Entity* GetEntity(uint64_t entityId);
 	const std::map<uint64_t, Entity*>& GetEntities() const;
 	
@@ -105,7 +97,6 @@ private:
 	
 private:
 	
-	ClassFactory<Entity, const JSON&> classFactory;
 	std::shared_ptr<Dll> scriptsDll;
 	
 	World *world;
@@ -115,6 +106,8 @@ private:
 	SoundEngine *soundEngine;
 	ResourceManager *resourceManager;
 	CommandInterpreter *commandInterpreter;
+	EntityFactory entityFactory;
+	Simulation simulation;
 	
 	std::map<uint64_t, Entity*> entities;
 	std::map<uint64_t, Trigger*> triggerEntities;
@@ -135,7 +128,6 @@ private:
 	
 	float fpsLimit;
 	
-	Thread simulationThread;
 	std::atomic<bool> quitWhenPossible;
 };
 

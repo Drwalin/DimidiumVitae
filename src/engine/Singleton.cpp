@@ -34,6 +34,10 @@ namespace sing {
 	class SoundEngine *soundEngine = NULL;
 	class ResourceManager *resourceManager = NULL;
 	class CommandInterpreter *commandInterpreter = NULL;
+	class Simulation *simulation = NULL;
+	class EntityFactory *entityFactory = NULL;
+	
+	class EventReceiverIrrlicht *irrlichtEventReceiver = NULL;
 	
 	GUI gui;
 }
