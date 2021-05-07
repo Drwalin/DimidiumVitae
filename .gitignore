@@ -1,8 +1,8 @@
 *.dll
 *.exe
 *.so
+/game
 media
-./game
 /gmon.out
 *.swp
 mediaworkspace

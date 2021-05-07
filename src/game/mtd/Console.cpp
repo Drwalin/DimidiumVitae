@@ -38,6 +38,7 @@ Console::Console() :
 	stringGetter->Clear();
 	
 	scroll = 0;
+	Update();
 }
 
 Console::~Console() {
@@ -49,7 +50,6 @@ bool Console::RenderSceneInBackground() const {
 }
 
 void Console::MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) {
-	//scroll -= dw;
 	Update();
 }
 
@@ -73,7 +73,7 @@ void Console::KeyPressedEvent(int keyCode) {
 	switch(keyCode) {
 	case irr::KEY_UP:
 		commandsHistory++;
-		if(commandsHistory > CommandsHistory().size())
+		if(commandsHistory > (int)CommandsHistory().size())
 			commandsHistory = CommandsHistory().size();
 		else if(commandsHistory > 0) {
 			sing::window->GetStringToEnterObject()->SetCurrent(
@@ -124,8 +124,6 @@ void Console::Update() {
 		scroll = size-1;
 	if(scroll < 0)
 		scroll = 0;
-	
-	
 	
 	std::wstring first = GetLogsText(scroll);
 	log->setText(first.c_str());

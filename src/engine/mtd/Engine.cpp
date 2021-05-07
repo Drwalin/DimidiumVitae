@@ -37,7 +37,6 @@ bool Engine::RegisterModule(const std::string &modulePath) {
 }
 
 Entity* Engine::AddEntity(const JSON& json) {
-	MESSAGE(json.Write());
 	if(!json.IsObject())
 		return NULL;
 	
@@ -169,26 +168,11 @@ void Engine::RestoreSimulationExecution(int state) {
 	pausePhysics = state;
 }
 
-int Engine::CalculateNumberOfSimulationsPerFrame(float deltaTime) {
-	return 1;
-	float fps = 1.0 / deltaTime;
-	if(fps >= 57.0)
-		return 100;
-	if(fps >= 50.0)
-		return 90;
-	if(fps >= 40.0)
-		return 60;
-	if(fps >= 30.0)
-		return 30;
-	if(fps >= 20.0)
-		return 5;
-	return 1;
-}
-
 void Engine::AsynchronousTick(float deltaTime) {
 	physicsSimulationTime.SubscribeStart();
-	if(!pausePhysics)
-		world->Tick(deltaTime, CalculateNumberOfSimulationsPerFrame(deltaTime));
+	if(!pausePhysics) {
+		world->Tick(deltaTime, 1);
+	}
 	physicsSimulationTime.SubscribeEnd();
 }
 

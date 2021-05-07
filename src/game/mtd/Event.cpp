@@ -22,7 +22,7 @@
 
 void Event::MouseMoveEvent(int x, int y, int w, int dx, int dy, int dw) {
 	sing::engine->GetCamera()->Rotate(
-			btVector3(float(dy)/160.0, float(dx)/160.0, 0.0));
+			btVector3(float(dy)/4000.0, float(dx)/4000.0, 0.0));
 }
 
 irr::scene::ISceneNode *lightSceneNode = 0;

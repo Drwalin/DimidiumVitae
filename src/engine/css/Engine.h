@@ -79,7 +79,6 @@ public:
 	int StoreSimulationExecution();
 	void RestoreSimulationExecution(int state);
 	
-	int CalculateNumberOfSimulationsPerFrame(const float deltaTime);
 	void SynchronousTick(const float deltaTime);
 	void AsynchronousTick(const float deltaTime);
 	

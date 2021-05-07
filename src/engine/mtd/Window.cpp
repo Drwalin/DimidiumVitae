@@ -15,20 +15,8 @@
 
 #include <cstring>
 
-void ParallelThreadFunctionToDraw() {
-	sing::window->ParallelToDrawTick();
-}
-
 void Window::ParallelToDrawTick() {
-	while(IsParallelToDrawTickInUse()) {
-		while(parallelThreadToDrawContinue.load() == false) {
-			if(IsParallelToDrawTickInUse() == false)
-				return;
-			TimeCounter::Sleep(0.0001);
-		}
-		sing::engine->AsynchronousTick(GetDeltaTime());
-		parallelThreadToDrawContinue.store(false);
-	}
+	sing::engine->AsynchronousTick(GetDeltaTime());
 }
 
 irr::IrrlichtDevice *Window::GetDevice() {
@@ -96,31 +84,12 @@ const TimeCounter& Window::GetEngineTickTime() const {
 	return engineTickTime;
 }
 
-const TimeCounter& Window::GetAsynchronousTickTime() const {
-	return asynchronousTickTime;
-}
-
 const TimeCounter& Window::GetSkippedTime() const {
 	return skippedTime;
 }
 
-void Window::UseParallelThreadToDraw() {
-	if(useParallelThreadToDraw.load() == false) {
-		parallelThreadToDrawContinue.store(false);
-		useParallelThreadToDraw.store(true);
-		parallelThreadToDraw = std::thread(ParallelThreadFunctionToDraw);
-	}
-}
-
-void Window::ShutDownParallelThreadToDraw() {
-	if(useParallelThreadToDraw.load() == true) {
-		useParallelThreadToDraw.store(false);
-		parallelThreadToDraw.join();
-	}
-}
-
-bool Window::IsParallelToDrawTickInUse() {
-	return useParallelThreadToDraw.load();
+bool Window::IsParallelToDrawTickRunning() {
+	return !parallelThreadToDraw.IsPaused();
 }
 
 StringToEnter *Window::GetStringToEnterObject() {
@@ -229,15 +198,18 @@ void Window::GenerateEvents() {
 }
 
 void Window::Tick() {
-	if(lockMouse && sing::device->isWindowFocused()) {
+	/*if(lockMouse && sing::device->isWindowFocused()) {
+		MESSAGE("Begin");
 		irr::core::vector2d<int> P, m, np;
 		eventIrrlichtReceiver->GetCursor(P.X, P.Y);
 		m.X = GetWidth()/2;
 		m.Y = GetHeight()/2;
 		eventIrrlichtReceiver->SetCursor(m.X, m.Y);
-		auto p = device->getCursorControl()->getPosition();
 		device->getCursorControl()->setPosition(m);
-	}
+		MESSAGE("End");
+		
+		
+	}*/
 	
 	GenerateEvents();
 	
@@ -245,16 +217,11 @@ void Window::Tick() {
 	sing::engine->SynchronousTick(deltaTime);
 	engineTickTime.SubscribeEnd();
 	
-	asynchronousTickTime.SubscribeStart();
-	if(IsParallelToDrawTickInUse())
-		parallelThreadToDrawContinue.store(true);
+	
+	parallelThreadToDraw.RunOnce();
 	Draw(GetCurrentMenu()==NULL ||
 			(GetCurrentMenu()&&GetCurrentMenu()->RenderSceneInBackground()));
-	if(IsParallelToDrawTickInUse()) {
-		while(parallelThreadToDrawContinue.load())
-			TimeCounter::Sleep(0.0003);
-	}
-	asynchronousTickTime.SubscribeEnd();
+	parallelThreadToDraw.PauseBlock();
 }
 
 void Window::Draw(bool drawEnvironment) {
@@ -304,8 +271,6 @@ void Window::Init(const std::string &windowName, const std::string &iconFile,
 			getFont("./media/Fonts/courier.bmp"));
 	
 	gui.Init();
-	
-	UseParallelThreadToDraw();
 }
 
 void Window::BeginLoop() {
@@ -322,7 +287,6 @@ void Window::Destroy() {
 	}
 	camera.reset();
 	camera = NULL;
-	ShutDownParallelThreadToDraw();
 	if(device) {
 		device->closeDevice();
 		device->drop();
@@ -339,7 +303,8 @@ void Window::Destroy() {
 }
 
 Window::Window() :
-	useParallelThreadToDraw(false), gui(sing::gui)
+	parallelThreadToDraw(std::bind(&Window::ParallelToDrawTick, this)),
+	gui(sing::gui)
 {
 	beginTime = TimeCounter::GetCurrentTime();
 	device = NULL;
@@ -356,7 +321,6 @@ Window::Window() :
 	eventResponser = NULL;
 	stringToEnter = new StringToEnter;
 	
-	useParallelThreadToDraw = false;
 	fpsLimit = 60.0f;
 }
 

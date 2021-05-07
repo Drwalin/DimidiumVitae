@@ -87,14 +87,31 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 			break;
 			
 		case irr::EMIE_MOUSE_WHEEL:
+			{
+				float dw = event.MouseInput.Wheel;
+				currentEventResponser->MouseMoveEvent(event.MouseInput.X,
+						event.MouseInput.Y, mouseW, 0, 0, dw);
+				mouseW += dw;
+			}
+			break;
 		case irr::EMIE_MOUSE_MOVED:
-			currentEventResponser->MouseMoveEvent(event.MouseInput.X,
-					event.MouseInput.Y, mouseW + event.MouseInput.Wheel,
-					event.MouseInput.X - mouseX, event.MouseInput.Y - mouseY,
-					event.MouseInput.Wheel);
-			mouseW += event.MouseInput.Wheel;
-			mouseX = event.MouseInput.X;
-			mouseY = event.MouseInput.Y;
+			{
+				int dx = event.MouseInput.X - mouseX;
+				int dy = event.MouseInput.Y - mouseY;
+				if(dx || dy) {
+					currentEventResponser->MouseMoveEvent(event.MouseInput.X,
+							event.MouseInput.Y, mouseW, dx, dy, 0);
+					
+					if(sing::window->IsMouseLocked()) {
+						sing::device->getCursorControl()->setPosition(
+								0.5f, 0.5f);
+						auto p = sing::device->getCursorControl()->
+							getPosition();
+						mouseX = p.X;
+						mouseY = p.Y;
+					}
+				}
+			}
 			break;
 		default:
 			break;
@@ -111,12 +128,11 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 
 void EventReceiverIrrlicht::GenerateEvents() {
 	std::vector<irr::SEvent> eventQueue;
+	eventQueue.reserve(this->eventQueue.capacity());
 	
 	if(this->eventQueue.size() > 0) {
-		this->queueMutex.lock();
-		eventQueue = this->eventQueue;
-		this->eventQueue.clear();
-		this->queueMutex.unlock();
+		std::lock_guard<std::mutex> lock(queueMutex);
+		std::swap(eventQueue, this->eventQueue);
 	}
 	
 	for(unsigned i=0; i<eventQueue.size(); ++i) {

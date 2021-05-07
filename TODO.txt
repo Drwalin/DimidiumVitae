@@ -37,6 +37,11 @@ TO DO:
 	- Code refactor - make classes smaller, split it's tasks to smaller classes
 	- Code refactor - change position of asterisk (*) and ampersand (&)
 			when declaring variables, members or arguments
+	- Code refactor - split code files into multiple directories by category and
+			move file *.h/*.hpp and *.cpp to the same directory
+	- Code refactor - rename header files *.h to *.hpp
+	- Code refactor - move updating entities to Simulation class
+	- Code refactor - clean up parallel processing code
 	- Add map files, loading game state, saving game state with/as scripts
 	- Add error validation to script parser
 	- Update StringToEnter class to have ctrl+arrows/delete/backspace editor
@@ -113,6 +118,7 @@ Done:
 			(loaded from shared object) and scripts written in files, it can be
 			used to add in-game console and to modify objects/game state
 	- Add scroll bar to console
+	- Code refactor - added Thread class which controlls parallel to draw tick
 	
 
 TO DO in future:

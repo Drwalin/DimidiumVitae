@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "GUI.h"
 #include "Menu.h"
+#include "Thread.h"
 
 #include "../lib/Debug.h"
 
@@ -22,10 +23,7 @@
 
 #include <string>
 #include <atomic>
-#include <thread>
 #include <memory>
-
-void ParallelThreadFunctionToDraw();
 
 class Window {
 public:
@@ -33,7 +31,9 @@ public:
 	Window();
 	~Window();
 	
-	void Init(const std::string &windowName, const std::string &iconFile, int width, int height, class EventResponser *eventResponser, bool fullscreen = false);
+	void Init(const std::string &windowName, const std::string &iconFile,
+			int width, int height, class EventResponser *eventResponser,
+			bool fullscreen = false);
 	void BeginLoop();
 	
 	irr::IrrlichtDevice *GetDevice();
@@ -61,7 +61,6 @@ public:
 	const TimeCounter& GetWholeDrawTime() const;
 	const TimeCounter& GetSkippedTime() const;
 	const TimeCounter& GetEngineTickTime() const;
-	const TimeCounter& GetAsynchronousTickTime() const;
 	
 	class StringToEnter *GetStringToEnterObject();
 	class EventResponser *GetEventResponser();
@@ -97,9 +96,7 @@ private:
 	
 	void DrawGUI();
 	
-	void UseParallelThreadToDraw();
-	void ShutDownParallelThreadToDraw();
-	bool IsParallelToDrawTickInUse();
+	bool IsParallelToDrawTickRunning();
 	
 private:
 	
@@ -115,14 +112,11 @@ private:
 	TimeCounter eventsTime;
 	TimeCounter wholeDrawTime;
 	TimeCounter engineTickTime;
-	TimeCounter asynchronousTickTime;
 	TimeCounter skippedTime;
 	
 	bool lockMouse;
 	
-	std::atomic<bool> parallelThreadToDrawContinue;
-	std::thread parallelThreadToDraw;
-	std::atomic<bool> useParallelThreadToDraw;
+	Thread parallelThreadToDraw;
 	
 	std::shared_ptr<Camera> camera;
 	std::list<Menu*> activeMenus;
