@@ -103,12 +103,13 @@ void EventReceiverIrrlicht::GenerateOneEvent(const irr::SEvent& event) {
 							event.MouseInput.Y, mouseW, dx, dy, 0);
 					
 					if(sing::window->IsMouseLocked()) {
+						mouseX = sing::window->GetWidth()/2;
+						mouseY = sing::window->GetHeight()/2;
 						sing::device->getCursorControl()->setPosition(
-								0.5f, 0.5f);
-						auto p = sing::device->getCursorControl()->
-							getPosition();
-						mouseX = p.X;
-						mouseY = p.Y;
+								mouseX, mouseY);
+					} else {
+						mouseX = event.MouseInput.X;
+						mouseY = event.MouseInput.Y;
 					}
 				}
 			}

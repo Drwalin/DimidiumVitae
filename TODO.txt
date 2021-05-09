@@ -47,6 +47,16 @@ TO DO:
 	- Update Console to show cursor position
 	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
 	- Add HUD class
+	- Correct GUI class which does not respects it's workspace
+	- Window::Draw is not stable on windows which causes lags (sometimes render
+			takes ~30-40 ms without no reason with stable average 4ms tick). It
+			mostly causes lags with mouse (it somtimes looks lik previous jiggly
+			mouse movement).
+	- Change sequence sing::engine->AddEntity(sing::entityFactory->AddEntity(
+			...)) to somthing cleaner
+	- Remove game/Event class and mov it's content to Menu/HUD
+	- Change starting menus by class template to starting by registered name
+			(similarily to ClassFactory for entities)
 	
 
 TO DO (to think/code restructuring):
@@ -162,6 +172,8 @@ Bugs:
 			with std::cout which does not cause problems
 	- Sometimes invalid coordinates of Player in the begining (NaN/Inf) spotted
 			again in [commit SHA-1: ac76263793df94e73d7415d81cb62aec0021682a]
+	- Game crashed few times on Windows OS in [commit SHA-1:
+			12fe67f2b4ae7fec2c2114ba21411c7ad3b8a1c5], no reason found.
 	
 
 Removed bugs:

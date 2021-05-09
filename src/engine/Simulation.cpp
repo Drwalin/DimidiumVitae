@@ -8,6 +8,8 @@
 #include "Simulation.h"
 #include "Engine.h"
 
+#include <functional>
+
 Simulation::Simulation() :
 		thread(std::bind(&Simulation::Tick, this)) {
 }
