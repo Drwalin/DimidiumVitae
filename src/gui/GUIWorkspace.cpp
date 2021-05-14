@@ -14,67 +14,61 @@
 #include <cstring>
 #include <cinttypes>
 
-namespace GUI {
-	DrawEvent &DrawEvent::operator=(const DrawEvent &other) {
-		type = other.type;
-		switch(type) {
-		case DrawEvent::Type::TEXT:
-			text = other.text;
-			break;
-		case DrawEvent::Type::IMAGE:
-			image = other.image;
-			texture = other.texture;
-			break;
-		default:
-			break;
-		}
-		return (*this);
+GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
+	type = other.type;
+	switch(type) {
+	case GUIDrawEvent::Type::TEXT:
+		text = other.text;
+		break;
+	case GUIDrawEvent::Type::IMAGE:
+		image = other.image;
+		texture = other.texture;
+		break;
+	default:
+		break;
 	}
+	return (*this);
+}
 
-	void DrawEvent::Draw() {
-		switch(type) {
-		case DrawEvent::Type::TEXT:
-			text.font->draw(text.str, text.destiny, text.color);
-			break;
-		case DrawEvent::Type::IMAGE:
-			sing::videoDriver->draw2DImage(texture->GetITexture(),
-					image.destiny, image.source, NULL, &(image.color), true);
-			break;
-		default:
-			break;
-		}
-	}
-
-	DrawEvent::DrawEvent(Font *font, Rectanglei destiny, Color color,
-			char *str) {
-		type = DrawEvent::Type::TEXT;
-		text.font = font;
-		snprintf(text.str, sizeof(text.str)-1, "%s", str);
-		text.destiny = destiny;
-		text.color = color;
-	}
-
-	DrawEvent::DrawEvent(std::shared_ptr<Texture> texture, Rectanglei source,
-			Rectanglei destiny, Color color) {
-		type = DrawEvent::Type::IMAGE;
-		this->texture = texture;
-		image.source = source;
-		image.destiny = destiny;
-		image.color = color;
-	}
-
-	DrawEvent::DrawEvent() {
-		type = DrawEvent::Type::NONE;
-	}
-
-	DrawEvent::DrawEvent(const DrawEvent &other) {
-		(*this) = other;
+void GUIDrawEvent::Draw() {
+	switch(type) {
+	case GUIDrawEvent::Type::TEXT:
+		text.font->draw(text.str, text.destiny, text.color);
+		break;
+	case GUIDrawEvent::Type::IMAGE:
+		sing::videoDriver->draw2DImage(texture->GetITexture(), image.destiny,
+				image.source, NULL, &(image.color), true);
+		break;
+	default:
+		break;
 	}
 }
 
+GUIDrawEvent::GUIDrawEvent(Font *font, Rectanglei destiny, Color color,
+		char *str) {
+	type = GUIDrawEvent::Type::TEXT;
+	text.font = font;
+	snprintf(text.str, sizeof(text.str)-1, "%s", str);
+	text.destiny = destiny;
+	text.color = color;
+}
 
+GUIDrawEvent::GUIDrawEvent(std::shared_ptr<Texture> texture, Rectanglei source,
+		Rectanglei destiny, Color color) {
+	type = GUIDrawEvent::Type::IMAGE;
+	this->texture = texture;
+	image.source = source;
+	image.destiny = destiny;
+	image.color = color;
+}
 
+GUIDrawEvent::GUIDrawEvent() {
+	type = GUIDrawEvent::Type::NONE;
+}
 
+GUIDrawEvent::GUIDrawEvent(const GUIDrawEvent &other) {
+	(*this) = other;
+}
 
 Font *GUI::GetDefaultFont() {
 	return defaultFont;

@@ -57,6 +57,8 @@ TO DO:
 	- Remove game/Event class and mov it's content to Menu/HUD
 	- Change starting menus by class template to starting by registered name
 			(similarily to ClassFactory for entities)
+	- Make GUI namespace and change GUI class to GUI::Renderer class, and add
+			GUI::Workspace class as text-workspace
 	
 
 TO DO (to think/code restructuring):
@@ -68,7 +70,8 @@ TO DO (to think/code restructuring):
 			parallel collision detection
 	- Change structure of threads: Renderer, Command/Script Issuer,
 			Update Threads, Collision Thread;
-			Design no-blocking threads communication
+			Design no-blocking threads communication, use std::shared_mutex for
+			thread pool
 	
 
 Done:

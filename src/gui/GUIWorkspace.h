@@ -11,16 +11,57 @@
 
 #include <irrlicht/irrlicht.h>
 
-#include <resources/Texture.h>
+#include "GUI.h"
 
-typedef irr::video::SColor Color;
-typedef irr::core::rect<irr::s32> Rectanglei;
-typedef irr::core::rect<irr::f32> Rectanglef;
-typedef irr::core::vector2d<irr::s32> Vectori;
-typedef irr::core::vector2d<irr::f32> Vectorf;
-typedef irr::gui::IGUIFont Font;
+#include <vector>
+#include <string>
 
-#include "GUIWorkspace.h"
+class GUIWorkspace {
+public:
+	
+	class Line {
+	public:
+		Line();
+		~Line();
+		
+		void PutChar(char c);
+		void PutString(const std::string& str);
+		void SetColor(Color color);
+		void SetAllToColor(Color color);
+		void Clear();
+		
+		void SetLineWidth();
+		int GetHeightChars() const;
+		
+		void Flush(Font* font, );
+		
+	private:
+		int lineWidth;
+		Color currentColor;
+		
+		std::vector<int> subLines;
+		std::vector<char> text;
+		std::vector<Color> color;
+	};
+	
+public:
+	
+	GUIWorkspace();
+	~GUIWorkspace();
+	
+	
+	
+	void SetWorkspace(Rectanglef destiny) {
+		
+	}
+	
+private:
+	
+	
+	
+	
+	Rectanglef space;
+};
 
 class GUI {
 public:
@@ -82,79 +123,6 @@ private:
 	
 	std::vector<GUIDrawEvent> toDraw;
 };
-
-
-
-
-
-
-
-
-
-
-typedef irr::video::SColor Color;
-typedef irr::core::rect<irr::s32> Rectanglei;
-typedef irr::core::rect<irr::f32> Rectanglef;
-typedef irr::core::vector2d<irr::s32> Vectori;
-typedef irr::core::vector2d<irr::f32> Vectorf;
-typedef irr::gui::IGUIFont Font;
-
-namespace GUI {
-
-	class DrawEvent {
-	public:
-		enum Type
-		{
-			NONE,
-			TEXT,
-			IMAGE,
-			WORKSPACE
-		};
-		
-		struct Text
-		{
-			Font *font;
-			Rectanglei destiny;
-			char str[64];
-			Color color;
-		};
-		
-		struct Image
-		{
-			Rectanglei source;
-			Rectanglei destiny;
-			Color color;
-		};
-		
-		
-		DrawEvent &operator=(const DrawEvent &other);
-		
-		void Draw();
-		
-		DrawEvent(Font *font, Rectanglei destiny, Color color, char *str);
-		DrawEvent(std::shared_ptr<Texture> texture, Rectanglei source,
-				Rectanglei destiny, Color color);
-		DrawEvent();
-		DrawEvent(Workspace* workspace);
-		DrawEvent(const DrawEvent &other);
-		
-	private:
-		
-		Type type;
-		std::shared_ptr<Texture> texture;
-		union
-		{
-			Text text;
-			Image image;
-			Workspace* workspace;
-		};
-	};
-	
-	class Renderer;
-	
-	class Line;
-	class Workspace;
-}
 
 #endif
 
