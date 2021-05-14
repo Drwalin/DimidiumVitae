@@ -2,17 +2,241 @@
 //	This file is part of The Drwalin Engine project
 // Copyright (C) 2018-2020 Marek Zalewski aka Drwalin aka DrwalinPCF
 
-#ifndef GUI_CPP
-#define GUI_CPP
+#ifndef TEXT_BOX_CPP
+#define TEXT_BOX_CPP
 
-#include "GUI.h"
+#include "TextBox.h"
+
+#include <engine/Singleton.h>
 #include <engine/Window.h>
 
 #include <util/Debug.h>
 
 #include <cstdio>
 #include <cstring>
-#include <cinttypes>
+
+namespace GUI {
+	
+	void Line::UpdateSublines(class TextBox* textBox, bool resizedWorkspace) {
+		int maxWidth = textBox->CalcWorkspaceSizeCharacters().getWidth();
+		int sublineOffset = textBox->GetSublineOffset();
+		sublines.clear();
+		int i, j;
+		if(modified || resizedWorkspace) {
+			for(i=0, j=0;; ++i) {
+				if((j-i)>=maxWidth || i>=str.size() || str[i]==0) {
+					sublines.resize(sublines.size()+1);
+					sublines.back().length = j-i;
+					sublines.back().collors.emplace_back(0);
+					for(int k=j; k<i; ++k) {
+						if(sublines.back().collors.back() != colors[k])
+							sublines.back().collors.emplace_back(k);
+					}
+					j=i;
+				}
+				if(i>=str.size())
+					break;
+			}
+		}
+		bool modified = false;
+	}
+	
+	int Line::GetSublinesCount() {
+		return std::max(1, sublines.size());
+	}
+	
+	void Line::PutChar(char c, Color color, int pos,
+			bool replacingNotInserting) {
+		if(replacingNotInserting && pos<=str.size()) {
+			str[pos] = c;
+			colors[pos] = color;
+		} else {
+			modified = true;
+			str.insert(str.begin()+pos, c);
+			colors.insert(colors.begin()+pos, color);
+		}
+	}
+	
+	void Line::Draw(class TextBox* textBox, Font* font, int pixelX, int pixelY,
+			int sublineOffset) {
+		UpdateSublines(textBox);
+		int w, h;
+		w = sing::window->GetWidth();
+		h = sing::window->GetHeight();
+		int oy=pixelY;
+		for(int i=0; i<sublines.size(); ++i) {
+			int ox = pixelX;
+			auto& sub = sublines[i];
+			for(int j=0; j<sub.collors.size(); ++j) {
+				irr::core::wstring str(this->str.data()+sub.collors[j],
+						(j+1<sub.collors.size()) ?
+							sub.collors[j+1]-sub.collors[j] :
+							sub.length-sub.collors[j]
+						);
+				font->draw(str, {pixelX, pixelY, w, h}, colors[sub.collors[j]]);
+				auto d = font->getDimension(str.c_str());
+				ox = std::max(ox, pixelX+d.Width);
+				oy = std::max(oy, pixelY+d.Height);
+			}
+			pixelY = oy;
+			pixelX += sublineOffset;
+		}
+	}
+	
+	int Line::Length() {
+		return str.size();
+	}
+	
+	Line Line::SplitAndReturnLatter(int pos) {
+		modified = true;
+		Line ret;
+		ret.modified = true;
+		ret.str.insert(ret.str.begin(), str.begin()+pos, str.end());
+		str.erase(str.begin()+pos, str.end());
+		ret.colors.insert(ret.colors.begin(), colors.begin()+pos, colors.end());
+		colors.erase(colors.begin()+pos, colors.end());
+		return ret;
+	}
+	
+	void Line::AppendLine(const Line& line) {
+		modified = true;
+		str.insert(str.end(), line.str.begin(), line.str.end());
+		colors.insert(colors.end(), line.colors.begin(), line.colors.end());
+	}
+	
+	void Line::EraseAt(int pos) {
+		modified = true;
+		str.erase(str.begin()+pos);
+		colors.erase(colors.begin()+pos);
+	}
+	
+	
+	
+	void TextBox::PutChar(char c) {
+		if(c == '\n') {
+			Line line = lines[cursor.y].Split(cursor.x);
+			lines.insert(lines.begin()+cursor.y+1, line);
+			cursor.x = 0;
+			cursor.y++;
+		} else if(c == '\t') {
+			PutChar(' ');
+			PutChar(' ');
+			PutChar(' ');
+			PutChar(' ');
+		} else if(c == '\r')
+			cursor.x = 0;
+		else if(c == '\b') {
+			if(cursor.x == 0) {
+				if(cursor.y > 0) {
+					cursor.x = lines[cursor.y-1].Length();
+					lines[cursor.y-1].AppendLine(lines[cursor.y]);
+					lines.erase(lines.begin()+cursor.y);
+					cursor.y--;
+				}
+			} else {
+				lines[cursor.y].EraseAt(cursor.x-1);
+			}
+		} else if(c == '\f')
+			return;
+		else if(c == '\v')
+			return;
+		else {
+			lines[cursor.y].PutChar(c, color, cursor.x);
+			cursor.x++;
+		}
+	}
+	
+	TextBox &TextBox::operator << (const char *str) {
+		char *ptr = (char*)str;
+		for(char *ptr=(char*)str; *ptr; ++ptr) {
+			PutChar(*ptr);
+		}
+		return *this;
+	}
+
+	TextBox &TextBox::operator << (const std::string &str) {
+		return (*this) << str.c_str();
+	}
+
+	TextBox &TextBox::operator << (const bool val) {
+		char str[64];
+		snprintf(str, 64, val ? "true" : "false");
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const char val) {
+		char str[64];
+		snprintf(str, 64, "%c", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const unsigned char val) {
+		char str[64];
+		snprintf(str, 64, "%c", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const short val) {
+		char str[64];
+		snprintf(str, 64, "%d", (int)val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const unsigned short val) {
+		char str[64];
+		snprintf(str, 64, "%u", (unsigned)val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const int val) {
+		char str[64];
+		snprintf(str, 64, "%d", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const unsigned int val) {
+		char str[64];
+		snprintf(str, 64, "%u", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const long long int val) {
+		char str[64];
+		snprintf(str, 64, "%lld", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const unsigned long long int val) {
+		char str[64];
+		snprintf(str, 64, "%llu", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const float val) {
+		char str[64];
+		snprintf(str, 64, "%.3f", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (const double val) {
+		char str[64];
+		snprintf(str, 64, "%.3f", val);
+		return (*this) << (const char*)(str);
+	}
+
+	TextBox &TextBox::operator << (Font *font) {
+		currentFont = font;
+		return (*this);
+	}
+
+	TextBox &TextBox::operator << (const Color color) {
+		currentColor = color;
+		return (*this);
+	}
+	
+}
+
+
 
 GUIDrawEvent &GUIDrawEvent::operator=(const GUIDrawEvent &other) {
 	type = other.type;

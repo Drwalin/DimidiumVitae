@@ -47,6 +47,7 @@ TO DO:
 	- Update Console to show cursor position
 	- Change MESSAGE macro to a class which manages logs, timestamps, etc.
 	- Add HUD class
+	- Add Option Menu class
 	- Correct GUI class which does not respects it's workspace
 	- Window::Draw is not stable on windows which causes lags (sometimes render
 			takes ~30-40 ms without no reason with stable average 4ms tick). It
